@@ -1,0 +1,12 @@
+.xButton {
+  display: block;
+  width: 30px;
+  height: 30px;
+  @extend .icons-x;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+
+  @extend .buttonBehavior;
+}
+

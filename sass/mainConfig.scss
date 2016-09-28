@@ -1,0 +1,64 @@
+#configError {
+  color: #d7003b;
+}
+
+#configSuccess {
+  color: #00a603;
+}
+
+#configMessages {
+  min-height: 20px;
+}
+
+.configLabel {
+  @extend .hoverable;
+  display: block;
+  line-height: 25px;
+  padding: 6px;
+  position: relative;
+}
+
+.configName {
+  line-height: 25px;
+  width: 49%;
+  display: inline-block;
+}
+
+.configInput {
+  height: 20px;
+  line-height: 20px;
+  margin: 0px;
+  padding: 0px;
+  vertical-align: middle;
+  width: 49%;
+  display: inline-block;
+}
+
+.configExplanation {
+  width: auto;
+  max-width: 95.5%;
+  height: auto;
+  background-color: white;
+  position: absolute;
+  z-index: 4;
+  left: 1%;
+  pointer-events: none;
+  border: #000 2px solid;
+  border-radius: 5px;
+  padding: 5px;
+  display: none;
+}
+
+.configExplanation:before {
+  border: solid;
+  border-color: #333 transparent;
+  border-width: 0px 6px 6px 6px;
+  top: -6px;
+  content: "";
+  left: 10px;
+  position: absolute;
+}
+
+.configLabel:hover .configExplanation {
+  display: block;
+}

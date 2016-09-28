@@ -1,0 +1,337 @@
+-# coding: utf-8
+!!! 5
+%html
+  %head
+    %title= "RedPG"
+    %meta{:charset => "utf8"}
+    %meta{:content => "", :name => "description"}
+    %link{:href => "images/favicon.ico", :rel => "shortcut icon"}/
+    <!-- Individual font licenses included in CSS. -->
+    %link{:href => "stylesheets/screen.css", :media => "all", :rel => "stylesheet", :type => "text/css"}
+  %body
+    #loadingWindow.flexCentering
+      %a.loadingCircleWhite#loadingScreenLoadingIcon
+    #loginWindow.window.flexCentering
+      #loginBox
+        #loginFlagContainer
+        %form#loginForm.centeredContents
+          %input#loginEmailInput.loginInput.language{:data => {:placeholderlingo => "_LOGINEMAIL_"}}
+          %input#loginPasswordInput.loginInput.language{:type => "password", :data => {:placeholderlingo => "_LOGINPASSWORD_"}}
+          %input.simpleButton.language#loginSubmitButton{:type => "submit", :data => {:valuelingo => "_LOGINSUBMIT_"}}
+    -# Main Window Begins here
+    #mainWindow.window
+      #musicPlayerButton.icons-soundPlayer.dontDetach.leftSideWindow
+        %audio#soundPlayerSE{:crossOrigin => "anonymous"}
+        %audio#soundPlayerBGM{:crossOrigin => "anonymous"}
+        %audio#soundDiceRoll{:src => "images/soundDice.m4a", :preload => true}
+        %audio#soundAlert{:src => "images/soundAlert.m4a", :preload => true}
+        #musicPlayerContainer
+          %progress#musicPlayerProgress{:value => "50", :min => "0", :max => "100"}
+          %a#musicPlayerPlayPause.musicPlayerButton.icons-soundPlayerPause
+          %a#musicPlayerStop.musicPlayerButton.icons-soundPlayerStop
+          %a#musicPlayerRepeat.musicPlayerButton.icons-soundPlayerRepeatActive
+          #musicPlayerLocal.buttonBehavior.icons-soundPlayerListButton
+      -# Left Ear
+      #leftHandleBar.handleBar
+        #leftHandleIcon.icons-handlerLTR
+        %a.icons-handleLogout#logoutButton.leftHandleButton.language="_MENULOGOUT_"
+        %a.icons-handleChat#openChatButton.leftHandleButton.language="_MENUCHAT_"
+        %a.icons-handleGames#gamesButton.leftHandleButton.language="_MENUGAMES_"
+        %a.icons-handleOptions#configButton.leftHandleButton.language="_MENUCONFIG_"
+      -# Right Ear
+      #rightHandleBar.handleBar
+        #rightHandleIcon.icons-handlerRTL
+        %a.icons-handleSheets#sheetsButton.rightHandleButton.language="_MENUSHEETS_"
+        %a.icons-handleImages#imagesButton.rightHandleButton.language="_MENUIMAGES_"
+        %a.icons-handleSounds#soundsButton.rightHandleButton.language="_MENUSOUNDS_"
+        %a.icons-handleImage#imageButton.rightHandleButton.language="_MENUIMAGE_"
+        %a.icons-handleHitbox#hitboxButton.rightHandleButton.language="_MENUHITBOX_"
+        %a.icons-handleYoutube#youtubeButton.rightHandleButton.language="_MENUYOUTUBE_"
+      -# Loading Screens
+      #leftLoading.leftSideWindow.flexCentering.dontDetach
+        %a.loadingCircleWhite.centeredBlock
+      #rightLoading.rightSideWindow.flexCentering.dontDetach
+        %a.loadingCircleWhite.centeredBlock
+      -# Map
+      #pictureWindow.rightSideWindow.dontDetach{:style=>"display: none"}
+        #pictureLoading.flexCentering{:style=>"display: none"}
+          %a.loadingCircleWhite.centeredBlock
+        #pictureContainer
+          %a#tokenExample.pictureToken
+          #pictureMouseCatcher
+          %canvas#markCanvas
+          %canvas#artCanvas
+          %canvas#gridCanvas
+          %canvas#fogCanvas
+          %img#mapBackground
+      -# Left Side Windows
+      -############################################
+      -############## CHANGELOG
+      -############################################
+      #changelogSideWindow.leftSideWindow
+        .language.mainWindowHeader
+          _CHANGELOGTITLE_
+          %a.xButton{:onclick => "UI.PageManager.closeLeftPage();"}
+        .mainWindowContent.singleton
+          %p.mainWindowParagraph.language="_CHANGELOGP1_"
+          %p.mainWindowParagraph.language="_CHANGELOGP2_"
+          %p.mainWindowParagraph.language
+            _CHANGELOGCURRENTVERSION_<b id="changelogCurrentVersion"> 0.0.0. </b>
+            _CHANGELOGMOSTRECENTVERSION_<b id="changelogActualVersion"> 0.1.0.</b>
+      -############################################
+      -############## CONFIG
+      -############################################
+      #configSideWindow.leftSideWindow
+        .mainWindowHeader.language
+          _CONFIGTITLE_
+          %a.xButton{:onclick => "UI.PageManager.closeLeftPage();"}
+        .mainWindowContent.singleton
+          %p.hoverable.mainWindowParagraph.centered
+            %a#configSave.textLink.language="_CONFIGSAVE_"
+            \-
+            %a#configReset.textLink.language="_CONFIGRESET_"
+          %p.mainWindowParagraph.centered#configMessages
+            %b#configError.language="_CONFIGERROR_"
+            %b#configSuccess.language="_CONFIGSUCCESS_"
+          %label.configLabel
+            %b.configName.language="_CONFIGCHATMAXMESSAGES_"
+            %input.configInput#configChatMaxMessages{:type => "number", :value => "120", :min => "60", :max => "10000"}
+            .configExplanation.language
+              _CONFIGCHATMAXMESSAGESEXP01_<br/>_CONFIGCHATMAXMESSAGESEXP02_
+          %label.configLabel
+            %b.configName.language="_CONFIGCHATFONTSIZE_"
+            %input.configInput#configChatFontSize{:type => "range", :value => "16", :min => "12", :max => "32"}
+            .configExplanation.language
+              _CHATFONTSIZEEXP01_<br/>_CHATFONTSIZEEXP02_
+          %label.configLabel
+            %b.configName.language="_CONFIGCHATFONTFAMILY_"
+            %input.configInput#configChatFontFamily{:type => "text", :value => "Caudex"}
+            .configExplanation.language
+              _CHATFONTFAMILEXP01_<br/>_CHATFONTFAMILEXP02_
+          %label.configLabel
+            %b.configName.language="_CONFIGCHATHELP_"
+            %select.configInput#configChatShowHelp
+              %option.language{:value => "true"}="_CONFIGCHATHELPOP01_"
+              %option.language{:value => "false"}="_CONFIGCHATHELPOP02_"
+            .configExplanation.language
+              _CONFIGCHATHELPEXP_
+          %label.configLabel
+            %b.configName.language="_CONFIGCHATAUTOBGM_"
+            %select.configInput#configChatAutoBGM
+              %option.language{:value => "0"}="_CONFIGCHATAUTONEVER_"
+              %option.language{:value => "1"}="_CONFIGCHATAUTOSOMETIMES_"
+              %option.language{:value => "2"}="_CONFIGCHATAUTOALWAYS_"
+            .configExplanation.language
+              _CONFIGCHATAUTOEXP_
+          %label.configLabel
+            %b.configName.language="_CONFIGCHATAUTOSE_"
+            %select.configInput#configChatAutoSE
+              %option.language{:value => "0"}="_CONFIGCHATAUTONEVER_"
+              %option.language{:value => "1"}="_CONFIGCHATAUTOSOMETIMES_"
+              %option.language{:value => "2"}="_CONFIGCHATAUTOALWAYS_"
+            .configExplanation.language
+              _CONFIGCHATAUTOEXP_
+          %label.configLabel
+            %b.configName.language="_CONFIGCHATAUTOIMAGE_"
+            %select.configInput#configChatAutoImage
+              %option.language{:value => "0"}="_CONFIGCHATAUTONEVER_"
+              %option.language{:value => "1"}="_CONFIGCHATAUTOSOMETIMES_"
+              %option.language{:value => "2"}="_CONFIGCHATAUTOALWAYS_"
+            .configExplanation.language
+              _CONFIGCHATAUTOEXP_
+          %label.configLabel
+            %b.configName.language="_CONFIGCHATAUTOVIDEO_"
+            %select.configInput#configChatAutoVideo
+              %option.language{:value => "0"}="_CONFIGCHATAUTONEVER_"
+              %option.language{:value => "1"}="_CONFIGCHATAUTOSOMETIMES_"
+              %option.language{:value => "2"}="_CONFIGCHATAUTOALWAYS_"
+            .configExplanation.language
+              _CONFIGCHATAUTOEXP_
+          %label.configLabel
+            %b.configName.language="_CONFIGANIMATIONTIME_"
+            %input.configInput#configAnimTime{:type => "range", :value => "150", :min => "0", :max => "300"}
+            .configExplanation.language
+              _ANIMATIONTIMEEXP01_<br>_ANIMATIONTIMEEXP02_
+          %label.configLabel
+            %b.configName.language="_CONFIGBGMVOLUME_"
+            %input.configInput#configBGMVolume{:type => "range", :value => "0", :min => "0", :max => "100"}
+            .configExplanation.language
+              _CONFIGBGMVOLUMEEXP_
+          %label.configLabel
+            %b.configName.language="_CONFIGSEVOLUME_"
+            %input.configInput#configSEVolume{:type => "range", :value => "0", :min => "0", :max => "100"}
+            .configExplanation.language
+              _CONFIGSEVOLUMEEXP_
+      -############################################
+      -############## GAMES
+      -############################################
+      -#### GAME INVITES WINDOW
+      #gameInvitesSideWindow.leftSideWindow
+        .language.mainWindowHeader="_GAMEINVITESTITLE_"
+        .mainWindowContent.singleton
+          %p.mainWindowParagraph.language="_GAMEINVITESEXP01_"
+          %p.mainWindowParagraph.language#gameInvitesNickTarget="_GAMEINVITESEXP02_"
+          %p.mainWindowParagraph.language#gameInvitesError
+          #inviteTarget
+      -#### MAIN GAMES WINDOW
+      #gamesSideWindow.leftSideWindow
+        .language.mainWindowHeader
+          _GAMESTITLE_
+          %a.xButton{:onclick => "UI.PageManager.closeLeftPage();"}
+        .mainWindowContent.singleton
+          %p.mainWindowParagraph.language#gamesNickTarget="_GAMESEXP1_"
+          %p.mainWindowParagraph.language="_GAMESEXP2_"
+          %p.mainWindowParagraph.language="_GAMESEXP3_"
+          %p.mainWindowParagraph.language="_GAMESEXP4_"
+          %p.mainWindowParagraph.language.textLink.hoverable#gameInvitesButton="_GAMESINVITES_"
+          %p.mainWindowParagraph.language.textLink.hoverable#gameNewGameButton="_GAMESNEWGAME_"
+          #gameListTarget
+      -############################################
+      -############## CHAT
+      -############################################
+      #chatSideWindow.leftSideWindow
+        #avatarBox
+        .icons-chatUp#avatarUpButton
+        .icons-chatDown#avatarDownButton
+        #chatNotificationBar
+        #chatFloater
+        #chatBox
+          %p#chatTitle
+          %p#chatDescription
+          %p.chatInitHelp.language="_CHATHELP01_"
+          %p.chatInitHelp.language="_CHATHELP02_"
+          %p.chatInitHelp.language="_CHATHELP03_"
+          %p.chatInitHelp.language="_CHATHELP04_"
+          %p.chatInitHelp.language="_CHATHELP05_"
+          %p.chatInitHelp.language="_CHATHELP06_"
+          %p.chatInitHelp.language="_CHATHELP07_"
+          %input#chatSounds{:type => "file", :multiple => "true"}
+          #chatMessages
+        #chatScrollDown
+        #chatButtonsBox
+          %a.chatRightButton.icons-chatFontPlus{:onclick => "Application.Config.getConfig('chatfontsize').storeValue(Application.Config.getConfig('chatfontsize').getValue() + 1);"}
+          %a.chatRightButton.icons-chatFontMinus{:onclick => "Application.Config.getConfig('chatfontsize').storeValue(Application.Config.getConfig('chatfontsize').getValue() - 1);"}
+          %a.chatRightButton.icons-chatLeave{:onclick => "UI.Chat.leave();"}
+        #chatMessageStateIcon
+        #chatMessageBox
+          %input.chatInput#chatMessageInput{:autocomplete => "off"}
+        %a.icons-chatSend#chatMessageSendButton
+        #personaDesignerBox
+          #personaDesigner
+            .language.mainWindowHeader
+              _PERSONADESIGNERTITLE_
+              %a.xButton#personaDesignerCloseButton
+            .mainWindowContent.singleton
+              %form#personaDesignerForm
+                %input.language#personaDesignerNameInput{:data => {:placeholderlingo => "_PERSONADESIGNERNAME_"}}
+                %input.language#personaDesignerAvatarInput{:data => {:placeholderlingo => "_PERSONADESIGNERAVATAR_"}}
+                %input.language#personaDesignerSubmit{:type => "submit", :data => {:valuelingo => "_PERSONADESIGNERCREATE_"}}
+              #personaDesignerHolder
+        #personaBox
+          %a#personaAddButton
+          #personaContainer
+            .personaButton.active="Example"
+        %form#diceFormBox
+          %input#chatDiceAmount.chatInput.language{:data => {:placeholderlingo => "_CHATDICEAMOUNT_"}, :type => "number"}
+          %input#chatDiceFaces.chatInput.language{:data => {:placeholderlingo => "_CHATDICEFACES_"}, :type => "number"}
+          %input#chatDiceMod.chatInput.language{:data => {:placeholderlingo => "_CHATDICEMOD_"}, :type => "number"}
+          #diceReasonHolder
+            %input#chatDiceReason.chatInput.language{:data => {:placeholderlingo => "_CHATDICEREASON_"}}
+          %a.icons-chatDiceTower#chatDiceTower
+          %input.icons-chatDiceRoll#chatDiceSubmit{:type => "submit", :value => ""}
+        #bottomBox
+          .diceButton.icons-d4#chatDiceD4{:title => "d4"}
+          .diceButton.icons-d6#chatDiceD6{:title => "d6"}
+          .diceButton.icons-d8#chatDiceD8{:title => "d8"}
+          .diceButton.icons-d10#chatDiceD10{:title => "d10"}
+          .diceButton.icons-d12#chatDiceD12{:title => "d12"}
+          .diceButton.icons-d20#chatDiceD20{:title => "d20"}
+          .diceButton.icons-d100#chatDiceD100{:title => "d100"}
+      -# Right Side Windows
+      #imagesSideWindow.rightSideWindow
+        .mainWindowHeader.language
+          _IMAGESTITLE_
+          %a.xButton{:onclick => "UI.PageManager.closeRightPage();"}
+        .mainWindowContent.singleton
+          %p.mainWindowParagraph.language="_IMAGESEXP01_"
+          %p.mainWindowParagraph.language="_IMAGESEXP02_"
+          %p.mainWindowParagraph.language="_IMAGESEXP03_"
+          #imagesTarget
+            #imagesLoadError.language="_IMAGESERROR_"
+            #imagesSaveError.language="_IMAGESSAVEERROR_"
+            %div
+              .imagesFolder
+                %a.imagesFolderIcon
+                %span.imagesFolderTitle{:onclick => "this.parentNode.classList.toggle('folderOpen');"}="Nome da Pasta"
+                .imagesRow
+                  %a.imagesLeftButton.icons-imagesShare
+                  %a.imagesLeftButton.icons-imagesView
+                  %a.imagesLeftButton.icons-imagesPersona
+                  %a.imagesRightButton.icons-imagesDelete
+                  %a.imagesRightButton.icons-imagesRename
+                  %a.imagesRightButton.icons-imagesFolder
+                  %a.imagesRowTitle="Nome da Imagem"
+          #imagesUpload
+            #imagesUploadLeft
+              #linkImagesTitle
+                #linkImagesIcon.icons-link
+                #linkImagesTitleText.language="_IMAGESLINKTITLE_"
+            #imagesUploadRight
+              #dropboxImagesLogo.icons-dropboxLogo
+              #dropboxImagesButton.language="_IMAGESDROPBOXCHOOSER_"
+      #sheetsSideWindow.rightSideWindow
+        .mainWindowHeader.language
+          _SHEETSTITLE_
+          %a.xButton{:onclick => "UI.PageManager.closeRightPage();"}
+        .mainWindowContent.singleton
+          %p.mainWindowParagraph.language="_SHEETSEXP01_"
+          %p.mainWindowParagraph.language="_SHEETSEXP02_"
+          %p.mainWindowParagraph.language="_SHEETSEXP03_"
+          %p.mainWindowParagraph.textLink.language.hoverable="_SHEETSOPENSTYLEEDITOR_"
+          #sheetWindowSheetList
+            .sheetListGameContainer.lightHoverable.openSheetGame
+              %p.sheetListGameName{:onclick=>"this.parentNode.classList.toggle('openSheetGame');"}="Nome da Mesa"
+              .sheetListFolderContainer.lightHoverable.openSheetFolder
+                %p.sheetListFolderName{:onclick=>"this.parentNode.classList.toggle('openSheetFolder');"}="Nome da pasta"
+                %p.sheetListSheet
+                  %a.sheetNameLink="Nome da ficha"
+                  %a.sheetExtraButton.textLink="Pasta"
+                  %a.sheetExtraButton.textLink="Permissões"
+                  %a.sheetExtraButton.textLink="Deletar"
+              .sheetListFolderContainer.lightHoverable
+                %p.sheetListFolderName{:onclick=>"this.parentNode.classList.toggle('openSheetFolder');"}="Nome da pasta fechada"
+                %p.sheetListSheet
+                  Sem fichas para imprimir.
+                %p.sheetListSheet.textLink.lightHoverable="> Criar Ficha"
+            .sheetListGameContainer.lightHoverable
+              %p.sheetListGameName="Nome de mesa Fechada"
+      #homeSideWindow.rightSideWindow
+        .mainWindowHeader.language
+          _REDPGTITLE_
+          %a.xButton{:onclick => "UI.PageManager.closeRightPage();"}
+        .mainWindowContent
+          %p.mainWindowParagraph.language="_REDPGEXP1_"
+          %p.mainWindowParagraph.language="_REDPGEXP2_"
+        .mainWindowHeader.language="_REDPGDONATIONTITLE_"
+        .mainWindowContent
+          %p.mainWindowParagraph.language="_REDPGDONATIONEXP1_"
+          %p.mainWindowParagraph.language="_REDPGDONATIONEXP2_"
+          %p.mainWindowParagraph.language="_REDPGDONATIONEXP3_"
+        .mainWindowHeader.language="_REDPGLINKSTITLE_"
+        .mainWindowContent
+          %p.mainWindowParagraph
+            %a.textLink.language="_REDPGLINKFRONTBUTTON_"
+            \:
+            %span.language="_REDPGLINKFRONTEXP_"
+        .mainWindowHeader.language="_REDPGFORUMTITLE_"
+        .mainWindowContent
+          %p.mainWindowParagraph.language="_REDPGFORUM1_"
+      #picturesSideWindow.rightSideWindow
+      #soundsSideWindow.rightSideWindow
+      #hitboxSideWindow.rightSideWindow
+        %iframe#hitboxFrame
+      #youtubeSideWindow.rightSideWindow
+    -# App Key for Dropbox Choooser
+    %script{:type => 'text/javascript', :id => "dropboxjs", "data-app-key" => "nr1604ewqoph539"}
+    %script{:type => 'text/javascript', :src => 'js/lib/libraries160524v2.js'}
+    %script{:type => 'text/javascript', :src => 'js/Application.js'}

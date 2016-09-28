@@ -1,0 +1,133 @@
+<canvas id="pica2" width="600" height="400" style="position: absolute; left: 1px; top: 1px; pointer-events: none"></canvas>
+<canvas id="pica" width="600" height="400" style="position: absolute; left: 0px; top: 0px; border: solid 1px #000"></canvas>
+<div id="texto"></div>
+<script type="text/javascript">
+
+var texto = document.getElementById("texto");
+
+var canvas = document.getElementById("pica");
+var ctx = canvas.getContext("2d");
+var canvas2 = document.getElementById("pica2");
+var ctx2 = canvas2.getContext("2d");
+
+var isDrawing = false;
+var points = [];
+var cleanedPoints = [];
+
+var addPoints = function (e) {
+	if (!isDrawing) return;
+	points.push([Math.round(e.offsetX * 1023 / 600), Math.round(e.offsetY * 1023 / 400)]);
+	redrawCanvas();
+};
+
+var addPoints1 = function (e) {
+	isDrawing = true;
+	points.push([Math.round(e.offsetX * 1023 / 600), Math.round(e.offsetY * 1023 / 400)]);
+	redrawCanvas();
+};
+
+var addPoints2 = function (e) {
+	isDrawing = false;
+	points.push([Math.round(e.offsetX * 1023 / 600), Math.round(e.offsetY * 1023 / 400)]);
+	redrawCanvas();
+	printTexto();
+};
+
+canvas.addEventListener("mousedown", addPoints1);
+canvas.addEventListener("mousemove", addPoints);
+canvas.addEventListener("mouseup", addPoints2);
+
+function getDistance (c1, c2) {
+	var x1 = c1[0];
+	var x2 = c2[0];
+	var y1 = c1[1];
+	var y2 = c2[1];
+	
+	return Math.sqrt( (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2) );
+}
+
+function redrawCanvas () {
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	
+	ctx.beginPath();
+	for (var i = 0; i < points.length; i++) {
+		if (i > 0) {
+			ctx.lineTo(points[i][0] * 600 / 1023,points[i][1] * 400 / 1023);
+			ctx.stroke();
+		}
+		ctx.moveTo(points[i][0] * 600 / 1023,points[i][1] * 400 / 1023);
+	}
+}
+
+function redrawCanvas2 () {
+	ctx2.clearRect(0, 0, canvas.width, canvas.height);
+	
+	ctx2.beginPath();
+	for (var i = 0; i < cleanedPoints.length; i++) {
+		if (i > 0) {
+			ctx2.lineTo(cleanedPoints[i][0] * 600 / 1023,cleanedPoints[i][1] * 400 / 1023);
+			ctx2.stroke();
+		}
+		ctx2.moveTo(cleanedPoints[i][0] * 600 / 1023,cleanedPoints[i][1] * 400 / 1023);
+	}
+}
+
+function printTexto () {
+	while (texto.firstChild !== null) texto.removeChild(texto.firstChild);
+	
+	texto.appendChild(document.createTextNode("Size of Points: " + ((JSON.stringify(points)).length)));
+	texto.appendChild(document.createElement("br"));
+	texto.appendChild(document.createElement("br"));
+	
+	cleanedPoints = [];
+	cleanedPoints.push(points[0]);
+	var lastAdded = points[0];
+	for (var i = 1; i < points.length; i++) {
+		if ((i + 1) >= points.length) {
+			cleanedPoints.push(points[i]);
+		} else {
+			var found = false;
+			for (var k = (cleanedPoints.length - 1); k >= 0; k--) {
+				if (cleanedPoints[k][0] == points[i][0] && cleanedPoints[k][1] == points[i][1]) {
+					found = true;
+					break;
+				}
+			}
+			if (found) {
+				continue;
+			}
+			var dab = getDistance(lastAdded, points[i]);
+			var dbc = getDistance(points[i], points[i + 1]);
+			var dac = getDistance(lastAdded, points[i + 1]);
+			if ((dab + dbc) != dac) {
+				//if (dac < 150 && (((1000 * (dab + dbc) / dac) - 1000) < 3)) continue;
+				if (((dab + dbc) - dac) < 0.15) continue;
+				lastAdded = points[i];
+				cleanedPoints.push(points[i]);
+			}
+		}
+	}
+	texto.appendChild(document.createTextNode("Size of CleanedPoints: " + ((JSON.stringify(cleanedPoints)).length) + " (" + Math.round(JSON.stringify(cleanedPoints).length * 100 / JSON.stringify(points).length) + "%)"));
+
+	texto.appendChild(document.createElement("br"));
+	texto.appendChild(document.createElement("br"));
+
+	encodedPoints = "";
+
+	for (var i = 0; i < cleanedPoints.length; i++) {
+		var x = cleanedPoints[i][0].toString(36);
+		var y = cleanedPoints[i][1].toString(36);
+		if (x.length == 1) {
+			x = "0" + x;
+		}
+		if (y.length == 1) {
+			y = "0" + y;
+		}
+		encodedPoints += x + y;
+	}
+
+	texto.appendChild(document.createTextNode("Size of encoded CleanedPoints: " + encodedPoints.length + "(" + Math.round(encodedPoints.length * 100 / JSON.stringify(points).length) + "%)"));
+	redrawCanvas2();
+}
+
+</script>

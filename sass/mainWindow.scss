@@ -1,0 +1,75 @@
+.leftSideWindow  {
+  position: absolute;
+  left: 10px;
+  top: 0px;
+  bottom: 0px;
+  z-index: 1;
+}
+
+.rightSideWindow {
+  position: absolute;
+  right: 10px;
+  bottom: 0px;
+  top: 0px;
+  z-index: 2;
+}
+
+#leftLoading, #rightLoading {
+  background-color: rgba(0,0,0,0.5);
+  z-index: 3;
+}
+
+.handleBar {
+  position: absolute;
+  width: 70px;
+  top: 0px;
+  bottom: 0px;
+  background-color: #414141;
+  z-index: 4;
+}
+
+#leftHandleIcon, #rightHandleIcon {
+  position: absolute;
+  top: 0px;
+  width: 8px;
+  height: 8px;
+}
+
+#leftHandleIcon {
+  right: 0px;
+}
+
+#rightHandleIcon {
+  left: 0px;
+}
+
+.handleButton {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: bold;
+  text-align: center;
+  padding-top: 40px;
+  width: 60px;
+  height: 20px;
+  margin-top: 10px;
+  display: block;
+  @extend .buttonBehavior;
+  color: #FFF;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  &:hover {
+    color: #d6d4e7;
+  }
+  &:active {
+    color: #aaa8c1;
+  }
+}
+
+.leftHandleButton {
+  @extend .handleButton;
+  float: left;
+}
+
+.rightHandleButton {
+  @extend .handleButton;
+  float: right;
+}

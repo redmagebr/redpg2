@@ -1,0 +1,401 @@
+// Simple Messages
+#chatTitle {
+  font-size: 1.7em;
+  font-weight: bold;
+  text-align:center;
+  font-family: $mainFont;
+  line-height: 1.3em;
+  margin-top: 5px;
+}
+
+#chatDescription {
+  font-size: 1.1em;
+  text-align: justify;
+  text-indent: 1.2em;
+  line-height: 1.5em;
+  padding: 6px;
+  font-family: $mainFont;
+}
+
+.chatInitHelp {
+  padding-left: 6px;
+  padding-right: 6px;
+  color: #949494;
+}
+
+.chatInitHelp:before {
+    content: "- ";
+}
+
+// Actual Messages
+.chatMessage {
+  line-height: 1.2em;
+  font-size: 1em;
+  &:hover {
+    background-color: rgba(0,0,0,.2);
+  }
+}
+
+.chatMessageSending {
+  background-color: #fffae5;
+  &:hover {
+    background-color: #ddd6b6;
+  }
+}
+
+.chatMessageError {
+  background-color: #ffe5e5;
+  &:hover {
+    background-color: #ddb6b6;
+  }
+}
+
+.chatMessagePadding {
+  padding-left: 7px;
+  padding-right: 7px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+.chatMessageParagraph {
+  text-align: justify;
+  display: block;
+  //text-indent: 1em;
+  @extend .chatMessage;
+  @extend .chatMessagePadding;
+  //&:before {
+  //  content: "* ";
+  //  visibility: hidden;
+  //  font-weight: bold;
+  //}
+  text-indent: 0.8em;
+}
+
+.chatMessageNotification {
+  @extend .chatMessage;
+  @extend .chatMessagePadding;
+  color: #696969;
+
+  &:before {
+    content: "(";
+    margin-right: 4px;
+  }
+
+  &:after {
+    content: ")";
+    margin-left: 4px;
+  }
+}
+
+$actionColor: #d90000;
+
+// MessageStory
+.chatMessageStory {
+  @extend .chatMessageParagraph;
+  text-indent: 0px;
+  color: #074fb0;
+}
+
+// MessageRoleplay
+.chatRoleplayImportant {
+  color: #234788;
+  font-weight: bold;
+}
+
+.chatRoleplayItalic {
+  font-style: italic;
+  font-weight: bold;
+}
+
+.chatRoleplayThought {
+  color: #6882b1;
+  font-style: italic;
+}
+
+.chatRoleplayAction {
+  color: $actionColor;
+  font-weight: bold;
+}
+
+.chatRoleplayTranslation {
+  display: block;
+  color: #7f007f;
+}
+
+// MessageOff
+.chatOff {
+  font-style: italic;
+  @extend .chatMessageParagraph;
+  color: #2d9d00;
+}
+
+// MessageAction
+.chatAction {
+  @extend .chatMessageParagraph;
+  color: $actionColor;
+  text-indent: 0px;
+}
+
+// MessageDice
+.chatMessageDice {
+  @extend .chatMessageParagraph;
+  color: #b900b3;
+  text-indent: 0px;
+  font-size: 1.1em;
+  line-height: 1.5em;
+
+  &.rainbow {
+    color: rgba(0,0,0,.9);
+  }
+
+  &.shame {
+    color: #7d0000;
+  }
+}
+
+.chatMessageDiceBox {
+  min-width: 0.6em;
+  display: inline-block;
+  vertical-align: middle;
+  background-color: #ffe3fe;
+  padding: 0px;
+  border: solid 1px #e782e4;
+  border-radius: 15%;
+  text-align: center;
+  padding-left: 0.45em;
+  padding-right: 0.45em;
+  font-size: 0.9em;
+
+  &.rainbow {
+    //border-color: #ccb600;
+    //color: #716500;
+    //background-color: #ffed53;
+    border-color: rgba(0,0,0,.9);
+    color: rgba(0,0,0,.8);
+    background-image: url("data:image/gif;base64,R0lGODlhAQABANUAANzK/8ru///K08r/yuXK/8rT///K7u7K///cysr//8rl/8r/3Mrc/8rK//fK////yuX/yv/K3Mr/5cr3///K5f/Kysr/7u7/yv/K98r/9//3yvf/yv/uyv/Tyv/K/8r/0//lytPK/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh/wtYTVAgRGF0YVhNUDw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYxIDY0LjE0MDk0OSwgMjAxMC8xMi8wNy0xMDo1NzowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNS4xIFdpbmRvd3MiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6RDkzRTlBNjc4OUUyMTFFNTk1NThFMEFBOTQ5MDUyQzUiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6RDkzRTlBNjg4OUUyMTFFNTk1NThFMEFBOTQ5MDUyQzUiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpEOTNFOUE2NTg5RTIxMUU1OTU1OEUwQUE5NDkwNTJDNSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpEOTNFOUE2Njg5RTIxMUU1OTU1OEUwQUE5NDkwNTJDNSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PgH//v38+/r5+Pf29fTz8vHw7+7t7Ovq6ejn5uXk4+Lh4N/e3dzb2tnY19bV1NPS0dDPzs3My8rJyMfGxcTDwsHAv769vLu6ubi3trW0s7KxsK+urayrqqmop6alpKOioaCfnp2cm5qZmJeWlZSTkpGQj46NjIuKiYiHhoWEg4KBgH9+fXx7enl4d3Z1dHNycXBvbm1sa2ppaGdmZWRjYmFgX15dXFtaWVhXVlVUU1JRUE9OTUxLSklIR0ZFRENCQUA/Pj08Ozo5ODc2NTQzMjEwLy4tLCsqKSgnJiUkIyIhIB8eHRwbGhkYFxYVFBMSERAPDg0MCwoJCAcGBQQDAgEAACH5BAQDAAAALAAAAAABAAEAAAYDwEoQACH5BAQDAAAALAAAAAABAAEAAAYDwE4QACH5BAQDAAAALAAAAAABAAEAAAYDQEQQACH5BAQDAAAALAAAAAABAAEAAAYDQFAQACH5BAQDAAAALAAAAAABAAEAAAYDQE4QACH5BAQDAAAALAAAAAABAAEAAAYDQE0QACH5BAQDAAAALAAAAAABAAEAAAYDwEcQACH5BAQDAAAALAAAAAABAAEAAAYDwE0QACH5BAQDAAAALAAAAAABAAEAAAYDwEsQACH5BAQDAAAALAAAAAABAAEAAAYDQEgQACH5BAQDAAAALAAAAAABAAEAAAYDwEEQACH5BAQDAAAALAAAAAABAAEAAAYDwE8QACH5BAQDAAAALAAAAAABAAEAAAYDwEUQACH5BAQDAAAALAAAAAABAAEAAAYDQEkQACH5BAQDAAAALAAAAAABAAEAAAYDQEsQACH5BAQDAAAALAAAAAABAAEAAAYDwEwQACH5BAQDAAAALAAAAAABAAEAAAYDwEQQACH5BAQDAAAALAAAAAABAAEAAAYDwEkQACH5BAQDAAAALAAAAAABAAEAAAYDwEAQACH5BAQDAAAALAAAAAABAAEAAAYDQEUQACH5BAQDAAAALAAAAAABAAEAAAYDQEYQACH5BAQDAAAALAAAAAABAAEAAAYDwEIQACH5BAQDAAAALAAAAAABAAEAAAYDwEYQACH5BAQDAAAALAAAAAABAAEAAAYDwFAQACH5BAQDAAAALAAAAAABAAEAAAYDQEAQACH5BAQDAAAALAAAAAABAAEAAAYDQEIQACH5BAQDAAAALAAAAAABAAEAAAYDwEMQACH5BAQDAAAALAAAAAABAAEAAAYDQEcQACH5BAQDAAAALAAAAAABAAEAAAYDQE8QACH5BAQDAAAALAAAAAABAAEAAAYDQEwQACH5BAQDAAAALAAAAAABAAEAAAYDQEMQACH5BAQDAAAALAAAAAABAAEAAAYDQEoQACH5BAQDAAAALAAAAAABAAEAAAYDwEgQACH5BAQDAAAALAAAAAABAAEAAAYDQEEQADs=");
+  }
+
+  &.shame {
+    //border-color: #a51f1f;
+    //color: #6c0000;
+    //background-color: #c07272
+    border-color: rgba(40,0,0,.9);
+    color: rgba(230,200,200,.8);
+    background-image: url("data:image/gif;base64,R0lGODlhAQABAKIAAKoAAGQAAIIAAHgAAKAAAG4AAJYAAIwAACH/C05FVFNDQVBFMi4wAwEAAAAh/wtYTVAgRGF0YVhNUDw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMDY3IDc5LjE1Nzc0NywgMjAxNS8wMy8zMC0yMzo0MDo0MiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTUgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjA1MUQyNzNBOTIxNTExRTU5RTAwRDAxODM1NjM2MUZFIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjA1MUQyNzNCOTIxNTExRTU5RTAwRDAxODM1NjM2MUZFIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6MDUxRDI3Mzg5MjE1MTFFNTlFMDBEMDE4MzU2MzYxRkUiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6MDUxRDI3Mzk5MjE1MTFFNTlFMDBEMDE4MzU2MzYxRkUiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz4B//79/Pv6+fj39vX08/Lx8O/u7ezr6uno5+bl5OPi4eDf3t3c29rZ2NfW1dTT0tHQz87NzMvKycjHxsXEw8LBwL++vby7urm4t7a1tLOysbCvrq2sq6qpqKempaSjoqGgn56dnJuamZiXlpWUk5KRkI+OjYyLiomIh4aFhIOCgYB/fn18e3p5eHd2dXRzcnFwb25tbGtqaWhnZmVkY2JhYF9eXVxbWllYV1ZVVFNSUVBPTk1MS0pJSEdGRURDQkFAPz49PDs6OTg3NjU0MzIxMC8uLSwrKikoJyYlJCMiISAfHh0cGxoZGBcWFRQTEhEQDw4NDAsKCQgHBgUEAwIBAAAh+QQECgAAACwAAAAAAQABAAADAggJACH5BAQKAAAALAAAAAABAAEAAAMCSAkAIfkEBAoAAAAsAAAAAAEAAQAAAwJoCQAh+QQECgAAACwAAAAAAQABAAADAngJACH5BAQKAAAALAAAAAABAAEAAAMCKAkAIfkEBAoAAAAsAAAAAAEAAQAAAwI4CQAh+QQECgAAACwAAAAAAQABAAADAlgJACH5BAQKAAAALAAAAAABAAEAAAMCGAkAIfkEBAoAAAAsAAAAAAEAAQAAAwJYCQAh+QQECgAAACwAAAAAAQABAAADAjgJACH5BAQKAAAALAAAAAABAAEAAAMCKAkAIfkEBAoAAAAsAAAAAAEAAQAAAwJ4CQAh+QQECgAAACwAAAAAAQABAAADAmgJACH5BAQKAAAALAAAAAABAAEAAAMCSAkAOw==");
+  }
+}
+
+.chatMessageDiceBoxSquare {
+  @extend .chatMessageDiceBox;
+  border-radius: 0;
+}
+
+.chatMessageDiceBoxCircle {
+  @extend .chatMessageDiceBox;
+  border-radius: 50%;
+  padding-left: 0.6em;
+  padding-right: 0.6em;
+}
+
+.chatMessageDiceBoxRoll {
+  @extend .chatMessageDiceBox;
+}
+
+.chatMessageDiceBoxResult {
+  @extend .chatMessageDiceBox;
+  background-color: #ffbafd;
+  border-color: #8f2281;
+}
+
+.chatMessageDiceReason {
+  @extend .chatMessagePadding;
+  display: block;
+  font-size: 0.8em;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+// MessageSheetturn
+.chatMessageTurn {
+  @extend .chatMessageParagraph;
+  font-size: 1.2em;
+  line-height: 1.2em;
+  font-weight: bold;
+  padding-left: 0px;
+}
+
+.chatMessageTurnIcon {
+  width: 40px;
+  height: 40px;
+  vertical-align: middle;
+  display: inline-block;
+  margin-right: 6px;
+}
+
+// MessageSheetdamage
+.chatMessageSheetdamage {
+  @extend .chatMessageParagraph;
+  font-size: 1.2em;
+  line-height: 1.2em;
+  font-weight: bold;
+  padding-left: 0px;
+
+  &.HP {
+    color: #8d0000;
+  }
+
+  &.Exp {
+    color: #333333;
+  }
+
+  &.MP {
+    color: #00037f;
+  }
+}
+
+.chatMessageDamageIcon {
+  width: 40px;
+  height: 40px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.chatMessageDamageBubble {
+  //min-width: 0.6em;
+  display: inline-block;
+  vertical-align: middle;
+  text-align: center;
+  padding: 0px;
+  padding-left: 0.45em;
+  padding-right: 0.45em;
+  text-indent: 0px;
+  border: solid 1px #000;
+  border-radius: 15%;
+  background-color: #FFF;
+  margin-left: 10px;
+  line-height: 1.5em;
+  font-size: 1.2em;
+
+  &.HP {
+    background-color: #ff9191;
+    border-color: #8e0000;
+  }
+
+  &.Exp {
+    background-color: #e3e3e3;
+    border-color: #929292;
+  }
+
+  &.MP {
+    background-color: #d9daee;
+    border-color: #292b69;
+  }
+}
+
+// MessageWhisper
+.chatWhisper {
+  @extend .chatMessageParagraph;
+  text-indent: 0px;
+  color: #920789;
+}
+
+.chatWhisperLink {
+  @extend .buttonBehavior;
+  &:hover {
+    color: #be18b3;
+  }
+}
+
+// MessageBGM, MessageYoutube, MessageImage, MessageSE
+.chatMessageShare {
+  @extend .chatMessageParagraph;
+  color: #00118a;
+}
+
+// MessageVote
+.chatMessageVote {
+  color: #8a7400;
+  @extend .chatMessageParagraph;
+  min-height: 3.1em;
+}
+
+.chatMessageVoteAmount {
+  @extend .buttonBehavior;
+
+  text-indent: 0px;
+  display: block;
+  float: left;
+  min-width: 1em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  line-height: 2em;
+  font-size: 1.5em;
+  vertical-align: top;
+  border: solid 1px #b79a00;
+  background-color: #fdf5cb;
+  text-align: center;
+  margin-right: 10px;
+
+  &:hover {
+    border-color: #c5a500;
+    background-color: #ffed92;
+  }
+
+  &:active {
+    border-color: #c5a500;
+    background-color: #d7c97f;
+  }
+}
+
+.chatMessageVoteReason {
+  text-indent: 0.25em;
+  margin-right: 5px;
+  font-weight: bold;
+}
+
+.chatMessageVoteVoters {
+  text-indent: 2em;
+  margin-top: 6px;
+  display: block;
+}
+
+// MessageCountdown
+.chatMessageCounter {
+  @extend .chatMessageParagraph;
+  border-bottom: solid 1px #740000;
+}
+
+.chatMessageCounterEnd {
+  border-top: solid 1px #740000;
+  margin-top: -1px;
+  height: 0px;
+  display: block;
+}
+
+.chatMessageCounterSpan {
+  @extend .chatMessageDiceBoxCircle;
+  text-indent: 0px;
+  text-align: center;
+  font-size: 1.5em;
+  height: 2em;
+  line-height: 2em;
+}
+
+// MessageSystem
+.chatMessageSystem {
+  @extend .chatMessageParagraph;
+  text-indent: 0px;
+  background-color: #eacedc;
+  font-size: 1.4em;
+  &:hover {
+    background-color: #d0afc0;
+  }
+}
+
+.chatMessageSystem:before {
+  content: "---- ";
+}
+
+.chatMessageSystem:after {
+  content: " ----";
+}

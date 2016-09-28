@@ -1,0 +1,17 @@
+#pictureWindow {
+  z-index: 3;
+  background-color: rgba(0,0,0,.2);
+}
+
+#pictureLoading {
+  position:absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 2;
+  background-color: rgba(0,0,0,.4);
+}
+
+#mapBackground {
+  position: absolute;
+  z-index: 1;
+}

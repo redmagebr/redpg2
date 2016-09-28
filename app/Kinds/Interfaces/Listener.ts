@@ -1,0 +1,3 @@
+interface Listener {
+    handleEvent : Function;
+}

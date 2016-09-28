@@ -1,0 +1,8 @@
+Forum:
+
+postid gameid posttitle postbody responseTo lastResponse responses sticky hasRedPost
+
+If responseTo === null, then it's a new thread, otherwise it's a post in that thread
+lastResponse points to the last post responding to this thread
+
+if sticky = list this post as first on list, regardless of dates

@@ -1,0 +1,488 @@
+#chatFloater {
+  width: auto;
+  max-width: 400px;
+  height: auto;
+  background-color: white;
+  position: absolute;
+  z-index: 4;
+  left: 10px;
+  pointer-events: none;
+  border: #000 2px solid;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+#chatFloater:before {
+  border: solid;
+  border-color: #333 transparent;
+  border-width: 6px 6px 0px 0px;
+  bottom: -6px;
+  content: "";
+  left: 10px;
+  position: absolute;
+}
+
+#chatSounds {
+  display: block;
+  margin: auto;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.avatarContainer {
+  border: solid 1px #000;
+  width: 78px;
+  height: 78px;
+  position: relative;
+  float: left;
+  margin-right: 5px;
+  overflow: hidden;
+  background-color: black;
+}
+
+.avatarImg {
+  height: 80px;
+  width: 80px;
+  margin-left: -1px;
+  margin-top: -1px;
+}
+
+.avatarAFK {
+  position: absolute;
+  bottom: 14px;
+  left: 0px;
+  width: 26px;
+  height: 26px;
+  @extend .icons-chatAvatarAFK;
+}
+
+.avatarTyping {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 18px;
+  height: 11px;
+  @extend .icons-chatAvatarTyping;
+}
+
+.avatarName {
+  background-color: rgba(0,0,0,.5);
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  height: 16px;
+  color: #fff;
+  font-family: $mainFont;
+  line-height: 16px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+#avatarBox {
+  position: absolute;
+  left: 5px;
+  top: 5px;
+  right: 25px;
+  height: 80px;
+  overflow: hidden;
+}
+
+#avatarUpButton, #avatarDownButton {
+  position: absolute;
+  right: 5px;
+  width: 40px;
+  height: 25px;
+
+  &.inactive {
+    opacity: 0.2;
+    pointer-events: none;
+  }
+}
+
+#avatarUpButton {
+  @extend .buttonBehavior;
+  top: 5px;
+}
+
+#avatarDownButton {
+  @extend .buttonBehavior;
+  top: 60px;
+}
+
+
+#chatNotificationBar {
+  position:absolute;
+  z-index: 2;
+  top: 90px;
+  left: 6px;
+  right: 57px;
+  height: 30px;
+  margin-top: 1px;
+  pointer-events: none;
+  text-indent: 5px;
+
+  &.activeIcon {
+    background-color: rgba(0, 0, 0, .25);
+  }
+}
+
+.chatNotificationIcon {
+  width: 28px;
+  height: 28px;
+  display: inline-block;
+  margin-right: 5px;
+  margin-top: 1px;
+  pointer-events: auto;
+  position: relative;
+}
+
+.icons-chatNotReconnecting {
+  animation: rotation 1s infinite linear;
+}
+
+.chatNotificationHover {
+  display: none;
+  position: absolute;
+  top: 100%;
+  height: auto;
+  line-height: 20px;
+  font-size: 13px;
+  background-color: white;
+  border: solid 1px #000;
+  font-family: $mainFont;
+  width: 200px;
+  padding: 3px;
+  text-indent: 0px;
+  text-align: justify;
+  pointer-events: none;
+}
+
+.chatNotificationHover:before {
+  border: solid;
+  border-color: #333 transparent;
+  border-width: 0px 6px 6px 0px;
+  top: -6px;
+  content: "";
+  left: 10px;
+  position: absolute;
+}
+
+.chatNotificationIcon:hover .chatNotificationHover {
+  display: block;
+}
+
+#chatBox {
+  @extend .scrollableVertically;
+  position: absolute;
+  top: 90px;
+  left: 5px;
+  right: 50px;
+  bottom: 160px;
+  background-color: white;
+  border: solid 1px #000;
+  overflow-y: scroll;
+  font-family: $chatFont;
+  font-size: 16px;
+  line-height: 20px;
+
+  &:hover {
+    border-color: #968aff;
+  }
+}
+
+#chatScrollDown {
+  bottom: 170px;
+  height: 40px;
+  width: 40px;
+  right: 67px;
+  position: absolute;
+  @extend .icons-chatScrolldown;
+  @extend .buttonBehavior;
+}
+
+#chatButtonsBox {
+  position: absolute;
+  top: 90px;
+  right: 5px;
+  width: 40px;
+  bottom: 160px;
+  overflow: hidden;
+}
+
+.chatRightButton {
+  @extend .buttonBehavior;
+  width: 40px;
+  height: 25px;
+  margin-bottom: 5px;
+  float: right;
+
+}
+
+#chatMessageStateIcon {
+  position: absolute;
+  left: 7px;
+  bottom: 128px;
+  height: 25px;
+  width: 25px;
+  z-index: 2;
+}
+
+#chatMessageBox {
+  position: absolute;
+  bottom: 125px;
+  left: 5px;
+  right: 80px; // Plus 2 for borders and 28 for padding
+  height: 30px;
+}
+
+#chatMessageInput {
+  width: 100%;
+  margin: 0px;
+  padding: 0px;
+  padding-left: 28px;
+  font-size: 15px;
+  font-family: $mainFont;
+  line-height: 22px;
+  margin-top: 2px;
+  height: 23px;
+  text-align: left;
+}
+
+#chatMessageSendButton {
+  @extend .buttonBehavior;
+  position: absolute;
+  right: 5px;
+  bottom: 125px;
+  width: 40px;
+  height: 30px;
+}
+
+#personaBox {
+  position: absolute;
+  bottom: 96px;
+  left: 5px;
+  right: 5px;
+  height: 25px;
+}
+
+
+#personaAddButton {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  height: 25px;
+  width: 40px;
+
+  @extend .buttonBehavior;
+  @extend .icons-chatPersonaButton;
+}
+
+#personaContainer {
+  position: absolute;
+  left: 40px;
+  top: 0px;
+  height: 25px;
+  right: 0px;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+.personaButton {
+  display: inline-block;
+  background-color: #bbbbbb;
+  height: 25px;
+  line-height: 25px;
+  font-size: 15px;
+  padding-left: 4px;
+  padding-right: 4px;
+  margin: 0px;
+  border-left: #6a6a6a solid 4px;
+  margin-left: 5px;
+  @extend .buttonBehavior;
+
+  &:hover {
+    background-color: #e5e5e5;
+    border-left-color: #858585;
+  }
+
+  &.active {
+    background-color: #b4deb3;
+    border-left-color: #47dd44;
+
+    &:hover {
+      background-color: #caffc9;
+      border-left-color: #54fa50;
+    }
+  }
+}
+
+#diceFormBox {
+  position: absolute;
+  bottom: 60px;
+  left: 5px;
+  right: 5px;
+  height: 30px;
+}
+
+#bottomBox {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  left: 5px;
+  height: 50px;
+  text-align: center;
+  font-size: 0px;
+}
+
+.diceButton {
+  @extend .buttonBehavior;
+  width: 50px;
+  height: 50px;
+  display: inline-block;
+  vertical-align: top;
+}
+
+#chatSideWindow.noAvatar #avatarBox, #chatSideWindow.noAvatar #avatarUpButton, #chatSideWindow.noAvatar #avatarDownButton {
+  display: none;
+}
+
+#chatSideWindow.noAvatar #chatBox, #chatSideWindow.noAvatar #chatButtonsBox, #chatSideWindow.noAvatar #chatNotificationBar {
+  top: 5px;
+}
+
+.chatInput {
+  padding: 0px;
+  font-family: $mainFont;
+  font-size: 13px;
+  height: 23px;
+  margin: 0px;
+  border: solid 1px #000;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 18px;
+  margin-top: 2px;
+  margin-right: 5px;
+  float: left;
+
+  &:hover {
+    border-color: #968aff;
+  }
+}
+
+#chatDiceAmount, #chatDiceFaces, #chatDiceMod {
+  width: 45px;
+}
+
+#diceReasonHolder {
+  position: absolute;
+  left: 156px;
+  top: 0px;
+  right: 102px;
+  bottom: 0px;
+}
+
+#chatDiceReason {
+  width: 100%;
+  padding-left: 5px;
+  padding-right:5px;
+  margin-top: 2px;
+  text-align: left;
+}
+
+#chatDiceTower {
+  position: absolute;
+  width: 40px;
+  height: 30px;
+  right: 45px;
+
+  @extend .buttonBehavior;
+}
+
+#chatDiceSubmit {
+  position: absolute;
+  width: 40px;
+  height: 30px;
+  right: 0px;
+  border: none;
+  outline: none;
+
+  @extend .buttonBehavior;
+}
+
+// #personaDesigner
+#personaDesignerBox {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  background-color: rgba(0,0,0,.5);
+  z-index: 10;
+}
+
+#personaDesigner {
+  position: absolute;
+  height: 300px;
+  bottom: 15px;
+  overflow: hidden;
+  left: 12px;
+  right: 12px;
+}
+
+#personaDesignerHolder {
+  @extend .scrollableVertically;
+  position: absolute;
+  left: 5px;
+  right: 0px;
+  bottom: 0px;
+  height: 170px;
+}
+
+.chatAvatarChoiceBox {
+  display: inline-block;
+  margin-top: 5px;
+  float: left;
+  width: 85px;
+  height: 105px;
+  opacity: 0.6;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.chatAvatarChoiceBoxUse,.chatAvatarChoiceBoxDelete {
+  width: 40px;
+  height: 25px;
+  display: inline-block;
+
+  @extend .buttonBehavior;
+}
+
+.chatAvatarChoiceBoxUse{
+  @extend .icons-chatPersonaUse;
+}
+
+.chatAvatarChoiceBoxDelete {
+  @extend .icons-chatPersonaDelete;
+}
+
+#personaDesignerForm {
+  text-align: center;
+}
+
+#personaDesignerNameInput, #personaDesignerAvatarInput {
+  font-family: $mainFont;
+  display: block;
+  margin-top: 4px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+  text-align: center;
+}
+
+#personaDesignerSubmit {
+  margin-top: 4px;
+}

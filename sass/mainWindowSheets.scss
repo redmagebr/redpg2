@@ -1,0 +1,58 @@
+.sheetListGameContainer {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 6px;
+}
+
+.sheetListGameName, .sheetListFolderName {
+  font-weight: bold;
+  font-size: 1.2em;
+  line-height: 1.3em;
+  @extend .buttonBehavior;
+}
+
+.sheetListFolderName {
+  font-size: 1em;
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABAQMAAADD8p2OAAAAA1BMVEUAAACnej3aAAAACklEQVQI12NgAAAAAgAB4iG8MwAAAABJRU5ErkJggg==");
+  background-position: left center;
+  background-repeat: no-repeat;
+  padding-left: 6px;
+}
+
+.openSheetGame > .sheetListFolderContainer {
+  display: block;
+}
+
+.sheetListFolderContainer {
+  @extend .blackDotBackground;
+  display: none;
+  padding-left: 1px;
+  margin-left: 4px;
+  background-repeat: repeat-y;
+  background-position: top left;
+}
+
+.openSheetFolder > .sheetListSheet {
+  display: block;
+}
+
+.sheetListSheet {
+  display: none;
+  font-size: 0.9em;
+  padding: 4px;
+  padding-left: 12px;
+  padding-right: 0px;
+  @extend .lightHoverable;
+}
+
+.sheetNameLink {
+  @extend .textLink;
+  min-width: 300px;
+  display: inline-block;
+}
+
+.sheetExtraButton {
+  float: right;
+  padding-left: 20px;
+  padding-right: 20px;
+}

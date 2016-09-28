@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Canvas Tryouts</title>
+</head>
+<body>
+    <div id="texto" style="position: absolute; right: 10px; top: 10px; width: 400px; height: 500px; overflow-x: hidden; overflow-y: auto"></div>
+    <canvas id="pica" width="600" height="400" style="border: solid 1px #000"></canvas>
+    <br />Line Size:
+    <input id="lineSize" value="1" /> - Line Color:
+    <input id="lineColor" value="FF0000" />
+<script type="text/javascript">
+    var lineSize = document.getElementById("lineSize");
+    var lineColor = document.getElementById("lineColor");
+    var texto = document.getElementById("texto");
+
+    console.log = function (str) {
+        texto.appendChild(document.createTextNode(str));
+        texto.appendChild(document.createElement("br"));
+    };
+
+    var canvas = document.getElementById("pica");
+    var ctx = canvas.getContext("2d");
+
+    var art = [];
+    var currentArt = null;
+
+    // Art = [LineSize, LineColor, [Points]]
+
+    function emptyCanvas () {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+    }
+
+    function redrawArt () {
+        emptyCanvas();
+        for (var i = 0; i < art.length; i++) {
+            draw(art[i]);
+        }
+        if (currentArt !== null) {
+            draw(currentArt);
+        }
+    }
+
+    function draw (a) {
+        ctx.beginPath();
+        ctx.lineWidth = a[0];
+        ctx.strokeStyle = '#' + a[1];
+        ctx.moveTo(a[2][0].parseX(canvas.width), a[2][0].parseY(canvas.height));
+        for (var i = 1; i < a[2].length; i++) {
+            var point = a[2][i];
+            ctx.lineTo(point.parseX(canvas.width), point.parseY(canvas.height));
+        }
+        ctx.stroke();
+    }
+
+    function drawPoint (p) {
+        ctx.lineTo(p.parseX(canvas.width), p.parseY(canvas.height));
+        ctx.stroke();
+    }
+
+    canvas.addEventListener("mousedown", function (e) {
+        var p = new Point();
+        p.setX(e.offsetX, canvas.width);
+        p.setY(e.offsetY, canvas.height);
+
+        currentArt = [parseInt(lineSize.value), lineColor.value, [p]];
+        draw(currentArt);
+    });
+
+    canvas.addEventListener("mousemove", function (e) {
+        if (currentArt !== null) {
+            var p = new Point();
+            p.setX(e.offsetX, canvas.width);
+            p.setY(e.offsetY, canvas.height);
+
+            currentArt[2].push(p);
+            drawPoint(p);
+        }
+    });
+
+    canvas.addEventListener("mouseup", function (e) {
+        if (currentArt !== null) {
+            var p = new Point();
+            p.setX(e.offsetX, canvas.width);
+            p.setY(e.offsetY, canvas.height);
+
+            currentArt[2].push(p);
+
+            var origLength = JSON.stringify(currentArt).length;
+            console.log("Original Art Size: " + origLength);
+
+            var cleanedArt = [currentArt[0], currentArt[1], []];
+
+            cleanedArt[2].push(currentArt[2][0]);
+            lastAdded = currentArt[2][0];
+
+            for (var i = 0; i < currentArt[2].length; i++) {
+                var p = currentArt[2][i];
+                if ((i + 1) == currentArt[2].length) {
+                    cleanedArt[2].push(p);
+                } else {
+                    var found = false;
+                    for (var k = cleanedArt[2].length - 1; k >=0; k--) {
+                        var p2 = cleanedArt[2][k];
+                        if (p.parseX(canvas.width) === p2.parseX(canvas.width) && p2.parseX(canvas.width) === p2.parseY(canvas.width)) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (found) continue;
+
+                    if (!p.isTriangle([p, lastAdded, currentArt[2][i + 1]], canvas.width, canvas.height)) continue;
+
+                    lastAdded = p;
+                    cleanedArt[2].push(p);
+                }
+            }
+
+            var cleanLength = JSON.stringify(cleanedArt).length;
+            console.log("Cleaned Art Size: " + cleanLength + " (" + parseInt((cleanLength * 100)/origLength) + "%)");
+
+            var stringedArt = [cleanedArt[0], cleanedArt[1], ""];
+
+            for (var i = 0; i < cleanedArt[2].length; i++) {
+                var p = cleanedArt[2][i];
+                stringedArt[2] += p.encode();
+            }
+
+            var strLength = JSON.stringify(stringedArt).length;
+            console.log("Encoded Art Size: " + strLength + " (" + parseInt((strLength * 100)/origLength) + "%)");
+            console.log(stringedArt[2]);
+            console.log(" ");
+
+            currentArt = null;
+            art.push(cleanedArt);
+            redrawArt();
+
+        }
+    });
+
+    function Point () {
+        this.x = 0;
+        this.y = 0;
+        var maxCurve = 0;
+        var encoding = "0123456789abcdefghijklmnopqrstuvxwyzABCDEFGHIJKLMNOPQRSTUVXWYZ-+_=![]{}()*@/\\:;";
+        var canvasSize = Math.pow(encoding.length, 2);
+
+        this.parseX = function (width) {
+            return parseInt((this.x / canvasSize) * width);
+        }
+
+        this.parseY = function (height) {
+            return parseInt((this.y / canvasSize) * height);
+        }
+
+        this.setX = function (offset, width) {
+            this.x = parseInt((offset * canvasSize) / width);
+        }
+
+        this.setY = function (offset, height) {
+            this.y = parseInt((offset * canvasSize) / height);
+        }
+
+        this.distanceTo = function (p, width, height) {
+            var x1 = this.parseX(width);
+            var x2 = p.parseX(width);
+            var y1 = this.parseY(height);
+            var y2 = p.parseY(height);
+
+            return Math.sqrt( (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2) );
+        }
+
+        this.isTriangle = function (ps, width, height) {
+            dab = ps[0].distanceTo(ps[1], width, height);
+            dbc = ps[1].distanceTo(ps[2], width, height);
+            dac = ps[0].distanceTo(ps[2], width, height);
+            var triangle = !((dab + dbc) <= dac);
+            if (!triangle) return false;
+
+            if (((dab + dbc) - dac) < maxCurve) {
+                return false;
+            }
+
+            return true;
+        }
+
+        this.encodeNum = function (num) {
+            if (num > Math.pow(encoding.length, 2)) return NaN;
+            if (num < 0) return NaN;
+            if (num < encoding.length) {
+                return "0" + encoding.charAt(num);
+            } else {
+                var a = parseInt(num / encoding.length);
+                var b = num - (a * encoding.length);
+                return encoding.charAt(a) + encoding.charAt(b);
+            }
+        }
+
+        this.decodeNum = function (str) {
+            return (encoding.indexOf(str.charAt(0)) * encoding.length) + encoding.indexOf(str.charAt(1));
+        }
+
+        this.encode = function () {
+            return this.encodeNum(this.x) + this.encodeNum(this.y);
+        }
+
+        this.decode = function (str) {
+            this.x = this.decodeNum(str.charAt(0));
+            this.y = this.decodeNum(str.charAt(1));
+        }
+    }
+</script>
+</body>
+</html>

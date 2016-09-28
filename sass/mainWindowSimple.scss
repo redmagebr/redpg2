@@ -1,0 +1,47 @@
+.mainWindowHeader {
+  background-color: #333745;
+  font-size: 21px;
+  line-height: 30px;
+  text-indent:5px;
+  color: #fff;
+  font-weight: bold;
+  margin: 5px 5px 0px 5px;
+  position: relative;
+}
+
+.mainWindowContent {
+  background-color: white;
+  margin: 0px 5px 0px 5px;
+
+  &.singleton {
+    margin: 0px;
+    position: absolute;
+    left: 5px;
+    right: 5px;
+    top: 35px;
+    bottom: 5px;
+
+    @extend .scrollableVertically;
+  }
+}
+
+.mainWindowParagraph {
+  padding: 6px;
+  font-size: 15px;
+  line-height: 20px;
+  text-align: justify;
+  text-indent: 10px;
+
+  &.centered {
+    text-indent: 0px;
+    text-align: center;
+  }
+}
+
+.hoverable:hover {
+  background-color: rgba(0,0,0,.3);
+}
+
+.lightHoverable:hover {
+  background-color: rgba(0,0,0,.1);
+}

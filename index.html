@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>RedPG</title>
+    <meta charset='utf8'>
+    <meta content='' name='description'>
+    <link href='images/favicon.ico' rel='shortcut icon'>
+    <!-- Individual font licenses included in CSS. -->
+    <link href='stylesheets/screen.css' media='all' rel='stylesheet' type='text/css'>
+  </head>
+  <body>
+    <div class='flexCentering' id='loadingWindow'>
+      <a class='loadingCircleWhite' id='loadingScreenLoadingIcon'></a>
+    </div>
+    <div class='window flexCentering' id='loginWindow'>
+      <div id='loginBox'>
+        <div id='loginFlagContainer'></div>
+        <form class='centeredContents' id='loginForm'>
+          <input class='loginInput language' data-placeholderlingo='_LOGINEMAIL_' id='loginEmailInput'>
+          <input class='loginInput language' data-placeholderlingo='_LOGINPASSWORD_' id='loginPasswordInput' type='password'>
+          <input class='simpleButton language' data-valuelingo='_LOGINSUBMIT_' id='loginSubmitButton' type='submit'>
+        </form>
+      </div>
+    </div>
+    <div class='window' id='mainWindow'>
+      <div class='icons-soundPlayer dontDetach leftSideWindow' id='musicPlayerButton'>
+        <audio crossOrigin='anonymous' id='soundPlayerSE'></audio>
+        <audio crossOrigin='anonymous' id='soundPlayerBGM'></audio>
+        <audio id='soundDiceRoll' preload src='images/soundDice.m4a'></audio>
+        <audio id='soundAlert' preload src='images/soundAlert.m4a'></audio>
+        <div id='musicPlayerContainer'>
+          <progress id='musicPlayerProgress' max='100' min='0' value='50'></progress>
+          <a class='musicPlayerButton icons-soundPlayerPause' id='musicPlayerPlayPause'></a>
+          <a class='musicPlayerButton icons-soundPlayerStop' id='musicPlayerStop'></a>
+          <a class='musicPlayerButton icons-soundPlayerRepeatActive' id='musicPlayerRepeat'></a>
+          <div class='buttonBehavior icons-soundPlayerListButton' id='musicPlayerLocal'></div>
+        </div>
+      </div>
+      <div class='handleBar' id='leftHandleBar'>
+        <div class='icons-handlerLTR' id='leftHandleIcon'></div>
+        <a class='icons-handleLogout leftHandleButton language' id='logoutButton'>_MENULOGOUT_</a>
+        <a class='icons-handleChat leftHandleButton language' id='openChatButton'>_MENUCHAT_</a>
+        <a class='icons-handleGames leftHandleButton language' id='gamesButton'>_MENUGAMES_</a>
+        <a class='icons-handleOptions leftHandleButton language' id='configButton'>_MENUCONFIG_</a>
+      </div>
+      <div class='handleBar' id='rightHandleBar'>
+        <div class='icons-handlerRTL' id='rightHandleIcon'></div>
+        <a class='icons-handleSheets rightHandleButton language' id='sheetsButton'>_MENUSHEETS_</a>
+        <a class='icons-handleImages rightHandleButton language' id='imagesButton'>_MENUIMAGES_</a>
+        <a class='icons-handleSounds rightHandleButton language' id='soundsButton'>_MENUSOUNDS_</a>
+        <a class='icons-handleImage rightHandleButton language' id='imageButton'>_MENUIMAGE_</a>
+        <a class='icons-handleHitbox rightHandleButton language' id='hitboxButton'>_MENUHITBOX_</a>
+        <a class='icons-handleYoutube rightHandleButton language' id='youtubeButton'>_MENUYOUTUBE_</a>
+      </div>
+      <div class='leftSideWindow flexCentering dontDetach' id='leftLoading'>
+        <a class='loadingCircleWhite centeredBlock'></a>
+      </div>
+      <div class='rightSideWindow flexCentering dontDetach' id='rightLoading'>
+        <a class='loadingCircleWhite centeredBlock'></a>
+      </div>
+      <div class='rightSideWindow dontDetach' id='pictureWindow' style='display: none'>
+        <div class='flexCentering' id='pictureLoading' style='display: none'>
+          <a class='loadingCircleWhite centeredBlock'></a>
+        </div>
+        <div id='pictureContainer'>
+          <a class='pictureToken' id='tokenExample'></a>
+          <div id='pictureMouseCatcher'></div>
+          <canvas id='markCanvas'></canvas>
+          <canvas id='artCanvas'></canvas>
+          <canvas id='gridCanvas'></canvas>
+          <canvas id='fogCanvas'></canvas>
+          <img id='mapBackground'>
+        </div>
+      </div>
+      <div class='leftSideWindow' id='changelogSideWindow'>
+        <div class='language mainWindowHeader'>
+          _CHANGELOGTITLE_
+          <a class='xButton' onclick='UI.PageManager.closeLeftPage();'></a>
+        </div>
+        <div class='mainWindowContent singleton'>
+          <p class='mainWindowParagraph language'>_CHANGELOGP1_</p>
+          <p class='mainWindowParagraph language'>_CHANGELOGP2_</p>
+          <p class='mainWindowParagraph language'>
+            _CHANGELOGCURRENTVERSION_<b id="changelogCurrentVersion"> 0.0.0. </b>
+            _CHANGELOGMOSTRECENTVERSION_<b id="changelogActualVersion"> 0.1.0.</b>
+          </p>
+        </div>
+      </div>
+      <div class='leftSideWindow' id='configSideWindow'>
+        <div class='mainWindowHeader language'>
+          _CONFIGTITLE_
+          <a class='xButton' onclick='UI.PageManager.closeLeftPage();'></a>
+        </div>
+        <div class='mainWindowContent singleton'>
+          <p class='hoverable mainWindowParagraph centered'>
+            <a class='textLink language' id='configSave'>_CONFIGSAVE_</a>
+            -
+            <a class='textLink language' id='configReset'>_CONFIGRESET_</a>
+          </p>
+          <p class='mainWindowParagraph centered' id='configMessages'>
+            <b class='language' id='configError'>_CONFIGERROR_</b>
+            <b class='language' id='configSuccess'>_CONFIGSUCCESS_</b>
+          </p>
+          <label class='configLabel'>
+            <b class='configName language'>_CONFIGCHATMAXMESSAGES_</b>
+            <input class='configInput' id='configChatMaxMessages' max='10000' min='60' type='number' value='120'>
+            <div class='configExplanation language'>
+              _CONFIGCHATMAXMESSAGESEXP01_<br/>_CONFIGCHATMAXMESSAGESEXP02_
+            </div>
+          </label>
+          <label class='configLabel'>
+            <b class='configName language'>_CONFIGCHATFONTSIZE_</b>
+            <input class='configInput' id='configChatFontSize' max='32' min='12' type='range' value='16'>
+            <div class='configExplanation language'>
+              _CHATFONTSIZEEXP01_<br/>_CHATFONTSIZEEXP02_
+            </div>
+          </label>
+          <label class='configLabel'>
+            <b class='configName language'>_CONFIGCHATFONTFAMILY_</b>
+            <input class='configInput' id='configChatFontFamily' type='text' value='Caudex'>
+            <div class='configExplanation language'>
+              _CHATFONTFAMILEXP01_<br/>_CHATFONTFAMILEXP02_
+            </div>
+          </label>
+          <label class='configLabel'>
+            <b class='configName language'>_CONFIGCHATHELP_</b>
+            <select class='configInput' id='configChatShowHelp'>
+              <option class='language' value='true'>_CONFIGCHATHELPOP01_</option>
+              <option class='language' value='false'>_CONFIGCHATHELPOP02_</option>
+            </select>
+            <div class='configExplanation language'>
+              _CONFIGCHATHELPEXP_
+            </div>
+          </label>
+          <label class='configLabel'>
+            <b class='configName language'>_CONFIGCHATAUTOBGM_</b>
+            <select class='configInput' id='configChatAutoBGM'>
+              <option class='language' value='0'>_CONFIGCHATAUTONEVER_</option>
+              <option class='language' value='1'>_CONFIGCHATAUTOSOMETIMES_</option>
+              <option class='language' value='2'>_CONFIGCHATAUTOALWAYS_</option>
+            </select>
+            <div class='configExplanation language'>
+              _CONFIGCHATAUTOEXP_
+            </div>
+          </label>
+          <label class='configLabel'>
+            <b class='configName language'>_CONFIGCHATAUTOSE_</b>
+            <select class='configInput' id='configChatAutoSE'>
+              <option class='language' value='0'>_CONFIGCHATAUTONEVER_</option>
+              <option class='language' value='1'>_CONFIGCHATAUTOSOMETIMES_</option>
+              <option class='language' value='2'>_CONFIGCHATAUTOALWAYS_</option>
+            </select>
+            <div class='configExplanation language'>
+              _CONFIGCHATAUTOEXP_
+            </div>
+          </label>
+          <label class='configLabel'>
+            <b class='configName language'>_CONFIGCHATAUTOIMAGE_</b>
+            <select class='configInput' id='configChatAutoImage'>
+              <option class='language' value='0'>_CONFIGCHATAUTONEVER_</option>
+              <option class='language' value='1'>_CONFIGCHATAUTOSOMETIMES_</option>
+              <option class='language' value='2'>_CONFIGCHATAUTOALWAYS_</option>
+            </select>
+            <div class='configExplanation language'>
+              _CONFIGCHATAUTOEXP_
+            </div>
+          </label>
+          <label class='configLabel'>
+            <b class='configName language'>_CONFIGCHATAUTOVIDEO_</b>
+            <select class='configInput' id='configChatAutoVideo'>
+              <option class='language' value='0'>_CONFIGCHATAUTONEVER_</option>
+              <option class='language' value='1'>_CONFIGCHATAUTOSOMETIMES_</option>
+              <option class='language' value='2'>_CONFIGCHATAUTOALWAYS_</option>
+            </select>
+            <div class='configExplanation language'>
+              _CONFIGCHATAUTOEXP_
+            </div>
+          </label>
+          <label class='configLabel'>
+            <b class='configName language'>_CONFIGANIMATIONTIME_</b>
+            <input class='configInput' id='configAnimTime' max='300' min='0' type='range' value='150'>
+            <div class='configExplanation language'>
+              _ANIMATIONTIMEEXP01_<br>_ANIMATIONTIMEEXP02_
+            </div>
+          </label>
+          <label class='configLabel'>
+            <b class='configName language'>_CONFIGBGMVOLUME_</b>
+            <input class='configInput' id='configBGMVolume' max='100' min='0' type='range' value='0'>
+            <div class='configExplanation language'>
+              _CONFIGBGMVOLUMEEXP_
+            </div>
+          </label>
+          <label class='configLabel'>
+            <b class='configName language'>_CONFIGSEVOLUME_</b>
+            <input class='configInput' id='configSEVolume' max='100' min='0' type='range' value='0'>
+            <div class='configExplanation language'>
+              _CONFIGSEVOLUMEEXP_
+            </div>
+          </label>
+        </div>
+      </div>
+      <div class='leftSideWindow' id='gameInvitesSideWindow'>
+        <div class='language mainWindowHeader'>_GAMEINVITESTITLE_</div>
+        <div class='mainWindowContent singleton'>
+          <p class='mainWindowParagraph language'>_GAMEINVITESEXP01_</p>
+          <p class='mainWindowParagraph language' id='gameInvitesNickTarget'>_GAMEINVITESEXP02_</p>
+          <p class='mainWindowParagraph language' id='gameInvitesError'></p>
+          <div id='inviteTarget'></div>
+        </div>
+      </div>
+      <div class='leftSideWindow' id='gamesSideWindow'>
+        <div class='language mainWindowHeader'>
+          _GAMESTITLE_
+          <a class='xButton' onclick='UI.PageManager.closeLeftPage();'></a>
+        </div>
+        <div class='mainWindowContent singleton'>
+          <p class='mainWindowParagraph language' id='gamesNickTarget'>_GAMESEXP1_</p>
+          <p class='mainWindowParagraph language'>_GAMESEXP2_</p>
+          <p class='mainWindowParagraph language'>_GAMESEXP3_</p>
+          <p class='mainWindowParagraph language'>_GAMESEXP4_</p>
+          <p class='mainWindowParagraph language textLink hoverable' id='gameInvitesButton'>_GAMESINVITES_</p>
+          <p class='mainWindowParagraph language textLink hoverable' id='gameNewGameButton'>_GAMESNEWGAME_</p>
+          <div id='gameListTarget'></div>
+        </div>
+      </div>
+      <div class='leftSideWindow' id='chatSideWindow'>
+        <div id='avatarBox'></div>
+        <div class='icons-chatUp' id='avatarUpButton'></div>
+        <div class='icons-chatDown' id='avatarDownButton'></div>
+        <div id='chatNotificationBar'></div>
+        <div id='chatFloater'></div>
+        <div id='chatBox'>
+          <p id='chatTitle'></p>
+          <p id='chatDescription'></p>
+          <p class='chatInitHelp language'>_CHATHELP01_</p>
+          <p class='chatInitHelp language'>_CHATHELP02_</p>
+          <p class='chatInitHelp language'>_CHATHELP03_</p>
+          <p class='chatInitHelp language'>_CHATHELP04_</p>
+          <p class='chatInitHelp language'>_CHATHELP05_</p>
+          <p class='chatInitHelp language'>_CHATHELP06_</p>
+          <p class='chatInitHelp language'>_CHATHELP07_</p>
+          <input id='chatSounds' multiple='true' type='file'>
+          <div id='chatMessages'></div>
+        </div>
+        <div id='chatScrollDown'></div>
+        <div id='chatButtonsBox'>
+          <a class='chatRightButton icons-chatFontPlus' onclick="Application.Config.getConfig('chatfontsize').storeValue(Application.Config.getConfig('chatfontsize').getValue() + 1);"></a>
+          <a class='chatRightButton icons-chatFontMinus' onclick="Application.Config.getConfig('chatfontsize').storeValue(Application.Config.getConfig('chatfontsize').getValue() - 1);"></a>
+          <a class='chatRightButton icons-chatLeave' onclick='UI.Chat.leave();'></a>
+        </div>
+        <div id='chatMessageStateIcon'></div>
+        <div id='chatMessageBox'>
+          <input autocomplete='off' class='chatInput' id='chatMessageInput'>
+        </div>
+        <a class='icons-chatSend' id='chatMessageSendButton'></a>
+        <div id='personaDesignerBox'>
+          <div id='personaDesigner'>
+            <div class='language mainWindowHeader'>
+              _PERSONADESIGNERTITLE_
+              <a class='xButton' id='personaDesignerCloseButton'></a>
+            </div>
+            <div class='mainWindowContent singleton'>
+              <form id='personaDesignerForm'>
+                <input class='language' data-placeholderlingo='_PERSONADESIGNERNAME_' id='personaDesignerNameInput'>
+                <input class='language' data-placeholderlingo='_PERSONADESIGNERAVATAR_' id='personaDesignerAvatarInput'>
+                <input class='language' data-valuelingo='_PERSONADESIGNERCREATE_' id='personaDesignerSubmit' type='submit'>
+              </form>
+              <div id='personaDesignerHolder'></div>
+            </div>
+          </div>
+        </div>
+        <div id='personaBox'>
+          <a id='personaAddButton'></a>
+          <div id='personaContainer'>
+            <div class='personaButton active'>Example</div>
+          </div>
+        </div>
+        <form id='diceFormBox'>
+          <input class='chatInput language' data-placeholderlingo='_CHATDICEAMOUNT_' id='chatDiceAmount' type='number'>
+          <input class='chatInput language' data-placeholderlingo='_CHATDICEFACES_' id='chatDiceFaces' type='number'>
+          <input class='chatInput language' data-placeholderlingo='_CHATDICEMOD_' id='chatDiceMod' type='number'>
+          <div id='diceReasonHolder'>
+            <input class='chatInput language' data-placeholderlingo='_CHATDICEREASON_' id='chatDiceReason'>
+          </div>
+          <a class='icons-chatDiceTower' id='chatDiceTower'></a>
+          <input class='icons-chatDiceRoll' id='chatDiceSubmit' type='submit' value=''>
+        </form>
+        <div id='bottomBox'>
+          <div class='diceButton icons-d4' id='chatDiceD4' title='d4'></div>
+          <div class='diceButton icons-d6' id='chatDiceD6' title='d6'></div>
+          <div class='diceButton icons-d8' id='chatDiceD8' title='d8'></div>
+          <div class='diceButton icons-d10' id='chatDiceD10' title='d10'></div>
+          <div class='diceButton icons-d12' id='chatDiceD12' title='d12'></div>
+          <div class='diceButton icons-d20' id='chatDiceD20' title='d20'></div>
+          <div class='diceButton icons-d100' id='chatDiceD100' title='d100'></div>
+        </div>
+      </div>
+      <div class='rightSideWindow' id='imagesSideWindow'>
+        <div class='mainWindowHeader language'>
+          _IMAGESTITLE_
+          <a class='xButton' onclick='UI.PageManager.closeRightPage();'></a>
+        </div>
+        <div class='mainWindowContent singleton'>
+          <p class='mainWindowParagraph language'>_IMAGESEXP01_</p>
+          <p class='mainWindowParagraph language'>_IMAGESEXP02_</p>
+          <p class='mainWindowParagraph language'>_IMAGESEXP03_</p>
+          <div id='imagesTarget'>
+            <div class='language' id='imagesLoadError'>_IMAGESERROR_</div>
+            <div class='language' id='imagesSaveError'>_IMAGESSAVEERROR_</div>
+            <div>
+              <div class='imagesFolder'>
+                <a class='imagesFolderIcon'></a>
+                <span class='imagesFolderTitle' onclick="this.parentNode.classList.toggle('folderOpen');">Nome da Pasta</span>
+                <div class='imagesRow'>
+                  <a class='imagesLeftButton icons-imagesShare'></a>
+                  <a class='imagesLeftButton icons-imagesView'></a>
+                  <a class='imagesLeftButton icons-imagesPersona'></a>
+                  <a class='imagesRightButton icons-imagesDelete'></a>
+                  <a class='imagesRightButton icons-imagesRename'></a>
+                  <a class='imagesRightButton icons-imagesFolder'></a>
+                  <a class='imagesRowTitle'>Nome da Imagem</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id='imagesUpload'>
+            <div id='imagesUploadLeft'>
+              <div id='linkImagesTitle'>
+                <div class='icons-link' id='linkImagesIcon'></div>
+                <div class='language' id='linkImagesTitleText'>_IMAGESLINKTITLE_</div>
+              </div>
+            </div>
+            <div id='imagesUploadRight'>
+              <div class='icons-dropboxLogo' id='dropboxImagesLogo'></div>
+              <div class='language' id='dropboxImagesButton'>_IMAGESDROPBOXCHOOSER_</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class='rightSideWindow' id='sheetsSideWindow'>
+        <div class='mainWindowHeader language'>
+          _SHEETSTITLE_
+          <a class='xButton' onclick='UI.PageManager.closeRightPage();'></a>
+        </div>
+        <div class='mainWindowContent singleton'>
+          <p class='mainWindowParagraph language'>_SHEETSEXP01_</p>
+          <p class='mainWindowParagraph language'>_SHEETSEXP02_</p>
+          <p class='mainWindowParagraph language'>_SHEETSEXP03_</p>
+          <p class='mainWindowParagraph textLink language hoverable'>_SHEETSOPENSTYLEEDITOR_</p>
+          <div id='sheetWindowSheetList'>
+            <div class='sheetListGameContainer lightHoverable openSheetGame'>
+              <p class='sheetListGameName' onclick="this.parentNode.classList.toggle('openSheetGame');">Nome da Mesa</p>
+              <div class='sheetListFolderContainer lightHoverable openSheetFolder'>
+                <p class='sheetListFolderName' onclick="this.parentNode.classList.toggle('openSheetFolder');">Nome da pasta</p>
+                <p class='sheetListSheet'>
+                  <a class='sheetNameLink'>Nome da ficha</a>
+                  <a class='sheetExtraButton textLink'>Pasta</a>
+                  <a class='sheetExtraButton textLink'>Permissões</a>
+                  <a class='sheetExtraButton textLink'>Deletar</a>
+                </p>
+              </div>
+              <div class='sheetListFolderContainer lightHoverable'>
+                <p class='sheetListFolderName' onclick="this.parentNode.classList.toggle('openSheetFolder');">Nome da pasta fechada</p>
+                <p class='sheetListSheet'>
+                  Sem fichas para imprimir.
+                </p>
+                <p class='sheetListSheet textLink lightHoverable'>> Criar Ficha</p>
+              </div>
+            </div>
+            <div class='sheetListGameContainer lightHoverable'>
+              <p class='sheetListGameName'>Nome de mesa Fechada</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class='rightSideWindow' id='homeSideWindow'>
+        <div class='mainWindowHeader language'>
+          _REDPGTITLE_
+          <a class='xButton' onclick='UI.PageManager.closeRightPage();'></a>
+        </div>
+        <div class='mainWindowContent'>
+          <p class='mainWindowParagraph language'>_REDPGEXP1_</p>
+          <p class='mainWindowParagraph language'>_REDPGEXP2_</p>
+        </div>
+        <div class='mainWindowHeader language'>_REDPGDONATIONTITLE_</div>
+        <div class='mainWindowContent'>
+          <p class='mainWindowParagraph language'>_REDPGDONATIONEXP1_</p>
+          <p class='mainWindowParagraph language'>_REDPGDONATIONEXP2_</p>
+          <p class='mainWindowParagraph language'>_REDPGDONATIONEXP3_</p>
+        </div>
+        <div class='mainWindowHeader language'>_REDPGLINKSTITLE_</div>
+        <div class='mainWindowContent'>
+          <p class='mainWindowParagraph'>
+            <a class='textLink language'>_REDPGLINKFRONTBUTTON_</a>
+            :
+            <span class='language'>_REDPGLINKFRONTEXP_</span>
+          </p>
+        </div>
+        <div class='mainWindowHeader language'>_REDPGFORUMTITLE_</div>
+        <div class='mainWindowContent'>
+          <p class='mainWindowParagraph language'>_REDPGFORUM1_</p>
+        </div>
+      </div>
+      <div class='rightSideWindow' id='picturesSideWindow'></div>
+      <div class='rightSideWindow' id='soundsSideWindow'></div>
+      <div class='rightSideWindow' id='hitboxSideWindow'>
+        <iframe id='hitboxFrame'></iframe>
+      </div>
+      <div class='rightSideWindow' id='youtubeSideWindow'></div>
+    </div>
+    <script data-app-key='nr1604ewqoph539' id='dropboxjs' type='text/javascript'></script>
+    <script src='js/lib/libraries160524v2.js' type='text/javascript'></script>
+    <script src='js/Application.js' type='text/javascript'></script>
+  </body>
+</html>

@@ -1,0 +1,136 @@
+.imagesLeftButton, .imagesRightButton {
+  display: block;
+  width: 26px;
+  height: 22px;
+  @extend .buttonBehavior;
+}
+
+.imagesLeftButton {
+  float: left;
+}
+
+.imagesRightButton {
+  float: right;
+}
+
+.imagesRowTitle {
+  display: block;
+  line-height: 22px;
+  height: 22px;
+  font-size: 14px;
+  text-indent: 6px;
+}
+
+.imagesRow {
+  display: none;
+  clear: both;
+
+  &:hover {
+    background-color: #e8e8e8;
+  }
+}
+
+.imagesFolder {
+  clear: both;
+  margin-bottom: 10px;
+}
+
+.imagesFolder.folderOpen > .imagesRow {
+  display: block;
+}
+
+.imagesFolder > .imagesFolderIcon {
+  @extend .icons-folderClosed;
+  display: block;
+  width: 30px;
+  height: 30px;
+  float: left;
+  pointer-events: none;
+}
+
+.imagesFolder.folderOpen > .imagesFolderIcon {
+  @extend .icons-folderOpen;
+}
+
+.imagesFolderTitle {
+  display: block;
+  line-height: 28px;
+  height: 28px;
+  font-size: 22px;
+  font-weight: bold;
+  @extend .buttonBehavior;
+
+  &:hover {
+    background-color: #e4e4e4;
+    color: #272727;
+  }
+
+  &:active {
+    background-color: #d1d1d1;
+    color: #151515;
+  }
+}
+
+#imagesUpload {
+  display: flex;
+  margin-top: 25px;
+}
+
+#imagesUploadLeft, #imagesUploadRight {
+  flex: 1 0 auto;
+}
+
+#dropboxImagesLogo {
+  display: block;
+  margin: auto;
+  width: 150px;
+  height: 35px;
+  margin-bottom: 15px;
+}
+
+#linkImagesTitle {
+  display: block;
+  height: 35px;
+  text-align: center;
+}
+
+#linkImagesTitleText {
+  display: inline-block;
+  font-size: 25px;
+  font-weight: bold;
+  line-height: 38px;
+}
+
+#linkImagesIcon {
+  display: inline-block;
+  height: 35px;
+  width: 35px;
+  vertical-align: top;
+}
+
+#dropboxImagesButton {
+  @extend .buttonBehavior;
+  display: block;
+  width: 170px;
+  text-align: center;
+  font-size: 14px;
+  line-height: 20px;
+  height: 20px;
+  margin: auto;
+  border: solid 1px #004d90;
+  background-color: #f1f6ff;
+  color: #007ee5;
+  font-weight: bold;
+
+  &:hover {
+    border: solid 1px #0065b7;
+    background-color: #eaeff8;
+    color: #008dfa;
+  }
+
+  &:active {
+    border: solid 1px #003468;
+    background-color: #d4d9e1;
+    color: #00589e;
+  }
+}
