@@ -57,9 +57,12 @@ ptbr.setLingo("_IMAGESLINKTITLE_", "Link Direto");
 ptbr.setLingo("_IMAGESERROR_", "Erro carregando a lista de imagens. Tente novamente.");
 ptbr.setLingo("_IMAGESSAVEERROR_", "Houve um erro salvando a lista de imagens.");
 ptbr.setLingo("_IMAGESNOFOLDERNAME_", "Sem Pasta");
-ptbr.setLingo("", "");
-ptbr.setLingo("", "");
-ptbr.setLingo("", "");
+ptbr.setLingo("_IMAGESSHARE_", "Compartilhar na sala atual (se conectado)");
+ptbr.setLingo("_IMAGESVIEW_", "Visualizar");
+ptbr.setLingo("_IMAGESPERSONA_", "Utilizar como Persona");
+ptbr.setLingo("_IMAGESDELETE_", "Deletar");
+ptbr.setLingo("_IMAGESRENAME_", "Renomear");
+ptbr.setLingo("_IMAGESFOLDER_", "Alterar Pasta");
 ptbr.setLingo("", "");
 ptbr.setLingo("", "");
 

@@ -638,6 +638,7 @@ declare class MessageImage extends Message {
     createHTML(): HTMLParagraphElement;
     getName(): any;
     setName(name: string): void;
+    static shareLink(name: string, url: string): void;
 }
 declare class MessageBGM extends Message {
     module: string;

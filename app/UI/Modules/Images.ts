@@ -80,30 +80,46 @@ module UI.Images {
                 var shareButton = document.createElement("a");
                 shareButton.classList.add("imagesLeftButton");
                 shareButton.classList.add("icons-imagesShare");
+                UI.Language.addLanguageTitle(shareButton, "_IMAGESSHARE_");
+
+                shareButton.addEventListener("click", <EventListenerObject> {
+                    name : image.getName(),
+                    url : image.getLink(),
+                    handleEvent : function () {
+                        MessageImage.shareLink(this.name, this.url);
+                    }
+                });
 
                 var viewButton = document.createElement("a");
                 viewButton.classList.add("imagesLeftButton");
                 viewButton.classList.add("icons-imagesView");
+                UI.Language.addLanguageTitle(viewButton, "_IMAGESVIEW_");
 
                 var personaButton = document.createElement("a");
                 personaButton.classList.add("imagesLeftButton");
                 personaButton.classList.add("icons-imagesPersona");
+                UI.Language.addLanguageTitle(personaButton, "_IMAGESPERSONA_");
 
                 var deleteButton = document.createElement("a");
                 deleteButton.classList.add("imagesRightButton");
                 deleteButton.classList.add("icons-imagesDelete");
+                UI.Language.addLanguageTitle(deleteButton, "_IMAGESDELETE_");
 
                 var renameButton = document.createElement("a");
                 renameButton.classList.add("imagesRightButton");
                 renameButton.classList.add("icons-imagesRename");
+                UI.Language.addLanguageTitle(renameButton, "_IMAGESRENAME_");
 
                 var folderButton = document.createElement("a");
                 folderButton.classList.add("imagesRightButton");
                 folderButton.classList.add("icons-imagesFolder");
+                UI.Language.addLanguageTitle(folderButton, "_IMAGESFOLDER_");
 
                 var imageTitle = document.createElement("a");
                 imageTitle.classList.add("imagesRowTitle");
                 imageTitle.appendChild(document.createTextNode(image.getName()));
+
+                UI.Language.markLanguage(shareButton, viewButton, personaButton, deleteButton, renameButton, folderButton);
 
                 imageContainer.appendChild(shareButton);
                 imageContainer.appendChild(viewButton);
@@ -114,6 +130,7 @@ module UI.Images {
                 imageContainer.appendChild(imageTitle);
 
                 folderContainer.appendChild(imageContainer);
+
             }
 
             target.appendChild(folderContainer);

@@ -34,6 +34,14 @@ class MessageImage extends Message {
     public setName (name : string) {
         this.setSpecial("name", name);
     }
+
+    public static shareLink (name : string, url : string) {
+        var newImage = new MessageImage();
+        newImage.findPersona();
+        newImage.setName(name);
+        newImage.setMsg(url);
+        UI.Chat.sendMessage(newImage);
+    }
 }
 
 MessageFactory.registerMessage(MessageImage, "image", ["/image", "/imagem", "/picture", "/figura", "/pic"]);
