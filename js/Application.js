@@ -4217,13 +4217,6 @@ ptbr.setLingo("", "");
 ptbr.setLingo("", "");
 LingoList.storeLingo(ptbr);
 delete (ptbr);
-var en = new Lingo();
-en.ids = ["en", "en-gb", "en-us"];
-en.name = "English";
-en.shortname = "English";
-en.flagIcon = "EN";
-LingoList.storeLingo(en);
-delete (en);
 var UI;
 (function (UI) {
     UI.idChangelog = "changelogSideWindow";

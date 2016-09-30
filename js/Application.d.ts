@@ -854,7 +854,6 @@ declare module LingoList {
     function storeLingo(lingo: Lingo): void;
 }
 declare var ptbr: Lingo;
-declare var en: Lingo;
 declare module UI {
     var idChangelog: string;
     var idGames: string;

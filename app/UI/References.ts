@@ -1,7 +1,6 @@
 // Language Files
 /// <reference path='Languages/Lingo.ts' />
 /// <reference path='Languages/LingoPTBR.ts' />
-/// <reference path='Languages/LingoEN.ts' />
 
 /// <reference path='UI.ts' />
 /// <reference path='Modules/WindowManager.ts' />
