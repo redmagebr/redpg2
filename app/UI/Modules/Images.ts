@@ -55,7 +55,7 @@ module UI.Images {
 
             var folderTitle = document.createElement("span");
             folderTitle.classList.add("imagesFolderTitle");
-            folderTitle.addEventListener("click", function () { this.parentNode.classList.toggle('folderOpen'); });
+            folderTitle.addEventListener("click", function () { (<HTMLElement> this.parentNode).classList.toggle('folderOpen'); });
             folderTitle.appendChild(document.createTextNode(folderName));
 
             folderContainer.appendChild(folderIcon);

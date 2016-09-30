@@ -4,7 +4,7 @@ class BooleanConfiguration extends Configuration {
     }
 
     public setFunction = function (value : string) {
-        if (typeof value !== "string") value = value.toString().toLowerCase();
+        if (typeof value !== "string") value = (<Object> value).toString().toLowerCase();
         var bool = value === "1" || value === "true";
         if (bool) this.value = 1;
         else this.value = 0;

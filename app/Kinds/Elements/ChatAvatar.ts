@@ -30,7 +30,7 @@ class ChatAvatar {
         this.img.style.display = "none";
         this.element.classList.add("icons-chatAnon");
 
-        this.img.addEventListener("error", {
+        this.img.addEventListener("error", <EventListenerObject> {
             avatar : this,
             handleEvent : function () {
                 this.avatar.img.style.display = "none";

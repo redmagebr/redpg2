@@ -123,7 +123,7 @@ module UI.Games.Invites {
                 accept.classList.add("textLink");
                 accept.appendChild(document.createTextNode("_GAMEINVITESACCEPT_"));
                 UI.Language.markLanguage(accept);
-                accept.addEventListener("click", {
+                accept.addEventListener("click", <EventListenerObject> {
                     id : row['id'],
                     handleEvent : function () {
                         UI.Games.Invites.accept(this.id);
@@ -135,7 +135,7 @@ module UI.Games.Invites {
                 reject.classList.add("gameInvitesReject");
                 reject.appendChild(document.createTextNode("_GAMEINVITESREJECT_"));
                 UI.Language.markLanguage(reject);
-                reject.addEventListener("click", {
+                reject.addEventListener("click", <EventListenerObject> {
                     id : row['id'],
                     handleEvent : function () {
                         UI.Games.Invites.reject(this.id);

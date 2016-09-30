@@ -18,7 +18,7 @@ module UI.SoundController.MusicPlayer {
 
     document.getElementById("musicPlayerLocal").appendChild(soundListButtonText);
 
-    UI.SoundController.getSoundList().addEventListener("change", {
+    UI.SoundController.getSoundList().addEventListener("change", <EventListenerObject> {
         button : soundListButtonText,
         list : UI.SoundController.getSoundList(),
         handleEvent : function () {
@@ -65,7 +65,7 @@ module UI.SoundController.MusicPlayer {
         UI.SoundController.MusicPlayer.stopPlaying();
     });
 
-    bgm.addEventListener("play", {
+    bgm.addEventListener("play", <EventListenerObject> {
         playpause : playpause,
         handleEvent : function () {
             this.playpause.classList.add("icons-soundPlayerPause");

@@ -34,7 +34,7 @@ class MessageBGM extends Message {
         a.classList.add("textLink");
         a.appendChild(document.createTextNode("_CHATMESSAGEPLAYBGM_"));
         a.appendChild(document.createTextNode("."));
-        a.addEventListener("click", {
+        a.addEventListener("click", <EventListenerObject> {
             message : this,
             handleEvent : function (e : Event) {
                 UI.SoundController.playBGM(this.message.getMsg());

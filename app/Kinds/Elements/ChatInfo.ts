@@ -42,7 +42,7 @@ class ChatInfo {
         }
 
         var $element = $(element);
-        element.addEventListener("mouseenter", {
+        element.addEventListener("mouseenter", <EventListenerObject> {
             chatInfo : this,
             message : message,
             $element : $element,
@@ -50,14 +50,14 @@ class ChatInfo {
                 this.chatInfo.showFor(this.$element, this.message);
             }
         });
-        element.addEventListener("mousemove", {
+        element.addEventListener("mousemove", <EventListenerObject> {
             chatInfo : this,
             $element : $element,
             handleEvent : function () {
                 this.chatInfo.showFor(this.$element);
             }
         });
-        element.addEventListener("mouseleave", {
+        element.addEventListener("mouseleave", <EventListenerObject> {
             chatInfo : this,
             handleEvent : function () {
                 this.chatInfo.hide();

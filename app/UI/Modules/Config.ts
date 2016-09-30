@@ -23,7 +23,7 @@ module UI.Config {
             }
         });
 
-        input.addEventListener("change", {
+        input.addEventListener("change", <EventListenerObject> {
             configName : configName,
             input : input,
             handleEvent : function () {

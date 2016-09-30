@@ -19,7 +19,7 @@ module Server.AJAX {
         xhr.open(method, <string> url, true);
         xhr.responseType = ajax.responseType;
 
-        xhr.addEventListener("loadend", {
+        xhr.addEventListener("loadend", <EventListenerObject> {
             ajax : ajax,
             handleEvent : function (e : Event) {
                 console.debug("AJAX request for " + this.ajax.url + " is complete.");
@@ -27,7 +27,7 @@ module Server.AJAX {
             }
         });
 
-        xhr.addEventListener("load", {
+        xhr.addEventListener("load", <EventListenerObject> {
             xhr : xhr,
             ajax : ajax,
             success : success,
@@ -56,7 +56,7 @@ module Server.AJAX {
             }
         });
 
-        xhr.addEventListener("error", {
+        xhr.addEventListener("error", <EventListenerObject> {
             xhr : xhr,
             ajax : ajax,
             error : error,

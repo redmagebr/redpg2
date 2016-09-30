@@ -55,7 +55,7 @@ module UI.Games {
                 perm.classList.add("textLink");
                 perm.appendChild(document.createTextNode("_GAMESPERMISSIONS_"));
 
-                perm.addEventListener("click", {
+                perm.addEventListener("click", <EventListenerObject> {
                     game : games[i],
                     handleEvent : function () {
                         // TODO: UI.Games.editGamePermissions(this.game);
@@ -67,7 +67,7 @@ module UI.Games {
                 edit.classList.add("textLink");
                 edit.appendChild(document.createTextNode("_GAMESEDIT_"));
 
-                edit.addEventListener("click", {
+                edit.addEventListener("click", <EventListenerObject> {
                     game : games[i],
                     handleEvent : function () {
                         // TODO: UI.Games.editGame(this.game);
@@ -79,7 +79,7 @@ module UI.Games {
                 deleteGame.classList.add("textLink");
                 deleteGame.appendChild(document.createTextNode("_GAMESDELETE_"));
 
-                deleteGame.addEventListener("click", {
+                deleteGame.addEventListener("click", <EventListenerObject> {
                     game : games[i],
                     handleEvent : function () {
                         // TODO: UI.Games.deleteGame(this.game);
@@ -97,7 +97,7 @@ module UI.Games {
                 leave.classList.add("textLink");
                 leave.appendChild(document.createTextNode("_GAMESLEAVE_"));
 
-                leave.addEventListener("click", {
+                leave.addEventListener("click", <EventListenerObject> {
                     game : games[i],
                     handleEvent : function () {
                         // TODO: UI.Games.leaveGame(this.game);
@@ -141,7 +141,7 @@ module UI.Games {
                     var a = document.createElement("a");
                     a.classList.add("textLink");
                     a.classList.add("gameRoomLink");
-                    a.addEventListener('click', {
+                    a.addEventListener('click', <EventListenerObject> {
                         roomid : roomList[k].id,
                         handleEvent : function () {
                             UI.Chat.callSelf(this.roomid);
@@ -155,7 +155,7 @@ module UI.Games {
                         rDelete.classList.add("textLink");
                         rDelete.classList.add("roomExtraButton");
                         rDelete.appendChild(document.createTextNode("_GAMESROOMDELETE_"));
-                        rDelete.addEventListener("click", {
+                        rDelete.addEventListener("click", <EventListenerObject> {
                             room : room,
                             handleEvent : function () {
                                 // TODO: UI.Rooms.deleteRoom(this.room);
@@ -167,7 +167,7 @@ module UI.Games {
                         rPerm.classList.add("textLink");
                         rPerm.classList.add("roomExtraButton");
                         rPerm.appendChild(document.createTextNode("_GAMESROOMPERMISSIONS_"));
-                        rPerm.addEventListener("click", {
+                        rPerm.addEventListener("click", <EventListenerObject> {
                             room : room,
                             handleEvent : function () {
                                 // TODO: UI.Rooms.setPermissions(this.room);
@@ -196,7 +196,7 @@ module UI.Games {
                 UI.Language.markLanguage(p);
                 div.appendChild(p);
 
-                p.addEventListener("click", {
+                p.addEventListener("click", <EventListenerObject> {
                     game : game,
                     handleEvent : function () {
                         // TODO: UI.Games.createRoom(this.game);
@@ -212,7 +212,7 @@ module UI.Games {
                 UI.Language.markLanguage(p);
                 div.appendChild(p);
 
-                p.addEventListener("click", {
+                p.addEventListener("click", <EventListenerObject> {
                     game : game,
                     handleEvent : function () {
                         // TODO: UI.Games.sendInvites(this.game);

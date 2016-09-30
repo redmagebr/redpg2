@@ -10,7 +10,7 @@ class SheetButton {
         this.style = style;
         this.visible = ele;
 
-        this.visible.addEventListener("click", {
+        this.visible.addEventListener("click", <EventListenerObject> {
             button : this,
             handleEvent : function (e) {
                 this.button.click(e);

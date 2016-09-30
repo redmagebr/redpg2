@@ -17,13 +17,13 @@ class SheetVariable {
 
         if (this.editable) {
             ele.contentEditable = "true";
-            ele.addEventListener("input", {
+            ele.addEventListener("input", <EventListenerObject> {
                 variable : this,
                 handleEvent : function (e) {
                     this.variable.triggerInput(e);
                 }
             });
-            ele.addEventListener("blur", {
+            ele.addEventListener("blur", <EventListenerObject> {
                 variable : this,
                 handleEvent : function (e) {
                     this.variable.triggerBlur();

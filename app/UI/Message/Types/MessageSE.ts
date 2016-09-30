@@ -34,7 +34,7 @@ class MessageSE extends Message {
         a.classList.add("textLink");
         a.appendChild(document.createTextNode("_CHATMESSAGEPLAYSE_"));
         a.appendChild(document.createTextNode("."));
-        a.addEventListener("click", {
+        a.addEventListener("click", <EventListenerObject> {
             message : this,
             handleEvent : function (e : Event) {
                 UI.SoundController.playSE(this.message.getMsg());

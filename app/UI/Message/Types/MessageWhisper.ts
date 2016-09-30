@@ -26,7 +26,7 @@ class MessageWhisper extends Message {
         b.classList.add("chatWhisperLink");
         b.appendChild(document.createTextNode("( "));
 
-        b.addEventListener("click", {
+        b.addEventListener("click", <EventListenerObject> {
             destination : this.destination,
             msg : this,
             handleEvent : function () {

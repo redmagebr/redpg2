@@ -30,7 +30,7 @@ class WebsocketController {
         }
         this.socket = new WebSocket(url);
 
-        this.socket.addEventListener("open", {
+        this.socket.addEventListener("open", <EventListenerObject> {
             controller : this,
             handleEvent: function (e) {
                 this.controller.resetInterval();
@@ -39,14 +39,14 @@ class WebsocketController {
             }
         });
 
-        this.socket.addEventListener("error", {
+        this.socket.addEventListener("error", <EventListenerObject> {
             controller : this,
             handleEvent: function (e) {
                 console.error("[WEBSOCKET] " + this.controller.url + ": Error.", e);
             }
         });
 
-        this.socket.addEventListener("message", {
+        this.socket.addEventListener("message", <EventListenerObject> {
             controller : this,
             handleEvent: function (e : MessageEvent) {
                 this.controller.resetInterval();
@@ -55,7 +55,7 @@ class WebsocketController {
             }
         });
 
-        this.socket.addEventListener("close", {
+        this.socket.addEventListener("close", <EventListenerObject> {
             controller : this,
             handleEvent: function (e) {
                 this.controller.disableInterval();

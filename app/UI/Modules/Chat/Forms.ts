@@ -395,7 +395,7 @@ module UI.Chat.Forms {
     // Bind dices
     var dices = [4,6,8,10,12,20,100];
     for (var i = 0; i < dices.length; i++) {
-        document.getElementById("chatDiceD" + dices[i]).addEventListener("click", {
+        document.getElementById("chatDiceD" + dices[i]).addEventListener("click", <EventListenerObject> {
             dice : dices[i],
             handleEvent : function () {
                 UI.Chat.Forms.rollDice(this.dice);
