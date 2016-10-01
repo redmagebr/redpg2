@@ -416,6 +416,14 @@ declare class ChatSystemMessage {
     addElement(ele: HTMLElement): void;
     getElement(): HTMLElement;
 }
+declare class ImagesRow {
+    private html;
+    private image;
+    share(): void;
+    usePersona(): void;
+    constructor(image: ImageLink);
+    getHTML(): HTMLElement;
+}
 declare class SheetStyle {
     private css;
     private visible;

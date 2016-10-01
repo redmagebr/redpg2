@@ -42,6 +42,7 @@
 /// <reference path='Elements/ChatFormState.ts' />
 /// <reference path='Elements/ChatAvatarChoice.ts' />
 /// <reference path='Elements/ChatSystemMessage.ts' />
+/// <reference path='Elements/ImagesRow.ts' />
 
 
 /// <reference path='Classes/Sheet/SheetStyle.ts' />

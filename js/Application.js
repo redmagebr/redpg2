@@ -1517,6 +1517,72 @@ var ChatSystemMessage = (function () {
     };
     return ChatSystemMessage;
 }());
+var ImagesRow = (function () {
+    function ImagesRow(image) {
+        this.image = image;
+        var imageContainer = document.createElement("div");
+        imageContainer.classList.add("imagesRow");
+        var shareButton = document.createElement("a");
+        shareButton.classList.add("imagesLeftButton");
+        shareButton.classList.add("icons-imagesShare");
+        UI.Language.addLanguageTitle(shareButton, "_IMAGESSHARE_");
+        shareButton.addEventListener("click", {
+            row: this,
+            handleEvent: function () {
+                this.row.share();
+            }
+        });
+        var viewButton = document.createElement("a");
+        viewButton.classList.add("imagesLeftButton");
+        viewButton.classList.add("icons-imagesView");
+        UI.Language.addLanguageTitle(viewButton, "_IMAGESVIEW_");
+        var personaButton = document.createElement("a");
+        personaButton.classList.add("imagesLeftButton");
+        personaButton.classList.add("icons-imagesPersona");
+        UI.Language.addLanguageTitle(personaButton, "_IMAGESPERSONA_");
+        personaButton.addEventListener("click", {
+            row: this,
+            handleEvent: function () {
+                this.row.usePersona();
+            }
+        });
+        var deleteButton = document.createElement("a");
+        deleteButton.classList.add("imagesRightButton");
+        deleteButton.classList.add("icons-imagesDelete");
+        UI.Language.addLanguageTitle(deleteButton, "_IMAGESDELETE_");
+        var renameButton = document.createElement("a");
+        renameButton.classList.add("imagesRightButton");
+        renameButton.classList.add("icons-imagesRename");
+        UI.Language.addLanguageTitle(renameButton, "_IMAGESRENAME_");
+        var folderButton = document.createElement("a");
+        folderButton.classList.add("imagesRightButton");
+        folderButton.classList.add("icons-imagesFolder");
+        UI.Language.addLanguageTitle(folderButton, "_IMAGESFOLDER_");
+        var imageTitle = document.createElement("a");
+        imageTitle.classList.add("imagesRowTitle");
+        imageTitle.appendChild(document.createTextNode(image.getName()));
+        UI.Language.markLanguage(shareButton, viewButton, personaButton, deleteButton, renameButton, folderButton);
+        imageContainer.appendChild(shareButton);
+        imageContainer.appendChild(viewButton);
+        imageContainer.appendChild(personaButton);
+        imageContainer.appendChild(deleteButton);
+        imageContainer.appendChild(renameButton);
+        imageContainer.appendChild(folderButton);
+        imageContainer.appendChild(imageTitle);
+        this.html = imageContainer;
+    }
+    ImagesRow.prototype.share = function () {
+        MessageImage.shareLink(this.image.getName(), this.image.getLink());
+    };
+    ImagesRow.prototype.usePersona = function () {
+        UI.Chat.PersonaDesigner.createPersona(this.image.getName(), this.image.getLink());
+        UI.Chat.PersonaManager.createAndUsePersona(this.image.getName(), this.image.getLink());
+    };
+    ImagesRow.prototype.getHTML = function () {
+        return this.html;
+    };
+    return ImagesRow;
+}());
 var SheetStyle = (function () {
     function SheetStyle() {
         this.css = document.createElement("style");
@@ -4593,52 +4659,8 @@ var UI;
                 folderContainer.appendChild(folderIcon);
                 folderContainer.appendChild(folderTitle);
                 for (var k = 0; k < images[i].length; k++) {
-                    var image = images[i][k];
-                    var imageContainer = document.createElement("div");
-                    imageContainer.classList.add("imagesRow");
-                    var shareButton = document.createElement("a");
-                    shareButton.classList.add("imagesLeftButton");
-                    shareButton.classList.add("icons-imagesShare");
-                    UI.Language.addLanguageTitle(shareButton, "_IMAGESSHARE_");
-                    shareButton.addEventListener("click", {
-                        name: image.getName(),
-                        url: image.getLink(),
-                        handleEvent: function () {
-                            MessageImage.shareLink(this.name, this.url);
-                        }
-                    });
-                    var viewButton = document.createElement("a");
-                    viewButton.classList.add("imagesLeftButton");
-                    viewButton.classList.add("icons-imagesView");
-                    UI.Language.addLanguageTitle(viewButton, "_IMAGESVIEW_");
-                    var personaButton = document.createElement("a");
-                    personaButton.classList.add("imagesLeftButton");
-                    personaButton.classList.add("icons-imagesPersona");
-                    UI.Language.addLanguageTitle(personaButton, "_IMAGESPERSONA_");
-                    var deleteButton = document.createElement("a");
-                    deleteButton.classList.add("imagesRightButton");
-                    deleteButton.classList.add("icons-imagesDelete");
-                    UI.Language.addLanguageTitle(deleteButton, "_IMAGESDELETE_");
-                    var renameButton = document.createElement("a");
-                    renameButton.classList.add("imagesRightButton");
-                    renameButton.classList.add("icons-imagesRename");
-                    UI.Language.addLanguageTitle(renameButton, "_IMAGESRENAME_");
-                    var folderButton = document.createElement("a");
-                    folderButton.classList.add("imagesRightButton");
-                    folderButton.classList.add("icons-imagesFolder");
-                    UI.Language.addLanguageTitle(folderButton, "_IMAGESFOLDER_");
-                    var imageTitle = document.createElement("a");
-                    imageTitle.classList.add("imagesRowTitle");
-                    imageTitle.appendChild(document.createTextNode(image.getName()));
-                    UI.Language.markLanguage(shareButton, viewButton, personaButton, deleteButton, renameButton, folderButton);
-                    imageContainer.appendChild(shareButton);
-                    imageContainer.appendChild(viewButton);
-                    imageContainer.appendChild(personaButton);
-                    imageContainer.appendChild(deleteButton);
-                    imageContainer.appendChild(renameButton);
-                    imageContainer.appendChild(folderButton);
-                    imageContainer.appendChild(imageTitle);
-                    folderContainer.appendChild(imageContainer);
+                    var imageRow = new ImagesRow(images[i][k]);
+                    folderContainer.appendChild(imageRow.getHTML());
                 }
                 target.appendChild(folderContainer);
             }

@@ -2240,7 +2240,7 @@ body {
 /* line 425, ../sass/mainChat.scss */
 #personaDesigner {
   position: absolute;
-  height: 300px;
+  top: 15px;
   bottom: 15px;
   overflow: hidden;
   left: 12px;
@@ -2253,7 +2253,7 @@ body {
   left: 5px;
   right: 0px;
   bottom: 0px;
-  height: 170px;
+  top: 110px;
 }
 
 /* line 443, ../sass/mainChat.scss */
