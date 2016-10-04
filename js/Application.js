@@ -1583,6 +1583,33 @@ var ImagesRow = (function () {
     };
     return ImagesRow;
 }());
+var ImagesFolder = (function () {
+    function ImagesFolder(images) {
+        var folderName = images[0].getFolder();
+        if (folderName === "") {
+            folderName = UI.Language.getLanguage().getLingo("_IMAGESNOFOLDERNAME_");
+        }
+        var folderContainer = document.createElement("div");
+        folderContainer.classList.add("imagesFolder");
+        var folderIcon = document.createElement("a");
+        folderIcon.classList.add("imagesFolderIcon");
+        var folderTitle = document.createElement("span");
+        folderTitle.classList.add("imagesFolderTitle");
+        folderTitle.addEventListener("click", function () { this.parentNode.classList.toggle('folderOpen'); });
+        folderTitle.appendChild(document.createTextNode(folderName));
+        folderContainer.appendChild(folderIcon);
+        folderContainer.appendChild(folderTitle);
+        for (var k = 0; k < images.length; k++) {
+            var imageRow = new ImagesRow(images[k]);
+            folderContainer.appendChild(imageRow.getHTML());
+        }
+        this.html = folderContainer;
+    }
+    ImagesFolder.prototype.getHTML = function () {
+        return this.html;
+    };
+    return ImagesFolder;
+}());
 var SheetStyle = (function () {
     function SheetStyle() {
         this.css = document.createElement("style");
@@ -4644,25 +4671,8 @@ var UI;
             emptyTarget();
             var images = DB.ImageDB.getImagesByFolder();
             for (var i = 0; i < images.length; i++) {
-                var folderName = images[i][0].getFolder();
-                if (folderName === "") {
-                    folderName = UI.Language.getLanguage().getLingo("_IMAGESNOFOLDERNAME_");
-                }
-                var folderContainer = document.createElement("div");
-                folderContainer.classList.add("imagesFolder");
-                var folderIcon = document.createElement("a");
-                folderIcon.classList.add("imagesFolderIcon");
-                var folderTitle = document.createElement("span");
-                folderTitle.classList.add("imagesFolderTitle");
-                folderTitle.addEventListener("click", function () { this.parentNode.classList.toggle('folderOpen'); });
-                folderTitle.appendChild(document.createTextNode(folderName));
-                folderContainer.appendChild(folderIcon);
-                folderContainer.appendChild(folderTitle);
-                for (var k = 0; k < images[i].length; k++) {
-                    var imageRow = new ImagesRow(images[i][k]);
-                    folderContainer.appendChild(imageRow.getHTML());
-                }
-                target.appendChild(folderContainer);
+                var folder = new ImagesFolder(images[i]);
+                target.appendChild(folder.getHTML());
             }
         }
         Images.printImages = printImages;

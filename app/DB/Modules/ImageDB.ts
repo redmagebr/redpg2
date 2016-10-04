@@ -33,7 +33,7 @@ module DB.ImageDB {
         return (getImageByLink(url) !== null);
     }
     
-    export function getImagesByFolder () {
+    export function getImagesByFolder () : Array<Array<ImageLink>> {
         var folders : {[id : string] : Array<ImageLink>} = {};
         var result : Array<Array<ImageLink>> = [];
         for (var i = 0; i < images.length; i++) {

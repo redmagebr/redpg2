@@ -424,6 +424,11 @@ declare class ImagesRow {
     constructor(image: ImageLink);
     getHTML(): HTMLElement;
 }
+declare class ImagesFolder {
+    private html;
+    constructor(images: Array<ImageLink>);
+    getHTML(): HTMLElement;
+}
 declare class SheetStyle {
     private css;
     private visible;
@@ -795,7 +800,7 @@ declare module DB.ImageDB {
     function getImageByLink(url: string): ImageLink;
     function hasImageByName(name: string): boolean;
     function hasImageByLink(url: string): boolean;
-    function getImagesByFolder(): ImageLink[][];
+    function getImagesByFolder(): Array<Array<ImageLink>>;
     function updateFromObject(obj: Array<Object>): void;
     function addImage(img: ImageLink): void;
     function addImages(imgs: Array<ImageLink>): void;

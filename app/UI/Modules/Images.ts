@@ -34,39 +34,12 @@ module UI.Images {
 
     export function printImages () {
         emptyTarget();
-
-        // .imagesFolder
-        //     %a.imagesFolderIcon
-        //     %span.imagesFolderTitle{:onclick => "this.parentNode.classList.toggle('folderOpen');"}="Nome da Pasta"
         
         var images = DB.ImageDB.getImagesByFolder();
 
         for (var i = 0; i < images.length; i++) {
-            var folderName = images[i][0].getFolder();
-            if (folderName === "") {
-                folderName = UI.Language.getLanguage().getLingo("_IMAGESNOFOLDERNAME_");
-            }
-
-            var folderContainer = document.createElement("div");
-            folderContainer.classList.add("imagesFolder");
-
-            var folderIcon = document.createElement("a");
-            folderIcon.classList.add("imagesFolderIcon");
-
-            var folderTitle = document.createElement("span");
-            folderTitle.classList.add("imagesFolderTitle");
-            folderTitle.addEventListener("click", function () { (<HTMLElement> this.parentNode).classList.toggle('folderOpen'); });
-            folderTitle.appendChild(document.createTextNode(folderName));
-
-            folderContainer.appendChild(folderIcon);
-            folderContainer.appendChild(folderTitle);
-
-            for (var k = 0; k < images[i].length; k++) {
-                var imageRow = new ImagesRow(images[i][k]);
-                folderContainer.appendChild(imageRow.getHTML());
-            }
-
-            target.appendChild(folderContainer);
+            var folder = new ImagesFolder(images[i]);
+            target.appendChild(folder.getHTML());
         }
     }
 
