@@ -63,6 +63,8 @@ ptbr.setLingo("_IMAGESPERSONA_", "Utilizar como Persona");
 ptbr.setLingo("_IMAGESDELETE_", "Deletar");
 ptbr.setLingo("_IMAGESRENAME_", "Renomear");
 ptbr.setLingo("_IMAGESFOLDER_", "Alterar Pasta");
+ptbr.setLingo("_IMAGESRENAMEPROMPT_", "Digite o novo nome para \"%a\":");
+ptbr.setLingo("_IMAGESRENAMEFOLDERPROMPT_", "Digite a nova pasta para \"%a\", atualmente em \"%b\":");
 ptbr.setLingo("", "");
 ptbr.setLingo("", "");
 

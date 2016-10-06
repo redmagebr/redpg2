@@ -50,11 +50,31 @@ var ImageLink = (function () {
     ImageLink.prototype.getFolder = function () {
         return this.folder;
     };
+    ImageLink.prototype.setFolder = function (name) {
+        UI.Images.stayInFolder(this.folder);
+        this.folder = name;
+        UI.Images.printImages();
+        DB.ImageDB.considerSaving();
+    };
     ImageLink.prototype.getLink = function () {
         return Server.URL.fixURL(this.url);
     };
     ImageLink.prototype.getName = function () {
         return this.name;
+    };
+    ImageLink.prototype.setName = function (name) {
+        if (this.name !== name) {
+            this.name = name;
+            DB.ImageDB.triggerChange(this);
+            DB.ImageDB.considerSaving();
+        }
+    };
+    ImageLink.prototype.exportAsObject = function () {
+        return {
+            name: this.name,
+            url: this.url,
+            folder: this.folder
+        };
     };
     return ImageLink;
 }());
@@ -1572,7 +1592,8 @@ var ChatSystemMessage = (function () {
     return ChatSystemMessage;
 }());
 var ImagesRow = (function () {
-    function ImagesRow(image) {
+    function ImagesRow(image, folder) {
+        this.folder = folder;
         this.image = image;
         var imageContainer = document.createElement("div");
         imageContainer.classList.add("imagesRow");
@@ -1604,17 +1625,37 @@ var ImagesRow = (function () {
         deleteButton.classList.add("imagesRightButton");
         deleteButton.classList.add("icons-imagesDelete");
         UI.Language.addLanguageTitle(deleteButton, "_IMAGESDELETE_");
+        deleteButton.addEventListener("click", {
+            row: this,
+            handleEvent: function () {
+                this.row.delete();
+            }
+        });
         var renameButton = document.createElement("a");
         renameButton.classList.add("imagesRightButton");
         renameButton.classList.add("icons-imagesRename");
         UI.Language.addLanguageTitle(renameButton, "_IMAGESRENAME_");
+        renameButton.addEventListener("click", {
+            row: this,
+            handleEvent: function () {
+                this.row.rename();
+            }
+        });
         var folderButton = document.createElement("a");
         folderButton.classList.add("imagesRightButton");
         folderButton.classList.add("icons-imagesFolder");
         UI.Language.addLanguageTitle(folderButton, "_IMAGESFOLDER_");
+        folderButton.addEventListener("click", {
+            row: this,
+            handleEvent: function () {
+                this.row.renameFolder();
+            }
+        });
         var imageTitle = document.createElement("a");
         imageTitle.classList.add("imagesRowTitle");
-        imageTitle.appendChild(document.createTextNode(image.getName()));
+        var nameNode = document.createTextNode(image.getName());
+        imageTitle.appendChild(nameNode);
+        this.nameNode = nameNode;
         UI.Language.markLanguage(shareButton, viewButton, personaButton, deleteButton, renameButton, folderButton);
         imageContainer.appendChild(shareButton);
         imageContainer.appendChild(viewButton);
@@ -1629,8 +1670,28 @@ var ImagesRow = (function () {
         MessageImage.shareLink(this.image.getName(), this.image.getLink());
     };
     ImagesRow.prototype.usePersona = function () {
-        UI.Chat.PersonaDesigner.createPersona(this.image.getName(), this.image.getLink());
-        UI.Chat.PersonaManager.createAndUsePersona(this.image.getName(), this.image.getLink());
+        UI.Chat.PersonaDesigner.createPersona(this.image.getName().replace(/ *\([^)]*\) */, '').trim(), this.image.getLink());
+        UI.Chat.PersonaManager.createAndUsePersona(this.image.getName().replace(/ *\([^)]*\) */, '').trim(), this.image.getLink());
+    };
+    ImagesRow.prototype.delete = function () {
+        this.html.parentElement.removeChild(this.html);
+        this.folder.considerSuicide();
+        DB.ImageDB.removeImage(this.image);
+    };
+    ImagesRow.prototype.renameFolder = function () {
+        var newName = prompt(UI.Language.getLanguage().getLingo("_IMAGESRENAMEFOLDERPROMPT_", { languagea: this.image.getName(), languageb: this.image.getFolder() }));
+        if (newName === null) {
+            return;
+        }
+        this.image.setFolder(newName.trim());
+    };
+    ImagesRow.prototype.rename = function () {
+        var newName = prompt(UI.Language.getLanguage().getLingo("_IMAGESRENAMEPROMPT_", { languagea: this.image.getName() }));
+        if (newName === null || newName === "") {
+            return;
+        }
+        this.image.setName(newName);
+        this.nameNode.nodeValue = this.image.getName();
     };
     ImagesRow.prototype.getHTML = function () {
         return this.html;
@@ -1640,27 +1701,51 @@ var ImagesRow = (function () {
 var ImagesFolder = (function () {
     function ImagesFolder(images) {
         var folderName = images[0].getFolder();
+        this.name = folderName;
         if (folderName === "") {
             folderName = UI.Language.getLanguage().getLingo("_IMAGESNOFOLDERNAME_");
         }
         var folderContainer = document.createElement("div");
         folderContainer.classList.add("imagesFolder");
+        this.folderContainer = folderContainer;
         var folderIcon = document.createElement("a");
         folderIcon.classList.add("imagesFolderIcon");
         var folderTitle = document.createElement("span");
         folderTitle.classList.add("imagesFolderTitle");
-        folderTitle.addEventListener("click", function () { this.parentNode.classList.toggle('folderOpen'); });
+        folderTitle.addEventListener("click", {
+            folder: this,
+            handleEvent: function () {
+                this.folder.toggle();
+            }
+        });
         folderTitle.appendChild(document.createTextNode(folderName));
         folderContainer.appendChild(folderIcon);
         folderContainer.appendChild(folderTitle);
         for (var k = 0; k < images.length; k++) {
-            var imageRow = new ImagesRow(images[k]);
+            var imageRow = new ImagesRow(images[k], this);
             folderContainer.appendChild(imageRow.getHTML());
         }
         this.html = folderContainer;
     }
+    ImagesFolder.prototype.getName = function () {
+        return this.name;
+    };
+    ImagesFolder.prototype.open = function () {
+        this.folderContainer.classList.add("folderOpen");
+    };
+    ImagesFolder.prototype.toggle = function () {
+        this.folderContainer.classList.toggle("folderOpen");
+        if (this.folderContainer.classList.contains("folderOpen")) {
+            UI.Images.stayInFolder(this.name);
+        }
+    };
     ImagesFolder.prototype.getHTML = function () {
         return this.html;
+    };
+    ImagesFolder.prototype.considerSuicide = function () {
+        if (this.html.children.length <= 2) {
+            this.html.parentElement.removeChild(this.html);
+        }
     };
     return ImagesFolder;
 }());
@@ -3743,6 +3828,25 @@ var DB;
     (function (ImageDB) {
         var images = [];
         var changeTrigger = new Trigger();
+        var delayedStore = null;
+        var delayedStoreTimeout = 3000;
+        function removeImage(img) {
+            var idx = images.indexOf(img);
+            if (idx === -1) {
+                console.warn("[ImageDB] Attempt to remove unregistered image. Ignoring. Offender: ", img);
+                return;
+            }
+            images.splice(idx, 1);
+            considerSaving();
+        }
+        ImageDB.removeImage = removeImage;
+        function considerSaving() {
+            if (delayedStore !== null) {
+                clearTimeout(delayedStore);
+            }
+            delayedStore = setTimeout(function () { Server.Storage.sendImages(); }, delayedStoreTimeout);
+        }
+        ImageDB.considerSaving = considerSaving;
         function getImages() {
             return images;
         }
@@ -3793,9 +3897,26 @@ var DB;
                     return 1;
                 return 0;
             });
+            for (var i = 0; i < result.length; i++) {
+                result[i].sort(function (a, b) {
+                    if (a.getName() < b.getName())
+                        return -1;
+                    if (a.getName() > b.getName())
+                        return 1;
+                    return 0;
+                });
+            }
             return result;
         }
         ImageDB.getImagesByFolder = getImagesByFolder;
+        function exportAsObject() {
+            var arr = [];
+            for (var i = 0; i < images.length; i++) {
+                arr.push(images[i].exportAsObject());
+            }
+            return arr;
+        }
+        ImageDB.exportAsObject = exportAsObject;
         function updateFromObject(obj) {
             images = [];
             var line;
@@ -3825,7 +3946,7 @@ var DB;
         ImageDB.updateFromObject = updateFromObject;
         function addImage(img) {
             images.push(img);
-            changeTrigger.trigger(images);
+            considerSaving();
         }
         ImageDB.addImage = addImage;
         function addImages(imgs) {
@@ -3833,6 +3954,7 @@ var DB;
                 images.push(imgs[i]);
             }
             changeTrigger.trigger(images);
+            Server.Storage.sendImages();
         }
         ImageDB.addImages = addImages;
         function triggerChange(image) {
@@ -4218,6 +4340,8 @@ ptbr.setLingo("_IMAGESPERSONA_", "Utilizar como Persona");
 ptbr.setLingo("_IMAGESDELETE_", "Deletar");
 ptbr.setLingo("_IMAGESRENAME_", "Renomear");
 ptbr.setLingo("_IMAGESFOLDER_", "Alterar Pasta");
+ptbr.setLingo("_IMAGESRENAMEPROMPT_", "Digite o novo nome para \"%a\":");
+ptbr.setLingo("_IMAGESRENAMEFOLDERPROMPT_", "Digite a nova pasta para \"%a\", atualmente em \"%b\":");
 ptbr.setLingo("", "");
 ptbr.setLingo("", "");
 ptbr.setLingo("_SHEETSTITLE_", "Fichas");
@@ -4705,6 +4829,7 @@ var UI;
         var saveError = document.getElementById("imagesSaveError");
         target.removeChild(saveError);
         target.removeChild(loadError);
+        var autoFolder = null;
         function emptyTarget() {
             while (target.firstChild !== null) {
                 target.removeChild(target.lastChild);
@@ -4726,10 +4851,18 @@ var UI;
             var images = DB.ImageDB.getImagesByFolder();
             for (var i = 0; i < images.length; i++) {
                 var folder = new ImagesFolder(images[i]);
+                if (folder.getName() === autoFolder) {
+                    folder.open();
+                }
                 target.appendChild(folder.getHTML());
             }
+            autoFolder = null;
         }
         Images.printImages = printImages;
+        function stayInFolder(name) {
+            autoFolder = name;
+        }
+        Images.stayInFolder = stayInFolder;
         function printError(data, onLoad) {
             emptyTarget();
             if (onLoad) {
@@ -4753,7 +4886,37 @@ var UI;
         }
         Images.callDropbox = callDropbox;
         function addDropbox(files) {
-            console.log(files);
+            var folders = [];
+            var links = [];
+            for (var i = 0; i < files.length; i++) {
+                var originalName = files[i]['name'].substring(0, files[i]['name'].lastIndexOf('.'));
+                ;
+                var originalUrl = Server.URL.fixURL(files[i]['link']);
+                var name;
+                var folderName;
+                var hiphenPos = originalName.indexOf("-");
+                if (hiphenPos === -1) {
+                    folderName = "";
+                    name = originalName.trim();
+                }
+                else {
+                    folderName = originalName.substr(0, hiphenPos).trim();
+                    name = originalName.substr(hiphenPos + 1, originalName.length - (hiphenPos + 1)).trim();
+                }
+                var link = new ImageLink(name, originalUrl, folderName);
+                links.push(link);
+                if (folders.indexOf(folderName) === -1) {
+                    folders.push(folderName);
+                }
+            }
+            DB.ImageDB.addImages(links);
+            if (folders.length === 1) {
+                autoFolder = folders[0];
+            }
+            else {
+                autoFolder = null;
+            }
+            printImages();
         }
         Images.addDropbox = addDropbox;
     })(Images = UI.Images || (UI.Images = {}));
@@ -7198,13 +7361,7 @@ var Server;
         var IMAGES_URL = "Image";
         var emptyCallback = function () { };
         function getImages(cbs, cbe) {
-            var success = {
-                cbs: cbs,
-                handleEvent: function (response, xhr) {
-                    if (this.cbs !== undefined)
-                        this.cbs.handleEvent(response, xhr);
-                }
-            };
+            var success = cbs === undefined ? emptyCallback : cbs;
             var error = cbe === undefined ? emptyCallback : cbe;
             var ajax = new AJAXConfig(IMAGES_URL);
             ajax.setResponseTypeJSON();
@@ -7278,12 +7435,13 @@ var Server;
     var URL;
     (function (URL) {
         function fixURL(url) {
+            url = url.trim();
             if (url.indexOf("://") === -1) {
                 url = "http://" + url;
             }
             if (url.indexOf("www.dropbox.com") !== -1) {
                 url = url.replace("www.dropbox.com", "dl.dropboxusercontent.com");
-                var interr = url.indexOf("?dl");
+                var interr = url.lastIndexOf("?dl");
                 if (interr !== -1) {
                     url = url.substr(0, interr);
                 }
@@ -7682,6 +7840,9 @@ var Server;
     (function (Storage) {
         var STORAGE_URL = "Storage";
         var validStorage = ["sounds", "images", "custom1", "custom2"];
+        var IMAGES_ID = "images";
+        var ACTION_RESTORE = "restore";
+        var ACTION_STORE = "store";
         var emptyCallback = { handleEvent: function () { } };
         function requestImages(cbs, cbe) {
             var success = cbs === undefined ? emptyCallback : cbs;
@@ -7696,10 +7857,20 @@ var Server;
             var ajax = new AJAXConfig(STORAGE_URL);
             ajax.setTargetRightWindow();
             ajax.setResponseTypeJSON();
-            ajax.data = { action: "restore", id: "images" };
+            ajax.data = { action: ACTION_RESTORE, id: IMAGES_ID };
             Server.AJAX.requestPage(ajax, success, error);
         }
         Storage.requestImages = requestImages;
+        function sendImages(cbs, cbe) {
+            var success = cbs === undefined ? emptyCallback : cbs;
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(STORAGE_URL);
+            ajax.setTargetRightWindow();
+            ajax.setResponseTypeJSON();
+            ajax.data = { action: ACTION_STORE, id: IMAGES_ID, storage: DB.ImageDB.exportAsObject() };
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Storage.sendImages = sendImages;
     })(Storage = Server.Storage || (Server.Storage = {}));
 })(Server || (Server = {}));
 var Server;

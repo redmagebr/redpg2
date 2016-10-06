@@ -56,9 +56,16 @@ declare class ImageLink {
     private url;
     private folder;
     getFolder(): string;
+    setFolder(name: any): void;
     getLink(): string;
     getName(): string;
+    setName(name: string): void;
     constructor(name: string, url: string, folder: string);
+    exportAsObject(): {
+        name: string;
+        url: string;
+        folder: string;
+    };
 }
 declare class User {
     nickname: string;
@@ -432,15 +439,26 @@ declare class ChatSystemMessage {
 declare class ImagesRow {
     private html;
     private image;
+    private folder;
+    private nameNode;
     share(): void;
     usePersona(): void;
-    constructor(image: ImageLink);
+    delete(): void;
+    renameFolder(): void;
+    rename(): void;
+    constructor(image: ImageLink, folder: ImagesFolder);
     getHTML(): HTMLElement;
 }
 declare class ImagesFolder {
     private html;
+    private name;
+    private folderContainer;
     constructor(images: Array<ImageLink>);
+    getName(): string;
+    open(): void;
+    toggle(): void;
     getHTML(): HTMLElement;
+    considerSuicide(): void;
 }
 declare class SheetStyle {
     private css;
@@ -808,12 +826,15 @@ declare module DB.SheetDB {
     function updateFromObject(obj: Array<Object>): void;
 }
 declare module DB.ImageDB {
+    function removeImage(img: ImageLink): void;
+    function considerSaving(): void;
     function getImages(): ImageLink[];
     function getImageByName(name: string): ImageLink;
     function getImageByLink(url: string): ImageLink;
     function hasImageByName(name: string): boolean;
     function hasImageByLink(url: string): boolean;
     function getImagesByFolder(): Array<Array<ImageLink>>;
+    function exportAsObject(): any[];
     function updateFromObject(obj: Array<Object>): void;
     function addImage(img: ImageLink): void;
     function addImages(imgs: Array<ImageLink>): void;
@@ -919,6 +940,7 @@ declare module Dropbox {
 declare module UI.Images {
     function callSelf(): void;
     function printImages(): void;
+    function stayInFolder(name: string): void;
     function printError(data: any, onLoad: boolean): void;
     function callDropbox(): void;
     function addDropbox(files: any): void;
@@ -1144,6 +1166,7 @@ declare module Server.Chat.Memory {
 }
 declare module Server.Storage {
     function requestImages(cbs?: Listener, cbe?: Listener): void;
+    function sendImages(cbs?: Listener, cbe?: Listener): void;
 }
 declare module Server.Sheets {
     function updateLists(cbs?: Listener, cbe?: Listener): void;

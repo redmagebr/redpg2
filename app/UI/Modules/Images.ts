@@ -12,6 +12,8 @@ module UI.Images {
     target.removeChild(saveError);
     target.removeChild(loadError);
 
+    var autoFolder : String = null;
+
     function emptyTarget (){
         while (target.firstChild !== null) {
             target.removeChild(target.lastChild);
@@ -39,8 +41,19 @@ module UI.Images {
 
         for (var i = 0; i < images.length; i++) {
             var folder = new ImagesFolder(images[i]);
+
+            if (folder.getName() === autoFolder) {
+                folder.open();
+            }
+
             target.appendChild(folder.getHTML());
         }
+
+        autoFolder = null;
+    }
+
+    export function stayInFolder (name : string) {
+        autoFolder = name;
     }
 
     export function printError (data, onLoad : boolean) {
@@ -65,6 +78,39 @@ module UI.Images {
     }
 
     export function addDropbox (files) {
-        console.log(files);
+        var folders : Array<string> = [];
+
+        var links : Array<ImageLink> = [];
+        for (var i = 0; i < files.length; i++) {
+            var originalName = files[i]['name'].substring(0, files[i]['name'].lastIndexOf('.'));;
+            var originalUrl = Server.URL.fixURL(files[i]['link']);
+
+            var name;
+            var folderName;
+            var hiphenPos = originalName.indexOf("-");
+            if (hiphenPos === -1) {
+                folderName = "";
+                name = originalName.trim();
+            } else {
+                folderName = originalName.substr(0, hiphenPos).trim();
+                name = originalName.substr(hiphenPos+1, originalName.length - (hiphenPos+1)).trim();
+            }
+
+            var link = new ImageLink(name, originalUrl, folderName);
+            links.push(link);
+
+            if (folders.indexOf(folderName) === -1) {
+                folders.push(folderName);
+            }
+        }
+        DB.ImageDB.addImages(links);
+
+        if (folders.length === 1) {
+            autoFolder = folders[0];
+        } else {
+            autoFolder = null;
+        }
+
+        printImages();
     }
 }

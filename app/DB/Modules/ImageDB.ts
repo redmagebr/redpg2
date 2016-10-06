@@ -1,6 +1,26 @@
 module DB.ImageDB {
     var images : Array<ImageLink> = [];
     var changeTrigger : Trigger = new Trigger();
+    var delayedStore : Number = null;
+    var delayedStoreTimeout = 3000;
+
+    export function removeImage (img : ImageLink) {
+        var idx = images.indexOf(img);
+        if (idx === -1) {
+            console.warn("[ImageDB] Attempt to remove unregistered image. Ignoring. Offender: ", img);
+            return;
+        }
+        images.splice(idx, 1);
+
+        considerSaving();
+    }
+
+    export function considerSaving () {
+        if (delayedStore !== null) {
+            clearTimeout(<number> delayedStore);
+        }
+        delayedStore = setTimeout(function () { Server.Storage.sendImages(); }, delayedStoreTimeout);
+    }
 
     export function getImages () {
         return images;
@@ -44,12 +64,30 @@ module DB.ImageDB {
                 folders[images[i].getFolder()].push(images[i]);
             }
         }
+
         result.sort(function (a : Array<ImageLink>,b : Array<ImageLink>) {
             if (a[0].getFolder() < b[0].getFolder()) return -1;
             if (a[0].getFolder() > b[0].getFolder()) return 1;
             return 0;
         });
+
+        for (var i = 0; i < result.length; i++) {
+            result[i].sort(function (a : ImageLink, b : ImageLink) {
+                if (a.getName() < b.getName()) return -1;
+                if (a.getName() > b.getName()) return 1;
+                return 0;
+            });
+        }
+
         return result;
+    }
+
+    export function exportAsObject () {
+        var arr = [];
+        for (var i = 0; i < images.length; i++) {
+            arr.push(images[i].exportAsObject());
+        }
+        return arr;
     }
 
     export function updateFromObject (obj : Array<Object>) {
@@ -78,7 +116,7 @@ module DB.ImageDB {
 
     export function addImage (img : ImageLink) {
         images.push(img);
-        changeTrigger.trigger(images);
+        considerSaving();
     }
 
     export function addImages (imgs : Array<ImageLink>) {
@@ -86,6 +124,7 @@ module DB.ImageDB {
             images.push(imgs[i]);
         }
         changeTrigger.trigger(images);
+        Server.Storage.sendImages();
     }
 
     export function triggerChange (image : ImageLink) {

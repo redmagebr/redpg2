@@ -4,15 +4,17 @@ module Server.Images {
     var emptyCallback : Function = function () {};
 
     export function getImages (cbs? : Listener, cbe? : Listener) {
-        var success : Listener = <Listener> {
-            cbs : cbs,
-            handleEvent : function (response, xhr) {
-                // response.images = ARRAY <objeto>    folder: "" id: NEGATIVO name: "" url: ""
-                // response.imagess3 = ARRAY <objeto> folder   name   size   uploader   uuid
-                // response.space = FreeSpace, TotalSpace, UsedSpace
-                if (this.cbs !== undefined) this.cbs.handleEvent(response, xhr);
-            }
-        };
+        // var success : Listener = <Listener> {
+        //     cbs : cbs,
+        //     handleEvent : function (response, xhr) {
+        //         // response.images = ARRAY <objeto>    folder: "" id: NEGATIVO name: "" url: ""
+        //         // response.imagess3 = ARRAY <objeto> folder   name   size   uploader   uuid
+        //         // response.space = FreeSpace, TotalSpace, UsedSpace
+        //         if (this.cbs !== undefined) this.cbs.handleEvent(response, xhr);
+        //     }
+        // };
+
+        var success = cbs === undefined ? emptyCallback : cbs;
 
         var error = cbe === undefined ? emptyCallback : cbe;
 

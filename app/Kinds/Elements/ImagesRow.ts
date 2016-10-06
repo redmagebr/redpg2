@@ -1,6 +1,8 @@
 class ImagesRow {
     private html : HTMLElement;
     private image : ImageLink;
+    private folder : ImagesFolder;
+    private nameNode : Text;
 
     //     .imagesRow
     //         %a.imagesLeftButton.icons-imagesShare
@@ -16,11 +18,35 @@ class ImagesRow {
     }
 
     public usePersona () {
-        UI.Chat.PersonaDesigner.createPersona(this.image.getName(), this.image.getLink());
-        UI.Chat.PersonaManager.createAndUsePersona(this.image.getName(), this.image.getLink());
+        UI.Chat.PersonaDesigner.createPersona(this.image.getName().replace(/ *\([^)]*\) */, '').trim(), this.image.getLink());
+        UI.Chat.PersonaManager.createAndUsePersona(this.image.getName().replace(/ *\([^)]*\) */, '').trim(), this.image.getLink());
     }
 
-    constructor (image : ImageLink) {
+    public delete () {
+        this.html.parentElement.removeChild(this.html);
+        this.folder.considerSuicide();
+        DB.ImageDB.removeImage(this.image);
+    }
+
+    public renameFolder () {
+        var newName = prompt(UI.Language.getLanguage().getLingo("_IMAGESRENAMEFOLDERPROMPT_", {languagea : this.image.getName(), languageb : this.image.getFolder()}));
+        if (newName === null) {
+            return;
+        }
+        this.image.setFolder(newName.trim());
+    }
+
+    public rename () {
+        var newName = prompt(UI.Language.getLanguage().getLingo("_IMAGESRENAMEPROMPT_", {languagea : this.image.getName()}));
+        if (newName === null || newName === "") {
+            return;
+        }
+        this.image.setName(newName);
+        this.nameNode.nodeValue = this.image.getName();
+    }
+
+    constructor (image : ImageLink, folder : ImagesFolder) {
+        this.folder = folder;
         this.image = image;
 
         var imageContainer = document.createElement("div");
@@ -64,11 +90,25 @@ class ImagesRow {
         deleteButton.classList.add("icons-imagesDelete");
         UI.Language.addLanguageTitle(deleteButton, "_IMAGESDELETE_");
 
+        deleteButton.addEventListener("click", <EventListenerObject> {
+            row : this,
+            handleEvent : function () {
+                this.row.delete();
+            }
+        });
+
         // RENAME
         var renameButton = document.createElement("a");
         renameButton.classList.add("imagesRightButton");
         renameButton.classList.add("icons-imagesRename");
         UI.Language.addLanguageTitle(renameButton, "_IMAGESRENAME_");
+
+        renameButton.addEventListener("click", <EventListenerObject> {
+            row : this,
+            handleEvent : function () {
+                this.row.rename();
+            }
+        });
 
         // FOLDER
         var folderButton = document.createElement("a");
@@ -76,9 +116,18 @@ class ImagesRow {
         folderButton.classList.add("icons-imagesFolder");
         UI.Language.addLanguageTitle(folderButton, "_IMAGESFOLDER_");
 
+        folderButton.addEventListener("click", <EventListenerObject> {
+            row : this,
+            handleEvent : function () {
+                this.row.renameFolder();
+            }
+        });
+
         var imageTitle = document.createElement("a");
         imageTitle.classList.add("imagesRowTitle");
-        imageTitle.appendChild(document.createTextNode(image.getName()));
+        var nameNode = document.createTextNode(image.getName());
+        imageTitle.appendChild(nameNode);
+        this.nameNode = nameNode;
 
         UI.Language.markLanguage(shareButton, viewButton, personaButton, deleteButton, renameButton, folderButton);
 
