@@ -929,6 +929,9 @@ var ChatWsController = (function () {
     ChatWsController.prototype.sendMessage = function (message) {
         this.socket.send("message", message.exportAsObject());
     };
+    ChatWsController.prototype.saveMemory = function (memory) {
+        this.socket.send("memory", memory);
+    };
     ChatWsController.prototype.addCloseListener = function (obj) {
         this.socket.addCloseListener(obj);
     };
@@ -1085,6 +1088,7 @@ var MemoryCombat = (function (_super) {
         this.triggerChange();
     };
     MemoryCombat.prototype.exportAsObject = function () {
+        return null;
     };
     MemoryCombat.prototype.storeValue = function (obj) {
     };
@@ -1092,6 +1096,57 @@ var MemoryCombat = (function (_super) {
         return null;
     };
     return MemoryCombat;
+}(TrackerMemory));
+var MemoryPica = (function (_super) {
+    __extends(MemoryPica, _super);
+    function MemoryPica() {
+        _super.apply(this, arguments);
+        this.picaAllowed = true;
+        this.updateUnderway = false;
+        this.changeDetected = false;
+    }
+    MemoryPica.prototype.reset = function () {
+        this.picaAllowed = true;
+    };
+    MemoryPica.prototype.getValue = function () {
+        return this;
+    };
+    MemoryPica.prototype.picaAllowedStore = function (isIt) {
+        isIt = isIt === true;
+        if (isIt !== this.picaAllowed) {
+            this.picaAllowed = isIt;
+            if (this.updateUnderway) {
+                this.changeDetected = true;
+            }
+            else {
+                this.triggerChange();
+            }
+        }
+    };
+    MemoryPica.prototype.storeValue = function (values) {
+        if (!Array.isArray(values) || values.length < MemoryPica.fieldOrder.length) {
+            console.warn("[ROOMMEMMORY] [MemoryPica] Invalid store operation requested. Ignoring.");
+            return;
+        }
+        this.changeDetected = false;
+        this.updateUnderway = true;
+        for (var i = 0; i < MemoryPica.fieldOrder.length; i++) {
+            this[MemoryPica.fieldOrder[i] + "Store"](values[i]);
+        }
+        if (this.changeDetected) {
+            this.triggerChange();
+        }
+        this.updateUnderway = false;
+    };
+    MemoryPica.prototype.exportAsObject = function () {
+        var result = [];
+        for (var i = 0; i < MemoryPica.fieldOrder.length; i++) {
+            result.push(this[MemoryPica.fieldOrder[i]]);
+        }
+        return result;
+    };
+    MemoryPica.fieldOrder = ["picaAllowed"];
+    return MemoryPica;
 }(TrackerMemory));
 var MemoryVersion = (function (_super) {
     __extends(MemoryVersion, _super);
@@ -1110,7 +1165,6 @@ var MemoryVersion = (function (_super) {
     };
     MemoryVersion.prototype.exportAsObject = function () {
         return Server.Chat.Memory.version;
-        ;
     };
     return MemoryVersion;
 }(TrackerMemory));
@@ -7368,6 +7422,15 @@ var Server;
             }
         }
         Chat.sendMessage = sendMessage;
+        function saveMemory(memory) {
+            if (Chat.currentController.isReady()) {
+                Chat.currentController.saveMemory(memory);
+            }
+            else {
+                console.warn("[CHAT] Attempt to save memory while disconnected. Ignoring. Offending Memory:", memory);
+            }
+        }
+        Chat.saveMemory = saveMemory;
         function hasRoom() {
             return currentRoom !== null;
         }
@@ -7528,6 +7591,7 @@ var Server;
         var Memory;
         (function (Memory) {
             var configList = {};
+            var readableConfigList = {};
             var changeTrigger = new Trigger();
             Memory.version = 2;
             function addChangeListener(f) {
@@ -7540,15 +7604,23 @@ var Server;
             Memory.getConfig = getConfig;
             function registerChangeListener(id, listener) {
                 if (configList[id] === undefined) {
-                    console.warn("[ROOMMEMORY] Attempt to register a listener to unregistered configuration at " + id + ". Offending listener:", listener);
+                    console.warn("[RoomMemory] Attempt to register a listener to unregistered configuration at " + id + ". Offending listener:", listener);
                     return;
                 }
                 configList[id].addChangeListener(listener);
             }
             Memory.registerChangeListener = registerChangeListener;
-            function registerConfiguration(id, config) {
+            function getConfiguration(name) {
+                if (typeof readableConfigList[name] !== "undefined") {
+                    return readableConfigList[name];
+                }
+                console.warn("[RoomMemory] Attempt to retrieve invalid memory " + name + ", returning", null);
+                return null;
+            }
+            Memory.getConfiguration = getConfiguration;
+            function registerConfiguration(id, name, config) {
                 if (configList[id] !== undefined) {
-                    console.warn("[ROOMMEMORY] Attempt to overwrite registered Configuration at " + id + ". Offending configuration:", config);
+                    console.warn("[RoomMemory] Attempt to overwrite registered Configuration at " + id + ". Offending configuration:", config);
                     return;
                 }
                 configList[id] = config;
@@ -7557,15 +7629,19 @@ var Server;
                     id: id,
                     handleEvent: function (memo) {
                         this.trigger.trigger(memo, id);
-                        console.debug("[ROOMMEMORY] Global change triggered by " + id + ".");
+                        console.debug("[RoomMemory] Global change triggered by " + id + ".");
                     }
                 });
+                readableConfigList[name] = config;
             }
             Memory.registerConfiguration = registerConfiguration;
             function exportAsObject() {
                 var result = {};
                 for (var key in configList) {
-                    result[key] = configList[key].getValue();
+                    var val = configList[key].exportAsObject();
+                    if (val !== null) {
+                        result[key] = val;
+                    }
                 }
                 return result;
             }
@@ -7579,7 +7655,7 @@ var Server;
                         configList[key].storeValue(obj[key]);
                     }
                 }
-                console.debug("[ROOMMEMORY] Updated values from:", obj);
+                console.debug("[RoomMemory] Updated values from:", obj);
             }
             Memory.updateFromObject = updateFromObject;
             function saveMemory() {
@@ -7588,7 +7664,8 @@ var Server;
                     var user = room.getMe();
                     if (user.isStoryteller()) {
                         var memoryString = JSON.stringify(exportAsObject());
-                        console.warn(memoryString);
+                        console.debug("[RoomMemory] Memory string: " + memoryString);
+                        Server.Chat.saveMemory(memoryString);
                     }
                 }
             }
@@ -7596,8 +7673,9 @@ var Server;
         })(Memory = Chat.Memory || (Chat.Memory = {}));
     })(Chat = Server.Chat || (Server.Chat = {}));
 })(Server || (Server = {}));
-Server.Chat.Memory.registerConfiguration("c", new MemoryCombat());
-Server.Chat.Memory.registerConfiguration("v", new MemoryVersion());
+Server.Chat.Memory.registerConfiguration("c", "Combat", new MemoryCombat());
+Server.Chat.Memory.registerConfiguration("v", "Version", new MemoryVersion());
+Server.Chat.Memory.registerConfiguration("p", "Pica", new MemoryPica());
 var Server;
 (function (Server) {
     var Storage;

@@ -32,6 +32,7 @@
 
 /// <reference path='Classes/TrackerMemory.ts' />
 /// <reference path='Classes/Memory/MemoryCombat.ts' />
+/// <reference path='Classes/Memory/MemoryPica.ts' />
 /// <reference path='Classes/Memory/MemoryVersion.ts' />
 /// <reference path='Classes/Memory/Combat/CombatEffect.ts' />
 /// <reference path='Classes/Memory/Combat/CombatParticipant.ts' />

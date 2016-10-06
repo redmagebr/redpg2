@@ -12,7 +12,7 @@ class MemoryCombat extends TrackerMemory {
     }
 
     public exportAsObject () {
-
+        return null;
     }
 
     public storeValue (obj : Object) {

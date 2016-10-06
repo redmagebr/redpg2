@@ -136,6 +136,14 @@ module Server.Chat {
         }
     }
 
+    export function saveMemory (memory : string) {
+        if (currentController.isReady()) {
+            currentController.saveMemory(memory);
+        } else {
+            console.warn("[CHAT] Attempt to save memory while disconnected. Ignoring. Offending Memory:", memory);
+        }
+    }
+
     export function hasRoom () : boolean {
         return currentRoom !== null;
     }

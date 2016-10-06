@@ -56,6 +56,10 @@ class ChatWsController implements ChatController {
         this.socket.send("message", message.exportAsObject());
     }
 
+    public saveMemory (memory : string) {
+        this.socket.send("memory", memory);
+    }
+
     public addCloseListener (obj : Listener) {
         this.socket.addCloseListener(obj);
     }

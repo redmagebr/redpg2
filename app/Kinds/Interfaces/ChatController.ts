@@ -4,6 +4,7 @@ interface ChatController {
     sendStatus (info : PersonaInfo) : void;
     sendPersona (info : PersonaInfo) : void;
     sendMessage (message : Message) : void;
+    saveMemory (memory : string) : void;
     addCloseListener (obj : Listener) : void;
     addOpenListener (obj : Listener) : void;
     addMessageListener (type : string, obj : Listener) : void;

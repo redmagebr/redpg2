@@ -30,6 +30,7 @@ interface ChatController {
     sendStatus(info: PersonaInfo): void;
     sendPersona(info: PersonaInfo): void;
     sendMessage(message: Message): void;
+    saveMemory(memory: string): void;
     addCloseListener(obj: Listener): void;
     addOpenListener(obj: Listener): void;
     addMessageListener(type: string, obj: Listener): void;
@@ -256,6 +257,7 @@ declare class ChatWsController implements ChatController {
     sendStatus(info: PersonaInfo): void;
     sendPersona(info: PersonaInfo): void;
     sendMessage(message: Message): void;
+    saveMemory(memory: string): void;
     addCloseListener(obj: Listener): void;
     addOpenListener(obj: Listener): void;
     addMessageListener(type: string, obj: Listener): void;
@@ -306,9 +308,20 @@ declare class MemoryCombat extends TrackerMemory {
     private round;
     private turn;
     reset(): void;
-    exportAsObject(): void;
+    exportAsObject(): any;
     storeValue(obj: Object): void;
     getValue(): any;
+}
+declare class MemoryPica extends TrackerMemory {
+    private picaAllowed;
+    private updateUnderway;
+    private changeDetected;
+    private static fieldOrder;
+    reset(): void;
+    getValue(): this;
+    picaAllowedStore(isIt: boolean): void;
+    storeValue(values: Array<any>): void;
+    exportAsObject(): Array<any>;
 }
 declare class MemoryVersion extends TrackerMemory {
     private importVersion;
@@ -1102,6 +1115,7 @@ declare module Server.Chat {
     function sendPersona(info: PersonaInfo): void;
     function isConnected(): boolean;
     function sendMessage(message: Message): void;
+    function saveMemory(memory: string): void;
     function hasRoom(): boolean;
     function getRoom(): Room;
     function getAllMessages(roomid: number, cbs?: Listener, cbe?: Listener): void;
@@ -1118,7 +1132,8 @@ declare module Server.Chat.Memory {
     function addChangeListener(f: Function | Listener): void;
     function getConfig(id: string): TrackerMemory;
     function registerChangeListener(id: string, listener: Listener): void;
-    function registerConfiguration(id: string, config: TrackerMemory): void;
+    function getConfiguration(name: string): TrackerMemory;
+    function registerConfiguration(id: string, name: string, config: TrackerMemory): void;
     function exportAsObject(): {
         [id: string]: any;
     };

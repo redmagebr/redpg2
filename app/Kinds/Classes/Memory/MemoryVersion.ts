@@ -14,6 +14,6 @@ class MemoryVersion extends TrackerMemory {
     }
 
     public exportAsObject () {
-        return Server.Chat.Memory.version;;
+        return Server.Chat.Memory.version;
     }
 }
