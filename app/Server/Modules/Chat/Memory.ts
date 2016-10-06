@@ -61,6 +61,7 @@ module Server.Chat.Memory {
         return result;
     }
 
+    // TODO: Trigger all changes at once
     export function updateFromObject (obj : {[id : string] : any}) {
         for (var key in configList) {
             if (obj[key] === undefined) {
@@ -72,6 +73,7 @@ module Server.Chat.Memory {
         console.debug("[RoomMemory] Updated values from:", obj);
     }
 
+    // TODO: Don't save the same thing multiple times
     export function saveMemory () {
         var room = Server.Chat.getRoom();
         if (room !== null) {
