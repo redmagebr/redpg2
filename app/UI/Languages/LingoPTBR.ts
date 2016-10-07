@@ -68,6 +68,14 @@ ptbr.setLingo("_IMAGESRENAMEFOLDERPROMPT_", "Digite a nova pasta para \"%a\", at
 ptbr.setLingo("", "");
 ptbr.setLingo("", "");
 
+// PICAS
+ptbr.setLingo("_PICASHARE_", "Compartilhar no Chat");
+ptbr.setLingo("", "");
+ptbr.setLingo("", "");
+ptbr.setLingo("", "");
+ptbr.setLingo("", "");
+
+
 // Fichas
 ptbr.setLingo("_SHEETSTITLE_", "Fichas");
 ptbr.setLingo("_SHEETSEXP01_", "Fichas são algo que mestres e seus jogadores podem guardar no sistema, garantindo que todos estejam vendo a mesma versão desse recurso.");

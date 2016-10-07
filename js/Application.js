@@ -4344,6 +4344,11 @@ ptbr.setLingo("_IMAGESRENAMEPROMPT_", "Digite o novo nome para \"%a\":");
 ptbr.setLingo("_IMAGESRENAMEFOLDERPROMPT_", "Digite a nova pasta para \"%a\", atualmente em \"%b\":");
 ptbr.setLingo("", "");
 ptbr.setLingo("", "");
+ptbr.setLingo("_PICASHARE_", "Compartilhar no Chat");
+ptbr.setLingo("", "");
+ptbr.setLingo("", "");
+ptbr.setLingo("", "");
+ptbr.setLingo("", "");
 ptbr.setLingo("_SHEETSTITLE_", "Fichas");
 ptbr.setLingo("_SHEETSEXP01_", "Fichas são algo que mestres e seus jogadores podem guardar no sistema, garantindo que todos estejam vendo a mesma versão desse recurso.");
 ptbr.setLingo("_SHEETSEXP02_", "Normalmente são usadas para guardar as informações de personagens, mas têm o potencial para guardar qualquer tipo de informação.");
@@ -7105,6 +7110,31 @@ var UI;
             }
         })(PersonaDesigner = Chat.PersonaDesigner || (Chat.PersonaDesigner = {}));
     })(Chat = UI.Chat || (UI.Chat = {}));
+})(UI || (UI = {}));
+var UI;
+(function (UI) {
+    var Pica;
+    (function (Pica) {
+        var $pictureWindow = $(document.getElementById("pictureWindow"));
+        var $loadingWindow = $(document.getElementById("pictureLoading"));
+        var pictureContainer = document.getElementById("pictureContainer");
+        function callSelf() {
+            $pictureWindow.stop().fadeIn(Application.Config.getConfig("animTime").getValue());
+        }
+        Pica.callSelf = callSelf;
+        function close() {
+            $pictureWindow.stop().fadeOut(Application.Config.getConfig("animTime").getValue());
+        }
+        Pica.close = close;
+        function startLoading() {
+            $loadingWindow.stop().fadeIn(Application.Config.getConfig("animTime").getValue());
+        }
+        Pica.startLoading = startLoading;
+        function stopLoading() {
+            $loadingWindow.stop().fadeOut(Application.Config.getConfig("animTime").getValue());
+        }
+        Pica.stopLoading = stopLoading;
+    })(Pica = UI.Pica || (UI.Pica = {}));
 })(UI || (UI = {}));
 var Server;
 (function (Server) {

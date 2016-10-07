@@ -53,17 +53,18 @@
       #rightLoading.rightSideWindow.flexCentering.dontDetach
         %a.loadingCircleWhite.centeredBlock
       -# Map
-      #pictureWindow.rightSideWindow.dontDetach{:style=>"display: none"}
+      #pictureWindow.rightSideWindow.dontDetach
         #pictureLoading.flexCentering{:style=>"display: none"}
           %a.loadingCircleWhite.centeredBlock
         #pictureContainer
-          %a#tokenExample.pictureToken
-          #pictureMouseCatcher
-          %canvas#markCanvas
-          %canvas#artCanvas
-          %canvas#gridCanvas
-          %canvas#fogCanvas
-          %img#mapBackground
+        #pictureToolsContainer
+          %a.leftPicaToolButton.language.icons-picaShare{:data=>{:titlelingo=>"_PICASHARE_"}}
+          %a.rightPicaToolButton
+          %a.picaTool="Compartilhar"
+          %a.picaToolButton
+          %a.picaToolButton
+          %a.picaToolButton
+          %a.picaToolButton
       -# Left Side Windows
       -############################################
       -############## CHANGELOG

@@ -15,3 +15,60 @@
   position: absolute;
   z-index: 1;
 }
+
+#pictureToolsContainer {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  background-color: rgba(255,255,255,0.3);
+  border-top: 1px solid #000;
+  height: 26px;
+  text-align: center;
+}
+
+.picaTool {
+  @extend .buttonBehavior;
+  @extend .textLink;
+  height: 26px;
+  line-height: 26px;
+  padding: 0px;
+  padding-left: 4px;
+  padding-right: 4px;
+  display: inline-block;
+  margin: 0px;
+  margin-left: 3px;
+  margin-right: 3px;
+  vertical-align: top;
+}
+
+
+.picaToolButton {
+  @extend .picaTool;
+  width: 26px;
+  padding: 0px;
+}
+
+.leftPicaTool {
+  @extend .picaTool;
+  display: block;
+  float: left;
+  margin-left: 0px;
+}
+
+.leftPicaToolButton {
+  @extend .leftPicaTool;
+  @extend .picaToolButton;
+}
+
+.rightPicaTool {
+  @extend .picaTool;
+  display: block;
+  float: right;
+  margin-right: 0px;
+}
+
+.rightPicaToolButton {
+  @extend .rightPicaTool;
+  @extend .picaToolButton;
+}

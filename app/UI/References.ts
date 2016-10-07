@@ -25,6 +25,7 @@
 /// <reference path='Modules/Chat/Notification.ts' />
 /// <reference path='Modules/Chat/PersonaManager.ts' />
 /// <reference path='Modules/Chat/PersonaDesigner.ts' />
+/// <reference path='Modules/Pica.ts' />
 
 // Message Classes
 /// <reference path='Message/References.ts' />

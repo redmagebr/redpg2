@@ -1093,6 +1093,12 @@ declare module UI.Chat.PersonaDesigner {
     function removeChoice(choice: ChatAvatarChoice): void;
     function usePersona(name: string, avatar: String): void;
 }
+declare module UI.Pica {
+    function callSelf(): void;
+    function close(): void;
+    function startLoading(): void;
+    function stopLoading(): void;
+}
 declare module Server {
     var IMAGE_URL: string;
     var APPLICATION_URL: string;
