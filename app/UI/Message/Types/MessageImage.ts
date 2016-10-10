@@ -1,5 +1,18 @@
 class MessageImage extends Message {
     public module : string = "image";
+    private openedBefore = false;
+
+    public onPrint () {
+        if (this.openedBefore) return;
+        if (UI.Chat.doAutomation()) {
+            var cfg = Application.Config.getConfig("autoImage").getValue();
+            if (cfg === 0) return;
+            if (this.getUser().isStoryteller() || cfg === 2) {
+                this.clickLink();
+                this.openedBefore = true;
+            }
+        }
+    }
 
     public createHTML () {
         var p = document.createElement("p");

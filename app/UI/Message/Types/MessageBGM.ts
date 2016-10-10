@@ -8,7 +8,8 @@ class MessageBGM extends Message {
         }
         if (UI.Chat.doAutomation()) {
             var cfg = Application.Config.getConfig("autoBGM").getValue();
-            if (cfg === 0 || this.getUser().isStoryteller() || cfg === 2) {
+            if (cfg === 0) return;
+            if (this.getUser().isStoryteller() || cfg === 2) {
                 UI.SoundController.playBGM(this.getMsg());
                 this.playedBefore = true;
             }

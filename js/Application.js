@@ -2848,7 +2848,9 @@ var MessageSE = (function (_super) {
         }
         if (UI.Chat.doAutomation()) {
             var cfg = Application.Config.getConfig("autoSE").getValue();
-            if (cfg === 0 || this.getUser().isStoryteller() || cfg === 2) {
+            if (cfg === 0)
+                return;
+            if (this.getUser().isStoryteller() || cfg === 2) {
                 UI.SoundController.playSE(this.getMsg());
                 this.playedBefore = true;
             }
@@ -2895,7 +2897,21 @@ var MessageImage = (function (_super) {
     function MessageImage() {
         _super.apply(this, arguments);
         this.module = "image";
+        this.openedBefore = false;
     }
+    MessageImage.prototype.onPrint = function () {
+        if (this.openedBefore)
+            return;
+        if (UI.Chat.doAutomation()) {
+            var cfg = Application.Config.getConfig("autoImage").getValue();
+            if (cfg === 0)
+                return;
+            if (this.getUser().isStoryteller() || cfg === 2) {
+                this.clickLink();
+                this.openedBefore = true;
+            }
+        }
+    };
     MessageImage.prototype.createHTML = function () {
         var p = document.createElement("p");
         p.classList.add("chatMessageShare");
@@ -2957,7 +2973,9 @@ var MessageBGM = (function (_super) {
         }
         if (UI.Chat.doAutomation()) {
             var cfg = Application.Config.getConfig("autoBGM").getValue();
-            if (cfg === 0 || this.getUser().isStoryteller() || cfg === 2) {
+            if (cfg === 0)
+                return;
+            if (this.getUser().isStoryteller() || cfg === 2) {
                 UI.SoundController.playBGM(this.getMsg());
                 this.playedBefore = true;
             }

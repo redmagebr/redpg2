@@ -717,6 +717,8 @@ declare class MessageSE extends Message {
 }
 declare class MessageImage extends Message {
     module: string;
+    private openedBefore;
+    onPrint(): void;
     createHTML(): HTMLParagraphElement;
     clickLink(): void;
     getName(): any;
