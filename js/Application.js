@@ -4455,7 +4455,6 @@ var DB;
         function updateFromObject(obj) {
             sounds = [];
             var line;
-            console.log(obj);
             if (obj.length > 0 && typeof obj[0]["url"] === "undefined") {
                 console.log("Old version");
                 var rest = [];
@@ -4508,7 +4507,7 @@ var DB;
                 sounds.push(snds[i]);
             }
             changeTrigger.trigger(sounds);
-            Server.Storage.sendImages();
+            Server.Storage.sendSounds();
         }
         SoundDB.addSounds = addSounds;
         function triggerChange(image) {
@@ -4885,9 +4884,9 @@ ptbr.setLingo("_SOUNDSDROPBOXCHOOSER_", "Escolher do Dropbox");
 ptbr.setLingo("_SOUNDSEXP01_", "O sistema sempre irá buscar arquivos de sons na pasta \"/Sounds\". Você precisa estar usando o website de forma offline para colocar sons nessa pasta.");
 ptbr.setLingo("_SOUNDSEXP02_", "Caso você esteja adicionando um link completo para o som em algum servidor, o sistema irá poder tocar esse som de qualquer lugar, tanto online quanto offline.");
 ptbr.setLingo("_SOUNDSISBGM_", "Adicionar como BGM");
-ptbr.setLingo("", "");
-ptbr.setLingo("", "");
-ptbr.setLingo("", "");
+ptbr.setLingo("_SOUNDSNOFOLDERNAME_", "Sem Pasta");
+ptbr.setLingo("_SOUNDSRENAME_", "Renomear");
+ptbr.setLingo("_SOUNDSFOLDER_", "Renomear Pasta");
 ptbr.setLingo("", "");
 ptbr.setLingo("_IMAGESTITLE_", "Fotos");
 ptbr.setLingo("_IMAGESEXP01_", "Imagens ficam anexadas à sua conta e podem ser utilizadas em qualquer seção do RedPG.");
@@ -7779,7 +7778,7 @@ var UI;
                 },
                 linkType: "preview",
                 multiselect: true,
-                extensions: ['MP3', 'MP4', 'M4A', 'AAC', 'OGG', 'WAV', 'WAVE', 'OPUS'],
+                extensions: ['.MP3', '.MP4', '.M4A', '.AAC', '.OGG', '.WAV', '.WAVE', '.OPUS'],
             };
             Dropbox.choose(options);
         }
@@ -8610,6 +8609,7 @@ var Server;
             ajax.setTargetRightWindow();
             ajax.setResponseTypeJSON();
             ajax.data = { action: ACTION_STORE, id: SOUNDS_ID, storage: DB.SoundDB.exportAsObject() };
+            console.log(ajax.data);
             Server.AJAX.requestPage(ajax, success, error);
         }
         Storage.sendSounds = sendSounds;

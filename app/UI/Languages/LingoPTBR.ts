@@ -54,9 +54,9 @@ ptbr.setLingo("_SOUNDSDROPBOXCHOOSER_", "Escolher do Dropbox");
 ptbr.setLingo("_SOUNDSEXP01_", "O sistema sempre irá buscar arquivos de sons na pasta \"/Sounds\". Você precisa estar usando o website de forma offline para colocar sons nessa pasta.");
 ptbr.setLingo("_SOUNDSEXP02_", "Caso você esteja adicionando um link completo para o som em algum servidor, o sistema irá poder tocar esse som de qualquer lugar, tanto online quanto offline.");
 ptbr.setLingo("_SOUNDSISBGM_", "Adicionar como BGM");
-ptbr.setLingo("", "");
-ptbr.setLingo("", "");
-ptbr.setLingo("", "");
+ptbr.setLingo("_SOUNDSNOFOLDERNAME_", "Sem Pasta");
+ptbr.setLingo("_SOUNDSRENAME_", "Renomear");
+ptbr.setLingo("_SOUNDSFOLDER_", "Renomear Pasta");
 ptbr.setLingo("", "");
 
 // Imagens

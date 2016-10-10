@@ -70,7 +70,7 @@ module UI.Sounds {
             },
             linkType: "preview",
             multiselect: true,
-            extensions: ['MP3', 'MP4', 'M4A', 'AAC', 'OGG', 'WAV', 'WAVE', 'OPUS'],
+            extensions: ['.MP3', '.MP4', '.M4A', '.AAC', '.OGG', '.WAV', '.WAVE', '.OPUS'],
         };
         Dropbox.choose(options);
     }

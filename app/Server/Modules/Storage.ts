@@ -72,6 +72,8 @@ module Server.Storage {
 
         ajax.data = {action : ACTION_STORE, id : SOUNDS_ID, storage : DB.SoundDB.exportAsObject()}; // "store"
 
+        console.log(ajax.data);
+
         Server.AJAX.requestPage(ajax, success, error);
     }
 }

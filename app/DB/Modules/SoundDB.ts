@@ -93,7 +93,6 @@ module DB.SoundDB {
     export function updateFromObject (obj : Array<Object>) {
         sounds = [];
         var line;
-        console.log(obj);
         if (obj.length > 0 && typeof obj[0]["url"] === "undefined") {
             console.log("Old version");
             var rest = [];
@@ -143,7 +142,7 @@ module DB.SoundDB {
             sounds.push(snds[i]);
         }
         changeTrigger.trigger(sounds);
-        Server.Storage.sendImages();
+        Server.Storage.sendSounds();
     }
 
     export function triggerChange (image : SoundLink) {
