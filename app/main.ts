@@ -1,5 +1,10 @@
 /// <reference path='References.ts' />
 
+// Dropbox module
+declare module Dropbox {
+    function choose (options);
+}
+
 // Set up language
 UI.Language.searchLanguage();
 

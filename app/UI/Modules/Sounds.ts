@@ -1,10 +1,12 @@
-module UI.Images {
-    document.getElementById("imagesButton").addEventListener("click", function () { UI.Images.callSelf(); });
-    document.getElementById("dropboxImagesButton").addEventListener("click", function () { UI.Images.callDropbox(); });
+module UI.Sounds {
+    document.getElementById("soundsButton").addEventListener("click", function () { UI.Sounds.callSelf(); });
+    document.getElementById("dropboxSoundsButton").addEventListener("click", function () { UI.Sounds.callDropbox(); });
 
-    var target = document.getElementById("imagesTarget");
-    var loadError = document.getElementById("imagesLoadError");
-    var saveError = document.getElementById("imagesSaveError");
+    var bgmInput : HTMLInputElement = <HTMLInputElement> document.getElementById("dropboxSoundsIsBGM");
+
+    var target = document.getElementById("soundsTarget");
+    var loadError = document.getElementById("soundsLoadError");
+    var saveError = document.getElementById("soundsSaveError");
     target.removeChild(saveError);
     target.removeChild(loadError);
 
@@ -17,26 +19,26 @@ module UI.Images {
     }
 
     export function callSelf () {
-        UI.PageManager.callPage(UI.idImages);
+        UI.PageManager.callPage(UI.idSounds);
 
         var cbs = {handleEvent: function () {
-            UI.Images.printImages();
+            UI.Sounds.printSounds();
         }};
 
         var cbe = {handleEvent: function (data) {
-            UI.Images.printError(data, true);
+            UI.Sounds.printError(data, true);
         }};
 
-        Server.Storage.requestImages(cbs, cbe);
+        Server.Storage.requestSounds(cbs, cbe);
     }
 
-    export function printImages () {
+    export function printSounds () {
         emptyTarget();
-        
-        var images = DB.ImageDB.getImagesByFolder();
 
-        for (var i = 0; i < images.length; i++) {
-            var folder = new ImagesFolder(images[i]);
+        var sounds = DB.SoundDB.getSoundsByFolder();
+
+        for (var i = 0; i < sounds.length; i++) {
+            var folder = new SoundsFolder(sounds[i]);
 
             if (folder.getName() === autoFolder) {
                 folder.open();
@@ -64,11 +66,11 @@ module UI.Images {
     export function callDropbox () {
         var options = {
             success: function(files) {
-                UI.Images.addDropbox(files);
+                UI.Sounds.addDropbox(files);
             },
             linkType: "preview",
             multiselect: true,
-            extensions: ['images'],
+            extensions: ['MP3', 'MP4', 'M4A', 'AAC', 'OGG', 'WAV', 'WAVE', 'OPUS'],
         };
         Dropbox.choose(options);
     }
@@ -76,7 +78,7 @@ module UI.Images {
     export function addDropbox (files) {
         var folders : Array<string> = [];
 
-        var links : Array<ImageLink> = [];
+        var links : Array<SoundLink> = [];
         for (var i = 0; i < files.length; i++) {
             var originalName = files[i]['name'].substring(0, files[i]['name'].lastIndexOf('.'));;
             var originalUrl = Server.URL.fixURL(files[i]['link']);
@@ -92,14 +94,14 @@ module UI.Images {
                 name = originalName.substr(hiphenPos+1, originalName.length - (hiphenPos+1)).trim();
             }
 
-            var link = new ImageLink(name, originalUrl, folderName);
+            var link = new SoundLink(name, originalUrl, folderName, bgmInput.checked);
             links.push(link);
 
             if (folders.indexOf(folderName) === -1) {
                 folders.push(folderName);
             }
         }
-        DB.ImageDB.addImages(links);
+        DB.SoundDB.addSounds(links);
 
         if (folders.length === 1) {
             autoFolder = folders[0];
@@ -107,6 +109,6 @@ module UI.Images {
             autoFolder = null;
         }
 
-        printImages();
+        printSounds();
     }
 }

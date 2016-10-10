@@ -14,6 +14,7 @@ module UI {
     export var idHome = "homeSideWindow";
     export var idSheets = "sheetsSideWindow";
     export var idImages = "imagesSideWindow";
+    export var idSounds = "soundsSideWindow";
 
     /**
      * Registered UI Configurations

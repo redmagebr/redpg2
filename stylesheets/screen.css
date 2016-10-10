@@ -1056,7 +1056,7 @@ body {
 }
 
 /* line 71, ../sass/generalView.scss */
-.buttonBehavior:hover, .simpleButton:hover, .textLink:hover, .sheetNameLink:hover, .picaTool:hover, .picaToolButton:hover, .leftPicaToolButton:hover, .rightPicaToolButton:hover, .leftPicaTool:hover, .rightPicaTool:hover, .handleButton:hover, .leftHandleButton:hover, .rightHandleButton:hover, .imagesLeftButton:hover, .imagesRightButton:hover, .imagesFolderTitle:hover, #dropboxImagesButton:hover, .musicPlayerButton:hover, .sheetListGameName:hover, .sheetListFolderName:hover, #avatarUpButton:hover, #avatarDownButton:hover, #chatScrollDown:hover, .chatRightButton:hover, #chatMessageSendButton:hover, #personaAddButton:hover, .personaButton:hover, .diceButton:hover, #chatDiceTower:hover, #chatDiceSubmit:hover, .chatAvatarChoiceBoxUse:hover, .chatAvatarChoiceBoxDelete:hover, .chatWhisperLink:hover, .chatMessageVoteAmount:hover, .xButton:hover {
+.buttonBehavior:hover, .simpleButton:hover, .textLink:hover, .sheetNameLink:hover, .picaTool:hover, .picaToolButton:hover, .leftPicaToolButton:hover, .rightPicaToolButton:hover, .leftPicaTool:hover, .rightPicaTool:hover, .handleButton:hover, .leftHandleButton:hover, .rightHandleButton:hover, .imagesLeftButton:hover, .imagesRightButton:hover, .imagesFolderTitle:hover, #dropboxImagesButton:hover, .musicPlayerButton:hover, #dropboxBGMInput:hover, #dropboxSoundsButton:hover, .sheetListGameName:hover, .sheetListFolderName:hover, #avatarUpButton:hover, #avatarDownButton:hover, #chatScrollDown:hover, .chatRightButton:hover, #chatMessageSendButton:hover, #personaAddButton:hover, .personaButton:hover, .diceButton:hover, #chatDiceTower:hover, #chatDiceSubmit:hover, .chatAvatarChoiceBoxUse:hover, .chatAvatarChoiceBoxDelete:hover, .chatWhisperLink:hover, .chatMessageVoteAmount:hover, .xButton:hover {
   cursor: pointer;
 }
 
@@ -1095,7 +1095,7 @@ body {
 }
 
 /* line 109, ../sass/generalView.scss */
-.buttonBehavior:hover, .simpleButton:hover, .textLink:hover, .sheetNameLink:hover, .picaTool:hover, .picaToolButton:hover, .leftPicaToolButton:hover, .rightPicaToolButton:hover, .leftPicaTool:hover, .rightPicaTool:hover, .handleButton:hover, .leftHandleButton:hover, .rightHandleButton:hover, .imagesLeftButton:hover, .imagesRightButton:hover, .imagesFolderTitle:hover, #dropboxImagesButton:hover, .musicPlayerButton:hover, .sheetListGameName:hover, .sheetListFolderName:hover, #avatarUpButton:hover, #avatarDownButton:hover, #chatScrollDown:hover, .chatRightButton:hover, #chatMessageSendButton:hover, #personaAddButton:hover, .personaButton:hover, .diceButton:hover, #chatDiceTower:hover, #chatDiceSubmit:hover, .chatAvatarChoiceBoxUse:hover, .chatAvatarChoiceBoxDelete:hover, .chatWhisperLink:hover, .chatMessageVoteAmount:hover, .xButton:hover {
+.buttonBehavior:hover, .simpleButton:hover, .textLink:hover, .sheetNameLink:hover, .picaTool:hover, .picaToolButton:hover, .leftPicaToolButton:hover, .rightPicaToolButton:hover, .leftPicaTool:hover, .rightPicaTool:hover, .handleButton:hover, .leftHandleButton:hover, .rightHandleButton:hover, .imagesLeftButton:hover, .imagesRightButton:hover, .imagesFolderTitle:hover, #dropboxImagesButton:hover, .musicPlayerButton:hover, #dropboxBGMInput:hover, #dropboxSoundsButton:hover, .sheetListGameName:hover, .sheetListFolderName:hover, #avatarUpButton:hover, #avatarDownButton:hover, #chatScrollDown:hover, .chatRightButton:hover, #chatMessageSendButton:hover, #personaAddButton:hover, .personaButton:hover, .diceButton:hover, #chatDiceTower:hover, #chatDiceSubmit:hover, .chatAvatarChoiceBoxUse:hover, .chatAvatarChoiceBoxDelete:hover, .chatWhisperLink:hover, .chatMessageVoteAmount:hover, .xButton:hover {
   cursor: pointer;
 }
 
@@ -1151,7 +1151,7 @@ body {
 
 /* UNselectable */
 /* line 159, ../sass/generalView.scss */
-.unselectable, .buttonBehavior, .simpleButton, .textLink, .sheetNameLink, .picaTool, .picaToolButton, .leftPicaToolButton, .rightPicaToolButton, .leftPicaTool, .rightPicaTool, .handleButton, .leftHandleButton, .rightHandleButton, .imagesLeftButton, .imagesRightButton, .imagesFolderTitle, #dropboxImagesButton, .musicPlayerButton, .sheetListGameName, .sheetListFolderName, #avatarUpButton, #avatarDownButton, #chatScrollDown, .chatRightButton, #chatMessageSendButton, #personaAddButton, .personaButton, .diceButton, #chatDiceTower, #chatDiceSubmit, .chatAvatarChoiceBoxUse, .chatAvatarChoiceBoxDelete, .chatWhisperLink, .chatMessageVoteAmount, .xButton {
+.unselectable, .buttonBehavior, .simpleButton, .textLink, .sheetNameLink, .picaTool, .picaToolButton, .leftPicaToolButton, .rightPicaToolButton, .leftPicaTool, .rightPicaTool, .handleButton, .leftHandleButton, .rightHandleButton, .imagesLeftButton, .imagesRightButton, .imagesFolderTitle, #dropboxImagesButton, .musicPlayerButton, #dropboxBGMInput, #dropboxSoundsButton, .sheetListGameName, .sheetListFolderName, #avatarUpButton, #avatarDownButton, #chatScrollDown, .chatRightButton, #chatMessageSendButton, #personaAddButton, .personaButton, .diceButton, #chatDiceTower, #chatDiceSubmit, .chatAvatarChoiceBoxUse, .chatAvatarChoiceBoxDelete, .chatWhisperLink, .chatMessageVoteAmount, .xButton {
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select: none;
@@ -1379,14 +1379,15 @@ body {
 #imagesUpload {
   display: flex;
   margin-top: 25px;
+  margin-bottom: 25px;
 }
 
-/* line 79, ../sass/mainWindowImages.scss */
+/* line 80, ../sass/mainWindowImages.scss */
 #imagesUploadLeft, #imagesUploadRight {
   flex: 1 0 auto;
 }
 
-/* line 83, ../sass/mainWindowImages.scss */
+/* line 84, ../sass/mainWindowImages.scss */
 #dropboxImagesLogo {
   display: block;
   margin: auto;
@@ -1395,14 +1396,14 @@ body {
   margin-bottom: 15px;
 }
 
-/* line 91, ../sass/mainWindowImages.scss */
+/* line 92, ../sass/mainWindowImages.scss */
 #linkImagesTitle {
   display: block;
   height: 35px;
   text-align: center;
 }
 
-/* line 97, ../sass/mainWindowImages.scss */
+/* line 98, ../sass/mainWindowImages.scss */
 #linkImagesTitleText {
   display: inline-block;
   font-size: 25px;
@@ -1410,7 +1411,7 @@ body {
   line-height: 38px;
 }
 
-/* line 104, ../sass/mainWindowImages.scss */
+/* line 105, ../sass/mainWindowImages.scss */
 #linkImagesIcon {
   display: inline-block;
   height: 35px;
@@ -1418,7 +1419,7 @@ body {
   vertical-align: top;
 }
 
-/* line 111, ../sass/mainWindowImages.scss */
+/* line 112, ../sass/mainWindowImages.scss */
 #dropboxImagesButton {
   display: block;
   width: 170px;
@@ -1432,13 +1433,13 @@ body {
   color: #007ee5;
   font-weight: bold;
 }
-/* line 125, ../sass/mainWindowImages.scss */
+/* line 126, ../sass/mainWindowImages.scss */
 #dropboxImagesButton:hover {
   border: solid 1px #0065b7;
   background-color: #eaeff8;
   color: #008dfa;
 }
-/* line 131, ../sass/mainWindowImages.scss */
+/* line 132, ../sass/mainWindowImages.scss */
 #dropboxImagesButton:active {
   border: solid 1px #003468;
   background-color: #d4d9e1;
@@ -1522,6 +1523,94 @@ body {
   height: 30px;
   display: block;
   float: left;
+}
+
+/* line 1, ../sass/mainWindowSoundList.scss */
+#dropboxBGMInput {
+  text-align: center;
+  display: block;
+  margin: 8px;
+  font-weight: bold;
+  color: #0a0d7e;
+}
+/* line 9, ../sass/mainWindowSoundList.scss */
+#dropboxBGMInput:hover {
+  color: #191a90;
+}
+/* line 13, ../sass/mainWindowSoundList.scss */
+#dropboxBGMInput:active {
+  color: #111289;
+}
+
+/* line 18, ../sass/mainWindowSoundList.scss */
+#soundsUpload {
+  display: flex;
+  margin-top: 25px;
+  margin-bottom: 25px;
+}
+
+/* line 24, ../sass/mainWindowSoundList.scss */
+#soundsUploadLeft, #soundsUploadRight {
+  flex: 1 0 auto;
+}
+
+/* line 28, ../sass/mainWindowSoundList.scss */
+#dropboxSoundsLogo {
+  display: block;
+  margin: auto;
+  width: 150px;
+  height: 35px;
+  margin-bottom: 8px;
+}
+
+/* line 36, ../sass/mainWindowSoundList.scss */
+#linkSoundsTitle {
+  display: block;
+  height: 35px;
+  text-align: center;
+}
+
+/* line 42, ../sass/mainWindowSoundList.scss */
+#linkSoundsTitleText {
+  display: inline-block;
+  font-size: 25px;
+  font-weight: bold;
+  line-height: 38px;
+}
+
+/* line 49, ../sass/mainWindowSoundList.scss */
+#linkSoundsIcon {
+  display: inline-block;
+  height: 35px;
+  width: 35px;
+  vertical-align: top;
+}
+
+/* line 56, ../sass/mainWindowSoundList.scss */
+#dropboxSoundsButton {
+  display: block;
+  width: 170px;
+  text-align: center;
+  font-size: 14px;
+  line-height: 20px;
+  height: 20px;
+  margin: auto;
+  border: solid 1px #004d90;
+  background-color: #f1f6ff;
+  color: #007ee5;
+  font-weight: bold;
+}
+/* line 70, ../sass/mainWindowSoundList.scss */
+#dropboxSoundsButton:hover {
+  border: solid 1px #0065b7;
+  background-color: #eaeff8;
+  color: #008dfa;
+}
+/* line 76, ../sass/mainWindowSoundList.scss */
+#dropboxSoundsButton:active {
+  border: solid 1px #003468;
+  background-color: #d4d9e1;
+  color: #00589e;
 }
 
 /* line 1, ../sass/mainWindowGames.scss */

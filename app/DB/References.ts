@@ -7,3 +7,4 @@
 /// <reference path='Modules/UserDB.ts' />
 /// <reference path='Modules/SheetDB.ts' />
 /// <reference path='Modules/ImageDB.ts' />
+/// <reference path='Modules/SoundDB.ts' />

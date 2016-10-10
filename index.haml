@@ -44,7 +44,6 @@
         %a.icons-handleSheets#sheetsButton.rightHandleButton.language="_MENUSHEETS_"
         %a.icons-handleImages#imagesButton.rightHandleButton.language="_MENUIMAGES_"
         %a.icons-handleSounds#soundsButton.rightHandleButton.language="_MENUSOUNDS_"
-        %a.icons-handleImage#imageButton.rightHandleButton.language="_MENUIMAGE_"
         %a.icons-handleHitbox#hitboxButton.rightHandleButton.language="_MENUHITBOX_"
         %a.icons-handleYoutube#youtubeButton.rightHandleButton.language="_MENUYOUTUBE_"
       -# Loading Screens
@@ -321,6 +320,26 @@
           %p.mainWindowParagraph.language="_REDPGFORUM1_"
       #picturesSideWindow.rightSideWindow
       #soundsSideWindow.rightSideWindow
+        .mainWindowHeader.language
+          _SOUNDSTITLE_
+          %a.xButton{:onclick => "UI.PageManager.closeRightPage();"}
+        .mainWindowContent.singleton
+          %p.mainWindowParagraph.language="_SOUNDSEXP01_"
+          %p.mainWindowParagraph.language="_SOUNDSEXP02_"
+          #soundsTarget
+            #soundsLoadError.language="_SOUNDSERROR_"
+            #soundsSaveError.language="_SOUNDSSAVEERROR_"
+          #soundsUpload
+            #soundsUploadLeft
+              #linkSoundsTitle
+                #linkSoundsIcon.icons-link
+                #linkSoundsTitleText.language="_SOUNDSLINKTITLE_"
+            #soundsUploadRight
+              #dropboxSoundsLogo.icons-dropboxLogo
+              %label#dropboxBGMInput.language
+                %input#dropboxSoundsIsBGM{:type=>"checkbox", :checked=>"checked"}
+                _SOUNDSISBGM_
+              #dropboxSoundsButton.language="_SOUNDSDROPBOXCHOOSER_"
       #hitboxSideWindow.rightSideWindow
         %iframe#hitboxFrame
       #youtubeSideWindow.rightSideWindow

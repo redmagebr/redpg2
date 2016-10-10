@@ -55,6 +55,14 @@ class MessageBGM extends Message {
     public setName (name : string) {
         this.setSpecial("name", name);
     }
+
+    public static shareLink (name : string, url : string) {
+        var msg = new MessageBGM();
+        msg.findPersona();
+        msg.setName(name);
+        msg.setMsg(url);
+        UI.Chat.sendMessage(msg);
+    }
 }
 
 MessageFactory.registerMessage(MessageBGM, "bgmplay", ["/bgm", "/splay", "/bgmplay", "/musica"]);

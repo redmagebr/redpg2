@@ -1874,6 +1874,179 @@ var PicaBG = (function () {
     };
     return PicaBG;
 }());
+var SoundsRow = (function () {
+    function SoundsRow(snd, folder) {
+        this.folder = folder;
+        this.sound = snd;
+        var soundContainer = document.createElement("div");
+        soundContainer.classList.add("imagesRow");
+        var shareButton = document.createElement("a");
+        shareButton.classList.add("imagesLeftButton");
+        shareButton.classList.add("icons-imagesShare");
+        UI.Language.addLanguageTitle(shareButton, "_IMAGESSHARE_");
+        shareButton.addEventListener("click", {
+            row: this,
+            handleEvent: function () {
+                this.row.share();
+            }
+        });
+        var viewButton = document.createElement("a");
+        viewButton.classList.add("imagesLeftButton");
+        viewButton.classList.add("icons-imagesView");
+        UI.Language.addLanguageTitle(viewButton, "_IMAGESVIEW_");
+        viewButton.addEventListener("click", {
+            row: this,
+            handleEvent: function () {
+                this.row.view();
+            }
+        });
+        var personaButton = document.createElement("a");
+        personaButton.classList.add("imagesLeftButton");
+        personaButton.classList.add("icons-imagesPersona");
+        UI.Language.addLanguageTitle(personaButton, "_IMAGESPERSONA_");
+        personaButton.addEventListener("click", {
+            row: this,
+            handleEvent: function () {
+                this.row.usePersona();
+            }
+        });
+        var deleteButton = document.createElement("a");
+        deleteButton.classList.add("imagesRightButton");
+        deleteButton.classList.add("icons-imagesDelete");
+        UI.Language.addLanguageTitle(deleteButton, "_IMAGESDELETE_");
+        deleteButton.addEventListener("click", {
+            row: this,
+            handleEvent: function () {
+                this.row.delete();
+            }
+        });
+        var renameButton = document.createElement("a");
+        renameButton.classList.add("imagesRightButton");
+        renameButton.classList.add("icons-imagesRename");
+        UI.Language.addLanguageTitle(renameButton, "_SOUNDSRENAME_");
+        renameButton.addEventListener("click", {
+            row: this,
+            handleEvent: function () {
+                this.row.rename();
+            }
+        });
+        var folderButton = document.createElement("a");
+        folderButton.classList.add("imagesRightButton");
+        folderButton.classList.add("icons-imagesFolder");
+        UI.Language.addLanguageTitle(folderButton, "_SOUNDSFOLDER_");
+        folderButton.addEventListener("click", {
+            row: this,
+            handleEvent: function () {
+                this.row.renameFolder();
+            }
+        });
+        var imageTitle = document.createElement("a");
+        imageTitle.classList.add("imagesRowTitle");
+        var nameNode = document.createTextNode(this.sound.getName());
+        imageTitle.appendChild(nameNode);
+        this.nameNode = nameNode;
+        UI.Language.markLanguage(shareButton, viewButton, personaButton, deleteButton, renameButton, folderButton);
+        soundContainer.appendChild(shareButton);
+        soundContainer.appendChild(viewButton);
+        soundContainer.appendChild(deleteButton);
+        soundContainer.appendChild(renameButton);
+        soundContainer.appendChild(folderButton);
+        soundContainer.appendChild(imageTitle);
+        this.html = soundContainer;
+    }
+    SoundsRow.prototype.play = function () {
+        UI.Pica.loadImage(this.sound.getLink());
+        if (this.sound.isBgm()) {
+            UI.SoundController.playBGM(this.sound.getLink());
+        }
+        else {
+            UI.SoundController.playSE(this.sound.getLink());
+        }
+    };
+    SoundsRow.prototype.share = function () {
+        if (this.sound.isBgm()) {
+            MessageBGM.shareLink(this.sound.getName(), this.sound.getLink());
+        }
+        else {
+            MessageSE.shareLink(this.sound.getName(), this.sound.getLink());
+        }
+    };
+    SoundsRow.prototype.delete = function () {
+        this.html.parentElement.removeChild(this.html);
+        this.folder.considerSuicide();
+        DB.SoundDB.removeSound(this.sound);
+    };
+    SoundsRow.prototype.renameFolder = function () {
+        var newName = prompt(UI.Language.getLanguage().getLingo("_SOUNDSRENAMEFOLDERPROMPT_", { languagea: this.sound.getName(), languageb: this.sound.getFolder() }));
+        if (newName === null) {
+            return;
+        }
+        this.sound.setFolder(newName.trim());
+    };
+    SoundsRow.prototype.rename = function () {
+        var newName = prompt(UI.Language.getLanguage().getLingo("_SOUNDSRENAMEPROMPT_", { languagea: this.sound.getName() }));
+        if (newName === null || newName === "") {
+            return;
+        }
+        this.sound.setName(newName);
+        this.nameNode.nodeValue = this.sound.getName();
+    };
+    SoundsRow.prototype.getHTML = function () {
+        return this.html;
+    };
+    return SoundsRow;
+}());
+var SoundsFolder = (function () {
+    function SoundsFolder(sounds) {
+        var folderName = sounds[0].getFolder();
+        this.name = folderName;
+        if (folderName === "") {
+            folderName = UI.Language.getLanguage().getLingo("_SOUNDSNOFOLDERNAME_");
+        }
+        var folderContainer = document.createElement("div");
+        folderContainer.classList.add("imagesFolder");
+        this.folderContainer = folderContainer;
+        var folderIcon = document.createElement("a");
+        folderIcon.classList.add("imagesFolderIcon");
+        var folderTitle = document.createElement("span");
+        folderTitle.classList.add("imagesFolderTitle");
+        folderTitle.addEventListener("click", {
+            folder: this,
+            handleEvent: function () {
+                this.folder.toggle();
+            }
+        });
+        folderTitle.appendChild(document.createTextNode(folderName));
+        folderContainer.appendChild(folderIcon);
+        folderContainer.appendChild(folderTitle);
+        for (var k = 0; k < sounds.length; k++) {
+            var soundRow = new SoundsRow(sounds[k], this);
+            folderContainer.appendChild(soundRow.getHTML());
+        }
+        this.html = folderContainer;
+    }
+    SoundsFolder.prototype.getName = function () {
+        return this.name;
+    };
+    SoundsFolder.prototype.open = function () {
+        this.folderContainer.classList.add("folderOpen");
+    };
+    SoundsFolder.prototype.toggle = function () {
+        this.folderContainer.classList.toggle("folderOpen");
+        if (this.folderContainer.classList.contains("folderOpen")) {
+            UI.Images.stayInFolder(this.name);
+        }
+    };
+    SoundsFolder.prototype.getHTML = function () {
+        return this.html;
+    };
+    SoundsFolder.prototype.considerSuicide = function () {
+        if (this.html.children.length <= 2) {
+            this.html.parentElement.removeChild(this.html);
+        }
+    };
+    return SoundsFolder;
+}());
 var SheetStyle = (function () {
     function SheetStyle() {
         this.css = document.createElement("style");
@@ -2189,6 +2362,46 @@ var StyleInstance = (function () {
     function StyleInstance() {
     }
     return StyleInstance;
+}());
+var SoundLink = (function () {
+    function SoundLink(name, url, folder, bgm) {
+        this.name = name;
+        this.url = url;
+        this.folder = folder;
+        this.bgm = bgm;
+    }
+    SoundLink.prototype.getFolder = function () {
+        return this.folder;
+    };
+    SoundLink.prototype.isBgm = function () {
+        return this.bgm;
+    };
+    SoundLink.prototype.setFolder = function (name) {
+        this.folder = name;
+        DB.SoundDB.considerSaving();
+    };
+    SoundLink.prototype.getLink = function () {
+        return Server.URL.fixURL(this.url);
+    };
+    SoundLink.prototype.getName = function () {
+        return this.name;
+    };
+    SoundLink.prototype.setName = function (name) {
+        if (this.name !== name) {
+            this.name = name;
+            DB.SoundDB.triggerChange(this);
+            DB.SoundDB.considerSaving();
+        }
+    };
+    SoundLink.prototype.exportAsObject = function () {
+        return {
+            name: this.name,
+            url: this.url,
+            folder: this.folder,
+            bgm: this.bgm
+        };
+    };
+    return SoundLink;
 }());
 var MessageFactory;
 (function (MessageFactory) {
@@ -2889,6 +3102,13 @@ var MessageSE = (function (_super) {
     MessageSE.prototype.setName = function (name) {
         this.setSpecial("name", name);
     };
+    MessageSE.shareLink = function (name, url) {
+        var msg = new MessageBGM();
+        msg.findPersona();
+        msg.setName(name);
+        msg.setMsg(url);
+        UI.Chat.sendMessage(msg);
+    };
     return MessageSE;
 }(Message));
 MessageFactory.registerMessage(MessageSE, "seplay", ["/se", "/seplay", "/soundeffect", "/sound"]);
@@ -3013,6 +3233,13 @@ var MessageBGM = (function (_super) {
     };
     MessageBGM.prototype.setName = function (name) {
         this.setSpecial("name", name);
+    };
+    MessageBGM.shareLink = function (name, url) {
+        var msg = new MessageBGM();
+        msg.findPersona();
+        msg.setName(name);
+        msg.setMsg(url);
+        UI.Chat.sendMessage(msg);
     };
     return MessageBGM;
 }(Message));
@@ -4130,6 +4357,179 @@ var DB;
         ImageDB.removeChangeListener = removeChangeListener;
     })(ImageDB = DB.ImageDB || (DB.ImageDB = {}));
 })(DB || (DB = {}));
+var DB;
+(function (DB) {
+    var SoundDB;
+    (function (SoundDB) {
+        var sounds = [];
+        var changeTrigger = new Trigger();
+        var delayedStore = null;
+        var delayedStoreTimeout = 3000;
+        function removeSound(snd) {
+            var idx = sounds.indexOf(snd);
+            if (idx === -1) {
+                console.warn("[SoundDB] Attempt to remove unregistered sound. Ignoring. Offender: ", snd);
+                return;
+            }
+            sounds.splice(idx, 1);
+            considerSaving();
+        }
+        SoundDB.removeSound = removeSound;
+        function considerSaving() {
+            if (delayedStore !== null) {
+                clearTimeout(delayedStore);
+            }
+            delayedStore = setTimeout(function () { Server.Storage.sendSounds(); }, delayedStoreTimeout);
+        }
+        SoundDB.considerSaving = considerSaving;
+        function getSounds() {
+            return sounds;
+        }
+        SoundDB.getSounds = getSounds;
+        function getSoundByName(name) {
+            name = name.toLowerCase();
+            for (var i = 0; i < sounds.length; i++) {
+                if (sounds[i].getName().toLowerCase() === name) {
+                    return sounds[i];
+                }
+            }
+            return null;
+        }
+        SoundDB.getSoundByName = getSoundByName;
+        function getSoundByLink(url) {
+            for (var i = 0; i < sounds.length; i++) {
+                if (sounds[i].getLink() === url) {
+                    return sounds[i];
+                }
+            }
+            return null;
+        }
+        SoundDB.getSoundByLink = getSoundByLink;
+        function hasSoundByName(name) {
+            return (getSoundByName(name) !== null);
+        }
+        SoundDB.hasSoundByName = hasSoundByName;
+        function hasSoundByLink(url) {
+            return (getSoundByLink(url) !== null);
+        }
+        SoundDB.hasSoundByLink = hasSoundByLink;
+        function getSoundsByFolder() {
+            var folders = {};
+            var result = [];
+            for (var i = 0; i < sounds.length; i++) {
+                if (folders[sounds[i].getFolder()] === undefined) {
+                    folders[sounds[i].getFolder()] = [sounds[i]];
+                    result.push(folders[sounds[i].getFolder()]);
+                }
+                else {
+                    folders[sounds[i].getFolder()].push(sounds[i]);
+                }
+            }
+            result.sort(function (a, b) {
+                if (a[0].getFolder() < b[0].getFolder())
+                    return -1;
+                if (a[0].getFolder() > b[0].getFolder())
+                    return 1;
+                return 0;
+            });
+            for (var i = 0; i < result.length; i++) {
+                result[i].sort(function (a, b) {
+                    if (a.getName() < b.getName())
+                        return -1;
+                    if (a.getName() > b.getName())
+                        return 1;
+                    return 0;
+                });
+            }
+            return result;
+        }
+        SoundDB.getSoundsByFolder = getSoundsByFolder;
+        function exportAsObject() {
+            var arr = [];
+            for (var i = 0; i < sounds.length; i++) {
+                arr.push(sounds[i].exportAsObject());
+            }
+            return arr;
+        }
+        SoundDB.exportAsObject = exportAsObject;
+        function updateFromObject(obj) {
+            sounds = [];
+            var line;
+            console.log(obj);
+            if (obj.length > 0 && typeof obj[0]["url"] === "undefined") {
+                console.log("Old version");
+                var rest = [];
+                for (var i = 0; i < obj.length; i++) {
+                    var folder = obj[i];
+                    var folderName = folder['name'];
+                    for (var k = 0; k < folder['sounds'].length; k++) {
+                        var row = folder['sounds'][k];
+                        rest.push({
+                            bgm: row['bgm'],
+                            name: row['name'],
+                            url: row['link'],
+                            folder: folderName
+                        });
+                    }
+                }
+                obj = rest;
+            }
+            for (var i = 0; i < obj.length; i++) {
+                line = obj[i];
+                sounds.push(new SoundLink(line['name'], line['url'], line['folder'], line['bgm']));
+            }
+            sounds.sort(function (a, b) {
+                if (a.getFolder() < b.getFolder())
+                    return -1;
+                if (a.getFolder() > b.getFolder())
+                    return 1;
+                var na = a.getName().toLowerCase();
+                var nb = b.getName().toLowerCase();
+                if (na < nb)
+                    return -1;
+                if (na > nb)
+                    return 1;
+                if (a.getLink() < b.getLink())
+                    return -1;
+                if (a.getLink() > b.getLink())
+                    return 1;
+                return 0;
+            });
+            changeTrigger.trigger(sounds);
+        }
+        SoundDB.updateFromObject = updateFromObject;
+        function addSound(snd) {
+            sounds.push(snd);
+            considerSaving();
+        }
+        SoundDB.addSound = addSound;
+        function addSounds(snds) {
+            for (var i = 0; i < snds.length; i++) {
+                sounds.push(snds[i]);
+            }
+            changeTrigger.trigger(sounds);
+            Server.Storage.sendImages();
+        }
+        SoundDB.addSounds = addSounds;
+        function triggerChange(image) {
+            if (image === null) {
+                changeTrigger.trigger(sounds);
+            }
+            else {
+                changeTrigger.trigger(image);
+            }
+        }
+        SoundDB.triggerChange = triggerChange;
+        function addChangeListener(f) {
+            changeTrigger.addListener(f);
+        }
+        SoundDB.addChangeListener = addChangeListener;
+        function removeChangeListener(f) {
+            changeTrigger.removeListener(f);
+        }
+        SoundDB.removeChangeListener = removeChangeListener;
+    })(SoundDB = DB.SoundDB || (DB.SoundDB = {}));
+})(DB || (DB = {}));
 var Application;
 (function (Application) {
     function getMe() {
@@ -4479,6 +4879,16 @@ ptbr.setLingo("", "");
 ptbr.setLingo("", "");
 ptbr.setLingo("", "");
 ptbr.setLingo("", "");
+ptbr.setLingo("_SOUNDSTITLE_", "Sons");
+ptbr.setLingo("_SOUNDSLINKTITLE_", "Link Direto");
+ptbr.setLingo("_SOUNDSDROPBOXCHOOSER_", "Escolher do Dropbox");
+ptbr.setLingo("_SOUNDSEXP01_", "O sistema sempre irá buscar arquivos de sons na pasta \"/Sounds\". Você precisa estar usando o website de forma offline para colocar sons nessa pasta.");
+ptbr.setLingo("_SOUNDSEXP02_", "Caso você esteja adicionando um link completo para o som em algum servidor, o sistema irá poder tocar esse som de qualquer lugar, tanto online quanto offline.");
+ptbr.setLingo("_SOUNDSISBGM_", "Adicionar como BGM");
+ptbr.setLingo("", "");
+ptbr.setLingo("", "");
+ptbr.setLingo("", "");
+ptbr.setLingo("", "");
 ptbr.setLingo("_IMAGESTITLE_", "Fotos");
 ptbr.setLingo("_IMAGESEXP01_", "Imagens ficam anexadas à sua conta e podem ser utilizadas em qualquer seção do RedPG.");
 ptbr.setLingo("_IMAGESEXP02_", "Você deve adicionar imagens como um Link direto ou através de uma conta Dropbox. É possível utilizar o botão Dropbox abaixo para começar a guardar as imagens na sua conta RedPG.");
@@ -4667,6 +5077,7 @@ var UI;
     UI.idHome = "homeSideWindow";
     UI.idSheets = "sheetsSideWindow";
     UI.idImages = "imagesSideWindow";
+    UI.idSounds = "soundsSideWindow";
     Application.Config.registerConfiguration("chatMaxMessages", new NumberConfiguration(120, 60, 10000));
     Application.Config.registerConfiguration("chatshowhelp", new BooleanConfiguration(true));
     Application.Config.registerConfiguration("chatfontsize", new NumberConfiguration(16, 12, 32));
@@ -7305,6 +7716,110 @@ var UI;
         Pica.stopLoading = stopLoading;
     })(Pica = UI.Pica || (UI.Pica = {}));
 })(UI || (UI = {}));
+var UI;
+(function (UI) {
+    var Sounds;
+    (function (Sounds) {
+        document.getElementById("soundsButton").addEventListener("click", function () { UI.Sounds.callSelf(); });
+        document.getElementById("dropboxSoundsButton").addEventListener("click", function () { UI.Sounds.callDropbox(); });
+        var bgmInput = document.getElementById("dropboxSoundsIsBGM");
+        var target = document.getElementById("soundsTarget");
+        var loadError = document.getElementById("soundsLoadError");
+        var saveError = document.getElementById("soundsSaveError");
+        target.removeChild(saveError);
+        target.removeChild(loadError);
+        var autoFolder = null;
+        function emptyTarget() {
+            while (target.firstChild !== null) {
+                target.removeChild(target.lastChild);
+            }
+        }
+        function callSelf() {
+            UI.PageManager.callPage(UI.idSounds);
+            var cbs = { handleEvent: function () {
+                    UI.Sounds.printSounds();
+                } };
+            var cbe = { handleEvent: function (data) {
+                    UI.Sounds.printError(data, true);
+                } };
+            Server.Storage.requestSounds(cbs, cbe);
+        }
+        Sounds.callSelf = callSelf;
+        function printSounds() {
+            emptyTarget();
+            var sounds = DB.SoundDB.getSoundsByFolder();
+            for (var i = 0; i < sounds.length; i++) {
+                var folder = new SoundsFolder(sounds[i]);
+                if (folder.getName() === autoFolder) {
+                    folder.open();
+                }
+                target.appendChild(folder.getHTML());
+            }
+            autoFolder = null;
+        }
+        Sounds.printSounds = printSounds;
+        function stayInFolder(name) {
+            autoFolder = name;
+        }
+        Sounds.stayInFolder = stayInFolder;
+        function printError(data, onLoad) {
+            emptyTarget();
+            if (onLoad) {
+                target.appendChild(loadError);
+            }
+            else {
+                target.appendChild(saveError);
+            }
+        }
+        Sounds.printError = printError;
+        function callDropbox() {
+            var options = {
+                success: function (files) {
+                    UI.Sounds.addDropbox(files);
+                },
+                linkType: "preview",
+                multiselect: true,
+                extensions: ['MP3', 'MP4', 'M4A', 'AAC', 'OGG', 'WAV', 'WAVE', 'OPUS'],
+            };
+            Dropbox.choose(options);
+        }
+        Sounds.callDropbox = callDropbox;
+        function addDropbox(files) {
+            var folders = [];
+            var links = [];
+            for (var i = 0; i < files.length; i++) {
+                var originalName = files[i]['name'].substring(0, files[i]['name'].lastIndexOf('.'));
+                ;
+                var originalUrl = Server.URL.fixURL(files[i]['link']);
+                var name;
+                var folderName;
+                var hiphenPos = originalName.indexOf("-");
+                if (hiphenPos === -1) {
+                    folderName = "";
+                    name = originalName.trim();
+                }
+                else {
+                    folderName = originalName.substr(0, hiphenPos).trim();
+                    name = originalName.substr(hiphenPos + 1, originalName.length - (hiphenPos + 1)).trim();
+                }
+                var link = new SoundLink(name, originalUrl, folderName, bgmInput.checked);
+                links.push(link);
+                if (folders.indexOf(folderName) === -1) {
+                    folders.push(folderName);
+                }
+            }
+            DB.SoundDB.addSounds(links);
+            if (folders.length === 1) {
+                autoFolder = folders[0];
+            }
+            else {
+                autoFolder = null;
+            }
+            printSounds();
+        }
+        Sounds.addDropbox = addDropbox;
+    })(Sounds = UI.Sounds || (UI.Sounds = {}));
+})(UI || (UI = {}));
 var Server;
 (function (Server) {
     Server.IMAGE_URL = "http://img.redpg.com.br/";
@@ -8040,6 +8555,7 @@ var Server;
         var STORAGE_URL = "Storage";
         var validStorage = ["sounds", "images", "custom1", "custom2"];
         var IMAGES_ID = "images";
+        var SOUNDS_ID = "sounds";
         var ACTION_RESTORE = "restore";
         var ACTION_STORE = "store";
         var emptyCallback = { handleEvent: function () { } };
@@ -8060,6 +8576,23 @@ var Server;
             Server.AJAX.requestPage(ajax, success, error);
         }
         Storage.requestImages = requestImages;
+        function requestSounds(cbs, cbe) {
+            var success = cbs === undefined ? emptyCallback : cbs;
+            var error = cbe === undefined ? emptyCallback : cbe;
+            success = {
+                success: success,
+                handleEvent: function (data) {
+                    DB.SoundDB.updateFromObject(data);
+                    this.success.handleEvent(data);
+                }
+            };
+            var ajax = new AJAXConfig(STORAGE_URL);
+            ajax.setTargetRightWindow();
+            ajax.setResponseTypeJSON();
+            ajax.data = { action: ACTION_RESTORE, id: SOUNDS_ID };
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Storage.requestSounds = requestSounds;
         function sendImages(cbs, cbe) {
             var success = cbs === undefined ? emptyCallback : cbs;
             var error = cbe === undefined ? emptyCallback : cbe;
@@ -8070,6 +8603,16 @@ var Server;
             Server.AJAX.requestPage(ajax, success, error);
         }
         Storage.sendImages = sendImages;
+        function sendSounds(cbs, cbe) {
+            var success = cbs === undefined ? emptyCallback : cbs;
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(STORAGE_URL);
+            ajax.setTargetRightWindow();
+            ajax.setResponseTypeJSON();
+            ajax.data = { action: ACTION_STORE, id: SOUNDS_ID, storage: DB.SoundDB.exportAsObject() };
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Storage.sendSounds = sendSounds;
     })(Storage = Server.Storage || (Server.Storage = {}));
 })(Server || (Server = {}));
 var Server;

@@ -48,7 +48,6 @@
         <a class='icons-handleSheets rightHandleButton language' id='sheetsButton'>_MENUSHEETS_</a>
         <a class='icons-handleImages rightHandleButton language' id='imagesButton'>_MENUIMAGES_</a>
         <a class='icons-handleSounds rightHandleButton language' id='soundsButton'>_MENUSOUNDS_</a>
-        <a class='icons-handleImage rightHandleButton language' id='imageButton'>_MENUIMAGE_</a>
         <a class='icons-handleHitbox rightHandleButton language' id='hitboxButton'>_MENUHITBOX_</a>
         <a class='icons-handleYoutube rightHandleButton language' id='youtubeButton'>_MENUYOUTUBE_</a>
       </div>
@@ -394,7 +393,36 @@
         </div>
       </div>
       <div class='rightSideWindow' id='picturesSideWindow'></div>
-      <div class='rightSideWindow' id='soundsSideWindow'></div>
+      <div class='rightSideWindow' id='soundsSideWindow'>
+        <div class='mainWindowHeader language'>
+          _SOUNDSTITLE_
+          <a class='xButton' onclick='UI.PageManager.closeRightPage();'></a>
+        </div>
+        <div class='mainWindowContent singleton'>
+          <p class='mainWindowParagraph language'>_SOUNDSEXP01_</p>
+          <p class='mainWindowParagraph language'>_SOUNDSEXP02_</p>
+          <div id='soundsTarget'>
+            <div class='language' id='soundsLoadError'>_SOUNDSERROR_</div>
+            <div class='language' id='soundsSaveError'>_SOUNDSSAVEERROR_</div>
+          </div>
+          <div id='soundsUpload'>
+            <div id='soundsUploadLeft'>
+              <div id='linkSoundsTitle'>
+                <div class='icons-link' id='linkSoundsIcon'></div>
+                <div class='language' id='linkSoundsTitleText'>_SOUNDSLINKTITLE_</div>
+              </div>
+            </div>
+            <div id='soundsUploadRight'>
+              <div class='icons-dropboxLogo' id='dropboxSoundsLogo'></div>
+              <label class='language' id='dropboxBGMInput'>
+                <input checked='checked' id='dropboxSoundsIsBGM' type='checkbox'>
+                _SOUNDSISBGM_
+              </label>
+              <div class='language' id='dropboxSoundsButton'>_SOUNDSDROPBOXCHOOSER_</div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class='rightSideWindow' id='hitboxSideWindow'>
         <iframe id='hitboxFrame'></iframe>
       </div>

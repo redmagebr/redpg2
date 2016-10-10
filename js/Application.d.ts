@@ -498,6 +498,30 @@ declare class PicaBG {
     loadImage(url: string): void;
     resize(): void;
 }
+declare class SoundsRow {
+    private html;
+    private sound;
+    private folder;
+    private nameNode;
+    play(): void;
+    share(): void;
+    delete(): void;
+    renameFolder(): void;
+    rename(): void;
+    constructor(snd: SoundLink, folder: SoundsFolder);
+    getHTML(): HTMLElement;
+}
+declare class SoundsFolder {
+    private html;
+    private name;
+    private folderContainer;
+    constructor(sounds: Array<SoundLink>);
+    getName(): string;
+    open(): void;
+    toggle(): void;
+    getHTML(): HTMLElement;
+    considerSuicide(): void;
+}
 declare class SheetStyle {
     private css;
     private visible;
@@ -599,6 +623,25 @@ declare class StyleInstance {
     name: string;
     html: string;
     css: string;
+}
+declare class SoundLink {
+    private name;
+    private url;
+    private folder;
+    private bgm;
+    getFolder(): string;
+    isBgm(): boolean;
+    setFolder(name: any): void;
+    getLink(): string;
+    getName(): string;
+    setName(name: string): void;
+    constructor(name: string, url: string, folder: string, bgm: boolean);
+    exportAsObject(): {
+        name: string;
+        url: string;
+        folder: string;
+        bgm: boolean;
+    };
 }
 declare module MessageFactory {
     var messageClasses: {
@@ -714,6 +757,7 @@ declare class MessageSE extends Message {
     createHTML(): HTMLParagraphElement;
     getName(): any;
     setName(name: string): void;
+    static shareLink(name: string, url: string): void;
 }
 declare class MessageImage extends Message {
     module: string;
@@ -732,6 +776,7 @@ declare class MessageBGM extends Message {
     createHTML(): HTMLParagraphElement;
     getName(): any;
     setName(name: string): void;
+    static shareLink(name: string, url: string): void;
 }
 declare class MessageStream extends Message {
     module: string;
@@ -883,6 +928,23 @@ declare module DB.ImageDB {
     function addChangeListener(f: Listener | Function): void;
     function removeChangeListener(f: Listener | Function): void;
 }
+declare module DB.SoundDB {
+    function removeSound(snd: SoundLink): void;
+    function considerSaving(): void;
+    function getSounds(): SoundLink[];
+    function getSoundByName(name: string): SoundLink;
+    function getSoundByLink(url: string): SoundLink;
+    function hasSoundByName(name: string): boolean;
+    function hasSoundByLink(url: string): boolean;
+    function getSoundsByFolder(): Array<Array<SoundLink>>;
+    function exportAsObject(): any[];
+    function updateFromObject(obj: Array<Object>): void;
+    function addSound(snd: SoundLink): void;
+    function addSounds(snds: Array<SoundLink>): void;
+    function triggerChange(image: SoundLink): void;
+    function addChangeListener(f: Listener | Function): void;
+    function removeChangeListener(f: Listener | Function): void;
+}
 declare module Application {
     function getMe(): User;
     function isMe(id: number): boolean;
@@ -952,6 +1014,7 @@ declare module UI {
     var idHome: string;
     var idSheets: string;
     var idImages: string;
+    var idSounds: string;
 }
 declare module UI.WindowManager {
     var currentLeftSize: number;
@@ -974,9 +1037,6 @@ declare module UI.PageManager {
     function closeRightPage(): void;
     function readWindows(): void;
     function getCurrentLeft(): String;
-}
-declare module Dropbox {
-    function choose(options: any): any;
 }
 declare module UI.Images {
     function callSelf(): void;
@@ -1142,6 +1202,14 @@ declare module UI.Pica {
     function startLoading(): void;
     function stopLoading(): void;
 }
+declare module UI.Sounds {
+    function callSelf(): void;
+    function printSounds(): void;
+    function stayInFolder(name: string): void;
+    function printError(data: any, onLoad: boolean): void;
+    function callDropbox(): void;
+    function addDropbox(files: any): void;
+}
 declare module Server {
     var IMAGE_URL: string;
     var APPLICATION_URL: string;
@@ -1215,8 +1283,13 @@ declare module Server.Chat.Memory {
 }
 declare module Server.Storage {
     function requestImages(cbs?: Listener, cbe?: Listener): void;
+    function requestSounds(cbs?: Listener, cbe?: Listener): void;
     function sendImages(cbs?: Listener, cbe?: Listener): void;
+    function sendSounds(cbs?: Listener, cbe?: Listener): void;
 }
 declare module Server.Sheets {
     function updateLists(cbs?: Listener, cbe?: Listener): void;
+}
+declare module Dropbox {
+    function choose(options: any): any;
 }

@@ -50,6 +50,8 @@
 /// <reference path='Elements/PicaToolbar.ts' />
 /// <reference path='Elements/PicaBoard.ts' />
 /// <reference path='Elements/PicaBG.ts' />
+/// <reference path='Elements/SoundsRow.ts' />
+/// <reference path='Elements/SoundsFolder.ts' />
 
 
 /// <reference path='Classes/Sheet/SheetStyle.ts' />
@@ -60,3 +62,4 @@
 /// <reference path='Classes/Sheet/SheetButton.ts' />
 /// <reference path='Classes/Sheet/Button/SheetButtonaddrow.ts' />
 /// <reference path='Classes/StyleInstance.ts' />
+/// <reference path='Classes/SoundLink.ts' />

@@ -1,0 +1,81 @@
+#dropboxBGMInput {
+  @extend .buttonBehavior;
+  text-align: center;
+  display: block;
+  margin: 8px;
+  font-weight: bold;
+  color: #0a0d7e;
+
+  &:hover {
+    color: #191a90
+  }
+
+  &:active {
+    color: #111289
+  }
+}
+
+#soundsUpload {
+  display: flex;
+  margin-top: 25px;
+  margin-bottom: 25px;
+}
+
+#soundsUploadLeft, #soundsUploadRight {
+  flex: 1 0 auto;
+}
+
+#dropboxSoundsLogo {
+  display: block;
+  margin: auto;
+  width: 150px;
+  height: 35px;
+  margin-bottom: 8px;
+}
+
+#linkSoundsTitle {
+  display: block;
+  height: 35px;
+  text-align: center;
+}
+
+#linkSoundsTitleText {
+  display: inline-block;
+  font-size: 25px;
+  font-weight: bold;
+  line-height: 38px;
+}
+
+#linkSoundsIcon {
+  display: inline-block;
+  height: 35px;
+  width: 35px;
+  vertical-align: top;
+}
+
+#dropboxSoundsButton {
+  @extend .buttonBehavior;
+  display: block;
+  width: 170px;
+  text-align: center;
+  font-size: 14px;
+  line-height: 20px;
+  height: 20px;
+  margin: auto;
+  border: solid 1px #004d90;
+  background-color: #f1f6ff;
+  color: #007ee5;
+  font-weight: bold;
+
+  &:hover {
+    border: solid 1px #0065b7;
+    background-color: #eaeff8;
+    color: #008dfa;
+  }
+
+  &:active {
+    border: solid 1px #003468;
+    background-color: #d4d9e1;
+    color: #00589e;
+  }
+}
