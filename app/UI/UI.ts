@@ -43,4 +43,21 @@ module UI {
     Application.Config.registerConfiguration("bgmVolume", new NumberConfiguration(50, 0, 100)); // Volume for BGM
     Application.Config.registerConfiguration("seVolume", new NumberConfiguration(50, 0, 100)); // Volume for Sound Effect
     Application.Config.registerConfiguration("bgmLoop", new BooleanConfiguration(true)); // Whether BGMs loop or not
+
+    var cleanPersonaCSS = document.createElement("style");
+    cleanPersonaCSS.type = "text/css";
+    cleanPersonaCSS.innerHTML = ".avatarContainer { border-color: rgba(0,0,0,0); background-color: initial; } .avatarName { background-color: initial; }";
+
+    export function cleanPersona (cfg : BooleanConfiguration) {
+        if (cfg.getValue()) {
+            document.head.appendChild(cleanPersonaCSS);
+        } else if (cleanPersonaCSS.parentElement !== null) {
+            document.head.removeChild(cleanPersonaCSS);
+        }
+    }
+
+    Application.Config.registerConfiguration("cleanPersonas", new BooleanConfiguration(false));
+    Application.Config.getConfig("cleanPersonas").addChangeListener(function (cfg : BooleanConfiguration) {
+        UI.cleanPersona(cfg);
+    });
 }

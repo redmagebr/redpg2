@@ -5057,10 +5057,10 @@ ptbr.setLingo("_CONFIGCHATAUTOVIDEO_", "(Chat) Aceitar vídeos:");
 ptbr.setLingo("_CONFIGCHATMAXMESSAGESEXP01_", "Define quantas mensagens podem estar impressas no chat ao mesmo tempo. Mínimo de 60 mensagens e máximo de 10000 mensagens. Escolha de acordo com seu CPU.");
 ptbr.setLingo("_CONFIGCHATMAXMESSAGESEXP02_", "Essa opção é ignorada e se torna 60 quando utilizando dispositivos móveis.");
 ptbr.setLingo("_CONFIGCHATMAXMESSAGES_", "(Chat) Número de mensagens:");
-ptbr.setLingo("", "");
-ptbr.setLingo("", "");
-ptbr.setLingo("", "");
-ptbr.setLingo("", "");
+ptbr.setLingo("_CONFIGCLEANPERSONAS_", "(Chat) Personas Vazias");
+ptbr.setLingo("_CONFIGCLEANPERSONAS01_", "Mostrar personas vazias");
+ptbr.setLingo("_CONFIGCLEANPERSONAS02_", "Mostrar personas padrão");
+ptbr.setLingo("_CONFIGCLEANPERSONASEXP_", "Essa opção retira o estilo padrão das personas e os deixa transparentes.");
 ptbr.setLingo("", "");
 ptbr.setLingo("", "");
 ptbr.setLingo("", "");
@@ -5100,6 +5100,22 @@ var UI;
     Application.Config.registerConfiguration("bgmVolume", new NumberConfiguration(50, 0, 100));
     Application.Config.registerConfiguration("seVolume", new NumberConfiguration(50, 0, 100));
     Application.Config.registerConfiguration("bgmLoop", new BooleanConfiguration(true));
+    var cleanPersonaCSS = document.createElement("style");
+    cleanPersonaCSS.type = "text/css";
+    cleanPersonaCSS.innerHTML = ".avatarContainer { border-color: rgba(0,0,0,0); background-color: initial; } .avatarName { background-color: initial; }";
+    function cleanPersona(cfg) {
+        if (cfg.getValue()) {
+            document.head.appendChild(cleanPersonaCSS);
+        }
+        else if (cleanPersonaCSS.parentElement !== null) {
+            document.head.removeChild(cleanPersonaCSS);
+        }
+    }
+    UI.cleanPersona = cleanPersona;
+    Application.Config.registerConfiguration("cleanPersonas", new BooleanConfiguration(false));
+    Application.Config.getConfig("cleanPersonas").addChangeListener(function (cfg) {
+        UI.cleanPersona(cfg);
+    });
 })(UI || (UI = {}));
 var UI;
 (function (UI) {
@@ -5239,6 +5255,7 @@ var UI;
         bindInput("chatMaxMessages", document.getElementById("configChatMaxMessages"));
         bindInput("chatfontsize", document.getElementById("configChatFontSize"));
         bindInput("chatshowhelp", document.getElementById("configChatShowHelp"));
+        bindInput("cleanPersonas", document.getElementById("configCleanPersoas"));
         bindInput("animTime", document.getElementById("configAnimTime"));
         bindInput("autoBGM", document.getElementById("configChatAutoBGM"));
         bindInput("autoSE", document.getElementById("configChatAutoSE"));

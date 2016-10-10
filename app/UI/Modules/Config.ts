@@ -40,6 +40,7 @@ module UI.Config {
     bindInput("chatMaxMessages", <HTMLInputElement> document.getElementById("configChatMaxMessages"));
     bindInput("chatfontsize", <HTMLInputElement> document.getElementById("configChatFontSize"));
     bindInput("chatshowhelp", <HTMLInputElement> document.getElementById("configChatShowHelp"));
+    bindInput("cleanPersonas", <HTMLInputElement> document.getElementById("configCleanPersoas"));
     bindInput("animTime", <HTMLInputElement> document.getElementById("configAnimTime"));
     bindInput("autoBGM", <HTMLInputElement> document.getElementById("configChatAutoBGM"));
     bindInput("autoSE", <HTMLInputElement> document.getElementById("configChatAutoSE"));

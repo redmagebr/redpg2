@@ -108,6 +108,13 @@
             .configExplanation.language
               _CONFIGCHATHELPEXP_
           %label.configLabel
+            %b.configName.language="_CONFIGCLEANPERSONAS_"
+            %select.configInput#configCleanPersoas
+              %option.language{:value => "true"}="_CONFIGCLEANPERSONAS01_"
+              %option.language{:value => "false"}="_CONFIGCLEANPERSONAS02_"
+            .configExplanation.language
+              _CONFIGCLEANPERSONASEXP_
+          %label.configLabel
             %b.configName.language="_CONFIGCHATAUTOBGM_"
             %select.configInput#configChatAutoBGM
               %option.language{:value => "0"}="_CONFIGCHATAUTONEVER_"
