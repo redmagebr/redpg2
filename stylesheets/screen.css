@@ -2704,10 +2704,20 @@ body {
 /* line 1, ../sass/mainPicture.scss */
 #pictureWindow {
   z-index: 3;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+  opacity: 0;
+  display: block;
 }
 
-/* line 6, ../sass/mainPicture.scss */
+/* line 9, ../sass/mainPicture.scss */
+#pictureClose {
+  right: auto;
+  left: 0px;
+  z-index: 10;
+}
+
+/* line 15, ../sass/mainPicture.scss */
 #pictureLoading {
   position: absolute;
   height: 100%;
@@ -2716,13 +2726,31 @@ body {
   background-color: rgba(0, 0, 0, 0.4);
 }
 
-/* line 14, ../sass/mainPicture.scss */
+/* line 23, ../sass/mainPicture.scss */
 #mapBackground {
   position: absolute;
   z-index: 1;
 }
 
-/* line 19, ../sass/mainPicture.scss */
+/* line 28, ../sass/mainPicture.scss */
+#pictureContainer {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+}
+
+/* line 36, ../sass/mainPicture.scss */
+#pictureBoard {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 37px;
+}
+
+/* line 44, ../sass/mainPicture.scss */
 #pictureToolsContainer {
   position: absolute;
   bottom: 0px;
@@ -2734,7 +2762,7 @@ body {
   text-align: center;
 }
 
-/* line 30, ../sass/mainPicture.scss */
+/* line 55, ../sass/mainPicture.scss */
 .picaTool, .picaToolButton, .leftPicaToolButton, .rightPicaToolButton, .leftPicaTool, .rightPicaTool {
   height: 26px;
   line-height: 26px;
@@ -2748,20 +2776,20 @@ body {
   vertical-align: top;
 }
 
-/* line 46, ../sass/mainPicture.scss */
+/* line 71, ../sass/mainPicture.scss */
 .picaToolButton, .leftPicaToolButton, .rightPicaToolButton {
   width: 26px;
   padding: 0px;
 }
 
-/* line 52, ../sass/mainPicture.scss */
+/* line 77, ../sass/mainPicture.scss */
 .leftPicaTool, .leftPicaToolButton {
   display: block;
   float: left;
   margin-left: 0px;
 }
 
-/* line 64, ../sass/mainPicture.scss */
+/* line 89, ../sass/mainPicture.scss */
 .rightPicaTool, .rightPicaToolButton {
   display: block;
   float: right;

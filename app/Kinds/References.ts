@@ -45,6 +45,11 @@
 /// <reference path='Elements/ChatSystemMessage.ts' />
 /// <reference path='Elements/ImagesRow.ts' />
 /// <reference path='Elements/ImagesFolder.ts' />
+/// <reference path='Elements/PicaContainer.ts' />
+/// <reference path='Elements/PicaTool.ts' />
+/// <reference path='Elements/PicaToolbar.ts' />
+/// <reference path='Elements/PicaBoard.ts' />
+/// <reference path='Elements/PicaBG.ts' />
 
 
 /// <reference path='Classes/Sheet/SheetStyle.ts' />

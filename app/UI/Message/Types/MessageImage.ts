@@ -20,11 +20,26 @@ class MessageImage extends Message {
         a.classList.add("textLink");
         a.appendChild(document.createTextNode("_CHATMESSAGESEEIMAGE_"));
         a.appendChild(document.createTextNode("."));
+
+        a.href = this.getMsg();
+
+        a.addEventListener("click", <EventListenerObject> {
+            msg : this,
+            handleEvent : function (e : Event) {
+                e.preventDefault();
+                this.msg.clickLink();
+            }
+        });
+
         UI.Language.markLanguage(a);
 
         p.appendChild(a);
 
         return p;
+    }
+
+    public clickLink () {
+        UI.Pica.loadImage(this.getMsg());
     }
 
     public getName () {

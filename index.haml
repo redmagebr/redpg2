@@ -54,17 +54,9 @@
         %a.loadingCircleWhite.centeredBlock
       -# Map
       #pictureWindow.rightSideWindow.dontDetach
+        %a#pictureClose.xButton{:onclick => "UI.Pica.close();"}
         #pictureLoading.flexCentering{:style=>"display: none"}
           %a.loadingCircleWhite.centeredBlock
-        #pictureContainer
-        #pictureToolsContainer
-          %a.leftPicaToolButton.language.icons-picaShare{:data=>{:titlelingo=>"_PICASHARE_"}}
-          %a.rightPicaToolButton
-          %a.picaTool="Compartilhar"
-          %a.picaToolButton
-          %a.picaToolButton
-          %a.picaToolButton
-          %a.picaToolButton
       -# Left Side Windows
       -############################################
       -############## CHANGELOG

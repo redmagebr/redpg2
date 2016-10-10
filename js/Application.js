@@ -1611,6 +1611,12 @@ var ImagesRow = (function () {
         viewButton.classList.add("imagesLeftButton");
         viewButton.classList.add("icons-imagesView");
         UI.Language.addLanguageTitle(viewButton, "_IMAGESVIEW_");
+        viewButton.addEventListener("click", {
+            row: this,
+            handleEvent: function () {
+                this.row.view();
+            }
+        });
         var personaButton = document.createElement("a");
         personaButton.classList.add("imagesLeftButton");
         personaButton.classList.add("icons-imagesPersona");
@@ -1666,6 +1672,9 @@ var ImagesRow = (function () {
         imageContainer.appendChild(imageTitle);
         this.html = imageContainer;
     }
+    ImagesRow.prototype.view = function () {
+        UI.Pica.loadImage(this.image.getLink());
+    };
     ImagesRow.prototype.share = function () {
         MessageImage.shareLink(this.image.getName(), this.image.getLink());
     };
@@ -1748,6 +1757,122 @@ var ImagesFolder = (function () {
         }
     };
     return ImagesFolder;
+}());
+var PicaContainer = (function () {
+    function PicaContainer(picaWindow) {
+        this.tools = new PicaToolbar();
+        this.board = new PicaBoard();
+        this.container = document.createElement("div");
+        this.container.id = "pictureContainer";
+        this.container.appendChild(this.board.getHTML());
+        this.container.appendChild(this.tools.getHTML());
+        picaWindow.appendChild(this.container);
+        this.board.resize();
+    }
+    PicaContainer.prototype.loadImage = function (url) {
+        this.board.loadImage(url);
+    };
+    PicaContainer.prototype.getHTML = function () {
+        return this.container;
+    };
+    return PicaContainer;
+}());
+var PicaTool = (function () {
+    function PicaTool() {
+    }
+    return PicaTool;
+}());
+var PicaToolbar = (function () {
+    function PicaToolbar() {
+        this.container = document.createElement("div");
+        this.container.id = "pictureToolsContainer";
+    }
+    PicaToolbar.prototype.getHTML = function () {
+        return this.container;
+    };
+    PicaToolbar.prototype.addTool = function () {
+    };
+    return PicaToolbar;
+}());
+var PicaBoard = (function () {
+    function PicaBoard() {
+        this.board = document.createElement("div");
+        this.background = new PicaBG(this);
+        this.board.id = "pictureBoard";
+        console.debug("[PicaBoard] Binding on window resize.");
+        var resizer = {
+            board: this,
+            handleEvent: function () {
+                this.board.resize();
+            }
+        };
+        window.addEventListener("resize", resizer);
+    }
+    PicaBoard.prototype.loadImage = function (url) {
+        this.resize();
+        this.background.loadImage(url);
+    };
+    PicaBoard.prototype.getAvailHeight = function () {
+        return this.availHeight;
+    };
+    PicaBoard.prototype.getAvailWidth = function () {
+        return this.availWidth;
+    };
+    PicaBoard.prototype.resize = function () {
+        this.availHeight = this.board.offsetHeight;
+        this.availWidth = this.board.offsetWidth;
+        this.background.resize();
+    };
+    PicaBoard.prototype.getHTML = function () {
+        return this.board;
+    };
+    return PicaBoard;
+}());
+var PicaBG = (function () {
+    function PicaBG(board) {
+        this.img = document.createElement("img");
+        this.board = board;
+        this.img.style.position = "absolute";
+        this.img.addEventListener("load", {
+            BG: this,
+            handleEvent: function (data) {
+                this.BG.onLoad();
+            }
+        });
+        this.board.getHTML().appendChild(this.img);
+    }
+    PicaBG.prototype.onLoad = function () {
+        if (!this.img.complete || (typeof this.img.naturalHeight === "undefined" || this.img.naturalHeight === 0)) {
+            return;
+        }
+        var height = this.img.naturalHeight;
+        var width = this.img.naturalWidth;
+        if (!(height < this.board.getAvailHeight() && width < this.board.getAvailWidth())) {
+            var fWidth = this.board.getAvailWidth() / width;
+            var fHeight = this.board.getAvailHeight() / height;
+            var factor = fWidth < fHeight ? fWidth : fHeight;
+            height = height * factor;
+            width = width * factor;
+            console.log(fWidth, fHeight, factor, height, width);
+        }
+        this.img.height = height;
+        this.img.width = width;
+        this.img.style.left = ((this.board.getAvailWidth() - width) / 2).toString() + "px";
+        this.img.style.top = ((this.board.getAvailHeight() - height) / 2).toString() + "px";
+        UI.Pica.stopLoading();
+    };
+    PicaBG.prototype.loadImage = function (url) {
+        if (this.img.src === url) {
+            return;
+        }
+        else {
+            UI.Pica.startLoading();
+            this.img.src = url;
+        }
+    };
+    PicaBG.prototype.resize = function () {
+    };
+    return PicaBG;
 }());
 var SheetStyle = (function () {
     function SheetStyle() {
@@ -2788,9 +2913,20 @@ var MessageImage = (function (_super) {
         a.classList.add("textLink");
         a.appendChild(document.createTextNode("_CHATMESSAGESEEIMAGE_"));
         a.appendChild(document.createTextNode("."));
+        a.href = this.getMsg();
+        a.addEventListener("click", {
+            msg: this,
+            handleEvent: function (e) {
+                e.preventDefault();
+                this.msg.clickLink();
+            }
+        });
         UI.Language.markLanguage(a);
         p.appendChild(a);
         return p;
+    };
+    MessageImage.prototype.clickLink = function () {
+        UI.Pica.loadImage(this.getMsg());
     };
     MessageImage.prototype.getName = function () {
         return this.getSpecial("name", null);
@@ -7117,13 +7253,28 @@ var UI;
     (function (Pica) {
         var $pictureWindow = $(document.getElementById("pictureWindow"));
         var $loadingWindow = $(document.getElementById("pictureLoading"));
-        var pictureContainer = document.getElementById("pictureContainer");
+        var pica = new PicaContainer(document.getElementById("pictureWindow"));
+        function getPica() {
+            return pica;
+        }
+        Pica.getPica = getPica;
+        function loadImage(url) {
+            pica.loadImage(url);
+            callSelf();
+        }
+        Pica.loadImage = loadImage;
         function callSelf() {
-            $pictureWindow.stop().fadeIn(Application.Config.getConfig("animTime").getValue());
+            $pictureWindow.stop().animate({
+                opacity: 1
+            }, Application.Config.getConfig("animTime").getValue());
+            $pictureWindow[0].style.pointerEvents = "auto";
         }
         Pica.callSelf = callSelf;
         function close() {
-            $pictureWindow.stop().fadeOut(Application.Config.getConfig("animTime").getValue());
+            $pictureWindow.stop().animate({
+                opacity: 0
+            }, Application.Config.getConfig("animTime").getValue());
+            $pictureWindow[0].style.pointerEvents = "none";
         }
         Pica.close = close;
         function startLoading() {

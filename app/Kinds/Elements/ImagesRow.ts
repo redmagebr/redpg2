@@ -13,6 +13,10 @@ class ImagesRow {
     //         %a.imagesRightButton.icons-imagesFolder
     //         %a.imagesRowTitle="Nome da Imagem"
 
+    public view () {
+        UI.Pica.loadImage(this.image.getLink());
+    }
+
     public share () {
         MessageImage.shareLink(this.image.getName(), this.image.getLink());
     }
@@ -70,6 +74,13 @@ class ImagesRow {
         viewButton.classList.add("imagesLeftButton");
         viewButton.classList.add("icons-imagesView");
         UI.Language.addLanguageTitle(viewButton, "_IMAGESVIEW_");
+
+        viewButton.addEventListener("click", <EventListenerObject> {
+            row : this,
+            handleEvent : function () {
+                this.row.view();
+            }
+        });
 
         // PERSONA
         var personaButton = document.createElement("a");

@@ -441,6 +441,7 @@ declare class ImagesRow {
     private image;
     private folder;
     private nameNode;
+    view(): void;
     share(): void;
     usePersona(): void;
     delete(): void;
@@ -459,6 +460,43 @@ declare class ImagesFolder {
     toggle(): void;
     getHTML(): HTMLElement;
     considerSuicide(): void;
+}
+declare class PicaContainer {
+    private container;
+    private tools;
+    private board;
+    constructor(picaWindow: HTMLElement);
+    loadImage(url: string): void;
+    getHTML(): HTMLElement;
+}
+declare abstract class PicaTool {
+    abstract getHTML(): HTMLElement;
+}
+declare class PicaToolbar {
+    private container;
+    constructor();
+    getHTML(): HTMLElement;
+    addTool(): void;
+}
+declare class PicaBoard {
+    private board;
+    private background;
+    private availHeight;
+    private availWidth;
+    constructor();
+    loadImage(url: string): void;
+    getAvailHeight(): number;
+    getAvailWidth(): number;
+    resize(): void;
+    getHTML(): HTMLDivElement;
+}
+declare class PicaBG {
+    private board;
+    private img;
+    constructor(board: PicaBoard);
+    onLoad(): void;
+    loadImage(url: string): void;
+    resize(): void;
 }
 declare class SheetStyle {
     private css;
@@ -680,6 +718,7 @@ declare class MessageSE extends Message {
 declare class MessageImage extends Message {
     module: string;
     createHTML(): HTMLParagraphElement;
+    clickLink(): void;
     getName(): any;
     setName(name: string): void;
     static shareLink(name: string, url: string): void;
@@ -1094,6 +1133,8 @@ declare module UI.Chat.PersonaDesigner {
     function usePersona(name: string, avatar: String): void;
 }
 declare module UI.Pica {
+    function getPica(): PicaContainer;
+    function loadImage(url: string): void;
     function callSelf(): void;
     function close(): void;
     function startLoading(): void;
