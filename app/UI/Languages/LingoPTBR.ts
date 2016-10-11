@@ -57,7 +57,9 @@ ptbr.setLingo("_SOUNDSISBGM_", "Adicionar como BGM");
 ptbr.setLingo("_SOUNDSNOFOLDERNAME_", "Sem Pasta");
 ptbr.setLingo("_SOUNDSRENAME_", "Renomear");
 ptbr.setLingo("_SOUNDSFOLDER_", "Renomear Pasta");
-ptbr.setLingo("", "");
+ptbr.setLingo("_SOUNDSPLAY_", "Tocar");
+ptbr.setLingo("_SOUNDSRENAMEPROMPT_", "Digite o novo nome para \"%a\":");
+ptbr.setLingo("_SOUNDSRENAMEFOLDERPROMPT_", "Digite a nova pasta para \"%a\", atualmente em \"%b\":");
 
 // Imagens
 ptbr.setLingo("_IMAGESTITLE_", "Fotos");

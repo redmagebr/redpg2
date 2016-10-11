@@ -1892,12 +1892,12 @@ var SoundsRow = (function () {
         });
         var viewButton = document.createElement("a");
         viewButton.classList.add("imagesLeftButton");
-        viewButton.classList.add("icons-imagesView");
-        UI.Language.addLanguageTitle(viewButton, "_IMAGESVIEW_");
+        viewButton.classList.add("icons-soundsPlay");
+        UI.Language.addLanguageTitle(viewButton, "_SOUNDSPLAY_");
         viewButton.addEventListener("click", {
             row: this,
             handleEvent: function () {
-                this.row.view();
+                this.row.play();
             }
         });
         var personaButton = document.createElement("a");
@@ -1955,7 +1955,6 @@ var SoundsRow = (function () {
         this.html = soundContainer;
     }
     SoundsRow.prototype.play = function () {
-        UI.Pica.loadImage(this.sound.getLink());
         if (this.sound.isBgm()) {
             UI.SoundController.playBGM(this.sound.getLink());
         }
@@ -1977,11 +1976,13 @@ var SoundsRow = (function () {
         DB.SoundDB.removeSound(this.sound);
     };
     SoundsRow.prototype.renameFolder = function () {
+        UI.Sounds.stayInFolder(this.sound.getFolder());
         var newName = prompt(UI.Language.getLanguage().getLingo("_SOUNDSRENAMEFOLDERPROMPT_", { languagea: this.sound.getName(), languageb: this.sound.getFolder() }));
         if (newName === null) {
             return;
         }
         this.sound.setFolder(newName.trim());
+        UI.Sounds.printSounds();
     };
     SoundsRow.prototype.rename = function () {
         var newName = prompt(UI.Language.getLanguage().getLingo("_SOUNDSRENAMEPROMPT_", { languagea: this.sound.getName() }));
@@ -4887,7 +4888,9 @@ ptbr.setLingo("_SOUNDSISBGM_", "Adicionar como BGM");
 ptbr.setLingo("_SOUNDSNOFOLDERNAME_", "Sem Pasta");
 ptbr.setLingo("_SOUNDSRENAME_", "Renomear");
 ptbr.setLingo("_SOUNDSFOLDER_", "Renomear Pasta");
-ptbr.setLingo("", "");
+ptbr.setLingo("_SOUNDSPLAY_", "Tocar");
+ptbr.setLingo("_SOUNDSRENAMEPROMPT_", "Digite o novo nome para \"%a\":");
+ptbr.setLingo("_SOUNDSRENAMEFOLDERPROMPT_", "Digite a nova pasta para \"%a\", atualmente em \"%b\":");
 ptbr.setLingo("_IMAGESTITLE_", "Fotos");
 ptbr.setLingo("_IMAGESEXP01_", "Imagens ficam anexadas à sua conta e podem ser utilizadas em qualquer seção do RedPG.");
 ptbr.setLingo("_IMAGESEXP02_", "Você deve adicionar imagens como um Link direto ou através de uma conta Dropbox. É possível utilizar o botão Dropbox abaixo para começar a guardar as imagens na sua conta RedPG.");

@@ -14,7 +14,6 @@ class SoundsRow {
     //         %a.imagesRowTitle="Nome da Imagem"
 
     public play () {
-        UI.Pica.loadImage(this.sound.getLink());
         if (this.sound.isBgm()) {
             UI.SoundController.playBGM(this.sound.getLink());
         } else {
@@ -37,11 +36,13 @@ class SoundsRow {
     }
 
     public renameFolder () {
+        UI.Sounds.stayInFolder(this.sound.getFolder());
         var newName = prompt(UI.Language.getLanguage().getLingo("_SOUNDSRENAMEFOLDERPROMPT_", {languagea : this.sound.getName(), languageb : this.sound.getFolder()}));
         if (newName === null) {
             return;
         }
         this.sound.setFolder(newName.trim());
+        UI.Sounds.printSounds();
     }
 
     public rename () {
@@ -76,13 +77,13 @@ class SoundsRow {
         // VIEW
         var viewButton = document.createElement("a");
         viewButton.classList.add("imagesLeftButton");
-        viewButton.classList.add("icons-imagesView");
-        UI.Language.addLanguageTitle(viewButton, "_IMAGESVIEW_");
+        viewButton.classList.add("icons-soundsPlay");
+        UI.Language.addLanguageTitle(viewButton, "_SOUNDSPLAY_");
 
         viewButton.addEventListener("click", <EventListenerObject> {
             row : this,
             handleEvent : function () {
-                this.row.view();
+                this.row.play();
             }
         });
 
