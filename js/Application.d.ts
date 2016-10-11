@@ -43,6 +43,11 @@ interface ImageInt {
     getLink(): string;
     getId(): string;
 }
+interface StyleInfo {
+    id: number;
+    idCreator: number;
+    name: string;
+}
 declare class ImageRed implements ImageInt {
     private name;
     private uploader;
@@ -1011,6 +1016,7 @@ declare module UI {
     var idChat: string;
     var idConfig: string;
     var idGameInvites: string;
+    var idStyles: string;
     var idHome: string;
     var idSheets: string;
     var idImages: string;
@@ -1211,6 +1217,11 @@ declare module UI.Sounds {
     function callDropbox(): void;
     function addDropbox(files: any): void;
 }
+declare module UI.Styles {
+    function callSelf(): void;
+    function emptyTarget(): void;
+    function printStyles(styles: Array<StyleInfo>): void;
+}
 declare module Server {
     var IMAGE_URL: string;
     var APPLICATION_URL: string;
@@ -1289,6 +1300,7 @@ declare module Server.Storage {
     function sendSounds(cbs?: Listener, cbe?: Listener): void;
 }
 declare module Server.Sheets {
+    function updateStyles(cbs?: Listener, cbe?: Listener): void;
     function updateLists(cbs?: Listener, cbe?: Listener): void;
 }
 declare module Dropbox {

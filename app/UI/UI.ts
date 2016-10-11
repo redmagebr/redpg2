@@ -9,6 +9,7 @@ module UI {
     export var idChat = "chatSideWindow";
     export var idConfig = "configSideWindow";
     export var idGameInvites = "gameInvitesSideWindow";
+    export var idStyles = "stylesSideWindow";
 
     // Right side windows
     export var idHome = "homeSideWindow";

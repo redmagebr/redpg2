@@ -8,6 +8,7 @@
 /// <reference path='Interfaces/PersonaLocalInfo.ts' />
 /// <reference path='Interfaces/ChatController.ts' />
 /// <reference path='Interfaces/ImageInt.ts' />
+/// <reference path='Interfaces/StyleInfo.ts' />
 
 /// <reference path='Classes/ImageRed.ts' />
 /// <reference path='Classes/ImageLink.ts' />

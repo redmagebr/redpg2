@@ -209,6 +209,18 @@
           <div id='inviteTarget'></div>
         </div>
       </div>
+      <div class='leftSideWindow' id='stylesSideWindow'>
+        <div class='language mainWindowHeader'>
+          _STYLESTITLE_
+          <a class='xButton' onclick='UI.PageManager.closeLeftPage();'></a>
+        </div>
+        <div class='mainWindowContent singleton'>
+          <p class='mainWindowParagraph language'>_STYLESEXP1_</p>
+          <p class='mainWindowParagraph language'>_STYLESEXP2_</p>
+          <p class='mainWindowParagraph language textLink hoverable' id='stylesNewStyleButton'>_STYLESNEWSTYLE_</p>
+          <div id='styleListTarget'></div>
+        </div>
+      </div>
       <div class='leftSideWindow' id='gamesSideWindow'>
         <div class='language mainWindowHeader'>
           _GAMESTITLE_
@@ -347,7 +359,7 @@
           <p class='mainWindowParagraph language'>_SHEETSEXP01_</p>
           <p class='mainWindowParagraph language'>_SHEETSEXP02_</p>
           <p class='mainWindowParagraph language'>_SHEETSEXP03_</p>
-          <p class='mainWindowParagraph textLink language hoverable'>_SHEETSOPENSTYLEEDITOR_</p>
+          <p class='mainWindowParagraph textLink language hoverable' id='sheetsStyleButton'>_SHEETSOPENSTYLEEDITOR_</p>
           <div id='sheetWindowSheetList'>
             <div class='sheetListGameContainer lightHoverable openSheetGame'>
               <p class='sheetListGameName' onclick="this.parentNode.classList.toggle('openSheetGame');">Nome da Mesa</p>

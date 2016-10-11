@@ -27,6 +27,7 @@
 /// <reference path='Modules/Chat/PersonaDesigner.ts' />
 /// <reference path='Modules/Pica.ts' />
 /// <reference path='Modules/Sounds.ts' />
+/// <reference path='Modules/Styles.ts' />
 
 // Message Classes
 /// <reference path='Message/References.ts' />

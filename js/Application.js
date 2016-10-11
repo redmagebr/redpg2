@@ -4879,6 +4879,13 @@ ptbr.setLingo("", "");
 ptbr.setLingo("", "");
 ptbr.setLingo("", "");
 ptbr.setLingo("", "");
+ptbr.setLingo("_STYLESTITLE_", "Estilos de Fichas");
+ptbr.setLingo("_STYLESEXP1_", "Um estilo de ficha é como um formulário em branco que pode ser preenchido para criar uma ficha. O sistema é bem aberto e não existem limites para o que um estilo de ficha pode realizar. O uso mais comum para o estilo de ficha é definir quais campos a ficha terá e como eles são apresentados para servirem como fichas de personagens durante o jogo, mas muitos outros tipos de \"ficha\" já foram criados no passado (como História de Personagem, Mapas, Notas Pessoais, etc).");
+ptbr.setLingo("_STYLESEXP2_", "A confecção de um estilo é algo um tanto complicado, então essa parte do sistema deve ser utilizada por usuários avançados.");
+ptbr.setLingo("_STYLESNEWSTYLE_", "--- Criar novo estilo");
+ptbr.setLingo("", "");
+ptbr.setLingo("", "");
+ptbr.setLingo("", "");
 ptbr.setLingo("_SOUNDSTITLE_", "Sons");
 ptbr.setLingo("_SOUNDSLINKTITLE_", "Link Direto");
 ptbr.setLingo("_SOUNDSDROPBOXCHOOSER_", "Escolher do Dropbox");
@@ -5076,6 +5083,7 @@ var UI;
     UI.idChat = "chatSideWindow";
     UI.idConfig = "configSideWindow";
     UI.idGameInvites = "gameInvitesSideWindow";
+    UI.idStyles = "stylesSideWindow";
     UI.idHome = "homeSideWindow";
     UI.idSheets = "sheetsSideWindow";
     UI.idImages = "imagesSideWindow";
@@ -7839,6 +7847,47 @@ var UI;
         Sounds.addDropbox = addDropbox;
     })(Sounds = UI.Sounds || (UI.Sounds = {}));
 })(UI || (UI = {}));
+var UI;
+(function (UI) {
+    var Styles;
+    (function (Styles) {
+        document.getElementById("sheetsStyleButton").addEventListener("click", function () { UI.Styles.callSelf(); });
+        var target = document.getElementById("styleListTarget");
+        function callSelf() {
+            UI.PageManager.callPage(UI.idStyles);
+            var cbs = {
+                handleEvent: function (styles) {
+                    UI.Styles.printStyles(styles);
+                }
+            };
+            Server.Sheets.updateStyles(cbs);
+        }
+        Styles.callSelf = callSelf;
+        function emptyTarget() {
+            while (target.firstChild)
+                target.removeChild(target.firstChild);
+        }
+        Styles.emptyTarget = emptyTarget;
+        function printStyles(styles) {
+            emptyTarget();
+            for (var i = 0; i < styles.length; i++) {
+                var p = document.createElement("p");
+                p.classList.add("mainWindowParagraph");
+                p.classList.add("hoverable");
+                p.classList.add("textLink");
+                p.appendChild(document.createTextNode(styles[i].name));
+                p.addEventListener("click", {
+                    id: styles[i].id,
+                    handleEvent: function () {
+                        UI.Styles.open(this.id);
+                    }
+                });
+                target.appendChild(p);
+            }
+        }
+        Styles.printStyles = printStyles;
+    })(Styles = UI.Styles || (UI.Styles = {}));
+})(UI || (UI = {}));
 var Server;
 (function (Server) {
     Server.IMAGE_URL = "http://img.redpg.com.br/";
@@ -8639,7 +8688,32 @@ var Server;
     var Sheets;
     (function (Sheets) {
         var SHEET_URL = "Sheet";
+        var STYLE_URL = "Style";
         var emptyCallback = { handleEvent: function () { } };
+        function updateStyles(cbs, cbe) {
+            var success = {
+                cbs: cbs,
+                handleEvent: function (response, xhr) {
+                    var ids = [];
+                    var styles = [];
+                    for (var i = 0; i < response.length; i++) {
+                        if (ids.indexOf(response[i]['id']) === -1) {
+                            ids.push(response[i]['id']);
+                            styles.push(response[i]);
+                        }
+                    }
+                    if (this.cbs !== undefined)
+                        this.cbs.handleEvent(styles, xhr);
+                }
+            };
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(STYLE_URL);
+            ajax.setResponseTypeJSON();
+            ajax.data = { action: "listMine" };
+            ajax.setTargetLeftWindow();
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Sheets.updateStyles = updateStyles;
         function updateLists(cbs, cbe) {
             var success = {
                 cbs: cbs,

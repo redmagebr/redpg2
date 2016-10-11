@@ -20,6 +20,7 @@
           %input.simpleButton.language#loginSubmitButton{:type => "submit", :data => {:valuelingo => "_LOGINSUBMIT_"}}
     -# Main Window Begins here
     #mainWindow.window
+      -# Music Player
       #musicPlayerButton.icons-soundPlayer.dontDetach.leftSideWindow
         %audio#soundPlayerSE{:crossOrigin => "anonymous"}
         %audio#soundPlayerBGM{:crossOrigin => "anonymous"}
@@ -172,6 +173,16 @@
           %p.mainWindowParagraph.language#gameInvitesNickTarget="_GAMEINVITESEXP02_"
           %p.mainWindowParagraph.language#gameInvitesError
           #inviteTarget
+      -#### STYLES WINDOW
+      #stylesSideWindow.leftSideWindow
+        .language.mainWindowHeader
+          _STYLESTITLE_
+          %a.xButton{:onclick => "UI.PageManager.closeLeftPage();"}
+        .mainWindowContent.singleton
+          %p.mainWindowParagraph.language="_STYLESEXP1_"
+          %p.mainWindowParagraph.language="_STYLESEXP2_"
+          %p.mainWindowParagraph.language.textLink.hoverable#stylesNewStyleButton="_STYLESNEWSTYLE_"
+          #styleListTarget
       -#### MAIN GAMES WINDOW
       #gamesSideWindow.leftSideWindow
         .language.mainWindowHeader
@@ -286,7 +297,7 @@
           %p.mainWindowParagraph.language="_SHEETSEXP01_"
           %p.mainWindowParagraph.language="_SHEETSEXP02_"
           %p.mainWindowParagraph.language="_SHEETSEXP03_"
-          %p.mainWindowParagraph.textLink.language.hoverable="_SHEETSOPENSTYLEEDITOR_"
+          %p.mainWindowParagraph.textLink.language.hoverable#sheetsStyleButton="_SHEETSOPENSTYLEEDITOR_"
           #sheetWindowSheetList
             .sheetListGameContainer.lightHoverable.openSheetGame
               %p.sheetListGameName{:onclick=>"this.parentNode.classList.toggle('openSheetGame');"}="Nome da Mesa"
