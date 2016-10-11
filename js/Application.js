@@ -8629,7 +8629,6 @@ var Server;
             ajax.setTargetRightWindow();
             ajax.setResponseTypeJSON();
             ajax.data = { action: ACTION_STORE, id: SOUNDS_ID, storage: DB.SoundDB.exportAsObject() };
-            console.log(ajax.data);
             Server.AJAX.requestPage(ajax, success, error);
         }
         Storage.sendSounds = sendSounds;
