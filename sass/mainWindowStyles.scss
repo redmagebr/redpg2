@@ -1,0 +1,84 @@
+#styleEditorGameSelect, #styleEditorCopySelect {
+  margin-left: 10px;
+}
+
+#styleEditorName {
+  width: 400px;
+  margin: auto;
+  display: block;
+}
+
+#styleEditorCopyButton {
+  display: block;
+  margin: auto;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+#styleEditorRemainLabel {
+  clear: both;
+}
+
+#styleEditorSubmit {
+  @extend .hoverable;
+  border: none;
+  background-color: transparent;
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+.styleFourthLabel {
+  width: 50%;
+  display: block;
+  float: left;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.styleFourthTextarea {
+  display:inline-block;
+  width: 90%;
+  height: 50px;
+}
+
+.styleLabel {
+  @extend .hoverable;
+  @extend .buttonBehavior;
+  display: block;
+  padding: 6px;
+  position: relative;
+  text-align: center;
+  font-weight: bold;
+}
+
+.styleExplanation {
+  width: 95.5%;
+  height: auto;
+  background-color: white;
+  position: absolute;
+  z-index: 4;
+  margin-top: 4px;
+  left: 1.5%;
+  pointer-events: none;
+  border: #000 2px solid;
+  border-radius: 5px;
+  padding: 5px;
+  display: none;
+  font-weight: normal;
+}
+
+.styleExplanation:before {
+  border: solid;
+  border-color: #333 transparent;
+  border-width: 0px 6px 6px 6px;
+  top: -6px;
+  content: "";
+  left: 50%;
+  margin-left: -3px;
+  position: absolute;
+}
+
+.styleLabel:hover .styleExplanation {
+  display: block;
+}

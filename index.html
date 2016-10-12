@@ -209,6 +209,68 @@
           <div id='inviteTarget'></div>
         </div>
       </div>
+      <div class='leftSideWindow' id='styleEditorSideWindow'>
+        <div class='language mainWindowHeader'>
+          _STYLEEDITOR_
+          <a class='xButton' onclick='UI.PageManager.closeLeftPage();'></a>
+        </div>
+        <div class='mainWindowContent singleton'>
+          <p class='mainWindowParagraph language'>_STYLEEDITOREXP_</p>
+          <form id='styleEditorForm'>
+            <label class='language styleLabel'>
+              <input class='language cuteInputBig' data-placeholderlingo='_STYLEEDITORNAME_' id='styleEditorName'>
+            </label>
+            <label class='language styleLabel' id='styleEditorPublicLabel'>
+              <input id='styleEditorPublic' type='checkbox'>
+              _STYLEEDITORPUBLIC_
+              <span class='language styleExplanation' id='styleEditorPublicExp'>
+                _STYLEEDITORPUBLICEXP_
+              </span>
+            </label>
+            <label class='styleLabel language' id='styleEditorGameLabel'>
+              _STYLEEDITORGAME_
+              <select id='styleEditorGameSelect'>
+                <option>História dos Seis</option>
+              </select>
+              <span class='language styleExplanation' id='styleEditorGameExp'>
+                _STYLEEDITORGAMEEXP_
+              </span>
+            </label>
+            <label class='styleLabel language' id='styleEditorCopyLabel'>
+              _STYLEEDITORCOPY_
+              <select id='styleEditorCopySelect'>
+                <option>Dragon Fantasy Saga 5.0 BETA</option>
+              </select>
+              <a class='textLink language' id='styleEditorCopyButton'>_STYLEEDITORCOPYBUTTON_</a>
+              <span class='language styleExplanation' id='styleEditorCopyExp'>
+                _STYLEEDITORCOPYEXP_
+              </span>
+            </label>
+            <label class='styleFourthLabel language'>
+              _STYLEEDITORHTML_
+              <textarea class='styleFourthTextarea' id='styleEditorHTML'></textarea>
+            </label>
+            <label class='styleFourthLabel language'>
+              _STYLEEDITORCSS_
+              <textarea class='styleFourthTextarea' id='styleEditorCSS'></textarea>
+            </label>
+            <label class='styleFourthLabel language'>
+              _STYLEEDITORJS_
+              <textarea class='styleFourthTextarea' id='styleEditorJS'></textarea>
+            </label>
+            <label class='styleFourthLabel language'>
+              _STYLEEDITORPUBLICCODE_
+              <textarea class='styleFourthTextarea' id='styleEditorPublicCode'></textarea>
+            </label>
+            <label class='language styleLabel' id='styleEditorRemainLabel'>
+              <input id='styleEditorRemain' type='checkbox'>
+                _STYLEEDITORREMAIN_
+              </input>
+            </label>
+            <input class='textLink mainWindowParagraph hoverable language hoverable' data-valuelingo='_STYLEEDITORSAVE_' id='styleEditorSubmit' type='submit'>
+          </form>
+        </div>
+      </div>
       <div class='leftSideWindow' id='stylesSideWindow'>
         <div class='language mainWindowHeader'>
           _STYLESTITLE_

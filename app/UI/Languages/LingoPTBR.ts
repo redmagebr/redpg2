@@ -56,6 +56,24 @@ ptbr.setLingo("", "");
 ptbr.setLingo("", "");
 ptbr.setLingo("", "");
 
+// Estilo Designer
+ptbr.setLingo("_STYLEEDITOR_", "Editor de Estilo");
+ptbr.setLingo("_STYLEEDITOREXP_", "");
+ptbr.setLingo("_STYLEEDITORNAME_", "Nome do Estilo");
+ptbr.setLingo("_STYLEEDITORPUBLIC_", "Estilo é Público");
+ptbr.setLingo("_STYLEEDITORPUBLICEXP_", "Estilos públicos podem ser utilizados em qualquer mesa.");
+ptbr.setLingo("_STYLEEDITORGAME_", "Mesa:");
+ptbr.setLingo("_STYLEEDITORGAMEEXP_", "Estilos só podem ser utilizados para fichas criadas na mesa definida.");
+ptbr.setLingo("_STYLEEDITORHTML_", "HTML:");
+ptbr.setLingo("_STYLEEDITORCSS_", "CSS:");
+ptbr.setLingo("_STYLEEDITORJS_", "JavaScript:");
+ptbr.setLingo("_STYLEEDITORPUBLICCODE_", "Código Público:");
+ptbr.setLingo("_STYLEEDITORCOPY_", "Copiar Estilo:");
+ptbr.setLingo("_STYLEEDITORCOPYEXP_", "Copia todos os valores do estilo selecionado para o atual.");
+ptbr.setLingo("_STYLEEDITORCOPYBUTTON_", "Copiar");
+ptbr.setLingo("_STYLEEDITORREMAIN_", "Permanecer nessa tela");
+ptbr.setLingo("_STYLEEDITORSAVE_", "Salvar");
+
 // Sons
 ptbr.setLingo("_SOUNDSTITLE_", "Sons");
 ptbr.setLingo("_SOUNDSLINKTITLE_", "Link Direto");

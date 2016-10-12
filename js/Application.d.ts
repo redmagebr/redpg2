@@ -1017,6 +1017,7 @@ declare module UI {
     var idConfig: string;
     var idGameInvites: string;
     var idStyles: string;
+    var idStyleDesigner: string;
     var idHome: string;
     var idSheets: string;
     var idImages: string;

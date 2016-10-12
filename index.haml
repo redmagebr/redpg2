@@ -173,6 +173,50 @@
           %p.mainWindowParagraph.language#gameInvitesNickTarget="_GAMEINVITESEXP02_"
           %p.mainWindowParagraph.language#gameInvitesError
           #inviteTarget
+      -#### STYLE DESIGNER
+      #styleEditorSideWindow.leftSideWindow
+        .language.mainWindowHeader
+          _STYLEEDITOR_
+          %a.xButton{:onclick => "UI.PageManager.closeLeftPage();"}
+        .mainWindowContent.singleton
+          %p.mainWindowParagraph.language="_STYLEEDITOREXP_"
+          %form#styleEditorForm
+            %label.language.styleLabel
+              %input.language#styleEditorName.cuteInputBig{:data=>{:placeholderlingo=>"_STYLEEDITORNAME_"}}
+            %label.language.styleLabel#styleEditorPublicLabel
+              %input#styleEditorPublic{:type=>"checkbox"}
+              _STYLEEDITORPUBLIC_
+              %span#styleEditorPublicExp.language.styleExplanation
+                _STYLEEDITORPUBLICEXP_
+            %label.styleLabel.language#styleEditorGameLabel
+              _STYLEEDITORGAME_
+              %select#styleEditorGameSelect
+                %option="História dos Seis"
+              %span#styleEditorGameExp.language.styleExplanation
+                _STYLEEDITORGAMEEXP_
+            %label.styleLabel.language#styleEditorCopyLabel
+              _STYLEEDITORCOPY_
+              %select#styleEditorCopySelect
+                %option="Dragon Fantasy Saga 5.0 BETA"
+              %a.textLink.language#styleEditorCopyButton="_STYLEEDITORCOPYBUTTON_"
+              %span#styleEditorCopyExp.language.styleExplanation
+                _STYLEEDITORCOPYEXP_
+            %label.styleFourthLabel.language
+              _STYLEEDITORHTML_
+              %textarea.styleFourthTextarea#styleEditorHTML
+            %label.styleFourthLabel.language
+              _STYLEEDITORCSS_
+              %textarea.styleFourthTextarea#styleEditorCSS
+            %label.styleFourthLabel.language
+              _STYLEEDITORJS_
+              %textarea.styleFourthTextarea#styleEditorJS
+            %label.styleFourthLabel.language
+              _STYLEEDITORPUBLICCODE_
+              %textarea.styleFourthTextarea#styleEditorPublicCode
+            %label.language.styleLabel#styleEditorRemainLabel
+              %input#styleEditorRemain{:type=>"checkbox"}
+                _STYLEEDITORREMAIN_
+            %input.textLink.mainWindowParagraph.hoverable.language.hoverable#styleEditorSubmit{:type=>"submit", :data=>{:valuelingo => "_STYLEEDITORSAVE_"}}
       -#### STYLES WINDOW
       #stylesSideWindow.leftSideWindow
         .language.mainWindowHeader

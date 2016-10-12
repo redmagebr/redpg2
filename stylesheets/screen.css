@@ -1069,7 +1069,7 @@ body {
 }
 
 /* line 71, ../sass/generalView.scss */
-.buttonBehavior:hover, .simpleButton:hover, .textLink:hover, .sheetNameLink:hover, .picaTool:hover, .picaToolButton:hover, .leftPicaToolButton:hover, .rightPicaToolButton:hover, .leftPicaTool:hover, .rightPicaTool:hover, .handleButton:hover, .leftHandleButton:hover, .rightHandleButton:hover, .imagesLeftButton:hover, .imagesRightButton:hover, .imagesFolderTitle:hover, #dropboxImagesButton:hover, .musicPlayerButton:hover, #dropboxBGMInput:hover, #dropboxSoundsButton:hover, .sheetListGameName:hover, .sheetListFolderName:hover, #avatarUpButton:hover, #avatarDownButton:hover, #chatScrollDown:hover, .chatRightButton:hover, #chatMessageSendButton:hover, #personaAddButton:hover, .personaButton:hover, .diceButton:hover, #chatDiceTower:hover, #chatDiceSubmit:hover, .chatAvatarChoiceBoxUse:hover, .chatAvatarChoiceBoxDelete:hover, .chatWhisperLink:hover, .chatMessageVoteAmount:hover, .xButton:hover {
+.buttonBehavior:hover, .simpleButton:hover, .textLink:hover, .sheetNameLink:hover, .picaTool:hover, .picaToolButton:hover, .leftPicaToolButton:hover, .rightPicaToolButton:hover, .leftPicaTool:hover, .rightPicaTool:hover, .handleButton:hover, .leftHandleButton:hover, .rightHandleButton:hover, .imagesLeftButton:hover, .imagesRightButton:hover, .imagesFolderTitle:hover, #dropboxImagesButton:hover, .musicPlayerButton:hover, #dropboxBGMInput:hover, #dropboxSoundsButton:hover, .sheetListGameName:hover, .sheetListFolderName:hover, .styleLabel:hover, #avatarUpButton:hover, #avatarDownButton:hover, #chatScrollDown:hover, .chatRightButton:hover, #chatMessageSendButton:hover, #personaAddButton:hover, .personaButton:hover, .diceButton:hover, #chatDiceTower:hover, #chatDiceSubmit:hover, .chatAvatarChoiceBoxUse:hover, .chatAvatarChoiceBoxDelete:hover, .chatWhisperLink:hover, .chatMessageVoteAmount:hover, .xButton:hover {
   cursor: pointer;
 }
 
@@ -1108,7 +1108,7 @@ body {
 }
 
 /* line 109, ../sass/generalView.scss */
-.buttonBehavior:hover, .simpleButton:hover, .textLink:hover, .sheetNameLink:hover, .picaTool:hover, .picaToolButton:hover, .leftPicaToolButton:hover, .rightPicaToolButton:hover, .leftPicaTool:hover, .rightPicaTool:hover, .handleButton:hover, .leftHandleButton:hover, .rightHandleButton:hover, .imagesLeftButton:hover, .imagesRightButton:hover, .imagesFolderTitle:hover, #dropboxImagesButton:hover, .musicPlayerButton:hover, #dropboxBGMInput:hover, #dropboxSoundsButton:hover, .sheetListGameName:hover, .sheetListFolderName:hover, #avatarUpButton:hover, #avatarDownButton:hover, #chatScrollDown:hover, .chatRightButton:hover, #chatMessageSendButton:hover, #personaAddButton:hover, .personaButton:hover, .diceButton:hover, #chatDiceTower:hover, #chatDiceSubmit:hover, .chatAvatarChoiceBoxUse:hover, .chatAvatarChoiceBoxDelete:hover, .chatWhisperLink:hover, .chatMessageVoteAmount:hover, .xButton:hover {
+.buttonBehavior:hover, .simpleButton:hover, .textLink:hover, .sheetNameLink:hover, .picaTool:hover, .picaToolButton:hover, .leftPicaToolButton:hover, .rightPicaToolButton:hover, .leftPicaTool:hover, .rightPicaTool:hover, .handleButton:hover, .leftHandleButton:hover, .rightHandleButton:hover, .imagesLeftButton:hover, .imagesRightButton:hover, .imagesFolderTitle:hover, #dropboxImagesButton:hover, .musicPlayerButton:hover, #dropboxBGMInput:hover, #dropboxSoundsButton:hover, .sheetListGameName:hover, .sheetListFolderName:hover, .styleLabel:hover, #avatarUpButton:hover, #avatarDownButton:hover, #chatScrollDown:hover, .chatRightButton:hover, #chatMessageSendButton:hover, #personaAddButton:hover, .personaButton:hover, .diceButton:hover, #chatDiceTower:hover, #chatDiceSubmit:hover, .chatAvatarChoiceBoxUse:hover, .chatAvatarChoiceBoxDelete:hover, .chatWhisperLink:hover, .chatMessageVoteAmount:hover, .xButton:hover {
   cursor: pointer;
 }
 
@@ -1162,9 +1162,18 @@ body {
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEUAAACnej3aAAAACklEQVQI12NgAAAAAgAB4iG8MwAAAABJRU5ErkJggg==");
 }
 
+/* line 158, ../sass/generalView.scss */
+.cuteInputBig {
+  height: 25px;
+  line-height: 25px;
+  font-size: 1.1em;
+  text-align: center;
+  font-family: alegreya;
+}
+
 /* UNselectable */
-/* line 159, ../sass/generalView.scss */
-.unselectable, .buttonBehavior, .simpleButton, .textLink, .sheetNameLink, .picaTool, .picaToolButton, .leftPicaToolButton, .rightPicaToolButton, .leftPicaTool, .rightPicaTool, .handleButton, .leftHandleButton, .rightHandleButton, .imagesLeftButton, .imagesRightButton, .imagesFolderTitle, #dropboxImagesButton, .musicPlayerButton, #dropboxBGMInput, #dropboxSoundsButton, .sheetListGameName, .sheetListFolderName, #avatarUpButton, #avatarDownButton, #chatScrollDown, .chatRightButton, #chatMessageSendButton, #personaAddButton, .personaButton, .diceButton, #chatDiceTower, #chatDiceSubmit, .chatAvatarChoiceBoxUse, .chatAvatarChoiceBoxDelete, .chatWhisperLink, .chatMessageVoteAmount, .xButton {
+/* line 167, ../sass/generalView.scss */
+.unselectable, .buttonBehavior, .simpleButton, .textLink, .sheetNameLink, .picaTool, .picaToolButton, .leftPicaToolButton, .rightPicaToolButton, .leftPicaTool, .rightPicaTool, .handleButton, .leftHandleButton, .rightHandleButton, .imagesLeftButton, .imagesRightButton, .imagesFolderTitle, #dropboxImagesButton, .musicPlayerButton, #dropboxBGMInput, #dropboxSoundsButton, .sheetListGameName, .sheetListFolderName, .styleLabel, #avatarUpButton, #avatarDownButton, #chatScrollDown, .chatRightButton, #chatMessageSendButton, #personaAddButton, .personaButton, .diceButton, #chatDiceTower, #chatDiceSubmit, .chatAvatarChoiceBoxUse, .chatAvatarChoiceBoxDelete, .chatWhisperLink, .chatMessageVoteAmount, .xButton {
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select: none;
@@ -1899,13 +1908,106 @@ body {
 }
 
 /* line 41, ../sass/mainWindowSimple.scss */
-.hoverable:hover, .gameInvitesEmptyP:hover, .gameInvitesContainer:hover, .configLabel:hover {
+.hoverable:hover, .gameInvitesEmptyP:hover, .gameInvitesContainer:hover, .configLabel:hover, #styleEditorSubmit:hover, .styleLabel:hover {
   background-color: rgba(0, 0, 0, 0.3);
 }
 
 /* line 45, ../sass/mainWindowSimple.scss */
 .lightHoverable:hover, .sheetListSheet:hover {
   background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* line 1, ../sass/mainWindowStyles.scss */
+#styleEditorGameSelect, #styleEditorCopySelect {
+  margin-left: 10px;
+}
+
+/* line 5, ../sass/mainWindowStyles.scss */
+#styleEditorName {
+  width: 400px;
+  margin: auto;
+  display: block;
+}
+
+/* line 11, ../sass/mainWindowStyles.scss */
+#styleEditorCopyButton {
+  display: block;
+  margin: auto;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+/* line 18, ../sass/mainWindowStyles.scss */
+#styleEditorRemainLabel {
+  clear: both;
+}
+
+/* line 22, ../sass/mainWindowStyles.scss */
+#styleEditorSubmit {
+  border: none;
+  background-color: transparent;
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+/* line 31, ../sass/mainWindowStyles.scss */
+.styleFourthLabel {
+  width: 50%;
+  display: block;
+  float: left;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+/* line 39, ../sass/mainWindowStyles.scss */
+.styleFourthTextarea {
+  display: inline-block;
+  width: 90%;
+  height: 50px;
+}
+
+/* line 45, ../sass/mainWindowStyles.scss */
+.styleLabel {
+  display: block;
+  padding: 6px;
+  position: relative;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* line 55, ../sass/mainWindowStyles.scss */
+.styleExplanation {
+  width: 95.5%;
+  height: auto;
+  background-color: white;
+  position: absolute;
+  z-index: 4;
+  margin-top: 4px;
+  left: 1.5%;
+  pointer-events: none;
+  border: #000 2px solid;
+  border-radius: 5px;
+  padding: 5px;
+  display: none;
+  font-weight: normal;
+}
+
+/* line 71, ../sass/mainWindowStyles.scss */
+.styleExplanation:before {
+  border: solid;
+  border-color: #333 transparent;
+  border-width: 0px 6px 6px 6px;
+  top: -6px;
+  content: "";
+  left: 50%;
+  margin-left: -3px;
+  position: absolute;
+}
+
+/* line 82, ../sass/mainWindowStyles.scss */
+.styleLabel:hover .styleExplanation {
+  display: block;
 }
 
 /* line 1, ../sass/mainChat.scss */
