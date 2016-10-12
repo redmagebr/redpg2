@@ -7886,6 +7886,9 @@ var UI;
             }
         }
         Styles.printStyles = printStyles;
+        function open(id) {
+        }
+        Styles.open = open;
     })(Styles = UI.Styles || (UI.Styles = {}));
 })(UI || (UI = {}));
 var Server;

@@ -1221,6 +1221,7 @@ declare module UI.Styles {
     function callSelf(): void;
     function emptyTarget(): void;
     function printStyles(styles: Array<StyleInfo>): void;
+    function open(id: number): void;
 }
 declare module Server {
     var IMAGE_URL: string;

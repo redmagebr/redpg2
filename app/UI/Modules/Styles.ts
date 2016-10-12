@@ -42,4 +42,8 @@ module UI.Styles {
             target.appendChild(p);
         }
     }
+
+    export function open (id : number) {
+
+    }
 }
