@@ -82,7 +82,7 @@ module UI.Games {
                 deleteGame.addEventListener("click", <EventListenerObject> {
                     game : games[i],
                     handleEvent : function () {
-                        // TODO: UI.Games.deleteGame(this.game);
+                        UI.Games.deleteGame(this.game);
                     }
                 });
 
@@ -100,7 +100,7 @@ module UI.Games {
                 leave.addEventListener("click", <EventListenerObject> {
                     game : games[i],
                     handleEvent : function () {
-                        // TODO: UI.Games.leaveGame(this.game);
+                        UI.Games.leaveGame(this.game);
                     }
                 });
 
@@ -223,6 +223,26 @@ module UI.Games {
             gameListTarget.appendChild(div);
         }
     };
+
+    export function deleteGame (game : Game) {
+        var cbs = <EventListenerObject> {
+            handleEvent : function () {
+                UI.Games.callSelf(false);
+            }
+        }
+
+        Server.Games.deleteGame(game.id, cbs, cbs);
+    }
+
+    export function leaveGame (game : Game) {
+        var cbs = <EventListenerObject> {
+            handleEvent : function () {
+                UI.Games.callSelf(false);
+            }
+        }
+
+        Server.Games.leaveGame(game.id, cbs, cbs);
+    }
 
     export function updateNick (isLogged : boolean) {
         if (!isLogged) {

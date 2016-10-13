@@ -1110,6 +1110,8 @@ declare module UI.Rooms.Designer {
 }
 declare module UI.Games {
     function callSelf(ready?: boolean): void;
+    function deleteGame(game: Game): void;
+    function leaveGame(game: Game): void;
     function updateNick(isLogged: boolean): void;
 }
 declare module UI.Games.Invites {

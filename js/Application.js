@@ -6062,6 +6062,7 @@ var UI;
                     deleteGame.addEventListener("click", {
                         game: games[i],
                         handleEvent: function () {
+                            UI.Games.deleteGame(this.game);
                         }
                     });
                     UI.Language.markLanguage(edit, deleteGame, perm);
@@ -6077,6 +6078,7 @@ var UI;
                     leave.addEventListener("click", {
                         game: games[i],
                         handleEvent: function () {
+                            UI.Games.leaveGame(this.game);
                         }
                     });
                     UI.Language.markLanguage(leave);
@@ -6177,6 +6179,24 @@ var UI;
         }
         Games.callSelf = callSelf;
         ;
+        function deleteGame(game) {
+            var cbs = {
+                handleEvent: function () {
+                    UI.Games.callSelf(false);
+                }
+            };
+            Server.Games.deleteGame(game.id, cbs, cbs);
+        }
+        Games.deleteGame = deleteGame;
+        function leaveGame(game) {
+            var cbs = {
+                handleEvent: function () {
+                    UI.Games.callSelf(false);
+                }
+            };
+            Server.Games.leaveGame(game.id, cbs, cbs);
+        }
+        Games.leaveGame = leaveGame;
         function updateNick(isLogged) {
             if (!isLogged) {
                 UI.Language.addLanguageVariable(nickTarget, "a", "Logged out");
