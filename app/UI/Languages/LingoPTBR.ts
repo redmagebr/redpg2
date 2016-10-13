@@ -226,15 +226,8 @@ ptbr.setLingo("_CHATSEERROR_", "Erro ao tocar efeito sonoro.");
 ptbr.setLingo("_CHATSOUNDADDMORE_", "Clique aqui para alterar músicas em uso.");
 ptbr.setLingo("_CHATMESSAGEANNOUNCEMENT_", "AVISO DO SISTEMA");
 ptbr.setLingo("_CHATMESSAGESFROM_", "Mensagens de %a.");
-ptbr.setLingo("_CONFIGSEVOLUME_", "Volume de Efeitos Sonoros");
-ptbr.setLingo("_CONFIGSEVOLUMEEXP_", "Define o volume para efeitos sonoros reproduzidos no RedPG.");
-ptbr.setLingo("_CONFIGBGMVOLUME_", "Volume de Músicas");
-ptbr.setLingo("_CONFIGBGMVOLUMEEXP_", "Define o volume para músicas reproduzidas no RedPG.");
-ptbr.setLingo("_CONFIGSAVE_", "Salvar Configuração");
-ptbr.setLingo("_CONFIGERROR_", "Erro salvando configuração.");
-ptbr.setLingo("_CONFIGSUCCESS_", "Configurações salvas com sucesso.");
-ptbr.setLingo("_CONFIGRESET_", "Resetar Configurações");
-ptbr.setLingo("", "");
+ptbr.setLingo("_CHATIMAGESNOIMAGES_", "Sem imagens recentes.");
+ptbr.setLingo("_CHATIMAGESPRINTINGIMAGES_", "Imagens recentes:");
 ptbr.setLingo("", "");
 
 // Chat Persona Designer
@@ -249,6 +242,14 @@ ptbr.setLingo("", "");
 
 
 // Config
+ptbr.setLingo("_CONFIGSEVOLUME_", "Volume de Efeitos Sonoros");
+ptbr.setLingo("_CONFIGSEVOLUMEEXP_", "Define o volume para efeitos sonoros reproduzidos no RedPG.");
+ptbr.setLingo("_CONFIGBGMVOLUME_", "Volume de Músicas");
+ptbr.setLingo("_CONFIGBGMVOLUMEEXP_", "Define o volume para músicas reproduzidas no RedPG.");
+ptbr.setLingo("_CONFIGSAVE_", "Salvar Configuração");
+ptbr.setLingo("_CONFIGERROR_", "Erro salvando configuração.");
+ptbr.setLingo("_CONFIGSUCCESS_", "Configurações salvas com sucesso.");
+ptbr.setLingo("_CONFIGRESET_", "Resetar Configurações");
 ptbr.setLingo("_CONFIGTITLE_", "Configurações");
 ptbr.setLingo("_CONFIGCHATFONTSIZE_", "(Chat) Tamanho da fonte:");
 ptbr.setLingo("_CONFIGCHATFONTFAMILY_", "(Chat) Fonte:");

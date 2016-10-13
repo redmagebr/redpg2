@@ -109,6 +109,8 @@ module MessageFactory {
                 var errorHTML = command.getInvalidHTML(slash, msg);
                 if (errorHTML !== null) UI.Chat.printElement(errorHTML);
                 return null;
+            } else {
+                return null;
             }
         }
 

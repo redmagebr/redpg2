@@ -2488,6 +2488,9 @@ var MessageFactory;
                     UI.Chat.printElement(errorHTML);
                 return null;
             }
+            else {
+                return null;
+            }
         }
         var error = new ChatSystemMessage(true);
         error.addText("_CHATINVALIDCOMMAND_");
@@ -2527,6 +2530,36 @@ var SlashReply = (function (_super) {
     return SlashReply;
 }(SlashCommand));
 MessageFactory.registerSlashCommand(SlashReply, ["/r", "/reply", "/responder", "/resposta"]);
+var SlashImages = (function (_super) {
+    __extends(SlashImages, _super);
+    function SlashImages() {
+        _super.apply(this, arguments);
+    }
+    SlashImages.prototype.receiveCommand = function (slashCommand, message) {
+        var room = Server.Chat.getRoom();
+        if (room === null)
+            return false;
+        var messages = MessageImage.getLastImages(room.id);
+        if (messages.length > 0) {
+            var msg = new ChatSystemMessage(true);
+            msg.addText("_CHATIMAGESPRINTINGIMAGES_");
+            UI.Chat.printElement(msg.getElement());
+            MessageImage.stopAutomation();
+            for (var i = messages.length - 1; i >= 0; i--) {
+                UI.Chat.printMessage(messages[i]);
+            }
+            MessageImage.resumeAutomation();
+        }
+        else {
+            var msg = new ChatSystemMessage(true);
+            msg.addText("_CHATIMAGESNOIMAGES_");
+            UI.Chat.printElement(msg.getElement());
+        }
+        return true;
+    };
+    return SlashImages;
+}(SlashCommand));
+MessageFactory.registerSlashCommand(SlashImages, ["/images", "/imgs", "/imagens", "/fotos", "/picas"]);
 var Message = (function (_super) {
     __extends(Message, _super);
     function Message() {
@@ -3120,8 +3153,40 @@ var MessageImage = (function (_super) {
         this.module = "image";
         this.openedBefore = false;
     }
+    MessageImage.addLastImage = function (msg) {
+        if (MessageImage.lastImages[msg.roomid] === undefined) {
+            MessageImage.lastImages[msg.roomid] = [msg];
+        }
+        else {
+            var idx = MessageImage.lastImages[msg.roomid].indexOf(msg);
+            if (idx === -1) {
+                MessageImage.lastImages[msg.roomid].push(msg);
+            }
+            else {
+                MessageImage.lastImages[msg.roomid].splice(idx, 1);
+                MessageImage.lastImages[msg.roomid].push(msg);
+            }
+            if (MessageImage.lastImages[msg.roomid].length > MessageImage.maxHistory) {
+                MessageImage.lastImages[msg.roomid].splice(0, 1);
+            }
+        }
+    };
+    MessageImage.getLastImages = function (roomid) {
+        if (typeof MessageImage.lastImages[roomid] !== "undefined") {
+            return MessageImage.lastImages[roomid];
+        }
+        else {
+            return [];
+        }
+    };
+    MessageImage.stopAutomation = function () {
+        MessageImage.noAutomation = true;
+    };
+    MessageImage.resumeAutomation = function () {
+        MessageImage.noAutomation = false;
+    };
     MessageImage.prototype.onPrint = function () {
-        if (this.openedBefore)
+        if (this.openedBefore || MessageImage.noAutomation)
             return;
         if (UI.Chat.doAutomation()) {
             var cfg = Application.Config.getConfig("autoImage").getValue();
@@ -3132,6 +3197,7 @@ var MessageImage = (function (_super) {
                 this.openedBefore = true;
             }
         }
+        MessageImage.addLastImage(this);
     };
     MessageImage.prototype.createHTML = function () {
         var p = document.createElement("p");
@@ -3178,6 +3244,16 @@ var MessageImage = (function (_super) {
         newImage.setMsg(url);
         UI.Chat.sendMessage(newImage);
     };
+    MessageImage.prototype.receiveCommand = function (slashCommand, msg) {
+        if (msg === "") {
+            return false;
+        }
+        this.msg = msg;
+        return true;
+    };
+    MessageImage.lastImages = {};
+    MessageImage.maxHistory = 10;
+    MessageImage.noAutomation = false;
     return MessageImage;
 }(Message));
 MessageFactory.registerMessage(MessageImage, "image", ["/image", "/imagem", "/picture", "/figura", "/pic"]);
@@ -5040,15 +5116,8 @@ ptbr.setLingo("_CHATSEERROR_", "Erro ao tocar efeito sonoro.");
 ptbr.setLingo("_CHATSOUNDADDMORE_", "Clique aqui para alterar músicas em uso.");
 ptbr.setLingo("_CHATMESSAGEANNOUNCEMENT_", "AVISO DO SISTEMA");
 ptbr.setLingo("_CHATMESSAGESFROM_", "Mensagens de %a.");
-ptbr.setLingo("_CONFIGSEVOLUME_", "Volume de Efeitos Sonoros");
-ptbr.setLingo("_CONFIGSEVOLUMEEXP_", "Define o volume para efeitos sonoros reproduzidos no RedPG.");
-ptbr.setLingo("_CONFIGBGMVOLUME_", "Volume de Músicas");
-ptbr.setLingo("_CONFIGBGMVOLUMEEXP_", "Define o volume para músicas reproduzidas no RedPG.");
-ptbr.setLingo("_CONFIGSAVE_", "Salvar Configuração");
-ptbr.setLingo("_CONFIGERROR_", "Erro salvando configuração.");
-ptbr.setLingo("_CONFIGSUCCESS_", "Configurações salvas com sucesso.");
-ptbr.setLingo("_CONFIGRESET_", "Resetar Configurações");
-ptbr.setLingo("", "");
+ptbr.setLingo("_CHATIMAGESNOIMAGES_", "Sem imagens recentes.");
+ptbr.setLingo("_CHATIMAGESPRINTINGIMAGES_", "Imagens recentes:");
 ptbr.setLingo("", "");
 ptbr.setLingo("_PERSONADESIGNERTITLE_", "Administrador de Personas");
 ptbr.setLingo("_PERSONADESIGNERNAME_", "Nome do Personagem");
@@ -5058,6 +5127,14 @@ ptbr.setLingo("_CHATPERSONADESIGNERUSE_", "Usar essa persona");
 ptbr.setLingo("_CHATPERSONADESIGNERDELETE_", "Deletar essa persona");
 ptbr.setLingo("", "");
 ptbr.setLingo("", "");
+ptbr.setLingo("_CONFIGSEVOLUME_", "Volume de Efeitos Sonoros");
+ptbr.setLingo("_CONFIGSEVOLUMEEXP_", "Define o volume para efeitos sonoros reproduzidos no RedPG.");
+ptbr.setLingo("_CONFIGBGMVOLUME_", "Volume de Músicas");
+ptbr.setLingo("_CONFIGBGMVOLUMEEXP_", "Define o volume para músicas reproduzidas no RedPG.");
+ptbr.setLingo("_CONFIGSAVE_", "Salvar Configuração");
+ptbr.setLingo("_CONFIGERROR_", "Erro salvando configuração.");
+ptbr.setLingo("_CONFIGSUCCESS_", "Configurações salvas com sucesso.");
+ptbr.setLingo("_CONFIGRESET_", "Resetar Configurações");
 ptbr.setLingo("_CONFIGTITLE_", "Configurações");
 ptbr.setLingo("_CONFIGCHATFONTSIZE_", "(Chat) Tamanho da fonte:");
 ptbr.setLingo("_CONFIGCHATFONTFAMILY_", "(Chat) Fonte:");
@@ -8208,6 +8285,22 @@ var Server;
             Server.AJAX.requestPage(ajax, success, error);
         }
         Games.getInviteList = getInviteList;
+        function sendInvite(gameid, nickname, nicknamesufix, message, cbs, cbe) {
+            var success = cbs === undefined ? emptyCallback : cbs;
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(INVITE_URL);
+            ajax.setResponseTypeJSON();
+            ajax.setData("action", "send");
+            ajax.setData("gameid", gameid.toString());
+            ajax.setData("nickname", nickname);
+            ajax.setData("nicksufix", nicknamesufix);
+            if (message !== "") {
+                ajax.setData("message", message);
+            }
+            ajax.setTargetLeftWindow();
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Games.sendInvite = sendInvite;
         function acceptInvite(gameid, cbs, cbe) {
             var success = cbs === undefined ? emptyCallback : cbs;
             var error = cbe === undefined ? emptyCallback : cbe;
@@ -8230,6 +8323,51 @@ var Server;
             Server.AJAX.requestPage(ajax, success, error);
         }
         Games.rejectInvite = rejectInvite;
+        function leaveGame(gameid, cbs, cbe) {
+            var success = cbs === undefined ? emptyCallback : cbs;
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(GAMES_URL);
+            ajax.setResponseTypeJSON();
+            ajax.setData("action", "leave");
+            ajax.setData("id", gameid.toString());
+            ajax.setTargetLeftWindow();
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Games.leaveGame = leaveGame;
+        function deleteGame(gameid, cbs, cbe) {
+            var success = cbs === undefined ? emptyCallback : cbs;
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(GAMES_URL);
+            ajax.setResponseTypeJSON();
+            ajax.setData("action", "delete");
+            ajax.setData("id", gameid.toString());
+            ajax.setTargetLeftWindow();
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Games.deleteGame = deleteGame;
+        function getPrivileges(gameid, cbs, cbe) {
+            var success = cbs === undefined ? emptyCallback : cbs;
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(GAMES_URL);
+            ajax.setResponseTypeJSON();
+            ajax.setData("action", "privileges");
+            ajax.setData("id", gameid.toString());
+            ajax.setTargetLeftWindow();
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Games.getPrivileges = getPrivileges;
+        function setPrivileges(gameid, cbs, cbe) {
+            var success = cbs === undefined ? emptyCallback : cbs;
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(GAMES_URL);
+            ajax.setResponseTypeJSON();
+            ajax.setData("action", "setPrivileges");
+            ajax.setData("privileges", "permissions");
+            ajax.setData("id", gameid.toString());
+            ajax.setTargetLeftWindow();
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Games.setPrivileges = setPrivileges;
     })(Games = Server.Games || (Server.Games = {}));
 })(Server || (Server = {}));
 var Server;

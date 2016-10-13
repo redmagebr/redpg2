@@ -35,6 +35,24 @@ module Server.Games {
         Server.AJAX.requestPage(ajax, success, error);
     }
 
+    export function sendInvite (gameid : number, nickname : string, nicknamesufix : string, message : string, cbs? : Listener, cbe? : Listener) {
+        var success = cbs === undefined ? emptyCallback : cbs;
+        var error = cbe === undefined ? emptyCallback : cbe;
+
+        var ajax = new AJAXConfig(INVITE_URL);
+        ajax.setResponseTypeJSON();
+        ajax.setData("action", "send");
+        ajax.setData("gameid", gameid.toString());
+        ajax.setData("nickname", nickname);
+        ajax.setData("nicksufix", nicknamesufix);
+        if (message !== "") {
+            ajax.setData("message", message);
+        }
+        ajax.setTargetLeftWindow();
+
+        Server.AJAX.requestPage(ajax, success, error);
+    }
+
     export function acceptInvite (gameid : number, cbs? : Listener, cbe? : Listener) {
         var success = cbs === undefined ? emptyCallback : cbs;
         var error = cbe === undefined ? emptyCallback : cbe;
@@ -56,6 +74,60 @@ module Server.Games {
         ajax.setResponseTypeJSON();
         ajax.setData("action", "reject");
         ajax.setData("gameid", gameid.toString());
+        ajax.setTargetLeftWindow();
+
+        Server.AJAX.requestPage(ajax, success, error);
+    }
+
+    export function leaveGame (gameid : number, cbs? : Listener, cbe? : Listener) {
+        var success = cbs === undefined ? emptyCallback : cbs;
+        var error = cbe === undefined ? emptyCallback : cbe;
+
+        var ajax = new AJAXConfig(GAMES_URL);
+        ajax.setResponseTypeJSON();
+        ajax.setData("action", "leave");
+        ajax.setData("id", gameid.toString());
+        ajax.setTargetLeftWindow();
+
+        Server.AJAX.requestPage(ajax, success, error);
+    }
+
+    export function deleteGame (gameid : number, cbs? : Listener, cbe? : Listener) {
+        var success = cbs === undefined ? emptyCallback : cbs;
+        var error = cbe === undefined ? emptyCallback : cbe;
+
+        var ajax = new AJAXConfig(GAMES_URL);
+        ajax.setResponseTypeJSON();
+        ajax.setData("action", "delete");
+        ajax.setData("id", gameid.toString());
+        ajax.setTargetLeftWindow();
+
+        Server.AJAX.requestPage(ajax, success, error);
+    }
+
+    export function getPrivileges (gameid : number, cbs? : Listener, cbe? : Listener) {
+        var success = cbs === undefined ? emptyCallback : cbs;
+        var error = cbe === undefined ? emptyCallback : cbe;
+
+        var ajax = new AJAXConfig(GAMES_URL);
+        ajax.setResponseTypeJSON();
+        ajax.setData("action", "privileges");
+        ajax.setData("id", gameid.toString());
+        ajax.setTargetLeftWindow();
+
+        Server.AJAX.requestPage(ajax, success, error);
+    }
+
+
+    export function setPrivileges (gameid : number, cbs? : Listener, cbe? : Listener) {
+        var success = cbs === undefined ? emptyCallback : cbs;
+        var error = cbe === undefined ? emptyCallback : cbe;
+
+        var ajax = new AJAXConfig(GAMES_URL);
+        ajax.setResponseTypeJSON();
+        ajax.setData("action", "setPrivileges");
+        ajax.setData("privileges", "permissions"); // TODO: Find out wtf "permissions" is
+        ajax.setData("id", gameid.toString());
         ajax.setTargetLeftWindow();
 
         Server.AJAX.requestPage(ajax, success, error);

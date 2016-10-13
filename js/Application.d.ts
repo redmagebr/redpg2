@@ -668,6 +668,9 @@ declare class SlashClear extends SlashCommand {
 }
 declare class SlashReply extends SlashCommand {
 }
+declare class SlashImages extends SlashCommand {
+    receiveCommand(slashCommand: string, message: string): boolean;
+}
 declare class Message extends SlashCommand {
     id: number;
     localid: number;
@@ -767,12 +770,20 @@ declare class MessageSE extends Message {
 declare class MessageImage extends Message {
     module: string;
     private openedBefore;
+    private static lastImages;
+    private static maxHistory;
+    private static noAutomation;
+    private static addLastImage(msg);
+    static getLastImages(roomid: number): MessageImage[];
+    static stopAutomation(): void;
+    static resumeAutomation(): void;
     onPrint(): void;
     createHTML(): HTMLParagraphElement;
     clickLink(): void;
     getName(): any;
     setName(name: string): void;
     static shareLink(name: string, url: string): void;
+    receiveCommand(slashCommand: string, msg: string): boolean;
 }
 declare class MessageBGM extends Message {
     module: string;
@@ -1249,8 +1260,13 @@ declare module Server.Images {
 declare module Server.Games {
     function updateLists(cbs?: Listener, cbe?: Listener): void;
     function getInviteList(cbs?: Listener, cbe?: Listener): void;
+    function sendInvite(gameid: number, nickname: string, nicknamesufix: string, message: string, cbs?: Listener, cbe?: Listener): void;
     function acceptInvite(gameid: number, cbs?: Listener, cbe?: Listener): void;
     function rejectInvite(gameid: number, cbs?: Listener, cbe?: Listener): void;
+    function leaveGame(gameid: number, cbs?: Listener, cbe?: Listener): void;
+    function deleteGame(gameid: number, cbs?: Listener, cbe?: Listener): void;
+    function getPrivileges(gameid: number, cbs?: Listener, cbe?: Listener): void;
+    function setPrivileges(gameid: number, cbs?: Listener, cbe?: Listener): void;
 }
 declare module Server.URL {
     function fixURL(url: string): string;
