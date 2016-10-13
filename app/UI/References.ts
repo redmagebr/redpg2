@@ -16,6 +16,7 @@
 /// <reference path='Modules/Rooms/Designer.ts' />
 /// <reference path='Modules/Games.ts' />
 /// <reference path='Modules/Games/Invites.ts' />
+/// <reference path='Modules/Games/InviteDesigner.ts' />
 /// <reference path='Modules/Games/Designer.ts' />
 /// <reference path='Modules/SoundController.ts' />
 /// <reference path='Modules/SoundController/MusicPlayer.ts' />

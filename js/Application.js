@@ -5058,11 +5058,15 @@ ptbr.setLingo("", "");
 ptbr.setLingo("_GAMEINVITESTITLE_", "Meus Convites");
 ptbr.setLingo("_GAMEINVITESEXP01_", "Enquanto você não aceitar um dos convites, você não faz parte do grupo.");
 ptbr.setLingo("_GAMEINVITESEXP02_", "Caso precise informar seu identificador a alguém, ele é \"%a\".");
-ptbr.setLingo("", "");
-ptbr.setLingo("", "");
-ptbr.setLingo("", "");
-ptbr.setLingo("", "");
-ptbr.setLingo("", "");
+ptbr.setLingo("_GAMEINVITEDESIGNERTITLE_", "Enviando Convites");
+ptbr.setLingo("_GAMEINVITEDESIGNEREXP01_", "Aqui você adiciona jogadores a mesa. Um jogador só pode visualizar qualquer coisa de uma mesa quando ele foi convidado e aceitou o convite. Depois de enviar o convite, você não poderá repetir o envio até o jogador aceitar ou recusar o convite. Para convidar um jogador, você precisa digitar o identificador dele no formulário abaixo. Identificadores de todos são parecidos com o seu, como \"Nome#1234\", então um nome curto, sem espaços, seguido de \"#\" e então um número com quatro dígitos.");
+ptbr.setLingo("_GAMEINVITEDESIGNEREXP02_", "Você está adicionando jogadores para a mesa \"%a\".");
+ptbr.setLingo("_GAMEINVITEDESIGNERERROR404_", "Nenhum jogador com esse nome foi encontrado.");
+ptbr.setLingo("_GAMEINVITEDESIGNERERROR401_", "Você já enviou um convite para esse jogador.");
+ptbr.setLingo("_GAMEINVITEDESIGNERSUCCESS_", "Convite enviado com sucesso!");
+ptbr.setLingo("_GAMEINVITEDESIGNERSUBMIT_", "Enviar");
+ptbr.setLingo("_GAMEINVITEDESIGNERNAMEPLACEHOLDER_", "Identificador#");
+ptbr.setLingo("_GAMEINVITEDESIGNERMESSAGEPLACEHOLDER_", "Carta de apresentação");
 ptbr.setLingo("", "");
 ptbr.setLingo("_CHATHELP01_", "Use \"/comandos\" para imprimir uma lista completa de comandos. Comandos básicos:");
 ptbr.setLingo("_CHATHELP02_", "\"/me [mensagem]\": Envia a mensagem como uma ação da persona escolhida.");
@@ -5178,6 +5182,7 @@ var UI;
     UI.idGameInvites = "gameInvitesSideWindow";
     UI.idStyles = "stylesSideWindow";
     UI.idStyleDesigner = "styleEditorSideWindow";
+    UI.idInviteDesigner = "gameInviteFormSideWindow";
     UI.idHome = "homeSideWindow";
     UI.idSheets = "sheetsSideWindow";
     UI.idImages = "imagesSideWindow";
@@ -6189,6 +6194,7 @@ var UI;
                     p.addEventListener("click", {
                         game: game,
                         handleEvent: function () {
+                            UI.Games.InviteDesigner.callSelf(this.game);
                         }
                     });
                 }
@@ -6381,6 +6387,85 @@ var UI;
             }
             Invites.printError = printError;
         })(Invites = Games.Invites || (Games.Invites = {}));
+    })(Games = UI.Games || (UI.Games = {}));
+})(UI || (UI = {}));
+var UI;
+(function (UI) {
+    var Games;
+    (function (Games) {
+        var InviteDesigner;
+        (function (InviteDesigner) {
+            var currentGame = null;
+            var gameName = document.getElementById("gameInviteDesignerGameName");
+            var form = document.getElementById("gameInviteDesignerForm");
+            var nameInput = document.getElementById("gameInviteDesignerName");
+            var msgInput = document.getElementById("gameInviteDesignerMessage");
+            var err404 = document.getElementById("gameInviteDesigner404");
+            var err401 = document.getElementById("gameInviteDesigner401");
+            var success = document.getElementById("gameInviteDesigner200");
+            InviteDesigner.$msgs = $([err404, err401, success]);
+            var $404 = $(err404);
+            var $401 = $(err401);
+            var $success = $(success);
+            form.addEventListener("submit", function (e) {
+                e.preventDefault();
+                UI.Games.InviteDesigner.submit();
+            });
+            function callSelf(game) {
+                UI.PageManager.callPage(UI.idInviteDesigner);
+                UI.Language.addLanguageVariable(gameName, "a", game.name);
+                UI.Language.updateElement(gameName);
+                currentGame = game;
+                InviteDesigner.$msgs.stop().hide();
+                nameInput.value = "";
+                msgInput.value = "";
+            }
+            InviteDesigner.callSelf = callSelf;
+            function emptyName() {
+                nameInput.value = "";
+            }
+            InviteDesigner.emptyName = emptyName;
+            function submit() {
+                InviteDesigner.$msgs.stop().hide();
+                var cbs = {
+                    handleEvent: function () {
+                        UI.Games.InviteDesigner.emptyName();
+                        UI.Games.InviteDesigner.showMessage(200);
+                    }
+                };
+                var cbe = {
+                    handleEvent: function (data, xhr) {
+                        if (xhr.status === 409) {
+                            UI.Games.InviteDesigner.showMessage(401);
+                        }
+                        else {
+                            UI.Games.InviteDesigner.showMessage(404);
+                        }
+                    }
+                };
+                var nick = nameInput.value.split("#");
+                if (nick.length !== 2) {
+                    showMessage(404);
+                    return;
+                }
+                var message = msgInput.value;
+                Server.Games.sendInvite(currentGame.id, nick[0], nick[1], message, cbs, cbe);
+            }
+            InviteDesigner.submit = submit;
+            function showMessage(id) {
+                InviteDesigner.$msgs.stop().hide();
+                if (id === 200) {
+                    $success.fadeIn(Application.Config.getConfig("animTime").getValue());
+                }
+                else if (id === 401) {
+                    $401.fadeIn(Application.Config.getConfig("animTime").getValue());
+                }
+                else {
+                    $404.fadeIn(Application.Config.getConfig("animTime").getValue());
+                }
+            }
+            InviteDesigner.showMessage = showMessage;
+        })(InviteDesigner = Games.InviteDesigner || (Games.InviteDesigner = {}));
     })(Games = UI.Games || (UI.Games = {}));
 })(UI || (UI = {}));
 var UI;

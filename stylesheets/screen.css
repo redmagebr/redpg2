@@ -1069,7 +1069,7 @@ body {
 }
 
 /* line 71, ../sass/generalView.scss */
-.buttonBehavior:hover, .simpleButton:hover, .textLink:hover, .sheetNameLink:hover, .picaTool:hover, .picaToolButton:hover, .leftPicaToolButton:hover, .rightPicaToolButton:hover, .leftPicaTool:hover, .rightPicaTool:hover, .handleButton:hover, .leftHandleButton:hover, .rightHandleButton:hover, .imagesLeftButton:hover, .imagesRightButton:hover, .imagesFolderTitle:hover, #dropboxImagesButton:hover, .musicPlayerButton:hover, #dropboxBGMInput:hover, #dropboxSoundsButton:hover, .sheetListGameName:hover, .sheetListFolderName:hover, .styleLabel:hover, #avatarUpButton:hover, #avatarDownButton:hover, #chatScrollDown:hover, .chatRightButton:hover, #chatMessageSendButton:hover, #personaAddButton:hover, .personaButton:hover, .diceButton:hover, #chatDiceTower:hover, #chatDiceSubmit:hover, .chatAvatarChoiceBoxUse:hover, .chatAvatarChoiceBoxDelete:hover, .chatWhisperLink:hover, .chatMessageVoteAmount:hover, .xButton:hover {
+.buttonBehavior:hover, .simpleButton:hover, .textLink:hover, .sheetNameLink:hover, .mainWindowParagraphSubmit:hover, .picaTool:hover, .picaToolButton:hover, .leftPicaToolButton:hover, .rightPicaToolButton:hover, .leftPicaTool:hover, .rightPicaTool:hover, .handleButton:hover, .leftHandleButton:hover, .rightHandleButton:hover, .imagesLeftButton:hover, .imagesRightButton:hover, .imagesFolderTitle:hover, #dropboxImagesButton:hover, .musicPlayerButton:hover, #dropboxBGMInput:hover, #dropboxSoundsButton:hover, .sheetListGameName:hover, .sheetListFolderName:hover, .styleLabel:hover, #avatarUpButton:hover, #avatarDownButton:hover, #chatScrollDown:hover, .chatRightButton:hover, #chatMessageSendButton:hover, #personaAddButton:hover, .personaButton:hover, .diceButton:hover, #chatDiceTower:hover, #chatDiceSubmit:hover, .chatAvatarChoiceBoxUse:hover, .chatAvatarChoiceBoxDelete:hover, .chatWhisperLink:hover, .chatMessageVoteAmount:hover, .xButton:hover {
   cursor: pointer;
 }
 
@@ -1108,22 +1108,22 @@ body {
 }
 
 /* line 109, ../sass/generalView.scss */
-.buttonBehavior:hover, .simpleButton:hover, .textLink:hover, .sheetNameLink:hover, .picaTool:hover, .picaToolButton:hover, .leftPicaToolButton:hover, .rightPicaToolButton:hover, .leftPicaTool:hover, .rightPicaTool:hover, .handleButton:hover, .leftHandleButton:hover, .rightHandleButton:hover, .imagesLeftButton:hover, .imagesRightButton:hover, .imagesFolderTitle:hover, #dropboxImagesButton:hover, .musicPlayerButton:hover, #dropboxBGMInput:hover, #dropboxSoundsButton:hover, .sheetListGameName:hover, .sheetListFolderName:hover, .styleLabel:hover, #avatarUpButton:hover, #avatarDownButton:hover, #chatScrollDown:hover, .chatRightButton:hover, #chatMessageSendButton:hover, #personaAddButton:hover, .personaButton:hover, .diceButton:hover, #chatDiceTower:hover, #chatDiceSubmit:hover, .chatAvatarChoiceBoxUse:hover, .chatAvatarChoiceBoxDelete:hover, .chatWhisperLink:hover, .chatMessageVoteAmount:hover, .xButton:hover {
+.buttonBehavior:hover, .simpleButton:hover, .textLink:hover, .sheetNameLink:hover, .mainWindowParagraphSubmit:hover, .picaTool:hover, .picaToolButton:hover, .leftPicaToolButton:hover, .rightPicaToolButton:hover, .leftPicaTool:hover, .rightPicaTool:hover, .handleButton:hover, .leftHandleButton:hover, .rightHandleButton:hover, .imagesLeftButton:hover, .imagesRightButton:hover, .imagesFolderTitle:hover, #dropboxImagesButton:hover, .musicPlayerButton:hover, #dropboxBGMInput:hover, #dropboxSoundsButton:hover, .sheetListGameName:hover, .sheetListFolderName:hover, .styleLabel:hover, #avatarUpButton:hover, #avatarDownButton:hover, #chatScrollDown:hover, .chatRightButton:hover, #chatMessageSendButton:hover, #personaAddButton:hover, .personaButton:hover, .diceButton:hover, #chatDiceTower:hover, #chatDiceSubmit:hover, .chatAvatarChoiceBoxUse:hover, .chatAvatarChoiceBoxDelete:hover, .chatWhisperLink:hover, .chatMessageVoteAmount:hover, .xButton:hover {
   cursor: pointer;
 }
 
 /* line 114, ../sass/generalView.scss */
-.textLink, .sheetNameLink, .picaTool, .picaToolButton, .leftPicaToolButton, .rightPicaToolButton, .leftPicaTool, .rightPicaTool {
+.textLink, .sheetNameLink, .mainWindowParagraphSubmit, .picaTool, .picaToolButton, .leftPicaToolButton, .rightPicaToolButton, .leftPicaTool, .rightPicaTool {
   text-decoration: none;
   font-weight: bold;
   color: #000bab;
 }
 /* line 118, ../sass/generalView.scss */
-.textLink:hover, .sheetNameLink:hover, .picaTool:hover, .picaToolButton:hover, .leftPicaToolButton:hover, .rightPicaToolButton:hover, .leftPicaTool:hover, .rightPicaTool:hover {
+.textLink:hover, .sheetNameLink:hover, .mainWindowParagraphSubmit:hover, .picaTool:hover, .picaToolButton:hover, .leftPicaToolButton:hover, .rightPicaToolButton:hover, .leftPicaTool:hover, .rightPicaTool:hover {
   color: #4f5aff;
 }
 /* line 121, ../sass/generalView.scss */
-.textLink:active, .sheetNameLink:active, .picaTool:active, .picaToolButton:active, .leftPicaToolButton:active, .rightPicaToolButton:active, .leftPicaTool:active, .rightPicaTool:active {
+.textLink:active, .sheetNameLink:active, .mainWindowParagraphSubmit:active, .picaTool:active, .picaToolButton:active, .leftPicaToolButton:active, .rightPicaToolButton:active, .leftPicaTool:active, .rightPicaTool:active {
   color: #000cc8;
 }
 
@@ -1173,7 +1173,7 @@ body {
 
 /* UNselectable */
 /* line 167, ../sass/generalView.scss */
-.unselectable, .buttonBehavior, .simpleButton, .textLink, .sheetNameLink, .picaTool, .picaToolButton, .leftPicaToolButton, .rightPicaToolButton, .leftPicaTool, .rightPicaTool, .handleButton, .leftHandleButton, .rightHandleButton, .imagesLeftButton, .imagesRightButton, .imagesFolderTitle, #dropboxImagesButton, .musicPlayerButton, #dropboxBGMInput, #dropboxSoundsButton, .sheetListGameName, .sheetListFolderName, .styleLabel, #avatarUpButton, #avatarDownButton, #chatScrollDown, .chatRightButton, #chatMessageSendButton, #personaAddButton, .personaButton, .diceButton, #chatDiceTower, #chatDiceSubmit, .chatAvatarChoiceBoxUse, .chatAvatarChoiceBoxDelete, .chatWhisperLink, .chatMessageVoteAmount, .xButton {
+.unselectable, .buttonBehavior, .simpleButton, .textLink, .sheetNameLink, .mainWindowParagraphSubmit, .picaTool, .picaToolButton, .leftPicaToolButton, .rightPicaToolButton, .leftPicaTool, .rightPicaTool, .handleButton, .leftHandleButton, .rightHandleButton, .imagesLeftButton, .imagesRightButton, .imagesFolderTitle, #dropboxImagesButton, .musicPlayerButton, #dropboxBGMInput, #dropboxSoundsButton, .sheetListGameName, .sheetListFolderName, .styleLabel, #avatarUpButton, #avatarDownButton, #chatScrollDown, .chatRightButton, #chatMessageSendButton, #personaAddButton, .personaButton, .diceButton, #chatDiceTower, #chatDiceSubmit, .chatAvatarChoiceBoxUse, .chatAvatarChoiceBoxDelete, .chatWhisperLink, .chatMessageVoteAmount, .xButton {
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select: none;
@@ -1466,6 +1466,17 @@ body {
   border: solid 1px #003468;
   background-color: #d4d9e1;
   color: #00589e;
+}
+
+/* line 1, ../sass/mainWindowInviteDesigner.scss */
+.gameInviteDesignerMessage {
+  position: absolute;
+}
+
+/* line 5, ../sass/mainWindowInviteDesigner.scss */
+#gameInviteDesignerForm {
+  margin-top: 32px;
+  display: block;
 }
 
 /* line 1, ../sass/mainWindowSounds.scss */
@@ -1894,7 +1905,7 @@ body {
 }
 
 /* line 28, ../sass/mainWindowSimple.scss */
-.mainWindowParagraph, .gameInvitesEmptyP {
+.mainWindowParagraph, .gameInvitesEmptyP, .mainWindowParagraphError, .mainWindowParagraphSuccess, .mainWindowParagraphWarning, .mainWindowParagraphSubmit {
   padding: 6px;
   font-size: 15px;
   line-height: 20px;
@@ -1902,19 +1913,68 @@ body {
   text-indent: 10px;
 }
 /* line 35, ../sass/mainWindowSimple.scss */
-.mainWindowParagraph.centered, .centered.gameInvitesEmptyP {
+.mainWindowParagraph.centered, .centered.gameInvitesEmptyP, .centered.mainWindowParagraphError, .centered.mainWindowParagraphSuccess, .centered.mainWindowParagraphWarning, .centered.mainWindowParagraphSubmit {
   text-indent: 0px;
   text-align: center;
 }
 
 /* line 41, ../sass/mainWindowSimple.scss */
-.hoverable:hover, .gameInvitesEmptyP:hover, .gameInvitesContainer:hover, .configLabel:hover, #styleEditorSubmit:hover, .styleLabel:hover {
+.mainWindowParagraphError {
+  color: #cb000f;
+  font-weight: bold;
+}
+
+/* line 47, ../sass/mainWindowSimple.scss */
+.mainWindowParagraphSuccess {
+  color: #06cb00;
+  font-weight: bold;
+}
+
+/* line 53, ../sass/mainWindowSimple.scss */
+.mainWindowParagraphWarning {
+  color: #cbc500;
+  font-weight: bold;
+}
+
+/* line 59, ../sass/mainWindowSimple.scss */
+.hoverable:hover, .gameInvitesEmptyP:hover, .gameInvitesContainer:hover, .configLabel:hover, .mainWindowParagraphSubmit:hover, #styleEditorSubmit:hover, .styleLabel:hover {
   background-color: rgba(0, 0, 0, 0.3);
 }
 
-/* line 45, ../sass/mainWindowSimple.scss */
+/* line 63, ../sass/mainWindowSimple.scss */
 .lightHoverable:hover, .sheetListSheet:hover {
   background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* line 69, ../sass/mainWindowSimple.scss */
+.mainWindowWideInput, .mainWindowWideTextarea {
+  width: 400px;
+  display: block;
+  height: 25px;
+  line-height: 25px;
+  padding: 4px;
+  margin: auto;
+  margin-bottom: 15px;
+  font-size: 1.1em;
+  text-align: center;
+  font-family: alegreya;
+}
+
+/* line 82, ../sass/mainWindowSimple.scss */
+.mainWindowWideTextarea {
+  height: 60px;
+  line-height: 1em;
+  font-size: 0.9em;
+  text-align: left;
+}
+
+/* line 90, ../sass/mainWindowSimple.scss */
+.mainWindowParagraphSubmit {
+  border: none;
+  background-color: transparent;
+  display: block;
+  width: 100%;
+  text-align: center;
 }
 
 /* line 1, ../sass/mainWindowStyles.scss */

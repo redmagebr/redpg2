@@ -165,6 +165,19 @@
       -############################################
       -############## GAMES
       -############################################
+      -#### GAME INVITE CARD CREATOR
+      #gameInviteFormSideWindow.leftSideWindow
+        .language.mainWindowHeader="_GAMEINVITEDESIGNERTITLE_"
+        .mainWindowContent.singleton
+          %p.mainWindowParagraph.language="_GAMEINVITEDESIGNEREXP01_"
+          %p.mainWindowParagraph.language#gameInviteDesignerGameName="_GAMEINVITEDESIGNEREXP02_"
+          %p.mainWindowParagraphError.gameInviteDesignerMessage.language#gameInviteDesigner404="_GAMEINVITEDESIGNERERROR404_"
+          %p.mainWindowParagraphError.gameInviteDesignerMessage.language#gameInviteDesigner401="_GAMEINVITEDESIGNERERROR401_"
+          %p.mainWindowParagraphSuccess.gameInviteDesignerMessage.language#gameInviteDesigner200="_GAMEINVITEDESIGNERSUCCESS_"
+          %form#gameInviteDesignerForm
+            %input.mainWindowWideInput.language#gameInviteDesignerName{:data=>{:placeholderlingo=>"_GAMEINVITEDESIGNERNAMEPLACEHOLDER_"}}
+            %textarea.mainWindowWideTextarea.language#gameInviteDesignerMessage{:data=>{:placeholderlingo=>"_GAMEINVITEDESIGNERMESSAGEPLACEHOLDER_"}}
+            %input.mainWindowParagraphSubmit{:type=>"submit", :data=>{:valuelingo => "_GAMEINVITEDESIGNERSUBMIT_"}}
       -#### GAME INVITES WINDOW
       #gameInvitesSideWindow.leftSideWindow
         .language.mainWindowHeader="_GAMEINVITESTITLE_"
@@ -216,7 +229,7 @@
             %label.language.styleLabel#styleEditorRemainLabel
               %input#styleEditorRemain{:type=>"checkbox"}
                 _STYLEEDITORREMAIN_
-            %input.textLink.mainWindowParagraph.hoverable.language.hoverable#styleEditorSubmit{:type=>"submit", :data=>{:valuelingo => "_STYLEEDITORSAVE_"}}
+            %input.textLink.mainWindowParagraph.hoverable.language#styleEditorSubmit{:type=>"submit", :data=>{:valuelingo => "_STYLEEDITORSAVE_"}}
       -#### STYLES WINDOW
       #stylesSideWindow.leftSideWindow
         .language.mainWindowHeader

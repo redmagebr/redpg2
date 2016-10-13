@@ -200,6 +200,21 @@
           </label>
         </div>
       </div>
+      <div class='leftSideWindow' id='gameInviteFormSideWindow'>
+        <div class='language mainWindowHeader'>_GAMEINVITEDESIGNERTITLE_</div>
+        <div class='mainWindowContent singleton'>
+          <p class='mainWindowParagraph language'>_GAMEINVITEDESIGNEREXP01_</p>
+          <p class='mainWindowParagraph language' id='gameInviteDesignerGameName'>_GAMEINVITEDESIGNEREXP02_</p>
+          <p class='mainWindowParagraphError gameInviteDesignerMessage language' id='gameInviteDesigner404'>_GAMEINVITEDESIGNERERROR404_</p>
+          <p class='mainWindowParagraphError gameInviteDesignerMessage language' id='gameInviteDesigner401'>_GAMEINVITEDESIGNERERROR401_</p>
+          <p class='mainWindowParagraphSuccess gameInviteDesignerMessage language' id='gameInviteDesigner200'>_GAMEINVITEDESIGNERSUCCESS_</p>
+          <form id='gameInviteDesignerForm'>
+            <input class='mainWindowWideInput language' data-placeholderlingo='_GAMEINVITEDESIGNERNAMEPLACEHOLDER_' id='gameInviteDesignerName'>
+            <textarea class='mainWindowWideTextarea language' data-placeholderlingo='_GAMEINVITEDESIGNERMESSAGEPLACEHOLDER_' id='gameInviteDesignerMessage'></textarea>
+            <input class='mainWindowParagraphSubmit' data-valuelingo='_GAMEINVITEDESIGNERSUBMIT_' type='submit'>
+          </form>
+        </div>
+      </div>
       <div class='leftSideWindow' id='gameInvitesSideWindow'>
         <div class='language mainWindowHeader'>_GAMEINVITESTITLE_</div>
         <div class='mainWindowContent singleton'>
@@ -267,7 +282,7 @@
                 _STYLEEDITORREMAIN_
               </input>
             </label>
-            <input class='textLink mainWindowParagraph hoverable language hoverable' data-valuelingo='_STYLEEDITORSAVE_' id='styleEditorSubmit' type='submit'>
+            <input class='textLink mainWindowParagraph hoverable language' data-valuelingo='_STYLEEDITORSAVE_' id='styleEditorSubmit' type='submit'>
           </form>
         </div>
       </div>

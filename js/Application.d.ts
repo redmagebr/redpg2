@@ -1029,6 +1029,7 @@ declare module UI {
     var idGameInvites: string;
     var idStyles: string;
     var idStyleDesigner: string;
+    var idInviteDesigner: string;
     var idHome: string;
     var idSheets: string;
     var idImages: string;
@@ -1121,6 +1122,13 @@ declare module UI.Games.Invites {
     function accept(id: any): void;
     function reject(id: any): void;
     function printError(): void;
+}
+declare module UI.Games.InviteDesigner {
+    var $msgs: JQuery;
+    function callSelf(game: Game): void;
+    function emptyName(): void;
+    function submit(): void;
+    function showMessage(id: number): void;
 }
 declare module UI.Games.Designer {
     function fromGame(game?: Game): void;

@@ -217,7 +217,7 @@ module UI.Games {
                 p.addEventListener("click", <EventListenerObject> {
                     game : game,
                     handleEvent : function () {
-                        // TODO: UI.Games.sendInvites(this.game);
+                        UI.Games.InviteDesigner.callSelf(this.game);
                     }
                 });
             }

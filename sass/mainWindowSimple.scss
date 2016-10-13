@@ -38,10 +38,62 @@
   }
 }
 
+.mainWindowParagraphError {
+  @extend .mainWindowParagraph;
+  color: #cb000f;
+  font-weight: bold;
+}
+
+.mainWindowParagraphSuccess {
+  @extend .mainWindowParagraph;
+  color: #06cb00;
+  font-weight: bold;
+}
+
+.mainWindowParagraphWarning {
+  @extend .mainWindowParagraph;
+  color: #cbc500;
+  font-weight: bold;
+}
+
 .hoverable:hover {
   background-color: rgba(0,0,0,.3);
 }
 
 .lightHoverable:hover {
   background-color: rgba(0,0,0,.1);
+}
+
+// INPUTS
+
+.mainWindowWideInput {
+  width: 400px;
+  display: block;
+  height: 25px;
+  line-height: 25px;
+  padding: 4px;
+  margin: auto;
+  margin-bottom: 15px;
+  font-size: 1.1em;
+  text-align: center;
+  font-family: alegreya;
+}
+
+.mainWindowWideTextarea {
+  @extend .mainWindowWideInput;
+  height: 60px;
+  line-height: 1em;
+  font-size: 0.9em;
+  text-align: left;
+}
+
+.mainWindowParagraphSubmit {
+  @extend .textLink;
+  @extend .mainWindowParagraph;
+  @extend .hoverable;
+  border: none;
+  background-color: transparent;
+  display: block;
+  width: 100%;
+  text-align: center;
 }
