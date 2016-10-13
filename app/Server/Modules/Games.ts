@@ -1,6 +1,7 @@
 module Server.Games {
     var GAMES_URL = "Game";
     var INVITE_URL = "Invite";
+    var ROOMS_URL = "Room";
 
     var emptyCallback = <Listener> {handleEvent:function(){}};
 
@@ -100,6 +101,19 @@ module Server.Games {
         ajax.setResponseTypeJSON();
         ajax.setData("action", "delete");
         ajax.setData("id", gameid.toString());
+        ajax.setTargetLeftWindow();
+
+        Server.AJAX.requestPage(ajax, success, error);
+    }
+
+    export function deleteRoom (roomid : number, cbs? : Listener, cbe? : Listener) {
+        var success = cbs === undefined ? emptyCallback : cbs;
+        var error = cbe === undefined ? emptyCallback : cbe;
+
+        var ajax = new AJAXConfig(ROOMS_URL);
+        ajax.setResponseTypeJSON();
+        ajax.setData("action", "delete");
+        ajax.setData("id", roomid.toString());
         ajax.setTargetLeftWindow();
 
         Server.AJAX.requestPage(ajax, success, error);

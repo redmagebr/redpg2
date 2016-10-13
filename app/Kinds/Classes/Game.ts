@@ -131,13 +131,13 @@ class Game {
             DB.RoomDB.updateFromObject(game['rooms'], false);
             for (var i = 0; i < game['rooms'].length; i++) {
                 this.rooms[game['rooms'][i]['id']] = DB.RoomDB.getRoom(game['rooms'][i]['id']);
-                cleanedup.push(game['rooms'][i]['id']);
+                cleanedup.push((game['rooms'][i]['id']));
             }
             if (cleanup) {
                 for (id in this.rooms) {
                     if (cleanedup.indexOf(this.rooms[id].id) === -1) {
                         DB.RoomDB.releaseRoom(this.rooms[id].id);
-                        delete (this.users[id]);
+                        delete (this.rooms[id]);
                     }
                 }
             }

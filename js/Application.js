@@ -471,13 +471,13 @@ var Game = (function () {
             DB.RoomDB.updateFromObject(game['rooms'], false);
             for (var i = 0; i < game['rooms'].length; i++) {
                 this.rooms[game['rooms'][i]['id']] = DB.RoomDB.getRoom(game['rooms'][i]['id']);
-                cleanedup.push(game['rooms'][i]['id']);
+                cleanedup.push((game['rooms'][i]['id']));
             }
             if (cleanup) {
                 for (id in this.rooms) {
                     if (cleanedup.indexOf(this.rooms[id].id) === -1) {
                         DB.RoomDB.releaseRoom(this.rooms[id].id);
-                        delete (this.users[id]);
+                        delete (this.rooms[id]);
                     }
                 }
             }
@@ -5973,6 +5973,21 @@ var UI;
 (function (UI) {
     var Rooms;
     (function (Rooms) {
+        function deleteRoom(room) {
+            var cbs = {
+                handleEvent: function () {
+                    UI.Games.callSelf(false);
+                }
+            };
+            Server.Games.deleteRoom(room.id, cbs, cbs);
+        }
+        Rooms.deleteRoom = deleteRoom;
+    })(Rooms = UI.Rooms || (UI.Rooms = {}));
+})(UI || (UI = {}));
+var UI;
+(function (UI) {
+    var Rooms;
+    (function (Rooms) {
         var Designer;
         (function (Designer) {
             function clear() {
@@ -6041,6 +6056,7 @@ var UI;
                     perm.classList.add("gamesOwnerButton");
                     perm.classList.add("textLink");
                     perm.appendChild(document.createTextNode("_GAMESPERMISSIONS_"));
+                    perm.style.display = "none";
                     perm.addEventListener("click", {
                         game: games[i],
                         handleEvent: function () {
@@ -6126,6 +6142,7 @@ var UI;
                             rDelete.addEventListener("click", {
                                 room: room,
                                 handleEvent: function () {
+                                    UI.Rooms.deleteRoom(this.room);
                                 }
                             });
                             p.appendChild(rDelete);
@@ -6138,6 +6155,7 @@ var UI;
                                 handleEvent: function () {
                                 }
                             });
+                            rPerm.style.display = "none";
                             p.appendChild(rPerm);
                             UI.Language.markLanguage(rPerm, rDelete);
                         }
@@ -8277,6 +8295,7 @@ var Server;
     (function (Games) {
         var GAMES_URL = "Game";
         var INVITE_URL = "Invite";
+        var ROOMS_URL = "Room";
         var emptyCallback = { handleEvent: function () { } };
         function updateLists(cbs, cbe) {
             var success = {
@@ -8365,6 +8384,17 @@ var Server;
             Server.AJAX.requestPage(ajax, success, error);
         }
         Games.deleteGame = deleteGame;
+        function deleteRoom(roomid, cbs, cbe) {
+            var success = cbs === undefined ? emptyCallback : cbs;
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(ROOMS_URL);
+            ajax.setResponseTypeJSON();
+            ajax.setData("action", "delete");
+            ajax.setData("id", roomid.toString());
+            ajax.setTargetLeftWindow();
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Games.deleteRoom = deleteRoom;
         function getPrivileges(gameid, cbs, cbe) {
             var success = cbs === undefined ? emptyCallback : cbs;
             var error = cbe === undefined ? emptyCallback : cbe;

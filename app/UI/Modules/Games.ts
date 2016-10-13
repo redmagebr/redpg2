@@ -54,6 +54,7 @@ module UI.Games {
                 perm.classList.add("gamesOwnerButton");
                 perm.classList.add("textLink");
                 perm.appendChild(document.createTextNode("_GAMESPERMISSIONS_"));
+                perm.style.display="none"; // TODO: Display once implemented
 
                 perm.addEventListener("click", <EventListenerObject> {
                     game : games[i],
@@ -158,7 +159,7 @@ module UI.Games {
                         rDelete.addEventListener("click", <EventListenerObject> {
                             room : room,
                             handleEvent : function () {
-                                // TODO: UI.Rooms.deleteRoom(this.room);
+                                UI.Rooms.deleteRoom(this.room);
                             }
                         });
                         p.appendChild(rDelete);
@@ -173,6 +174,7 @@ module UI.Games {
                                 // TODO: UI.Rooms.setPermissions(this.room);
                             }
                         });
+                        rPerm.style.display = "none"; // TODO: Display once implemented
                         p.appendChild(rPerm);
 
                         UI.Language.markLanguage(rPerm, rDelete);

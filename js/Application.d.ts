@@ -1103,6 +1103,7 @@ declare module UI.Sheets {
     function callSelf(ready?: boolean): void;
 }
 declare module UI.Rooms {
+    function deleteRoom(room: Room): void;
 }
 declare module UI.Rooms.Designer {
     function fromRoom(room?: Room): void;
@@ -1267,6 +1268,7 @@ declare module Server.Games {
     function rejectInvite(gameid: number, cbs?: Listener, cbe?: Listener): void;
     function leaveGame(gameid: number, cbs?: Listener, cbe?: Listener): void;
     function deleteGame(gameid: number, cbs?: Listener, cbe?: Listener): void;
+    function deleteRoom(roomid: number, cbs?: Listener, cbe?: Listener): void;
     function getPrivileges(gameid: number, cbs?: Listener, cbe?: Listener): void;
     function setPrivileges(gameid: number, cbs?: Listener, cbe?: Listener): void;
 }
