@@ -160,6 +160,11 @@ declare class Game {
     getSheet(id: number): SheetInstance;
     getOrderedRoomList(): Array<Room>;
     getOrderedSheetList(): Array<SheetInstance>;
+    exportAsObject(): {
+        desc: string;
+        name: string;
+        freejoin: boolean;
+    };
     updateFromObject(game: Object, cleanup: boolean): void;
 }
 declare class SheetInstance {
@@ -1030,6 +1035,7 @@ declare module UI {
     var idStyles: string;
     var idStyleDesigner: string;
     var idInviteDesigner: string;
+    var idGameDesigner: string;
     var idHome: string;
     var idSheets: string;
     var idImages: string;
@@ -1131,8 +1137,10 @@ declare module UI.Games.InviteDesigner {
     function showMessage(id: number): void;
 }
 declare module UI.Games.Designer {
-    function fromGame(game?: Game): void;
+    function callSelf(game?: Game): void;
     function toGame(): Game;
+    function submit(): void;
+    function showError(): void;
 }
 declare module UI.SoundController {
     function updateSEVolume(newVolume: number): void;
@@ -1270,6 +1278,8 @@ declare module Server.Images {
 }
 declare module Server.Games {
     function updateLists(cbs?: Listener, cbe?: Listener): void;
+    function createGame(game: Game, cbs?: Listener, cbe?: Listener): void;
+    function editGame(game: Game, cbs?: Listener, cbe?: Listener): void;
     function getInviteList(cbs?: Listener, cbe?: Listener): void;
     function sendInvite(gameid: number, nickname: string, nicknamesufix: string, message: string, cbs?: Listener, cbe?: Listener): void;
     function acceptInvite(gameid: number, cbs?: Listener, cbe?: Listener): void;

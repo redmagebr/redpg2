@@ -5,7 +5,7 @@ class Game {
     public description : string = null;
     public name : string = null;
     public id : number = null;
-    public freejoin : boolean = null;
+    public freejoin : boolean = false;
 
     public creatorid : number = null;
     public creatornick : string = null;
@@ -16,7 +16,7 @@ class Game {
     }
 
     public isMyCreation () : boolean {
-        return Application.isMe(this.creatorid);
+        return Application.isMe(<number> this.creatorid);
     }
 
     public getMe () : UserGameContext {
@@ -27,7 +27,7 @@ class Game {
         if (this.users[id] === undefined) {
             return null;
         }
-        return this.users[id].getGameContext(this.id);
+        return this.users[id].getGameContext(<number> this.id);
     }
 
     public getRoom (id : number) : Room {
@@ -79,6 +79,22 @@ class Game {
         return list;
     }
 
+    public exportAsObject () {
+        //public description : string = null;
+        //public name : string = null;
+        //public id : number = null;
+        //public freejoin : boolean = null;
+        var obj = {
+            desc : this.description,
+            name : this.name,
+            freejoin : this.freejoin
+        };
+        if (this.id !== null) {
+            obj['id'] = this.id;
+        }
+        return obj;
+    }
+
     public updateFromObject (game : Object, cleanup : boolean) {
         for (var id in this) {
             if (game[id] === undefined || id === "users" || id === "rooms" || id === "sheets") continue;
@@ -99,7 +115,7 @@ class Game {
             if (cleanup) {
                 for (id in this.users) {
                     if (cleanedup.indexOf(this.users[id].id) === -1) {
-                        this.users[id].releaseGameContext(this.id);
+                        this.users[id].releaseGameContext(<number> this.id);
                         delete (this.users[id]);
                     }
                 }

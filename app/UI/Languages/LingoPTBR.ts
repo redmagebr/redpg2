@@ -162,6 +162,14 @@ ptbr.setLingo("_GAMESROOMPERMISSIONS_", "Permissões");
 ptbr.setLingo("_GAMESROOMDELETE_", "Deletar");
 ptbr.setLingo("", "");
 
+// Jogo Formulário
+ptbr.setLingo("_GAMEDESIGNERTITLE_", "Editor de Mesas");
+ptbr.setLingo("_GAMEDESIGNERERROR_", "Houve um erro no processamento. Tente novamente.");
+ptbr.setLingo("_GAMEDESIGNERNAMEPLACEHOLDER_", "Nome da mesa. Máximo de 30 caracteres.");
+ptbr.setLingo("_GAMEDESIGNERMESSAGEPLACEHOLDER_", "Descrição para a mesa. Utilize esse espaço para definir quais os objetivos da mesa, assim como horários e qualquer informação que seus jogadores devam ter.");
+ptbr.setLingo("_GAMEDESIGNERSUBMIT_", "Enviar");
+ptbr.setLingo("", "");
+
 // Jogos Invites
 ptbr.setLingo("_GAMEINVITESTITLE_", "Meus Convites");
 ptbr.setLingo("_GAMEINVITESEXP01_", "Enquanto você não aceitar um dos convites, você não faz parte do grupo.");

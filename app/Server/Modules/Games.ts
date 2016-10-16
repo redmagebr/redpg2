@@ -24,6 +24,32 @@ module Server.Games {
         Server.AJAX.requestPage(ajax, success, error);
     }
 
+    export function createGame (game : Game, cbs? : Listener, cbe? : Listener) {
+        var success = cbs === undefined ? emptyCallback : cbs;
+        var error = cbe === undefined ? emptyCallback : cbe;
+
+        var ajax = new AJAXConfig(GAMES_URL);
+        ajax.setResponseTypeJSON();
+        ajax.data = game.exportAsObject();
+        ajax.setData("action", "create");
+        ajax.setTargetLeftWindow();
+
+        Server.AJAX.requestPage(ajax, success, error);
+    }
+
+    export function editGame (game : Game, cbs? : Listener, cbe? : Listener) {
+        var success = cbs === undefined ? emptyCallback : cbs;
+        var error = cbe === undefined ? emptyCallback : cbe;
+
+        var ajax = new AJAXConfig(GAMES_URL);
+        ajax.setResponseTypeJSON();
+        ajax.data = game.exportAsObject();
+        ajax.setData("action", "edit");
+        ajax.setTargetLeftWindow();
+
+        Server.AJAX.requestPage(ajax, success, error);
+    }
+
     export function getInviteList (cbs? : Listener, cbe? : Listener) {
         var success = cbs === undefined ? emptyCallback : cbs;
         var error = cbe === undefined ? emptyCallback : cbe;

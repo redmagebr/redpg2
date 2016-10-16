@@ -1479,6 +1479,12 @@ body {
   display: block;
 }
 
+/* line 1, ../sass/mainWindowGameDesigner.scss */
+#gameDesignerForm {
+  margin-top: 32px;
+  display: block;
+}
+
 /* line 1, ../sass/mainWindowSounds.scss */
 #musicPlayerButton {
   display: block;

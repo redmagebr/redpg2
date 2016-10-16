@@ -165,6 +165,15 @@
       -############################################
       -############## GAMES
       -############################################
+      -#### GAME DESIGNER FORM
+      #gameDesignerFormSideWindow.leftSideWindow
+        .language.mainWindowHeader="_GAMEDESIGNERTITLE_"
+        .mainWindowContent.singleton
+          %p.mainWindowParagraphError.gameInviteDesignerMessage.language#gameDesignerError="_GAMEDESIGNERERROR_"
+          %form#gameDesignerForm
+            %input.mainWindowWideInput.language#gameDesignerName{:data=>{:placeholderlingo=>"_GAMEDESIGNERNAMEPLACEHOLDER_"}}
+            %textarea.mainWindowWideTextarea.language#gameDesignerMessage{:data=>{:placeholderlingo=>"_GAMEDESIGNERMESSAGEPLACEHOLDER_"}}
+            %input.mainWindowParagraphSubmit.language{:type=>"submit", :data=>{:valuelingo => "_GAMEDESIGNERSUBMIT_"}}
       -#### GAME INVITE CARD CREATOR
       #gameInviteFormSideWindow.leftSideWindow
         .language.mainWindowHeader="_GAMEINVITEDESIGNERTITLE_"
@@ -177,7 +186,7 @@
           %form#gameInviteDesignerForm
             %input.mainWindowWideInput.language#gameInviteDesignerName{:data=>{:placeholderlingo=>"_GAMEINVITEDESIGNERNAMEPLACEHOLDER_"}}
             %textarea.mainWindowWideTextarea.language#gameInviteDesignerMessage{:data=>{:placeholderlingo=>"_GAMEINVITEDESIGNERMESSAGEPLACEHOLDER_"}}
-            %input.mainWindowParagraphSubmit{:type=>"submit", :data=>{:valuelingo => "_GAMEINVITEDESIGNERSUBMIT_"}}
+            %input.mainWindowParagraphSubmit.language{:type=>"submit", :data=>{:valuelingo => "_GAMEINVITEDESIGNERSUBMIT_"}}
       -#### GAME INVITES WINDOW
       #gameInvitesSideWindow.leftSideWindow
         .language.mainWindowHeader="_GAMEINVITESTITLE_"

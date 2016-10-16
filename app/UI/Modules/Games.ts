@@ -44,7 +44,7 @@ module UI.Games {
             div.classList.add("gamesMainDiv");
 
             var b =<HTMLElement> document.createElement("b");
-            b.appendChild(document.createTextNode(games[i].name));
+            b.appendChild(document.createTextNode(<string> games[i].name));
             b.classList.add("gamesName");
 
             div.appendChild(b);
@@ -74,6 +74,8 @@ module UI.Games {
                         // TODO: UI.Games.editGame(this.game);
                     }
                 });
+
+                edit.style.display = "none"; // TODO: Display once server-side issue resolved
 
                 var deleteGame = document.createElement("a");
                 deleteGame.classList.add("gamesOwnerButton");
@@ -233,7 +235,7 @@ module UI.Games {
             }
         }
 
-        Server.Games.deleteGame(game.id, cbs, cbs);
+        Server.Games.deleteGame(<number> game.id, cbs, cbs);
     }
 
     export function leaveGame (game : Game) {
@@ -243,7 +245,7 @@ module UI.Games {
             }
         }
 
-        Server.Games.leaveGame(game.id, cbs, cbs);
+        Server.Games.leaveGame(<number> game.id, cbs, cbs);
     }
 
     export function updateNick (isLogged : boolean) {

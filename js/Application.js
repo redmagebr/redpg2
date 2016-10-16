@@ -354,7 +354,7 @@ var Game = (function () {
         this.description = null;
         this.name = null;
         this.id = null;
-        this.freejoin = null;
+        this.freejoin = false;
         this.creatorid = null;
         this.creatornick = null;
         this.creatorsufix = null;
@@ -423,6 +423,17 @@ var Game = (function () {
             return 0;
         });
         return list;
+    };
+    Game.prototype.exportAsObject = function () {
+        var obj = {
+            desc: this.description,
+            name: this.name,
+            freejoin: this.freejoin
+        };
+        if (this.id !== null) {
+            obj['id'] = this.id;
+        }
+        return obj;
     };
     Game.prototype.updateFromObject = function (game, cleanup) {
         for (var id in this) {
@@ -5055,6 +5066,12 @@ ptbr.setLingo("_GAMESCREATEROOM_", "Criar sala");
 ptbr.setLingo("_GAMESROOMPERMISSIONS_", "Permissões");
 ptbr.setLingo("_GAMESROOMDELETE_", "Deletar");
 ptbr.setLingo("", "");
+ptbr.setLingo("_GAMEDESIGNERTITLE_", "Editor de Mesas");
+ptbr.setLingo("_GAMEDESIGNERERROR_", "Houve um erro no processamento. Tente novamente.");
+ptbr.setLingo("_GAMEDESIGNERNAMEPLACEHOLDER_", "Nome da mesa. Máximo de 30 caracteres.");
+ptbr.setLingo("_GAMEDESIGNERMESSAGEPLACEHOLDER_", "Descrição para a mesa. Utilize esse espaço para definir quais os objetivos da mesa, assim como horários e qualquer informação que seus jogadores devam ter.");
+ptbr.setLingo("_GAMEDESIGNERSUBMIT_", "Enviar");
+ptbr.setLingo("", "");
 ptbr.setLingo("_GAMEINVITESTITLE_", "Meus Convites");
 ptbr.setLingo("_GAMEINVITESEXP01_", "Enquanto você não aceitar um dos convites, você não faz parte do grupo.");
 ptbr.setLingo("_GAMEINVITESEXP02_", "Caso precise informar seu identificador a alguém, ele é \"%a\".");
@@ -5183,6 +5200,7 @@ var UI;
     UI.idStyles = "stylesSideWindow";
     UI.idStyleDesigner = "styleEditorSideWindow";
     UI.idInviteDesigner = "gameInviteFormSideWindow";
+    UI.idGameDesigner = "gameDesignerFormSideWindow";
     UI.idHome = "homeSideWindow";
     UI.idSheets = "sheetsSideWindow";
     UI.idImages = "imagesSideWindow";
@@ -6076,6 +6094,7 @@ var UI;
                         handleEvent: function () {
                         }
                     });
+                    edit.style.display = "none";
                     var deleteGame = document.createElement("a");
                     deleteGame.classList.add("gamesOwnerButton");
                     deleteGame.classList.add("textLink");
@@ -6474,20 +6493,69 @@ var UI;
     (function (Games) {
         var Designer;
         (function (Designer) {
+            document.getElementById("gameNewGameButton").addEventListener("click", function (e) {
+                e.preventDefault();
+                UI.Games.Designer.callSelf();
+            });
+            var currentGame = null;
+            var nameInput = document.getElementById("gameDesignerName");
+            var descInput = document.getElementById("gameDesignerMessage");
+            var $error = $(document.getElementById("gameDesignerError"));
+            document.getElementById("gameDesignerForm").addEventListener("submit", function (e) {
+                e.preventDefault();
+                UI.Games.Designer.submit();
+            });
             function clear() {
+                nameInput.value = "";
+                descInput.value = "";
+                $error.stop().hide();
             }
-            function fromGame(game) {
+            function callSelf(game) {
+                currentGame = game === undefined ? null : game;
                 clear();
-                game = game === undefined ? null : game;
-                if (game !== null) {
+                if (currentGame !== null) {
+                    nameInput.value = currentGame.name;
+                    descInput.value = currentGame.description;
                 }
+                UI.PageManager.callPage(UI.idGameDesigner);
             }
-            Designer.fromGame = fromGame;
+            Designer.callSelf = callSelf;
             function toGame() {
-                var game = new Game();
+                var game;
+                if (currentGame !== null) {
+                    game = currentGame;
+                }
+                else {
+                    game = new Game();
+                }
+                game.name = nameInput.value.trim();
+                game.description = descInput.value.trim();
                 return game;
             }
             Designer.toGame = toGame;
+            function submit() {
+                var cbs = {
+                    handleEvent: function () {
+                        UI.Games.callSelf();
+                    }
+                };
+                var cbe = {
+                    handleEvent: function () {
+                        UI.Games.Designer.showError();
+                    }
+                };
+                if (currentGame === null) {
+                    Server.Games.createGame(toGame(), cbs, cbe);
+                }
+                else {
+                    Server.Games.editGame(toGame(), cbs, cbe);
+                }
+            }
+            Designer.submit = submit;
+            function showError() {
+                $error.fadeIn(Application.Config.getConfig("animTime").getValue());
+            }
+            Designer.showError = showError;
         })(Designer = Games.Designer || (Games.Designer = {}));
     })(Games = UI.Games || (UI.Games = {}));
 })(UI || (UI = {}));
@@ -8399,6 +8467,28 @@ var Server;
             Server.AJAX.requestPage(ajax, success, error);
         }
         Games.updateLists = updateLists;
+        function createGame(game, cbs, cbe) {
+            var success = cbs === undefined ? emptyCallback : cbs;
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(GAMES_URL);
+            ajax.setResponseTypeJSON();
+            ajax.data = game.exportAsObject();
+            ajax.setData("action", "create");
+            ajax.setTargetLeftWindow();
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Games.createGame = createGame;
+        function editGame(game, cbs, cbe) {
+            var success = cbs === undefined ? emptyCallback : cbs;
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(GAMES_URL);
+            ajax.setResponseTypeJSON();
+            ajax.data = game.exportAsObject();
+            ajax.setData("action", "edit");
+            ajax.setTargetLeftWindow();
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Games.editGame = editGame;
         function getInviteList(cbs, cbe) {
             var success = cbs === undefined ? emptyCallback : cbs;
             var error = cbe === undefined ? emptyCallback : cbe;
