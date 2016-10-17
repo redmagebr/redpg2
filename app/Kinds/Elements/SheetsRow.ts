@@ -8,7 +8,18 @@ class SheetsRow {
     }
 
     public deleteSheet () {
-        // TODO: Call delete sheet
+        if (confirm(UI.Language.getLanguage().getLingo("_SHEETCONFIRMDELETE_", {languagea : this.sheet.getName()}))) {
+            var cbs = <EventListenerObject> {
+                sheet : this.sheet,
+                oldFolder : this.sheet.getFolder(),
+                handleEvent : function () {
+                    UI.Sheets.keepOpen(this.oldFolder, this.sheet.getGameid());
+                    UI.Sheets.callSelf();
+                }
+            };
+
+            Server.Sheets.deleteSheet(this.sheet, cbs);
+        }
     }
 
     public editPerm () {
@@ -25,11 +36,12 @@ class SheetsRow {
         if (this.sheet.getFolder() !== oldFolder) {
             var cbs = <EventListenerObject> {
                 sheet : this.sheet,
+                oldFolder : oldFolder,
                 handleEvent : function () {
-                    UI.Sheets.keepOpen(oldFolder, this.sheet.getGameid());
+                    UI.Sheets.keepOpen(this.oldFolder, this.sheet.getGameid());
                     UI.Sheets.callSelf();
                 }
-            }
+            };
 
             Server.Sheets.sendFolder(this.sheet, cbs);
         }

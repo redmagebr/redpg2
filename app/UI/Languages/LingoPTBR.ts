@@ -131,6 +131,7 @@ ptbr.setLingo("_SHEETSNOFOLDERNAME_", "Fichas sem pasta");
 ptbr.setLingo("_SHEETSRENAMEFOLDERPROMPT_", "Escolha a nova pasta para \"%a\", atualmente em \"%b\":");
 ptbr.setLingo("_SHEETSNEWSHEET_", "Criar nova ficha");
 ptbr.setLingo("_SHEETSNOSHEETS_", "Sem fichas para exibir.");
+ptbr.setLingo("_SHEETCONFIRMDELETE_", "Deletar \"%a\"? Isso não pode ser desfeito.");
 
 // Jogos
 ptbr.setLingo("_GAMESTITLE_", "Grupos");

@@ -1860,6 +1860,17 @@ var SheetsRow = (function () {
     SheetsRow.prototype.open = function () {
     };
     SheetsRow.prototype.deleteSheet = function () {
+        if (confirm(UI.Language.getLanguage().getLingo("_SHEETCONFIRMDELETE_", { languagea: this.sheet.getName() }))) {
+            var cbs = {
+                sheet: this.sheet,
+                oldFolder: this.sheet.getFolder(),
+                handleEvent: function () {
+                    UI.Sheets.keepOpen(this.oldFolder, this.sheet.getGameid());
+                    UI.Sheets.callSelf();
+                }
+            };
+            Server.Sheets.deleteSheet(this.sheet, cbs);
+        }
     };
     SheetsRow.prototype.editPerm = function () {
     };
@@ -1873,8 +1884,9 @@ var SheetsRow = (function () {
         if (this.sheet.getFolder() !== oldFolder) {
             var cbs = {
                 sheet: this.sheet,
+                oldFolder: oldFolder,
                 handleEvent: function () {
-                    UI.Sheets.keepOpen(oldFolder, this.sheet.getGameid());
+                    UI.Sheets.keepOpen(this.oldFolder, this.sheet.getGameid());
                     UI.Sheets.callSelf();
                 }
             };
@@ -5228,6 +5240,7 @@ ptbr.setLingo("_SHEETSNOFOLDERNAME_", "Fichas sem pasta");
 ptbr.setLingo("_SHEETSRENAMEFOLDERPROMPT_", "Escolha a nova pasta para \"%a\", atualmente em \"%b\":");
 ptbr.setLingo("_SHEETSNEWSHEET_", "Criar nova ficha");
 ptbr.setLingo("_SHEETSNOSHEETS_", "Sem fichas para exibir.");
+ptbr.setLingo("_SHEETCONFIRMDELETE_", "Deletar \"%a\"? Isso não pode ser desfeito.");
 ptbr.setLingo("_GAMESTITLE_", "Grupos");
 ptbr.setLingo("_GAMESEXP1_", "Caso precise informar seu identificador para alguém, ele é \"%a\", sem as aspas.");
 ptbr.setLingo("_GAMESEXP2_", "Aqui você pode administrar os grupos dos quais você participa. Para convidar jogadores ao seu grupo, você irá precisar do identificador deles.");
@@ -9488,6 +9501,17 @@ var Server;
             Server.AJAX.requestPage(ajax, cbs, cbe);
         }
         Sheets.sendFolder = sendFolder;
+        function deleteSheet(sheet, cbs, cbe) {
+            cbs = cbs === undefined ? emptyCallback : cbs;
+            cbe = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(SHEET_URL);
+            ajax.setResponseTypeJSON();
+            ajax.setData("action", "delete");
+            ajax.setData("id", sheet.getId());
+            ajax.setTargetRightWindow();
+            Server.AJAX.requestPage(ajax, cbs, cbe);
+        }
+        Sheets.deleteSheet = deleteSheet;
     })(Sheets = Server.Sheets || (Server.Sheets = {}));
 })(Server || (Server = {}));
 UI.Language.searchLanguage();

@@ -62,4 +62,17 @@ module Server.Sheets {
 
         Server.AJAX.requestPage(ajax, cbs, cbe);
     }
+
+    export function deleteSheet (sheet : SheetInstance, cbs? : Listener, cbe? : Listener) {
+        cbs = cbs === undefined ? emptyCallback : cbs;
+        cbe = cbe === undefined ? emptyCallback : cbe;
+
+        var ajax = new AJAXConfig(SHEET_URL);
+        ajax.setResponseTypeJSON();
+        ajax.setData("action", "delete");
+        ajax.setData("id", sheet.getId());
+        ajax.setTargetRightWindow();
+
+        Server.AJAX.requestPage(ajax, cbs, cbe);
+    }
 }

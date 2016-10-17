@@ -1389,6 +1389,7 @@ declare module Server.Sheets {
     function updateStyles(cbs?: Listener, cbe?: Listener): void;
     function updateLists(cbs?: Listener, cbe?: Listener): void;
     function sendFolder(sheet: SheetInstance, cbs?: Listener, cbe?: Listener): void;
+    function deleteSheet(sheet: SheetInstance, cbs?: Listener, cbe?: Listener): void;
 }
 declare module Dropbox {
     function choose(options: any): any;
