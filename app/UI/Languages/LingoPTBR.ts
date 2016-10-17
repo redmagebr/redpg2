@@ -298,8 +298,9 @@ ptbr.setLingo("_CONFIGCHATMAXMESSAGESEXP01_", "Define quantas mensagens podem es
 ptbr.setLingo("_CONFIGCHATMAXMESSAGESEXP02_", "Essa opção é ignorada e se torna 60 quando utilizando dispositivos móveis.");
 ptbr.setLingo("_CONFIGCHATMAXMESSAGES_", "(Chat) Número de mensagens:");
 ptbr.setLingo("_CONFIGCLEANPERSONAS_", "(Chat) Personas Vazias");
-ptbr.setLingo("_CONFIGCLEANPERSONAS01_", "Mostrar personas vazias");
-ptbr.setLingo("_CONFIGCLEANPERSONAS02_", "Mostrar personas padrão");
+ptbr.setLingo("_CONFIGCLEANPERSONAS01_", "Mostrar personas padrão");
+ptbr.setLingo("_CONFIGCLEANPERSONAS02_", "Mostrar personas vazias");
+ptbr.setLingo("_CONFIGCLEANPERSONAS03_", "Mostrar personas vazias, sem nome");
 ptbr.setLingo("_CONFIGCLEANPERSONASEXP_", "Essa opção retira o estilo padrão das personas e os deixa transparentes.");
 ptbr.setLingo("", "");
 ptbr.setLingo("", "");

@@ -1051,7 +1051,7 @@ declare module UI {
     var idSheets: string;
     var idImages: string;
     var idSounds: string;
-    function cleanPersona(cfg: BooleanConfiguration): void;
+    function cleanPersona(cfg: NumberConfiguration): void;
 }
 declare module UI.WindowManager {
     var currentLeftSize: number;

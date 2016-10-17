@@ -5203,8 +5203,9 @@ ptbr.setLingo("_CONFIGCHATMAXMESSAGESEXP01_", "Define quantas mensagens podem es
 ptbr.setLingo("_CONFIGCHATMAXMESSAGESEXP02_", "Essa opção é ignorada e se torna 60 quando utilizando dispositivos móveis.");
 ptbr.setLingo("_CONFIGCHATMAXMESSAGES_", "(Chat) Número de mensagens:");
 ptbr.setLingo("_CONFIGCLEANPERSONAS_", "(Chat) Personas Vazias");
-ptbr.setLingo("_CONFIGCLEANPERSONAS01_", "Mostrar personas vazias");
-ptbr.setLingo("_CONFIGCLEANPERSONAS02_", "Mostrar personas padrão");
+ptbr.setLingo("_CONFIGCLEANPERSONAS01_", "Mostrar personas padrão");
+ptbr.setLingo("_CONFIGCLEANPERSONAS02_", "Mostrar personas vazias");
+ptbr.setLingo("_CONFIGCLEANPERSONAS03_", "Mostrar personas vazias, sem nome");
 ptbr.setLingo("_CONFIGCLEANPERSONASEXP_", "Essa opção retira o estilo padrão das personas e os deixa transparentes.");
 ptbr.setLingo("", "");
 ptbr.setLingo("", "");
@@ -5253,16 +5254,33 @@ var UI;
     var cleanPersonaCSS = document.createElement("style");
     cleanPersonaCSS.type = "text/css";
     cleanPersonaCSS.innerHTML = ".avatarContainer { border-color: rgba(0,0,0,0); background-color: initial; } .avatarName { background-color: initial; }";
+    var cleanPersonaTotallyCSS = document.createElement("style");
+    cleanPersonaTotallyCSS.type = "text/css";
+    cleanPersonaTotallyCSS.innerHTML = ".avatarContainer { border-color: rgba(0,0,0,0); background-color: initial; } .avatarName { opacity: 0; }";
     function cleanPersona(cfg) {
-        if (cfg.getValue()) {
+        if (cfg.getValue() === 1) {
             document.head.appendChild(cleanPersonaCSS);
+            if (cleanPersonaTotallyCSS.parentElement !== null) {
+                cleanPersonaTotallyCSS.parentElement.removeChild(cleanPersonaTotallyCSS);
+            }
         }
-        else if (cleanPersonaCSS.parentElement !== null) {
-            document.head.removeChild(cleanPersonaCSS);
+        else if (cfg.getValue() === 2) {
+            document.head.appendChild(cleanPersonaTotallyCSS);
+            if (cleanPersonaCSS.parentElement !== null) {
+                cleanPersonaCSS.parentElement.removeChild(cleanPersonaCSS);
+            }
+        }
+        else {
+            if (cleanPersonaTotallyCSS.parentElement !== null) {
+                cleanPersonaTotallyCSS.removeChild(cleanPersonaTotallyCSS);
+            }
+            if (cleanPersonaCSS.parentElement !== null) {
+                cleanPersonaCSS.parentElement.removeChild(cleanPersonaCSS);
+            }
         }
     }
     UI.cleanPersona = cleanPersona;
-    Application.Config.registerConfiguration("cleanPersonas", new BooleanConfiguration(false));
+    Application.Config.registerConfiguration("cleanPersonas", new NumberConfiguration(0, 0, 2));
     Application.Config.getConfig("cleanPersonas").addChangeListener(function (cfg) {
         UI.cleanPersona(cfg);
     });

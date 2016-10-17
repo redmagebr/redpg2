@@ -53,16 +53,33 @@ module UI {
     cleanPersonaCSS.type = "text/css";
     cleanPersonaCSS.innerHTML = ".avatarContainer { border-color: rgba(0,0,0,0); background-color: initial; } .avatarName { background-color: initial; }";
 
-    export function cleanPersona (cfg : BooleanConfiguration) {
-        if (cfg.getValue()) {
+    var cleanPersonaTotallyCSS = document.createElement("style");
+    cleanPersonaTotallyCSS.type = "text/css";
+    cleanPersonaTotallyCSS.innerHTML = ".avatarContainer { border-color: rgba(0,0,0,0); background-color: initial; } .avatarName { opacity: 0; }";
+
+    export function cleanPersona (cfg : NumberConfiguration) {
+        if (cfg.getValue() === 1) {
             document.head.appendChild(cleanPersonaCSS);
-        } else if (cleanPersonaCSS.parentElement !== null) {
-            document.head.removeChild(cleanPersonaCSS);
+            if (cleanPersonaTotallyCSS.parentElement !== null) {
+                cleanPersonaTotallyCSS.parentElement.removeChild(cleanPersonaTotallyCSS);
+            }
+        } else if (cfg.getValue() === 2) {
+            document.head.appendChild(cleanPersonaTotallyCSS);
+            if (cleanPersonaCSS.parentElement !== null) {
+                cleanPersonaCSS.parentElement.removeChild(cleanPersonaCSS);
+            }
+        } else {
+            if (cleanPersonaTotallyCSS.parentElement !== null) {
+                cleanPersonaTotallyCSS.removeChild(cleanPersonaTotallyCSS);
+            }
+            if (cleanPersonaCSS.parentElement !== null) {
+                cleanPersonaCSS.parentElement.removeChild(cleanPersonaCSS);
+            }
         }
     }
 
-    Application.Config.registerConfiguration("cleanPersonas", new BooleanConfiguration(false));
-    Application.Config.getConfig("cleanPersonas").addChangeListener(function (cfg : BooleanConfiguration) {
+    Application.Config.registerConfiguration("cleanPersonas", new NumberConfiguration(0, 0, 2));
+    Application.Config.getConfig("cleanPersonas").addChangeListener(function (cfg : NumberConfiguration) {
         UI.cleanPersona(cfg);
     });
 }
