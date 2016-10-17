@@ -5,8 +5,11 @@ class Room {
     public description : string = null;
     public name : string = null;
 
-    public playByPost : boolean = null;
-    public privateRoom : boolean = null;
+    public playByPost : boolean = false;
+    public privateRoom : boolean = false;
+    public publicRoom : boolean = false;
+
+    public creatorid : number = null;
 
     private users : { [id : number] : User} = {};
     private messages : { [id: number] : Message} = {};
@@ -76,6 +79,19 @@ class Room {
 
     public getGame () {
         return DB.GameDB.getGame(this.gameid);
+    }
+
+    public exportAsNewRoom () {
+        var obj = {
+            name : this.name,
+            description : this.description,
+            private: this.privateRoom,
+            streamable : false,
+            playbypost : this.playByPost,
+            gameid : this.gameid
+        };
+
+        return obj;
     }
 
     public updateFromObject (room : Object, cleanup : boolean) {

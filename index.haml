@@ -165,6 +165,16 @@
       -############################################
       -############## GAMES
       -############################################
+      -#### ROOM DESIGNER FORM
+      #roomDesignerFormSideWindow.leftSideWindow
+        .language.mainWindowHeader="_ROOMDESIGNERTITLE_"
+        .mainWindowContent.singleton
+          %p.mainWindowParagraph.language="_ROOMDESIGNEREXP_"
+          %p.mainWindowParagraphError.gameInviteDesignerMessage.language#roomDesignerError="_ROOMDESIGNERERROR_"
+          %form#roomDesignerForm
+            %input.mainWindowWideInput.language#roomDesignerName{:data=>{:placeholderlingo=>"_ROOMDESIGNERNAMEPLACEHOLDER_"}}
+            %textarea.mainWindowWideTextarea.language#roomDesignerMessage{:data=>{:placeholderlingo=>"_ROOMDESIGNERMESSAGEPLACEHOLDER_"}}
+            %input.mainWindowParagraphSubmit.language{:type=>"submit", :data=>{:valuelingo => "_ROOMDESIGNERSUBMIT_"}}
       -#### GAME DESIGNER FORM
       #gameDesignerFormSideWindow.leftSideWindow
         .language.mainWindowHeader="_GAMEDESIGNERTITLE_"

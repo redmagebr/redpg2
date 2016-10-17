@@ -216,8 +216,10 @@ var Room = (function () {
         this.id = null;
         this.description = null;
         this.name = null;
-        this.playByPost = null;
-        this.privateRoom = null;
+        this.playByPost = false;
+        this.privateRoom = false;
+        this.publicRoom = false;
+        this.creatorid = null;
         this.users = {};
         this.messages = {};
     }
@@ -284,6 +286,17 @@ var Room = (function () {
     };
     Room.prototype.getGame = function () {
         return DB.GameDB.getGame(this.gameid);
+    };
+    Room.prototype.exportAsNewRoom = function () {
+        var obj = {
+            name: this.name,
+            description: this.description,
+            private: this.privateRoom,
+            streamable: false,
+            playbypost: this.playByPost,
+            gameid: this.gameid
+        };
+        return obj;
     };
     Room.prototype.updateFromObject = function (room, cleanup) {
         for (var id in this) {
@@ -5066,6 +5079,14 @@ ptbr.setLingo("_GAMESCREATEROOM_", "Criar sala");
 ptbr.setLingo("_GAMESROOMPERMISSIONS_", "Permissões");
 ptbr.setLingo("_GAMESROOMDELETE_", "Deletar");
 ptbr.setLingo("", "");
+ptbr.setLingo("_ROOMDESIGNERTITLE_", "Editor de Salas");
+ptbr.setLingo("_ROOMDESIGNERERROR_", "Houve um erro no processamento. Tente novamente.");
+ptbr.setLingo("_ROOMDESIGNERNAMEPLACEHOLDER_", "Nome da Sala");
+ptbr.setLingo("_ROOMDESIGNERMESSAGEPLACEHOLDER_", "Descrição da sala. Será impressa no topo sempre que alguém visitá-la.");
+ptbr.setLingo("_ROOMDESIGNERSUBMIT_", "Enviar");
+ptbr.setLingo("_ROOMDESIGNEREXP_", "Uma sala é um lugar onde todos podem se reunir para participar de um jogo. Recomenda-se criar salas separadas por sua função, como \"Criação de Fichas\" ou \"História Principal\".");
+ptbr.setLingo("", "");
+ptbr.setLingo("", "");
 ptbr.setLingo("_GAMEDESIGNERTITLE_", "Editor de Mesas");
 ptbr.setLingo("_GAMEDESIGNERERROR_", "Houve um erro no processamento. Tente novamente.");
 ptbr.setLingo("_GAMEDESIGNERNAMEPLACEHOLDER_", "Nome da mesa. Máximo de 30 caracteres.");
@@ -5201,6 +5222,7 @@ var UI;
     UI.idStyleDesigner = "styleEditorSideWindow";
     UI.idInviteDesigner = "gameInviteFormSideWindow";
     UI.idGameDesigner = "gameDesignerFormSideWindow";
+    UI.idRoomDesigner = "roomDesignerFormSideWindow";
     UI.idHome = "homeSideWindow";
     UI.idSheets = "sheetsSideWindow";
     UI.idImages = "imagesSideWindow";
@@ -6200,6 +6222,7 @@ var UI;
                     p.addEventListener("click", {
                         game: game,
                         handleEvent: function () {
+                            UI.Games.RoomDesigner.callSelf(this.game);
                         }
                     });
                 }
@@ -6485,6 +6508,76 @@ var UI;
             }
             InviteDesigner.showMessage = showMessage;
         })(InviteDesigner = Games.InviteDesigner || (Games.InviteDesigner = {}));
+    })(Games = UI.Games || (UI.Games = {}));
+})(UI || (UI = {}));
+var UI;
+(function (UI) {
+    var Games;
+    (function (Games) {
+        var RoomDesigner;
+        (function (RoomDesigner) {
+            var currentGame = null;
+            var currentRoom = null;
+            var nameInput = document.getElementById("roomDesignerName");
+            var descInput = document.getElementById("roomDesignerMessage");
+            var $error = $(document.getElementById("roomDesignerError"));
+            document.getElementById("roomDesignerForm").addEventListener("submit", function (e) {
+                e.preventDefault();
+                UI.Games.RoomDesigner.submit();
+            });
+            function clear() {
+                nameInput.value = "";
+                descInput.value = "";
+                $error.stop().hide();
+            }
+            function callSelf(game, room) {
+                currentGame = game;
+                currentRoom = room === undefined ? null : room;
+                clear();
+                if (currentRoom !== null) {
+                    nameInput.value = currentRoom.name;
+                    descInput.value = currentRoom.description;
+                }
+                UI.PageManager.callPage(UI.idRoomDesigner);
+            }
+            RoomDesigner.callSelf = callSelf;
+            function toRoom() {
+                var room;
+                if (currentRoom !== null) {
+                    room = currentRoom;
+                }
+                else {
+                    room = new Room();
+                    room.gameid = currentGame.id;
+                }
+                room.name = nameInput.value.trim();
+                room.description = descInput.value.trim();
+                return room;
+            }
+            RoomDesigner.toRoom = toRoom;
+            function submit() {
+                var cbs = {
+                    handleEvent: function () {
+                        UI.Games.callSelf();
+                    }
+                };
+                var cbe = {
+                    handleEvent: function () {
+                        UI.Games.RoomDesigner.showError();
+                    }
+                };
+                if (currentRoom === null) {
+                    Server.Games.createRoom(toRoom(), cbs, cbe);
+                }
+                else {
+                }
+            }
+            RoomDesigner.submit = submit;
+            function showError() {
+                $error.fadeIn(Application.Config.getConfig("animTime").getValue());
+            }
+            RoomDesigner.showError = showError;
+        })(RoomDesigner = Games.RoomDesigner || (Games.RoomDesigner = {}));
     })(Games = UI.Games || (UI.Games = {}));
 })(UI || (UI = {}));
 var UI;
@@ -8467,6 +8560,17 @@ var Server;
             Server.AJAX.requestPage(ajax, success, error);
         }
         Games.updateLists = updateLists;
+        function createRoom(room, cbs, cbe) {
+            var success = cbs === undefined ? emptyCallback : cbs;
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(ROOMS_URL);
+            ajax.setResponseTypeJSON();
+            ajax.data = room.exportAsNewRoom();
+            ajax.setData("action", "create");
+            ajax.setTargetLeftWindow();
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Games.createRoom = createRoom;
         function createGame(game, cbs, cbe) {
             var success = cbs === undefined ? emptyCallback : cbs;
             var error = cbe === undefined ? emptyCallback : cbe;

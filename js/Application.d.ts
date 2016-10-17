@@ -130,6 +130,8 @@ declare class Room {
     name: string;
     playByPost: boolean;
     privateRoom: boolean;
+    publicRoom: boolean;
+    creatorid: number;
     private users;
     private messages;
     getOrderedMessages(): Array<Message>;
@@ -139,6 +141,14 @@ declare class Room {
     getUser(id: number): UserRoomContext;
     getUsersByName(str: string): Array<UserRoomContext>;
     getGame(): Game;
+    exportAsNewRoom(): {
+        name: string;
+        description: string;
+        private: boolean;
+        streamable: boolean;
+        playbypost: boolean;
+        gameid: number;
+    };
     updateFromObject(room: Object, cleanup: boolean): void;
 }
 declare class Game {
@@ -1036,6 +1046,7 @@ declare module UI {
     var idStyleDesigner: string;
     var idInviteDesigner: string;
     var idGameDesigner: string;
+    var idRoomDesigner: string;
     var idHome: string;
     var idSheets: string;
     var idImages: string;
@@ -1135,6 +1146,12 @@ declare module UI.Games.InviteDesigner {
     function emptyName(): void;
     function submit(): void;
     function showMessage(id: number): void;
+}
+declare module UI.Games.RoomDesigner {
+    function callSelf(game: Game, room?: Room): void;
+    function toRoom(): Room;
+    function submit(): void;
+    function showError(): void;
 }
 declare module UI.Games.Designer {
     function callSelf(game?: Game): void;
@@ -1278,6 +1295,7 @@ declare module Server.Images {
 }
 declare module Server.Games {
     function updateLists(cbs?: Listener, cbe?: Listener): void;
+    function createRoom(room: Room, cbs?: Listener, cbe?: Listener): void;
     function createGame(game: Game, cbs?: Listener, cbe?: Listener): void;
     function editGame(game: Game, cbs?: Listener, cbe?: Listener): void;
     function getInviteList(cbs?: Listener, cbe?: Listener): void;

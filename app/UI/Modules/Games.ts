@@ -203,7 +203,7 @@ module UI.Games {
                 p.addEventListener("click", <EventListenerObject> {
                     game : game,
                     handleEvent : function () {
-                        // TODO: UI.Games.createRoom(this.game);
+                        UI.Games.RoomDesigner.callSelf(this.game);
                     }
                 });
             }

@@ -13,6 +13,7 @@ module UI {
     export var idStyleDesigner = "styleEditorSideWindow";
     export var idInviteDesigner = "gameInviteFormSideWindow";
     export var idGameDesigner = "gameDesignerFormSideWindow";
+    export var idRoomDesigner = "roomDesignerFormSideWindow";
 
     // Right side windows
     export var idHome = "homeSideWindow";

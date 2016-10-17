@@ -1485,6 +1485,12 @@ body {
   display: block;
 }
 
+/* line 1, ../sass/mainWindowRoomDesigner.scss */
+#roomDesignerForm {
+  margin-top: 32px;
+  display: block;
+}
+
 /* line 1, ../sass/mainWindowSounds.scss */
 #musicPlayerButton {
   display: block;

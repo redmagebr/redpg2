@@ -162,6 +162,16 @@ ptbr.setLingo("_GAMESROOMPERMISSIONS_", "Permissões");
 ptbr.setLingo("_GAMESROOMDELETE_", "Deletar");
 ptbr.setLingo("", "");
 
+// Salas
+ptbr.setLingo("_ROOMDESIGNERTITLE_", "Editor de Salas");
+ptbr.setLingo("_ROOMDESIGNERERROR_", "Houve um erro no processamento. Tente novamente.");
+ptbr.setLingo("_ROOMDESIGNERNAMEPLACEHOLDER_", "Nome da Sala");
+ptbr.setLingo("_ROOMDESIGNERMESSAGEPLACEHOLDER_", "Descrição da sala. Será impressa no topo sempre que alguém visitá-la.");
+ptbr.setLingo("_ROOMDESIGNERSUBMIT_", "Enviar");
+ptbr.setLingo("_ROOMDESIGNEREXP_", "Uma sala é um lugar onde todos podem se reunir para participar de um jogo. Recomenda-se criar salas separadas por sua função, como \"Criação de Fichas\" ou \"História Principal\".");
+ptbr.setLingo("", "");
+ptbr.setLingo("", "");
+
 // Jogo Formulário
 ptbr.setLingo("_GAMEDESIGNERTITLE_", "Editor de Mesas");
 ptbr.setLingo("_GAMEDESIGNERERROR_", "Houve um erro no processamento. Tente novamente.");
