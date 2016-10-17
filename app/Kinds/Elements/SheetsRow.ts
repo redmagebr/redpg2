@@ -33,8 +33,8 @@ class SheetsRow {
         // NAME
         var nameLink = document.createElement("a");
         nameLink.classList.add("sheetNameLink");
-        this.nameNode = document.createTextNode(sheet.name);
-        nameLink.appendChild(nameNode);
+        this.nameNode = document.createTextNode(sheet.getName());
+        nameLink.appendChild(this.nameNode);
         this.html.appendChild(nameLink);
 
         nameLink.addEventListener("click", <EventListenerObject> {

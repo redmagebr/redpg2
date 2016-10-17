@@ -162,6 +162,8 @@ declare class Game {
     creatorid: number;
     creatornick: string;
     creatorsufix: string;
+    getId(): number;
+    getName(): string;
     getCreatorFullNickname(): string;
     isMyCreation(): boolean;
     getMe(): UserGameContext;
@@ -181,7 +183,7 @@ declare class SheetInstance {
     id: number;
     gameid: number;
     folder: string;
-    name: string;
+    private name;
     values: Object;
     lastValues: string;
     creator: number;
@@ -198,11 +200,14 @@ declare class SheetInstance {
     isPublic: boolean;
     changed: boolean;
     private changeTrigger;
+    getGameid(): number;
+    getFolder(): string;
     addChangeListener(list: Listener | Function): void;
     triggerChanged(): void;
     getMemoryId(): string;
     setSaved(): void;
     setName(name: string): void;
+    getName(): string;
     setValues(values: Object, local: boolean): void;
     updateFromObject(obj: Object): void;
 }
@@ -958,6 +963,8 @@ declare module DB.SheetDB {
     function getSheet(id: number): SheetInstance;
     function releaseSheet(id: number): void;
     function updateFromObject(obj: Array<Object>): void;
+    function getSheetsByGame(game: Game): any[];
+    function getSheetsByFolder(sheets: Array<SheetInstance>): Array<Array<SheetInstance>>;
 }
 declare module DB.ImageDB {
     function removeImage(img: ImageLink): void;
@@ -1135,7 +1142,8 @@ declare module UI.Language {
     function markLanguage(...elements: HTMLElement[]): void;
 }
 declare module UI.Sheets {
-    function callSelf(ready?: boolean): void;
+    function callSelf(): void;
+    function printSheets(): void;
 }
 declare module UI.Rooms {
     function deleteRoom(room: Room): void;

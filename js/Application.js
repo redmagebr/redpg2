@@ -372,6 +372,12 @@ var Game = (function () {
         this.creatornick = null;
         this.creatorsufix = null;
     }
+    Game.prototype.getId = function () {
+        return this.id;
+    };
+    Game.prototype.getName = function () {
+        return this.name;
+    };
     Game.prototype.getCreatorFullNickname = function () {
         return this.creatornick + "#" + this.creatorsufix;
     };
@@ -551,6 +557,12 @@ var SheetInstance = (function () {
         this.changed = false;
         this.changeTrigger = new Trigger();
     }
+    SheetInstance.prototype.getGameid = function () {
+        return this.gameid;
+    };
+    SheetInstance.prototype.getFolder = function () {
+        return this.folder;
+    };
     SheetInstance.prototype.addChangeListener = function (list) {
         this.changeTrigger.addListener(list);
     };
@@ -571,6 +583,9 @@ var SheetInstance = (function () {
             this.name = name;
             this.triggerChanged();
         }
+    };
+    SheetInstance.prototype.getName = function () {
+        return this.name;
     };
     SheetInstance.prototype.setValues = function (values, local) {
         var newJson = JSON.stringify(values);
@@ -1789,8 +1804,8 @@ var SheetsRow = (function () {
         this.html.classList.add("sheetListSheet");
         var nameLink = document.createElement("a");
         nameLink.classList.add("sheetNameLink");
-        this.nameNode = document.createTextNode(sheet.name);
-        nameLink.appendChild(nameNode);
+        this.nameNode = document.createTextNode(sheet.getName());
+        nameLink.appendChild(this.nameNode);
         this.html.appendChild(nameLink);
         nameLink.addEventListener("click", {
             row: this,
@@ -4409,6 +4424,47 @@ var DB;
             triggerChanged(null);
         }
         SheetDB.updateFromObject = updateFromObject;
+        function getSheetsByGame(game) {
+            var wanted = [];
+            for (var id in SheetDB.sheets) {
+                if (SheetDB.sheets[id].getGameid() === game.getId()) {
+                    wanted.push(SheetDB.sheets[id]);
+                }
+            }
+            return wanted;
+        }
+        SheetDB.getSheetsByGame = getSheetsByGame;
+        function getSheetsByFolder(sheets) {
+            var folders = {};
+            var result = [];
+            for (var i = 0; i < sheets.length; i++) {
+                if (folders[sheets[i].getFolder()] === undefined) {
+                    folders[sheets[i].getFolder()] = [sheets[i]];
+                    result.push(folders[sheets[i].getFolder()]);
+                }
+                else {
+                    folders[sheets[i].getFolder()].push(sheets[i]);
+                }
+            }
+            result.sort(function (a, b) {
+                if (a[0].getFolder() < b[0].getFolder())
+                    return -1;
+                if (a[0].getFolder() > b[0].getFolder())
+                    return 1;
+                return 0;
+            });
+            for (var i = 0; i < result.length; i++) {
+                result[i].sort(function (a, b) {
+                    if (a.getName() < b.getName())
+                        return -1;
+                    if (a.getName() > b.getName())
+                        return 1;
+                    return 0;
+                });
+            }
+            return result;
+        }
+        SheetDB.getSheetsByFolder = getSheetsByFolder;
     })(SheetDB = DB.SheetDB || (DB.SheetDB = {}));
 })(DB || (DB = {}));
 var DB;
@@ -5150,13 +5206,14 @@ ptbr.setLingo("_SHEETSEXP01_", "Fichas são algo que mestres e seus jogadores po
 ptbr.setLingo("_SHEETSEXP02_", "Normalmente são usadas para guardar as informações de personagens, mas têm o potencial para guardar qualquer tipo de informação.");
 ptbr.setLingo("_SHEETSEXP03_", "Cada ficha utiliza um \"Estilo\", que define a aparência dela e os valores que ela precisa guardar. Como alguns estilos não são criados por um administrador, tome cuidado ao abrir fichas que utilizem estilos criados por alguém em quem você não confia. Apenas os estilos criados por um administrador são considerados seguros.");
 ptbr.setLingo("_SHEETSOPENSTYLEEDITOR_", "Abrir gerenciador de estilos de ficha");
-ptbr.setLingo("", "");
-ptbr.setLingo("", "");
-ptbr.setLingo("", "");
-ptbr.setLingo("", "");
-ptbr.setLingo("", "");
-ptbr.setLingo("", "");
-ptbr.setLingo("", "");
+ptbr.setLingo("_SHEETSDELETE_", "Deletar");
+ptbr.setLingo("_SHEETSRENAMEFOLDER_", "Pasta");
+ptbr.setLingo("_SHEETSCHANGEPERMISSIONS_", "Permissões");
+ptbr.setLingo("_SHEETSDELETE_", "Deletar");
+ptbr.setLingo("_SHEETSNOFOLDERNAME_", "Fichas sem pasta");
+ptbr.setLingo("_SHEETSRENAMEFOLDERPROMPT_", "Escolha a nova pasta para \"%a\", atualmente em \"%b\":");
+ptbr.setLingo("_SHEETSNEWSHEET_", "Criar nova ficha");
+ptbr.setLingo("_SHEETSNOSHEETS_", "Sem fichas para exibir.");
 ptbr.setLingo("_GAMESTITLE_", "Grupos");
 ptbr.setLingo("_GAMESEXP1_", "Caso precise informar seu identificador para alguém, ele é \"%a\", sem as aspas.");
 ptbr.setLingo("_GAMESEXP2_", "Aqui você pode administrar os grupos dos quais você participa. Para convidar jogadores ao seu grupo, você irá precisar do identificador deles.");
@@ -6122,21 +6179,70 @@ var UI;
     (function (Sheets) {
         document.getElementById("sheetsButton").addEventListener("click", function () { UI.Sheets.callSelf(); });
         var sheetList = document.getElementById("sheetWindowSheetList");
-        function callSelf(ready) {
+        function callSelf() {
             UI.PageManager.callPage(UI.idSheets);
-            if (ready !== true) {
-                Server.Sheets.updateLists({
-                    handleEvent: function () {
-                        UI.Sheets.callSelf(true);
-                    }
-                });
-                return;
-            }
-            while (sheetList.lastChild) {
-                sheetList.removeChild(sheetList.lastChild);
-            }
+            Server.Sheets.updateLists({
+                handleEvent: function () {
+                    UI.Sheets.printSheets();
+                }
+            });
         }
         Sheets.callSelf = callSelf;
+        function empty() {
+            while (sheetList.firstChild)
+                sheetList.removeChild(sheetList.firstChild);
+        }
+        function printSheets() {
+            empty();
+            var games = DB.GameDB.getOrderedGameList();
+            for (var k = 0; k < games.length; k++) {
+                var game = games[k];
+                var wanted = DB.SheetDB.getSheetsByGame(game);
+                var sheets = DB.SheetDB.getSheetsByFolder(wanted);
+                var gameFolder = document.createElement("div");
+                gameFolder.classList.add("sheetListGameContainer");
+                gameFolder.classList.add("lightHoverable");
+                gameFolder.classList.add("openSheetGame");
+                var gameName = document.createElement("p");
+                gameName.classList.add("sheetListGameName");
+                gameFolder.appendChild(gameName);
+                gameName.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    this.parentElement.classList.toggle("openSheetGame");
+                });
+                gameName.appendChild(document.createTextNode(game.getName()));
+                if (sheets.length > 0) {
+                    for (var i = 0; i < sheets.length; i++) {
+                        var sheetFolder = new SheetsFolder(sheets[i]);
+                        gameFolder.appendChild(sheetFolder.getHTML());
+                    }
+                }
+                else {
+                    var p = document.createElement("p");
+                    p.classList.add("sheetListNoSheet");
+                    p.appendChild(document.createTextNode("_SHEETSNOSHEETS_"));
+                    UI.Language.markLanguage(p);
+                    gameFolder.appendChild(p);
+                }
+                var p = document.createElement("p");
+                p.classList.add("sheetListNewSheetButton");
+                p.classList.add("textLink");
+                p.classList.add("lightHoverable");
+                p.appendChild(document.createTextNode("> "));
+                p.appendChild(document.createTextNode("_SHEETSNEWSHEET_"));
+                UI.Language.markLanguage(p);
+                gameFolder.appendChild(p);
+                p.addEventListener("click", {
+                    game: game,
+                    handleEvent: function (e) {
+                        e.preventDefault();
+                        UI.Sheets.Designer.callSelf(this.game);
+                    }
+                });
+                sheetList.appendChild(gameFolder);
+            }
+        }
+        Sheets.printSheets = printSheets;
     })(Sheets = UI.Sheets || (UI.Sheets = {}));
 })(UI || (UI = {}));
 var UI;

@@ -123,13 +123,14 @@ ptbr.setLingo("_SHEETSEXP01_", "Fichas são algo que mestres e seus jogadores po
 ptbr.setLingo("_SHEETSEXP02_", "Normalmente são usadas para guardar as informações de personagens, mas têm o potencial para guardar qualquer tipo de informação.");
 ptbr.setLingo("_SHEETSEXP03_", "Cada ficha utiliza um \"Estilo\", que define a aparência dela e os valores que ela precisa guardar. Como alguns estilos não são criados por um administrador, tome cuidado ao abrir fichas que utilizem estilos criados por alguém em quem você não confia. Apenas os estilos criados por um administrador são considerados seguros.");
 ptbr.setLingo("_SHEETSOPENSTYLEEDITOR_", "Abrir gerenciador de estilos de ficha");
-ptbr.setLingo("", "");
-ptbr.setLingo("", "");
-ptbr.setLingo("", "");
-ptbr.setLingo("", "");
-ptbr.setLingo("", "");
-ptbr.setLingo("", "");
-ptbr.setLingo("", "");
+ptbr.setLingo("_SHEETSDELETE_", "Deletar");
+ptbr.setLingo("_SHEETSRENAMEFOLDER_", "Pasta");
+ptbr.setLingo("_SHEETSCHANGEPERMISSIONS_", "Permissões");
+ptbr.setLingo("_SHEETSDELETE_", "Deletar");
+ptbr.setLingo("_SHEETSNOFOLDERNAME_", "Fichas sem pasta");
+ptbr.setLingo("_SHEETSRENAMEFOLDERPROMPT_", "Escolha a nova pasta para \"%a\", atualmente em \"%b\":");
+ptbr.setLingo("_SHEETSNEWSHEET_", "Criar nova ficha");
+ptbr.setLingo("_SHEETSNOSHEETS_", "Sem fichas para exibir.");
 
 // Jogos
 ptbr.setLingo("_GAMESTITLE_", "Grupos");

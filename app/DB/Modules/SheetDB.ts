@@ -40,4 +40,43 @@ module DB.SheetDB {
         }
         triggerChanged(null);
     }
+
+    export function getSheetsByGame (game : Game) {
+        var wanted = [];
+        for (var id in sheets) {
+            if (sheets[id].getGameid() === game.getId()) {
+                wanted.push(sheets[id]);
+            }
+        }
+        return wanted;
+    }
+
+    export function getSheetsByFolder (sheets : Array<SheetInstance>) : Array<Array<SheetInstance>> {
+        var folders : {[id : string] : Array<SheetInstance>} = {};
+        var result : Array<Array<SheetInstance>> = [];
+        for (var i = 0; i < sheets.length; i++) {
+            if (folders[sheets[i].getFolder()] === undefined) {
+                folders[sheets[i].getFolder()] = [sheets[i]];
+                result.push(folders[sheets[i].getFolder()]);
+            } else {
+                folders[sheets[i].getFolder()].push(sheets[i]);
+            }
+        }
+
+        result.sort(function (a : Array<SheetInstance>,b : Array<SheetInstance>) {
+            if (a[0].getFolder() < b[0].getFolder()) return -1;
+            if (a[0].getFolder() > b[0].getFolder()) return 1;
+            return 0;
+        });
+
+        for (var i = 0; i < result.length; i++) {
+            result[i].sort(function (a : SheetInstance, b : SheetInstance) {
+                if (a.getName() < b.getName()) return -1;
+                if (a.getName() > b.getName()) return 1;
+                return 0;
+            });
+        }
+
+        return result;
+    }
 }

@@ -2,7 +2,7 @@ class SheetInstance {
     public id : number = 0;
     public gameid : number = 0;
     public folder : string = "";
-    public name : string = "";
+    private name : string = "";
     public values : Object = {};
     public lastValues : string = "{}";
 
@@ -24,6 +24,14 @@ class SheetInstance {
     public changed : boolean = false;
 
     private changeTrigger = new Trigger();
+
+    public getGameid () {
+        return this.gameid;
+    }
+
+    public getFolder () {
+        return this.folder;
+    }
 
     public addChangeListener (list : Listener | Function) {
         this.changeTrigger.addListener(list);
@@ -49,6 +57,10 @@ class SheetInstance {
             this.name = name;
             this.triggerChanged();
         }
+    }
+
+    public getName () {
+        return this.name;
     }
 
     public setValues (values : Object, local : boolean) {

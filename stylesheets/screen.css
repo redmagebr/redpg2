@@ -1767,6 +1767,16 @@ body {
 }
 
 /* line 14, ../sass/mainWindowSheets.scss */
+.sheetListGameContainer, .sheetListFolderContainer {
+  color: #828282;
+}
+
+/* line 18, ../sass/mainWindowSheets.scss */
+.sheetListGameContainer.openSheetGame, .sheetListFolderContainer.openSheetFolder {
+  color: #000000;
+}
+
+/* line 22, ../sass/mainWindowSheets.scss */
 .sheetListFolderName {
   font-size: 1em;
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABAQMAAADD8p2OAAAAA1BMVEUAAACnej3aAAAACklEQVQI12NgAAAAAgAB4iG8MwAAAABJRU5ErkJggg==");
@@ -1775,12 +1785,12 @@ body {
   padding-left: 6px;
 }
 
-/* line 22, ../sass/mainWindowSheets.scss */
+/* line 30, ../sass/mainWindowSheets.scss */
 .openSheetGame > .sheetListFolderContainer {
   display: block;
 }
 
-/* line 26, ../sass/mainWindowSheets.scss */
+/* line 34, ../sass/mainWindowSheets.scss */
 .sheetListFolderContainer {
   display: none;
   padding-left: 1px;
@@ -1789,13 +1799,13 @@ body {
   background-position: top left;
 }
 
-/* line 35, ../sass/mainWindowSheets.scss */
+/* line 43, ../sass/mainWindowSheets.scss */
 .openSheetFolder > .sheetListSheet {
   display: block;
 }
 
-/* line 39, ../sass/mainWindowSheets.scss */
-.sheetListSheet {
+/* line 47, ../sass/mainWindowSheets.scss */
+.sheetListSheet, .sheetListNoSheet, .sheetListNewSheetButton {
   display: none;
   font-size: 0.9em;
   padding: 4px;
@@ -1803,13 +1813,24 @@ body {
   padding-right: 0px;
 }
 
-/* line 48, ../sass/mainWindowSheets.scss */
+/* line 56, ../sass/mainWindowSheets.scss */
+.sheetListNewSheetButton, .sheetListNoSheet {
+  border-left: solid 1px #000;
+  margin-left: 4px;
+}
+
+/* line 61, ../sass/mainWindowSheets.scss */
+.openSheetGame > .sheetListNoSheet, .openSheetGame > .sheetListNewSheetButton {
+  display: block;
+}
+
+/* line 65, ../sass/mainWindowSheets.scss */
 .sheetNameLink {
   min-width: 300px;
   display: inline-block;
 }
 
-/* line 54, ../sass/mainWindowSheets.scss */
+/* line 71, ../sass/mainWindowSheets.scss */
 .sheetExtraButton {
   float: right;
   padding-left: 20px;
@@ -1954,7 +1975,7 @@ body {
 }
 
 /* line 63, ../sass/mainWindowSimple.scss */
-.lightHoverable:hover, .sheetListSheet:hover {
+.lightHoverable:hover, .sheetListSheet:hover, .sheetListNoSheet:hover, .sheetListNewSheetButton:hover {
   background-color: rgba(0, 0, 0, 0.1);
 }
 

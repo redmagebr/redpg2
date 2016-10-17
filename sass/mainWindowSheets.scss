@@ -11,6 +11,14 @@
   @extend .buttonBehavior;
 }
 
+.sheetListGameContainer, .sheetListFolderContainer {
+  color: #828282;
+}
+
+.sheetListGameContainer.openSheetGame, .sheetListFolderContainer.openSheetFolder{
+  color: #000000;
+}
+
 .sheetListFolderName {
   font-size: 1em;
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABAQMAAADD8p2OAAAAA1BMVEUAAACnej3aAAAACklEQVQI12NgAAAAAgAB4iG8MwAAAABJRU5ErkJggg==");
@@ -36,13 +44,22 @@
   display: block;
 }
 
-.sheetListSheet {
+.sheetListSheet, .sheetListNoSheet, .sheetListNewSheetButton {
   display: none;
   font-size: 0.9em;
   padding: 4px;
   padding-left: 12px;
   padding-right: 0px;
   @extend .lightHoverable;
+}
+
+.sheetListNewSheetButton, .sheetListNoSheet {
+  border-left: solid 1px #000;
+  margin-left: 4px;
+}
+
+.openSheetGame > .sheetListNoSheet, .openSheetGame > .sheetListNewSheetButton {
+  display: block;
 }
 
 .sheetNameLink {

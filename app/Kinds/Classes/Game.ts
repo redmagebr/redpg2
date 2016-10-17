@@ -11,6 +11,14 @@ class Game {
     public creatornick : string = null;
     public creatorsufix : string = null;
 
+    public getId () {
+        return this.id;
+    }
+
+    public getName () {
+        return this.name;
+    }
+
     public getCreatorFullNickname () {
         return this.creatornick + "#" + this.creatorsufix;
     }
