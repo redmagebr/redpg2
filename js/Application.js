@@ -1782,6 +1782,111 @@ var ImagesFolder = (function () {
     };
     return ImagesFolder;
 }());
+var SheetsRow = (function () {
+    function SheetsRow(sheet) {
+        this.sheet = sheet;
+        this.html = document.createElement("p");
+        this.html.classList.add("sheetListSheet");
+        var nameLink = document.createElement("a");
+        nameLink.classList.add("sheetNameLink");
+        this.nameNode = document.createTextNode(sheet.name);
+        nameLink.appendChild(nameNode);
+        this.html.appendChild(nameLink);
+        nameLink.addEventListener("click", {
+            row: this,
+            handleEvent: function (e) {
+                e.preventDefault();
+                this.row.open();
+            }
+        });
+        var folder = document.createElement("a");
+        folder.classList.add("sheetExtraButton");
+        folder.classList.add("textLink");
+        folder.appendChild(document.createTextNode("_SHEETSRENAMEFOLDER_"));
+        UI.Language.markLanguage(folder);
+        this.html.appendChild(folder);
+        folder.addEventListener("click", {
+            row: this,
+            handleEvent: function (e) {
+                e.preventDefault();
+                this.row.editFolder();
+            }
+        });
+        var perm = document.createElement("a");
+        perm.classList.add("sheetExtraButton");
+        perm.classList.add("textLink");
+        perm.appendChild(document.createTextNode("_SHEETSCHANGEPERMISSIONS_"));
+        UI.Language.markLanguage(perm);
+        this.html.appendChild(perm);
+        perm.addEventListener("click", {
+            row: this,
+            handleEvent: function (e) {
+                e.preventDefault();
+                this.row.editPerm();
+            }
+        });
+        var del = document.createElement("a");
+        del.classList.add("sheetExtraButton");
+        del.classList.add("textLink");
+        del.appendChild(document.createTextNode("_SHEETSDELETE_"));
+        UI.Language.markLanguage(del);
+        this.html.appendChild(del);
+        del.addEventListener("click", {
+            row: this,
+            handleEvent: function (e) {
+                e.preventDefault();
+                this.row.deleteSheet();
+            }
+        });
+    }
+    SheetsRow.prototype.open = function () {
+    };
+    SheetsRow.prototype.deleteSheet = function () {
+    };
+    SheetsRow.prototype.editPerm = function () {
+    };
+    SheetsRow.prototype.editFolder = function () {
+        var newName = prompt(UI.Language.getLanguage().getLingo("_SHEETSRENAMEFOLDERPROMPT_", { languagea: this.sheet.name, languageb: this.sheet.folder }));
+        if (newName === null) {
+            return;
+        }
+        this.sheet.folder = newName.trim();
+    };
+    SheetsRow.prototype.getHTML = function () {
+        return this.html;
+    };
+    return SheetsRow;
+}());
+var SheetsFolder = (function () {
+    function SheetsFolder(sheets, open) {
+        var folderName = sheets[0].folder;
+        if (folderName === "") {
+            folderName = UI.Language.getLanguage().getLingo("_SHEETSNOFOLDERNAME_");
+        }
+        this.html = document.createElement("div");
+        this.html.classList.add("sheetListFolderContainer");
+        this.html.classList.add("lightHoverable");
+        if (open === true) {
+            this.html.classList.add("openSheetFolder");
+        }
+        var p = document.createElement("p");
+        p.classList.add("sheetListFolderName");
+        p.appendChild(document.createTextNode(folderName));
+        p.addEventListener("click", function (e) {
+            e.preventDefault();
+            this.parentElement.classList.toggle("openSheetFolder");
+        });
+        this.html.appendChild(p);
+        for (var i = 0; i < sheets.length; i++) {
+            var sheet = new SheetsRow(sheets[i]);
+            this.html.appendChild(sheet.getHTML());
+        }
+    }
+    SheetsFolder.prototype.getHTML = function () {
+        return this.html;
+    };
+    return SheetsFolder;
+}());
 var PicaContainer = (function () {
     function PicaContainer(picaWindow) {
         this.tools = new PicaToolbar();

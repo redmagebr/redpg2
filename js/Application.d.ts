@@ -481,6 +481,23 @@ declare class ImagesFolder {
     getHTML(): HTMLElement;
     considerSuicide(): void;
 }
+declare class SheetsRow {
+    private sheet;
+    private html;
+    private nameNode;
+    open(): void;
+    deleteSheet(): void;
+    editPerm(): void;
+    editFolder(): void;
+    constructor(sheet: SheetInstance);
+    getHTML(): HTMLElement;
+}
+declare class SheetsFolder {
+    private html;
+    private folderContainer;
+    constructor(sheets: Array<SheetInstance>, open?: boolean);
+    getHTML(): HTMLElement;
+}
 declare class PicaContainer {
     private container;
     private tools;
