@@ -3102,3 +3102,20 @@ body {
   right: 0px;
   top: 0px;
 }
+
+/* line 1, ../sass/mainWindowChangelog.scss */
+.changelogVersion:before {
+  content: " ";
+}
+
+/* line 5, ../sass/mainWindowChangelog.scss */
+.changelogVersion:after {
+  content: ".";
+  margin-right: 6px;
+}
+
+/* line 10, ../sass/mainWindowChangelog.scss */
+#changelogWarning {
+  color: #969000;
+  font-weight: bold;
+}

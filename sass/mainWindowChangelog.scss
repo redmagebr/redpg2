@@ -1,0 +1,13 @@
+.changelogVersion:before {
+  content: " ";
+}
+
+.changelogVersion:after {
+  content: ".";
+  margin-right: 6px;
+}
+
+#changelogWarning {
+  color: #969000;
+  font-weight: bold;
+}

@@ -10,6 +10,7 @@
 /// <reference path='Interfaces/ImageInt.ts' />
 /// <reference path='Interfaces/StyleInfo.ts' />
 
+/// <reference path='Classes/Changelog.ts' />
 /// <reference path='Classes/ImageRed.ts' />
 /// <reference path='Classes/ImageLink.ts' />
 /// <reference path='Classes/User.ts' />

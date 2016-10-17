@@ -48,6 +48,16 @@ interface StyleInfo {
     idCreator: number;
     name: string;
 }
+declare class Changelog {
+    private release;
+    private minor;
+    private major;
+    private static updates;
+    private static updatesExternal;
+    private static addToUpdates(change);
+    static finished(): void;
+    constructor(release: number, minor: number, major: number);
+}
 declare class ImageRed implements ImageInt {
     private name;
     private uploader;
@@ -1391,6 +1401,7 @@ declare module Server.Sheets {
     function sendFolder(sheet: SheetInstance, cbs?: Listener, cbe?: Listener): void;
     function deleteSheet(sheet: SheetInstance, cbs?: Listener, cbe?: Listener): void;
 }
+declare var change: any;
 declare module Dropbox {
     function choose(options: any): any;
 }

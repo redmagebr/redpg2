@@ -15,3 +15,6 @@
 /// <reference path='Application/References.ts' />
 /// <reference path='UI/References.ts' />
 /// <reference path='Server/References.ts' />
+
+// Changelog
+/// <reference path="Changelog.ts" />

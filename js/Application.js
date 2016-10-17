@@ -26,6 +26,32 @@ function allReady() {
         onReady[i].handleEvent();
     }
 }
+var Changelog = (function () {
+    function Changelog(release, minor, major) {
+        this.release = release;
+        this.minor = minor;
+        this.major = major;
+        Changelog.addToUpdates(this);
+    }
+    Changelog.addToUpdates = function (change) {
+        if (Changelog.updatesExternal === null) {
+            Changelog.updates.push(change);
+        }
+        else {
+            Changelog.updatesExternal.push(change);
+        }
+    };
+    Changelog.finished = function () {
+        if (Changelog.updatesExternal === null) {
+            Changelog.updatesExternal = [];
+        }
+        else {
+        }
+    };
+    Changelog.updates = [];
+    Changelog.updatesExternal = null;
+    return Changelog;
+}());
 var ImageRed = (function () {
     function ImageRed() {
     }
@@ -5142,6 +5168,7 @@ ptbr.setLingo("_CHANGELOGP1_", "Para receber os updates marcados em vermelho voc
 ptbr.setLingo("_CHANGELOGP2_", "Compatibilidade com versões anteriores não é intencional. Não existem garantias de que versões desatualizadas funcionem e é recomendável sempre utilizar a versão mais recente do aplicativo.");
 ptbr.setLingo("_CHANGELOGCURRENTVERSION_", "A sua versão é");
 ptbr.setLingo("_CHANGELOGMOSTRECENTVERSION_", "A versão mais recente é");
+ptbr.setLingo("_CHANGELOGVERSIONWARNING_", "Seu aplicativo está desatualizado. Recomenda-se atualizar o seu aplicativo. Caso esteja acessando a versão Online através de RedPG.com.br, é só recarregar a página (F5).");
 ptbr.setLingo("_REDPGTITLE_", "RedPG");
 ptbr.setLingo("_REDPGEXP1_", "RedPG é um sistema para facilitar RPGs de Mesa através da internet. Funções do sistema incluem o compartilhamento de Imagens, Sons, Fichas de Personagens, uma sala para troca de mensagens com suporte a dados e muito mais, com novas funções sempre sendo adicionadas.");
 ptbr.setLingo("_REDPGEXP2_", "Todos os aspectos do sistema existem e estão presos aos Grupos, um grupo de RPG. Então para criar qualquer coisa ou utilizar o sistema de qualquer maneira, você precisa criar ou ser convidado a um Grupo. Isso é feito na seção \"Grupos\", no menu à esquerda.");
@@ -9514,6 +9541,9 @@ var Server;
         Sheets.deleteSheet = deleteSheet;
     })(Sheets = Server.Sheets || (Server.Sheets = {}));
 })(Server || (Server = {}));
+var change;
+change = new Changelog(0, 9, 0);
+Changelog.finished();
 UI.Language.searchLanguage();
 UI.PageManager.readWindows();
 UI.WindowManager.updateWindowSizes();

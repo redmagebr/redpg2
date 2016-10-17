@@ -69,8 +69,12 @@
           %p.mainWindowParagraph.language="_CHANGELOGP1_"
           %p.mainWindowParagraph.language="_CHANGELOGP2_"
           %p.mainWindowParagraph.language
-            _CHANGELOGCURRENTVERSION_<b id="changelogCurrentVersion"> 0.0.0. </b>
-            _CHANGELOGMOSTRECENTVERSION_<b id="changelogActualVersion"> 0.1.0.</b>
+            _CHANGELOGCURRENTVERSION_
+            %b.changelogVersion#changelogCurrentVersion="0.0.0"
+            _CHANGELOGMOSTRECENTVERSION_
+            %b.changelogVersion#changelogActualVersion="0.1.0"
+          %p.mainWindowParagraph.language#changelogWarning="_CHANGELOGVERSIONWARNING_"
+          #changelogTarget
       -############################################
       -############## CONFIG
       -############################################

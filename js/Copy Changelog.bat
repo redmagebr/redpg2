@@ -1,0 +1,1 @@
+copy /Y E:\redpg2\app\Changelog.ts E:\redpg2\js\Changelog.js
