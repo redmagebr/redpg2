@@ -21,6 +21,8 @@ class PicaBG  {
             return;
         }
 
+        this.img.style.opacity = "1";
+
         var height = this.img.naturalHeight;
         var width = this.img.naturalWidth;
 
@@ -46,6 +48,7 @@ class PicaBG  {
         if (this.img.src === url) {
             return;
         } else {
+            this.img.style.opacity = "0";
             UI.Pica.startLoading();
             this.img.src = url;
         }

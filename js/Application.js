@@ -1869,6 +1869,7 @@ var PicaBG = (function () {
         if (!this.img.complete || (typeof this.img.naturalHeight === "undefined" || this.img.naturalHeight === 0)) {
             return;
         }
+        this.img.style.opacity = "1";
         var height = this.img.naturalHeight;
         var width = this.img.naturalWidth;
         if (!(height < this.board.getAvailHeight() && width < this.board.getAvailWidth())) {
@@ -1890,6 +1891,7 @@ var PicaBG = (function () {
             return;
         }
         else {
+            this.img.style.opacity = "0";
             UI.Pica.startLoading();
             this.img.src = url;
         }
