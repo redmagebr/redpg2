@@ -5272,7 +5272,7 @@ var UI;
         }
         else {
             if (cleanPersonaTotallyCSS.parentElement !== null) {
-                cleanPersonaTotallyCSS.removeChild(cleanPersonaTotallyCSS);
+                cleanPersonaTotallyCSS.parentElement.removeChild(cleanPersonaTotallyCSS);
             }
             if (cleanPersonaCSS.parentElement !== null) {
                 cleanPersonaCSS.parentElement.removeChild(cleanPersonaCSS);
