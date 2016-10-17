@@ -563,6 +563,9 @@ var SheetInstance = (function () {
     SheetInstance.prototype.getFolder = function () {
         return this.folder;
     };
+    SheetInstance.prototype.getId = function () {
+        return this.id;
+    };
     SheetInstance.prototype.addChangeListener = function (list) {
         this.changeTrigger.addListener(list);
     };
@@ -1861,11 +1864,22 @@ var SheetsRow = (function () {
     SheetsRow.prototype.editPerm = function () {
     };
     SheetsRow.prototype.editFolder = function () {
-        var newName = prompt(UI.Language.getLanguage().getLingo("_SHEETSRENAMEFOLDERPROMPT_", { languagea: this.sheet.name, languageb: this.sheet.folder }));
+        var oldFolder = this.sheet.getFolder();
+        var newName = prompt(UI.Language.getLanguage().getLingo("_SHEETSRENAMEFOLDERPROMPT_", { languagea: this.sheet.getName(), languageb: this.sheet.folder }));
         if (newName === null) {
             return;
         }
         this.sheet.folder = newName.trim();
+        if (this.sheet.getFolder() !== oldFolder) {
+            var cbs = {
+                sheet: this.sheet,
+                handleEvent: function () {
+                    UI.Sheets.keepOpen(oldFolder, this.sheet.getGameid());
+                    UI.Sheets.callSelf();
+                }
+            };
+            Server.Sheets.sendFolder(this.sheet, cbs);
+        }
     };
     SheetsRow.prototype.getHTML = function () {
         return this.html;
@@ -6179,6 +6193,18 @@ var UI;
     (function (Sheets) {
         document.getElementById("sheetsButton").addEventListener("click", function () { UI.Sheets.callSelf(); });
         var sheetList = document.getElementById("sheetWindowSheetList");
+        var lastFolder = null;
+        var lastGame = null;
+        function keepOpen(folder, gameid) {
+            lastFolder = folder;
+            lastGame = gameid;
+        }
+        Sheets.keepOpen = keepOpen;
+        function keepClosed() {
+            lastFolder = null;
+            lastGame = null;
+        }
+        Sheets.keepClosed = keepClosed;
         function callSelf() {
             UI.PageManager.callPage(UI.idSheets);
             Server.Sheets.updateLists({
@@ -6213,7 +6239,8 @@ var UI;
                 gameName.appendChild(document.createTextNode(game.getName()));
                 if (sheets.length > 0) {
                     for (var i = 0; i < sheets.length; i++) {
-                        var sheetFolder = new SheetsFolder(sheets[i]);
+                        var open = game.getId() === lastGame && sheets[i][0].getFolder() === lastFolder;
+                        var sheetFolder = new SheetsFolder(sheets[i], open);
                         gameFolder.appendChild(sheetFolder.getHTML());
                     }
                 }
@@ -9449,6 +9476,18 @@ var Server;
             Server.AJAX.requestPage(ajax, success, error);
         }
         Sheets.updateLists = updateLists;
+        function sendFolder(sheet, cbs, cbe) {
+            cbs = cbs === undefined ? emptyCallback : cbs;
+            cbe = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(SHEET_URL);
+            ajax.setResponseTypeJSON();
+            ajax.setData("action", "folder");
+            ajax.setData("id", sheet.getId());
+            ajax.setData("folder", sheet.getFolder());
+            ajax.setTargetRightWindow();
+            Server.AJAX.requestPage(ajax, cbs, cbe);
+        }
+        Sheets.sendFolder = sendFolder;
     })(Sheets = Server.Sheets || (Server.Sheets = {}));
 })(Server || (Server = {}));
 UI.Language.searchLanguage();

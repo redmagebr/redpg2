@@ -16,12 +16,23 @@ class SheetsRow {
     }
 
     public editFolder () {
-        var newName = prompt(UI.Language.getLanguage().getLingo("_SHEETSRENAMEFOLDERPROMPT_", {languagea : this.sheet.name, languageb : this.sheet.folder}));
+        var oldFolder = this.sheet.getFolder();
+        var newName = prompt(UI.Language.getLanguage().getLingo("_SHEETSRENAMEFOLDERPROMPT_", {languagea : this.sheet.getName(), languageb : this.sheet.folder}));
         if (newName === null) {
             return;
         }
         this.sheet.folder = newName.trim();
-        // TODO: Send folder to server
+        if (this.sheet.getFolder() !== oldFolder) {
+            var cbs = <EventListenerObject> {
+                sheet : this.sheet,
+                handleEvent : function () {
+                    UI.Sheets.keepOpen(oldFolder, this.sheet.getGameid());
+                    UI.Sheets.callSelf();
+                }
+            }
+
+            Server.Sheets.sendFolder(this.sheet, cbs);
+        }
     }
 
     constructor (sheet : SheetInstance) {

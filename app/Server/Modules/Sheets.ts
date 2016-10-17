@@ -48,4 +48,18 @@ module Server.Sheets {
 
         Server.AJAX.requestPage(ajax, success, error);
     }
+
+    export function sendFolder (sheet : SheetInstance, cbs? : Listener, cbe? : Listener) {
+        cbs = cbs === undefined ? emptyCallback : cbs;
+        cbe = cbe === undefined ? emptyCallback : cbe;
+
+        var ajax = new AJAXConfig(SHEET_URL);
+        ajax.setResponseTypeJSON();
+        ajax.setData("action", "folder");
+        ajax.setData("id", sheet.getId());
+        ajax.setData("folder", sheet.getFolder());
+        ajax.setTargetRightWindow();
+
+        Server.AJAX.requestPage(ajax, cbs, cbe);
+    }
 }

@@ -33,6 +33,10 @@ class SheetInstance {
         return this.folder;
     }
 
+    public getId () {
+        return this.id;
+    }
+
     public addChangeListener (list : Listener | Function) {
         this.changeTrigger.addListener(list);
     }

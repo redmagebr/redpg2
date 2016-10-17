@@ -3,6 +3,19 @@ module UI.Sheets {
 
     var sheetList = document.getElementById("sheetWindowSheetList");
 
+    var lastFolder : String = null;
+    var lastGame : Number = null;
+
+    export function keepOpen (folder : string, gameid : number) {
+        lastFolder = folder;
+        lastGame = gameid;
+    }
+
+    export function keepClosed () {
+        lastFolder = null;
+        lastGame = null;
+    }
+
     export function callSelf () {
         UI.PageManager.callPage(UI.idSheets);
 
@@ -44,7 +57,8 @@ module UI.Sheets {
 
             if (sheets.length > 0) {
                 for (var i = 0; i < sheets.length; i++) {
-                    var sheetFolder = new SheetsFolder(sheets[i]);
+                    var open = game.getId() === lastGame && sheets[i][0].getFolder() === lastFolder;
+                    var sheetFolder = new SheetsFolder(sheets[i], open);
                     gameFolder.appendChild(sheetFolder.getHTML());
                 }
             } else {

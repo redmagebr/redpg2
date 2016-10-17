@@ -202,6 +202,7 @@ declare class SheetInstance {
     private changeTrigger;
     getGameid(): number;
     getFolder(): string;
+    getId(): number;
     addChangeListener(list: Listener | Function): void;
     triggerChanged(): void;
     getMemoryId(): string;
@@ -1142,6 +1143,8 @@ declare module UI.Language {
     function markLanguage(...elements: HTMLElement[]): void;
 }
 declare module UI.Sheets {
+    function keepOpen(folder: string, gameid: number): void;
+    function keepClosed(): void;
     function callSelf(): void;
     function printSheets(): void;
 }
@@ -1385,6 +1388,7 @@ declare module Server.Storage {
 declare module Server.Sheets {
     function updateStyles(cbs?: Listener, cbe?: Listener): void;
     function updateLists(cbs?: Listener, cbe?: Listener): void;
+    function sendFolder(sheet: SheetInstance, cbs?: Listener, cbe?: Listener): void;
 }
 declare module Dropbox {
     function choose(options: any): any;
