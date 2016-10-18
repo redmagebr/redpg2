@@ -17,7 +17,7 @@ ptbr.setLingo("_CHANGELOGP1_", "Para receber os updates marcados em vermelho voc
 ptbr.setLingo("_CHANGELOGP2_", "Compatibilidade com versões anteriores não é intencional. Não existem garantias de que versões desatualizadas funcionem e é recomendável sempre utilizar a versão mais recente do aplicativo.");
 ptbr.setLingo("_CHANGELOGCURRENTVERSION_", "A sua versão é");
 ptbr.setLingo("_CHANGELOGMOSTRECENTVERSION_", "A versão mais recente é");
-ptbr.setLingo("_CHANGELOGVERSIONWARNING_", "Seu aplicativo está desatualizado. Recomenda-se atualizar o seu aplicativo. Caso esteja acessando a versão Online através de RedPG.com.br, é só recarregar a página (F5).");
+ptbr.setLingo("_CHANGELOGVERSIONWARNING_", "Seu aplicativo está desatualizado. Recomenda-se atualizar o seu aplicativo. Caso esteja acessando a versão Online através de RedPG.com.br, é só recarregar a página (F5). Atualizações marcadas em vermelho não estão disponíveis.");
 
 // Home  Page
 ptbr.setLingo("_REDPGTITLE_", "RedPG");

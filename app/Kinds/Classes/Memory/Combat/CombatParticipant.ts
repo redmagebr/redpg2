@@ -12,8 +12,8 @@ class CombatParticipant {
     }
 
     public setSheet (sheet : SheetInstance) {
-        this.id = sheet.id;
-        this.name = sheet.name;
+        this.id = sheet.getId();
+        this.name = sheet.getName();
     }
 
     public exportAsObject () {

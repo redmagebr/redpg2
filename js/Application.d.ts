@@ -52,11 +52,22 @@ declare class Changelog {
     private release;
     private minor;
     private major;
+    private messages;
     private static updates;
     private static updatesExternal;
     private static addToUpdates(change);
+    static sort(): void;
+    static getMostRecentLocalUpdate(): Changelog;
+    static getMostRecentExternalUpdate(): Changelog;
+    static getUpdates(): void;
+    static getMissingUpdates(): any[];
     static finished(): void;
+    static getLocalVersion(): number[];
+    static getExternalVersion(): number[];
     constructor(release: number, minor: number, major: number);
+    getVersion(): number[];
+    addMessage(msg: string, lingo: string): void;
+    getMessages(): Array<string>;
 }
 declare class ImageRed implements ImageInt {
     private name;

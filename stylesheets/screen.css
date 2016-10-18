@@ -1975,7 +1975,7 @@ body {
 }
 
 /* line 63, ../sass/mainWindowSimple.scss */
-.lightHoverable:hover, .sheetListSheet:hover, .sheetListNoSheet:hover, .sheetListNewSheetButton:hover {
+.lightHoverable:hover, .sheetListSheet:hover, .sheetListNoSheet:hover, .sheetListNewSheetButton:hover, .changelogCurrent:hover {
   background-color: rgba(0, 0, 0, 0.1);
 }
 
@@ -3118,4 +3118,31 @@ body {
 #changelogWarning {
   color: #969000;
   font-weight: bold;
+}
+
+/* line 15, ../sass/mainWindowChangelog.scss */
+.changelogChangeVersion {
+  font-weight: bold;
+  position: absolute;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+/* line 26, ../sass/mainWindowChangelog.scss */
+.changelogMissing {
+  color: #b2000d;
+}
+/* line 28, ../sass/mainWindowChangelog.scss */
+.changelogMissing:hover {
+  background-color: #eab7bf;
+}
+
+/* line 33, ../sass/mainWindowChangelog.scss */
+.changelogChange {
+  display: block;
+  margin-left: 70px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  text-align: justify;
+  text-indent: 1em;
 }

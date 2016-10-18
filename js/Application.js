@@ -28,6 +28,7 @@ function allReady() {
 }
 var Changelog = (function () {
     function Changelog(release, minor, major) {
+        this.messages = {};
         this.release = release;
         this.minor = minor;
         this.major = major;
@@ -41,12 +42,89 @@ var Changelog = (function () {
             Changelog.updatesExternal.push(change);
         }
     };
+    Changelog.sort = function () {
+        Changelog.updates.sort(function (a, b) {
+            if (a.major !== b.major)
+                return a.major - b.major;
+            if (a.minor !== b.minor)
+                return a.minor - b.minor;
+            if (a.release !== b.release)
+                return a.release - b.release;
+            return 0;
+        });
+        if (Changelog.updatesExternal !== null) {
+            Changelog.updatesExternal.sort(function (a, b) {
+                if (a.major !== b.major)
+                    return a.major - b.major;
+                if (a.minor !== b.minor)
+                    return a.minor - b.minor;
+                if (a.release !== b.release)
+                    return a.release - b.release;
+                return 0;
+            });
+        }
+    };
+    Changelog.getMostRecentLocalUpdate = function () {
+        return Changelog.updates[0];
+    };
+    Changelog.getMostRecentExternalUpdate = function () {
+        if (Changelog.updatesExternal !== null) {
+            return Changelog.updatesExternal[0];
+        }
+        return null;
+    };
+    Changelog.getUpdates = function () {
+    };
+    Changelog.getMissingUpdates = function () {
+        if (Changelog.updatesExternal === null)
+            return [];
+        var updates = [];
+        for (var i = Changelog.updates.length; i < Changelog.updatesExternal.length; i++) {
+            updates.push(Changelog.updatesExternal[i]);
+        }
+        return updates;
+    };
     Changelog.finished = function () {
         if (Changelog.updatesExternal === null) {
             Changelog.updatesExternal = [];
         }
         else {
+            Changelog.sort();
         }
+    };
+    Changelog.getLocalVersion = function () {
+        return Changelog.updates[Changelog.updates.length - 1].getVersion();
+    };
+    Changelog.getExternalVersion = function () {
+        if (Changelog.updatesExternal === null) {
+            return [0, 0, 0];
+        }
+        return Changelog.updatesExternal[Changelog.updatesExternal.length - 1].getVersion();
+    };
+    Changelog.prototype.getVersion = function () {
+        return [this.major, this.minor, this.release];
+    };
+    Changelog.prototype.addMessage = function (msg, lingo) {
+        if (this.messages[lingo] === undefined) {
+            this.messages[lingo] = [msg];
+        }
+        else {
+            this.messages[lingo].push(msg);
+        }
+    };
+    Changelog.prototype.getMessages = function () {
+        var lingo = UI.Language.getLanguage();
+        for (var i = 0; i < lingo.ids.length; i++) {
+            if (this.messages[lingo.ids[i]] !== undefined) {
+                return this.messages[lingo.ids[i]];
+            }
+        }
+        if (this.messages['en'] !== undefined)
+            return this.messages['en'];
+        for (var key in this.messages) {
+            return this.messages[key];
+        }
+        return ["Changelog contains no messages."];
     };
     Changelog.updates = [];
     Changelog.updatesExternal = null;
@@ -459,8 +537,8 @@ var Game = (function () {
                 return -1;
             if (fb < fa)
                 return 1;
-            var na = a.name.toLowerCase();
-            var nb = b.name.toLowerCase();
+            var na = a.getName().toLowerCase();
+            var nb = b.getName().toLowerCase();
             if (na < nb)
                 return -1;
             if (nb < na)
@@ -1295,8 +1373,8 @@ var CombatParticipant = (function () {
         this.combatMemory = memo;
     }
     CombatParticipant.prototype.setSheet = function (sheet) {
-        this.id = sheet.id;
-        this.name = sheet.name;
+        this.id = sheet.getId();
+        this.name = sheet.getName();
     };
     CombatParticipant.prototype.exportAsObject = function () {
         var participant = [this.id, this.name, this.initiative];
@@ -5168,7 +5246,7 @@ ptbr.setLingo("_CHANGELOGP1_", "Para receber os updates marcados em vermelho voc
 ptbr.setLingo("_CHANGELOGP2_", "Compatibilidade com versões anteriores não é intencional. Não existem garantias de que versões desatualizadas funcionem e é recomendável sempre utilizar a versão mais recente do aplicativo.");
 ptbr.setLingo("_CHANGELOGCURRENTVERSION_", "A sua versão é");
 ptbr.setLingo("_CHANGELOGMOSTRECENTVERSION_", "A versão mais recente é");
-ptbr.setLingo("_CHANGELOGVERSIONWARNING_", "Seu aplicativo está desatualizado. Recomenda-se atualizar o seu aplicativo. Caso esteja acessando a versão Online através de RedPG.com.br, é só recarregar a página (F5).");
+ptbr.setLingo("_CHANGELOGVERSIONWARNING_", "Seu aplicativo está desatualizado. Recomenda-se atualizar o seu aplicativo. Caso esteja acessando a versão Online através de RedPG.com.br, é só recarregar a página (F5). Atualizações marcadas em vermelho não estão disponíveis.");
 ptbr.setLingo("_REDPGTITLE_", "RedPG");
 ptbr.setLingo("_REDPGEXP1_", "RedPG é um sistema para facilitar RPGs de Mesa através da internet. Funções do sistema incluem o compartilhamento de Imagens, Sons, Fichas de Personagens, uma sala para troca de mensagens com suporte a dados e muito mais, com novas funções sempre sendo adicionadas.");
 ptbr.setLingo("_REDPGEXP2_", "Todos os aspectos do sistema existem e estão presos aos Grupos, um grupo de RPG. Então para criar qualquer coisa ou utilizar o sistema de qualquer maneira, você precisa criar ou ser convidado a um Grupo. Isso é feito na seção \"Grupos\", no menu à esquerda.");
@@ -9542,7 +9620,13 @@ var Server;
     })(Sheets = Server.Sheets || (Server.Sheets = {}));
 })(Server || (Server = {}));
 var change;
+change = new Changelog(0, 8, 0);
+change.addMessage("Implemented most of the application before Changelog implemented.", "en");
+change.addMessage("Maior parte do aplicativo implementado antes da inclusão de Log de Mudanças.", "pt");
 change = new Changelog(0, 9, 0);
+change.addMessage("Implemented changelog.", "en");
+change.addMessage("Log de Mudanças implementado.", "pt");
+delete (change);
 Changelog.finished();
 UI.Language.searchLanguage();
 UI.PageManager.readWindows();

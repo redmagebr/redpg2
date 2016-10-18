@@ -11,3 +11,30 @@
   color: #969000;
   font-weight: bold;
 }
+
+.changelogChangeVersion {
+  font-weight: bold;
+  position: absolute;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.changelogCurrent {
+  @extend .lightHoverable;
+}
+
+.changelogMissing {
+  color: #b2000d;
+  &:hover {
+    background-color: #eab7bf;
+  }
+}
+
+.changelogChange {
+  display: block;
+  margin-left: 70px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  text-align: justify;
+  text-indent: 1em;
+}

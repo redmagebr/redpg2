@@ -78,8 +78,8 @@ class Game {
             if (fa < fb) return -1;
             if (fb < fa) return 1;
 
-            var na = a.name.toLowerCase();
-            var nb = b.name.toLowerCase();
+            var na = a.getName().toLowerCase();
+            var nb = b.getName().toLowerCase();
             if (na < nb) return -1;
             if (nb < na) return 1;
             return 0;
