@@ -192,6 +192,29 @@ module UI.Logger {
         }
     }
 
+    export function saveLog () {
+        var log = currentRoom.exportAsLog(filter());
+
+
+        html = html.replace("//LOGGERTARGET", "\nUI.Logger.openLog(" + JSON.stringify(log) + ");\n")
+            .replace("href='stylesheets", "href='" + Server.CLIENT_URL + "stylesheets")
+            .replace("href='images", "href='" + Server.CLIENT_URL + "images")
+            .replace("<script src='js/Application.js' type='text/javascript'></script>",
+                            "<script type='text/javascript'>\n" + js + "\n</script>")
+            .replace("src='js/lib", "src='" + Server.CLIENT_URL + "js/lib");
+
+        var blob = new Blob([html], { type : "text/plain;charset=utf-8;"});
+        var d = new Date();
+        var curr_date = d.getDate() < 10 ? "0" + d.getDate().toString() : d.getDate().toString();
+        var curr_month = (d.getMonth() + 1) < 10 ? "0" + (d.getMonth() + 1).toString() : (d.getMonth() + 1).toString();
+        var curr_year = d.getFullYear();
+
+        var roomName = currentRoom.name;
+        var gameName = currentRoom.getGame().getName();
+
+        saveAs(blob, gameName + " - " + roomName + " (" + curr_year + curr_month + curr_date + ").html");
+    }
+
     export function openLog (log) {
         DB.GameDB.updateFromObject([log], true);
     }

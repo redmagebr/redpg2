@@ -1155,6 +1155,7 @@ declare module UI.Logger {
     function submit(): void;
     function setHTML(code: any): void;
     function setJS(code: any): void;
+    function saveLog(): void;
     function openLog(log: any): void;
 }
 declare module UI.Config {
