@@ -6024,7 +6024,7 @@ var UI;
         Logger.setJS = setJS;
         function saveLog() {
             var log = currentRoom.exportAsLog(filter());
-            html = html.replace("<script src='js/Application.js' type='text/javascript'></script>", "<script type='text/javascript'>\n" + js + "\n</script>");
+            html = html.replace("<script src='js/Application.js' type='text/javascript'></script>", "<script type='text/javascript'\n" + js + "\n</script>");
             html = html.replace("src='js/lib", "src='" + Server.CLIENT_URL + "js/lib");
             var blob = new Blob([html], {
                 type: "text/plain;charset=utf-8;",
