@@ -6023,7 +6023,7 @@ var UI;
         }
         Logger.setJS = setJS;
         function saveLog() {
-            var log = currentRoom.exportAsLog(filter());
+            var log = currentRoom.getGame().exportAsLog(currentRoom.id, filter());
             html = html.replace("//LOGGERTARGET", "UI.Logger.openLog(" + JSON.stringify(log) + ");")
                 .replace("href='stylesheets", "href='" + Server.CLIENT_URL + "stylesheets")
                 .replace("href='images", "href='" + Server.CLIENT_URL + "images")
@@ -6041,7 +6041,6 @@ var UI;
         Logger.saveLog = saveLog;
         function openLog(log) {
             DB.GameDB.updateFromObject([log], true);
-            DB.RoomDB.updateFromObject(log['rooms'], true);
         }
         Logger.openLog = openLog;
     })(Logger = UI.Logger || (UI.Logger = {}));

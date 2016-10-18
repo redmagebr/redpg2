@@ -193,7 +193,7 @@ module UI.Logger {
     }
 
     export function saveLog () {
-        var log = currentRoom.exportAsLog(filter());
+        var log = currentRoom.getGame().exportAsLog(currentRoom.id, filter());
 
 
         html = html.replace("//LOGGERTARGET", "UI.Logger.openLog(" + JSON.stringify(log) + ");")
@@ -217,6 +217,5 @@ module UI.Logger {
 
     export function openLog (log) {
         DB.GameDB.updateFromObject([log], true);
-        DB.RoomDB.updateFromObject(log['rooms'], true);
     }
 }
