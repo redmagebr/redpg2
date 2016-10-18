@@ -3,6 +3,7 @@
 /// <reference path='Types/SlashClear.ts' />
 /// <reference path='Types/SlashReply.ts' />
 /// <reference path='Types/SlashImages.ts' />
+/// <reference path='Types/SlashLog.ts' />
 /// <reference path='Types/Message.ts' />
 /// <reference path='Types/MessageSystem.ts' />
 /// <reference path='Types/MessageCountdown.ts' />

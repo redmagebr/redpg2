@@ -1,5 +1,6 @@
 module MessageFactory {
-    export var messageClasses : { [id : string] : typeof Message} = {};
+    var messageClasses : { [id : string] : typeof Message} = {};
+    var messageClassesArray : Array<typeof Message> = [];
     var messageSlash : { [slash : string] : typeof SlashCommand} = {};
 
     /**
@@ -15,6 +16,10 @@ module MessageFactory {
             return;
         }
 
+        if (messageClassesArray.indexOf(msg) === -1) {
+            messageClassesArray.push(msg);
+        }
+
         messageClasses[id] = msg;
 
         for (var i = 0; i < slashCommands.length; i++) {
@@ -24,6 +29,10 @@ module MessageFactory {
             }
             messageSlash[slashCommands[i]] = msg;
         }
+    }
+
+    export function getMessagetypeArray () {
+        return messageClassesArray;
     }
 
     /**

@@ -220,6 +220,17 @@ var User = (function () {
     User.prototype.isMe = function () {
         return this.id === Application.getMyId();
     };
+    User.prototype.exportAsLog = function () {
+        var obj = {
+            id: this.id,
+            nickname: this.nickname,
+            nicknamesufix: this.nicknamesufix,
+            level: this.level,
+            gameid: 0,
+            roomid: 0
+        };
+        return obj;
+    };
     User.prototype.getGameContext = function (id) {
         if (this.gameContexts[id] === undefined) {
             return null;
@@ -358,6 +369,28 @@ var Room = (function () {
         this.users = {};
         this.messages = {};
     }
+    Room.prototype.exportAsLog = function (messages) {
+        var obj = {
+            gameid: this.gameid,
+            id: 0,
+            description: this.description,
+            name: this.name,
+            creatorid: this.creatorid
+        };
+        var msgObj = [];
+        for (var i = 0; i < messages.length; i++) {
+            msgObj.push(messages[i].exportAsObject());
+        }
+        obj['messages'] = msgObj;
+        return obj;
+    };
+    Room.prototype.getMessages = function () {
+        var list = [];
+        for (var id in this.messages) {
+            list.push(this.messages[id]);
+        }
+        return list;
+    };
     Room.prototype.getOrderedMessages = function () {
         var list = [];
         for (var id in this.messages) {
@@ -507,6 +540,23 @@ var Game = (function () {
         this.creatornick = null;
         this.creatorsufix = null;
     }
+    Game.prototype.exportAsLog = function (roomid, messages) {
+        var obj = {
+            description: this.description,
+            name: this.name,
+            id: 0,
+            freejoin: this.freejoin,
+            creatorid: this.creatorid,
+            creatornick: this.creatornick,
+            creatorsufix: this.creatorsufix
+        };
+        var users = {};
+        for (var id in this.users) {
+            users[id] = this.users[id].exportAsLog();
+        }
+        obj['users'] = users;
+        obj['rooms'] = [DB.RoomDB.getRoom(roomid).exportAsLog(messages)];
+    };
     Game.prototype.getId = function () {
         return this.id;
     };
@@ -2097,7 +2147,6 @@ var SheetPermRow = (function () {
     SheetPermRow.prototype.getHTML = function () {
         var p = document.createElement("p");
         p.classList.add("sheetPermRow");
-        p.appendChild(document.createTextNode(players[i]['nickname'] + "#" + players[i]['nicknamesufix']));
         var viewLabel = document.createElement("label");
         viewLabel.classList.add("language");
         viewLabel.classList.add("sheetPermLabel");
@@ -2755,14 +2804,18 @@ var SoundLink = (function () {
 }());
 var MessageFactory;
 (function (MessageFactory) {
-    MessageFactory.messageClasses = {};
+    var messageClasses = {};
+    var messageClassesArray = [];
     var messageSlash = {};
     function registerMessage(msg, id, slashCommands) {
-        if (MessageFactory.messageClasses[id] !== undefined) {
+        if (messageClasses[id] !== undefined) {
             console.warn("Attempt to overwrite message type at " + id + ". Ignoring. Offending class:", msg);
             return;
         }
-        MessageFactory.messageClasses[id] = msg;
+        if (messageClassesArray.indexOf(msg) === -1) {
+            messageClassesArray.push(msg);
+        }
+        messageClasses[id] = msg;
         for (var i = 0; i < slashCommands.length; i++) {
             if (messageSlash[slashCommands[i]] !== undefined) {
                 console.warn("Attempt to overwrite message slash command at " + slashCommands[i] + ". Ignoring. Offending class:", msg);
@@ -2772,6 +2825,10 @@ var MessageFactory;
         }
     }
     MessageFactory.registerMessage = registerMessage;
+    function getMessagetypeArray() {
+        return messageClassesArray;
+    }
+    MessageFactory.getMessagetypeArray = getMessagetypeArray;
     function registerSlashCommand(slash, slashCommands) {
         for (var i = 0; i < slashCommands.length; i++) {
             if (messageSlash[slashCommands[i]] !== undefined) {
@@ -2784,16 +2841,16 @@ var MessageFactory;
     MessageFactory.registerSlashCommand = registerSlashCommand;
     function createMessageFromType(id) {
         id = id.toLowerCase();
-        if (MessageFactory.messageClasses[id] !== undefined) {
-            return new MessageFactory.messageClasses[id]();
+        if (messageClasses[id] !== undefined) {
+            return new messageClasses[id]();
         }
         return new MessageUnknown();
     }
     MessageFactory.createMessageFromType = createMessageFromType;
     function createTestingMessages() {
         var list = [];
-        for (var id in MessageFactory.messageClasses) {
-            var message = new MessageFactory.messageClasses[id]();
+        for (var id in messageClasses) {
+            var message = new messageClasses[id]();
             list = list.concat(message.makeMockUp());
         }
         return list;
@@ -2909,6 +2966,24 @@ var SlashImages = (function (_super) {
     return SlashImages;
 }(SlashCommand));
 MessageFactory.registerSlashCommand(SlashImages, ["/images", "/imgs", "/imagens", "/fotos", "/picas"]);
+var SlashLog = (function (_super) {
+    __extends(SlashLog, _super);
+    function SlashLog() {
+        _super.apply(this, arguments);
+    }
+    SlashLog.prototype.receiveCommand = function (slashCommand, message) {
+        var cbs = {
+            room: Server.Chat.getRoom(),
+            handleEvent: function () {
+                UI.Logger.callSelf(this.room);
+            }
+        };
+        Server.Chat.getAllMessages(Server.Chat.getRoom().id, cbs);
+        return true;
+    };
+    return SlashLog;
+}(SlashCommand));
+MessageFactory.registerSlashCommand(SlashLog, ["/log", "/logger"]);
 var Message = (function (_super) {
     __extends(Message, _super);
     function Message() {
@@ -5404,6 +5479,10 @@ ptbr.setLingo("_PICASHARE_", "Compartilhar no Chat");
 ptbr.setLingo("", "");
 ptbr.setLingo("", "");
 ptbr.setLingo("", "");
+ptbr.setLingo("_LOGGERTITLE_", "Logger");
+ptbr.setLingo("_LOGGEREXP1_", "O excerto a seguir representa as primeiras e as últimas mensagens que irão fazer parte deste log. Você pode alterar o slider abaixo para definir onde começar o log e onde terminar o log. Apenas mensagens públicas (não enviadas a uma pessoa específica) serão guardadas no JSON. Você pode mover com as setas do teclado após clicar nos sliders.");
+ptbr.setLingo("_LOGGEREXP2_", "Aqui você pode definir quais tipos de mensagens não serão salvas. Lembrando que apenas mensagens públicas (visível a todos) serão salvas no log.");
+ptbr.setLingo("_LOGGERSUBMIT_", "Criar Log");
 ptbr.setLingo("", "");
 ptbr.setLingo("_SHEETSTITLE_", "Fichas");
 ptbr.setLingo("_SHEETSEXP01_", "Fichas são algo que mestres e seus jogadores podem guardar no sistema, garantindo que todos estejam vendo a mesma versão desse recurso. Um jogador só pode ver fichas para as quais ele tem permissões adequadas, então lembre-se de alterar essas opções para cada ficha que fizer.");
@@ -5761,6 +5840,208 @@ var UI;
             UI.WindowManager.updateWindowSizes();
         });
     })(WindowManager = UI.WindowManager || (UI.WindowManager = {}));
+})(UI || (UI = {}));
+var UI;
+(function (UI) {
+    var Logger;
+    (function (Logger) {
+        var $slider = $(document.getElementById("loggerSlider"));
+        var window = document.getElementById("loggerWindow");
+        var $window = $(window);
+        var currentRoom;
+        var acceptedModules;
+        var messages;
+        var currentLeft;
+        var currentRight;
+        var messagesToPrint = 3;
+        var printTarget = document.getElementById("loggerTarget");
+        var checkboxesTarget = document.getElementById("loggerCheckboxes");
+        document.getElementById("loggerSubmit").addEventListener("click", function (e) {
+            e.preventDefault();
+            UI.Logger.submit();
+        });
+        function callSelf(room) {
+            open();
+            currentRoom = room;
+            messages = currentRoom.getOrderedMessages();
+            currentLeft = 0;
+            currentRight = messages.length - 1;
+            updateSlider();
+            updateCheckboxes();
+            updateMessages();
+        }
+        Logger.callSelf = callSelf;
+        function filter() {
+            var newMessages = [];
+            for (var i = currentLeft; i <= currentRight; i++) {
+                if (acceptedModules.indexOf(messages[i].module) !== -1) {
+                    newMessages.push(messages[i]);
+                }
+            }
+            return newMessages;
+        }
+        Logger.filter = filter;
+        function updateSlider() {
+            var min = 0;
+            var max = messages.length - 1;
+            $slider.slider({
+                range: true,
+                min: min,
+                max: max,
+                values: [currentLeft, currentRight],
+                slide: function (event, ui) {
+                    UI.Logger.setSlider(ui.values[0], ui.values[1]);
+                }
+            });
+        }
+        Logger.updateSlider = updateSlider;
+        function updateMessages() {
+            while (printTarget.firstChild)
+                printTarget.removeChild(printTarget.firstChild);
+            var filtered = filter();
+            if (filtered.length < messagesToPrint * 2) {
+                for (var i = 0; i < filtered.length; i++) {
+                    var ele = filtered[i].getHTML();
+                    if (ele !== null)
+                        printTarget.appendChild(ele);
+                }
+            }
+            else {
+                for (var i = 0; i <= messagesToPrint; i++) {
+                    var ele = filtered[i].getHTML();
+                    if (ele !== null)
+                        printTarget.appendChild(ele);
+                }
+                var p = document.createElement("p");
+                p.appendChild(document.createTextNode("........"));
+                printTarget.appendChild(p);
+                for (var i = (filtered.length - 1 - messagesToPrint); i < filtered.length; i++) {
+                    var ele = filtered[i].getHTML();
+                    if (ele !== null)
+                        printTarget.appendChild(ele);
+                }
+            }
+        }
+        Logger.updateMessages = updateMessages;
+        function updateCheckboxes() {
+            while (checkboxesTarget.firstChild)
+                checkboxesTarget.removeChild(checkboxesTarget.firstChild);
+            var msgTypes = MessageFactory.getMessagetypeArray();
+            for (var i = 0; i < msgTypes.length; i++) {
+            }
+            var msgModules = [];
+            for (var i = 0; i < messages.length; i++) {
+                if (msgModules.indexOf(messages[i].module) === -1) {
+                    msgModules.push(messages[i].module);
+                }
+            }
+            msgModules.sort();
+            acceptedModules = [];
+            for (var i = 0; i < msgModules.length; i++) {
+                acceptedModules.push(msgModules[i]);
+                var label = document.createElement("label");
+                label.classList.add("loggerLabel");
+                var input = document.createElement("input");
+                input.type = "checkbox";
+                input.checked = true;
+                label.appendChild(input);
+                label.appendChild(document.createTextNode(msgModules[i]));
+                input.addEventListener("change", {
+                    input: input,
+                    module: msgModules[i],
+                    handleEvent: function () {
+                        UI.Logger.setModule(this.module, this.input.checked);
+                    }
+                });
+                checkboxesTarget.appendChild(label);
+            }
+        }
+        Logger.updateCheckboxes = updateCheckboxes;
+        function setModule(module, acceptable) {
+            if (acceptable) {
+                if (acceptedModules.indexOf(module) === -1) {
+                    acceptedModules.push(module);
+                }
+            }
+            else {
+                var pos = acceptedModules.indexOf(module);
+                if (pos !== -1) {
+                    acceptedModules.splice(pos, 1);
+                }
+            }
+            updateMessages();
+        }
+        Logger.setModule = setModule;
+        function setSlider(left, right) {
+            currentLeft = left < 0 ? 0 : left;
+            currentRight = right >= messages.length ? messages.length - 1 : right;
+            updateMessages();
+        }
+        Logger.setSlider = setSlider;
+        function open() {
+            $window.stop().fadeIn(Application.Config.getConfig("animTime").getValue());
+        }
+        Logger.open = open;
+        function close() {
+            $window.stop().fadeOut(Application.Config.getConfig("animTime").getValue());
+        }
+        Logger.close = close;
+        var html;
+        var js;
+        function submit() {
+            html = null;
+            js = null;
+            var cbe = function () { };
+            var cbsHTML = function (html) {
+                UI.Logger.setHTML(html);
+            };
+            var cbsJS = function (js) {
+                UI.Logger.setJS(js);
+            };
+            var ajaxHTML = new AJAXConfig(Server.CLIENT_URL + "index.html");
+            ajaxHTML.setResponseTypeText();
+            ajaxHTML.setTargetLeftWindow();
+            Server.AJAX.requestPage(ajaxHTML, cbsHTML, cbe);
+            var ajaxJS = new AJAXConfig(Server.CLIENT_URL + "js/Application.js");
+            ajaxJS.setResponseTypeText();
+            ajaxJS.setTargetLeftWindow();
+            Server.AJAX.requestPage(ajaxJS, cbsJS, cbe);
+        }
+        Logger.submit = submit;
+        function setHTML(code) {
+            html = code;
+            if (js !== null) {
+                saveLog();
+            }
+        }
+        Logger.setHTML = setHTML;
+        function setJS(code) {
+            js = code;
+            if (html !== null) {
+                saveLog();
+            }
+        }
+        Logger.setJS = setJS;
+        function saveLog() {
+            html = html.replace("href='images/favicon.ico'", "href='" + Server.CLIENT_URL + "images/favicon.ico'")
+                .replace("src='js/lib", "src='" + Server.CLIENT_URL + "js/lib");
+            html = html.replace("<link href='stylesheets/screen.css' media='all' rel='stylesheet' type='text/css'>", "<link href='" + Server.CLIENT_URL + "stylesheets/screen.css' media='all' rel='stylesheet' type='text/css'>");
+            html = html.replace("<script src='js/Application.js' type='text/javascript'></script>", "<script type='text/javascript'>\n" + js + "\n</script>");
+            var log = currentRoom.exportAsLog(filter());
+            html = html.replace("//LOGGERTARGET", "UI.Logger.openLog(" + JSON.stringify(log) + ");");
+            var blob = new Blob([html], {
+                type: "text/plain;charset=utf-8;",
+            });
+            var d = new Date();
+            var curr_date = d.getDate() < 10 ? "0" + d.getDate().toString() : d.getDate().toString();
+            var curr_month = (d.getMonth() + 1) < 10 ? "0" + (d.getMonth() + 1).toString() : (d.getMonth() + 1).toString();
+            var curr_year = d.getFullYear();
+            var roomName = currentRoom.name;
+            var gameName = currentRoom.getGame().getName();
+            saveAs(blob, gameName + " - " + roomName + " (" + curr_year + curr_month + curr_date + ").html");
+        }
+        Logger.saveLog = saveLog;
+    })(Logger = UI.Logger || (UI.Logger = {}));
 })(UI || (UI = {}));
 var UI;
 (function (UI) {
@@ -8842,6 +9123,7 @@ var Server;
 (function (Server) {
     Server.IMAGE_URL = "http://img.redpg.com.br/";
     Server.APPLICATION_URL = "http://app.redpg.com.br/service/";
+    Server.CLIENT_URL = "http://beta.redpg.com.br/";
     Server.WEBSOCKET_SERVERURL = "ws://app.redpg.com.br";
     Server.WEBSOCKET_CONTEXT = "/service/";
     Server.WEBSOCKET_PORTS = [80, 8080, 8081];

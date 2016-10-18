@@ -4,6 +4,7 @@
 
 /// <reference path='UI.ts' />
 /// <reference path='Modules/WindowManager.ts' />
+/// <reference path='Modules/Logger.ts' />
 /// <reference path='Modules/Config.ts' />
 /// <reference path='Modules/Changelog.ts' />
 /// <reference path='Modules/PageManager.ts' />

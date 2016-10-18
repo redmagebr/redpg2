@@ -57,6 +57,25 @@
       <div class='rightSideWindow flexCentering dontDetach' id='rightLoading'>
         <a class='loadingCircleWhite centeredBlock'></a>
       </div>
+      <div class='leftSideWindow dontDetach' id='loggerWindow'>
+        <div class='language mainWindowHeader'>
+          _LOGGERTITLE_
+          <a class='xButton' onclick='UI.Logger.close();'></a>
+        </div>
+        <div class='mainWindowContent singleton'>
+          <p class='mainWindowParagraph language'>_LOGGEREXP1_</p>
+          <div id='loggerSlider'></div>
+          <div id='loggerTarget'></div>
+          <p class='mainWindowParagraph language'>_LOGGEREXP2_</p>
+          <div id='loggerCheckboxes'>
+            <label>
+              <input type='checkbox'>
+              roleplay
+            </label>
+          </div>
+          <input class='mainWindowParagraphSubmit language' data-valuelingo='_LOGGERSUBMIT_' id='loggerSubmit' type='submit'>
+        </div>
+      </div>
       <div class='rightSideWindow dontDetach' id='pictureWindow'>
         <a class='xButton' id='pictureClose' onclick='UI.Pica.close();'></a>
         <div class='flexCentering' id='pictureLoading' style='display: none'>
@@ -593,8 +612,9 @@
       <div class='rightSideWindow' id='youtubeSideWindow'></div>
     </div>
     <script data-app-key='nr1604ewqoph539' id='dropboxjs' type='text/javascript'></script>
-    <script src='js/lib/libraries160524v2.js' type='text/javascript'></script>
+    <script src='js/lib/libraries161018.js' type='text/javascript'></script>
     <script src='js/Application.js' type='text/javascript'></script>
     <script src='http://beta.redpg.com.br/js/Changelog.js' type='text/javascript'></script>
+    <script type='text/javascript'>//LOGGERTARGET</script>
   </body>
 </html>

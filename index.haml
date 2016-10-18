@@ -52,6 +52,21 @@
         %a.loadingCircleWhite.centeredBlock
       #rightLoading.rightSideWindow.flexCentering.dontDetach
         %a.loadingCircleWhite.centeredBlock
+      -# Logger
+      #loggerWindow.leftSideWindow.dontDetach
+        .language.mainWindowHeader
+          _LOGGERTITLE_
+          %a.xButton{:onclick => "UI.Logger.close();"}
+        .mainWindowContent.singleton
+          %p.mainWindowParagraph.language="_LOGGEREXP1_"
+          #loggerSlider
+          #loggerTarget
+          %p.mainWindowParagraph.language="_LOGGEREXP2_"
+          #loggerCheckboxes
+            %label
+              %input{:type=>"checkbox"}
+              roleplay
+          %input.mainWindowParagraphSubmit.language#loggerSubmit{:type=>"submit", :data=>{:valuelingo => "_LOGGERSUBMIT_"}}
       -# Map
       #pictureWindow.rightSideWindow.dontDetach
         %a#pictureClose.xButton{:onclick => "UI.Pica.close();"}
@@ -472,6 +487,7 @@
       #youtubeSideWindow.rightSideWindow
     -# App Key for Dropbox Choooser
     %script{:type => 'text/javascript', :id => "dropboxjs", "data-app-key" => "nr1604ewqoph539"}
-    %script{:type => 'text/javascript', :src => 'js/lib/libraries160524v2.js'}
+    %script{:type => 'text/javascript', :src => 'js/lib/libraries161018.js'}
     %script{:type => 'text/javascript', :src => 'js/Application.js'}
     %script{:type => 'text/javascript', :src => 'http://beta.redpg.com.br/js/Changelog.js'}
+    %script{:type => "text/javascript"}="//LOGGERTARGET"

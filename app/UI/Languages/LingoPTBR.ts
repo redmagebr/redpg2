@@ -117,6 +117,13 @@ ptbr.setLingo("_PICASHARE_", "Compartilhar no Chat");
 ptbr.setLingo("", "");
 ptbr.setLingo("", "");
 ptbr.setLingo("", "");
+
+
+// LOGGER
+ptbr.setLingo("_LOGGERTITLE_", "Logger");
+ptbr.setLingo("_LOGGEREXP1_", "O excerto a seguir representa as primeiras e as últimas mensagens que irão fazer parte deste log. Você pode alterar o slider abaixo para definir onde começar o log e onde terminar o log. Apenas mensagens públicas (não enviadas a uma pessoa específica) serão guardadas no JSON. Você pode mover com as setas do teclado após clicar nos sliders.");
+ptbr.setLingo("_LOGGEREXP2_", "Aqui você pode definir quais tipos de mensagens não serão salvas. Lembrando que apenas mensagens públicas (visível a todos) serão salvas no log.");
+ptbr.setLingo("_LOGGERSUBMIT_", "Criar Log");
 ptbr.setLingo("", "");
 
 

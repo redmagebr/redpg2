@@ -107,6 +107,14 @@ declare class User {
     };
     private changedTrigger;
     isMe(): boolean;
+    exportAsLog(): {
+        id: number;
+        nickname: string;
+        nicknamesufix: string;
+        level: number;
+        gameid: number;
+        roomid: number;
+    };
     getGameContext(id: number): UserGameContext;
     releaseGameContext(id: number): void;
     getRoomContext(id: number): UserRoomContext;
@@ -158,6 +166,14 @@ declare class Room {
     creatorid: number;
     private users;
     private messages;
+    exportAsLog(messages: Array<Message>): {
+        gameid: number;
+        id: number;
+        description: string;
+        name: string;
+        creatorid: number;
+    };
+    getMessages(): Array<Message>;
     getOrderedMessages(): Array<Message>;
     getOrderedUsers(): Array<User>;
     getStorytellers(): Array<UserRoomContext>;
@@ -186,6 +202,7 @@ declare class Game {
     creatorid: number;
     creatornick: string;
     creatorsufix: string;
+    exportAsLog(roomid: number, messages: Array<Message>): void;
     getId(): number;
     getName(): string;
     getCreatorFullNickname(): string;
@@ -726,10 +743,8 @@ declare class SoundLink {
     };
 }
 declare module MessageFactory {
-    var messageClasses: {
-        [id: string]: typeof Message;
-    };
     function registerMessage(msg: typeof Message, id: string, slashCommands: Array<string>): void;
+    function getMessagetypeArray(): typeof Message[];
     function registerSlashCommand(slash: typeof SlashCommand, slashCommands: Array<string>): void;
     function createMessageFromType(id: string): Message;
     function createTestingMessages(): Array<Message>;
@@ -746,6 +761,9 @@ declare class SlashClear extends SlashCommand {
 declare class SlashReply extends SlashCommand {
 }
 declare class SlashImages extends SlashCommand {
+    receiveCommand(slashCommand: string, message: string): boolean;
+}
+declare class SlashLog extends SlashCommand {
     receiveCommand(slashCommand: string, message: string): boolean;
 }
 declare class Message extends SlashCommand {
@@ -1124,6 +1142,21 @@ declare module UI.WindowManager {
     function callWindow(id: string): void;
     function updateWindowSizes(): void;
 }
+declare module UI.Logger {
+    function callSelf(room: Room): void;
+    function filter(): Array<Message>;
+    function updateSlider(): void;
+    function updateMessages(): void;
+    function updateCheckboxes(): void;
+    function setModule(module: string, acceptable: boolean): void;
+    function setSlider(left: any, right: any): void;
+    function open(): void;
+    function close(): void;
+    function submit(): void;
+    function setHTML(code: any): void;
+    function setJS(code: any): void;
+    function saveLog(): void;
+}
 declare module UI.Config {
     function bindInput(configName: string, input: HTMLInputElement): void;
     function saveConfig(): void;
@@ -1350,6 +1383,7 @@ declare module UI.Styles {
 declare module Server {
     var IMAGE_URL: string;
     var APPLICATION_URL: string;
+    var CLIENT_URL: string;
     var WEBSOCKET_SERVERURL: string;
     var WEBSOCKET_CONTEXT: string;
     var WEBSOCKET_PORTS: Array<number>;

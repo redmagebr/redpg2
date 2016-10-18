@@ -15,6 +15,18 @@ class User {
         return this.id === Application.getMyId();
     }
 
+    public exportAsLog () {
+        var obj = {
+            id : this.id,
+            nickname : this.nickname,
+            nicknamesufix : this.nicknamesufix,
+            level : this.level,
+            gameid : 0,
+            roomid : 0
+        };
+        return obj;
+    }
+
     public getGameContext (id : number) : UserGameContext {
         if (this.gameContexts[id] === undefined) {
             return null;

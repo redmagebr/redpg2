@@ -7,7 +7,7 @@ $blueBG : #b2b9cf;
 ** Individual font licenses can be found in /stylesheets/fontface
 ** and /stylesheets/fontface/Lingo.
 */
-
+@import "jqueryui";
 @import "allFonts";
 
 @import "compass/utilities/sprites";
@@ -36,6 +36,7 @@ b { font-weight: bold; }
 @import "mainWindowStyles";
 @import "mainChat";
 @import "mainChatMessages";
+@import "mainChatLogger";
 @import "mainPicture";
 @import "buttons";
 @import "mainWindowChangelog";

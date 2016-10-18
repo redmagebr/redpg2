@@ -1,6 +1,7 @@
 module Server {
     export var IMAGE_URL : string = "http://img.redpg.com.br/";
     export var APPLICATION_URL : string = "http://app.redpg.com.br/service/";
+    export var CLIENT_URL : string = "http://beta.redpg.com.br/";
     export var WEBSOCKET_SERVERURL : string = "ws://app.redpg.com.br";
     export var WEBSOCKET_CONTEXT : string = "/service/";
     export var WEBSOCKET_PORTS : Array<number> = [80, 8080, 8081];

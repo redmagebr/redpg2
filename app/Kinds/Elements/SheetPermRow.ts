@@ -35,7 +35,7 @@ class SheetPermRow {
         //     _SHEETPERMISSIONDELETE_
         var p = document.createElement("p");
         p.classList.add("sheetPermRow");
-        p.appendChild(document.createTextNode(players[i]['nickname'] + "#" + players[i]['nicknamesufix']));
+        //p.appendChild(document.createTextNode(players[i]['nickname'] + "#" + players[i]['nicknamesufix']));
 
         var viewLabel = document.createElement("label");
         viewLabel.classList.add("language");

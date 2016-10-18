@@ -14,6 +14,33 @@ class Room {
     private users : { [id : number] : User} = {};
     private messages : { [id: number] : Message} = {};
 
+    public exportAsLog (messages : Array<Message>) {
+        var obj = {
+            gameid : this.gameid,
+            id : 0,
+            description : this.description,
+            name : this.name,
+            creatorid : this.creatorid
+        };
+
+        var msgObj = [];
+        for (var i = 0; i < messages.length; i++ ){
+            msgObj.push(messages[i].exportAsObject());
+        }
+
+        obj['messages'] = msgObj;
+
+        return obj;
+    }
+
+    public getMessages () : Array<Message> {
+        var list = [];
+        for (var id in this.messages) {
+            list.push(this.messages[id]);
+        }
+        return list;
+    }
+
     public getOrderedMessages () : Array<Message> {
         var list = [];
         for (var id in this.messages) {
@@ -156,4 +183,5 @@ class Room {
             }
         }
     }
+
 }
