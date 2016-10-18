@@ -6028,8 +6028,7 @@ var UI;
                 .replace("href='stylesheets", "href='" + Server.CLIENT_URL + "stylesheets")
                 .replace("href='images", "href='" + Server.CLIENT_URL + "images")
                 .replace("src='js/lib", "src='" + Server.CLIENT_URL + "js/lib");
-            var jsCode = "<script type='text/javascript'>" + js + "</script>";
-            html = html.replace("//LOGGERJSTARGET", jsCode);
+            html = html.replace("//LOGGERJSTARGET", js);
             var blob = new Blob([html], { type: "text/plain;charset=utf-8;" });
             var d = new Date();
             var curr_date = d.getDate() < 10 ? "0" + d.getDate().toString() : d.getDate().toString();
