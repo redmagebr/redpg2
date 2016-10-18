@@ -114,4 +114,16 @@ class SheetInstance {
 
         if (typeof obj['values'] !== 'undefined') this.setValues(obj['values'], false);
     }
+
+    public isEditable () {
+        return this.edit;
+    }
+
+    public isPromotable () {
+        return this.promote;
+    }
+
+    public isDeletable () {
+        return this.delete;
+    }
 }

@@ -26,4 +26,12 @@ class UserGameContext {
             }
         }
     }
+
+    public isCreateRoom () {
+        return this.createRoom;
+    }
+
+    public isCreateSheet () {
+        return this.createSheet;
+    }
 }

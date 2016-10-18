@@ -130,6 +130,8 @@ declare class UserGameContext {
     updateFromObject(obj: {
         [id: string]: any;
     }): void;
+    isCreateRoom(): boolean;
+    isCreateSheet(): boolean;
 }
 declare class UserRoomContext {
     private user;
@@ -233,6 +235,9 @@ declare class SheetInstance {
     getName(): string;
     setValues(values: Object, local: boolean): void;
     updateFromObject(obj: Object): void;
+    isEditable(): boolean;
+    isPromotable(): boolean;
+    isDeletable(): boolean;
 }
 declare class Trigger {
     private functions;

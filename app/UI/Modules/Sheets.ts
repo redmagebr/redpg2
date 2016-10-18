@@ -69,22 +69,24 @@ module UI.Sheets {
                 gameFolder.appendChild(p);
             }
 
-            var p = document.createElement("p");
-            p.classList.add("sheetListNewSheetButton");
-            p.classList.add("textLink");
-            p.classList.add("lightHoverable");
-            p.appendChild(document.createTextNode("> "));
-            p.appendChild(document.createTextNode("_SHEETSNEWSHEET_"));
-            UI.Language.markLanguage(p);
-            gameFolder.appendChild(p);
+            if (game.getMe().isCreateSheet()) {
+                var p = document.createElement("p");
+                p.classList.add("sheetListNewSheetButton");
+                p.classList.add("textLink");
+                p.classList.add("lightHoverable");
+                p.appendChild(document.createTextNode("> "));
+                p.appendChild(document.createTextNode("_SHEETSNEWSHEET_"));
+                UI.Language.markLanguage(p);
+                gameFolder.appendChild(p);
 
-            p.addEventListener("click", <EventListenerObject> {
-                game : game,
-                handleEvent : function (e) {
-                    e.preventDefault();
-                    UI.Sheets.Designer.callSelf(this.game);
-                }
-            });
+                p.addEventListener("click", <EventListenerObject> {
+                    game: game,
+                    handleEvent: function (e) {
+                        e.preventDefault();
+                        UI.Sheets.Designer.callSelf(this.game);
+                    }
+                });
+            }
 
             sheetList.appendChild(gameFolder);
         }

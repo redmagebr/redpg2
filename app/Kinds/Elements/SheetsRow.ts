@@ -69,52 +69,58 @@ class SheetsRow {
         });
 
         // FOLDER
-        var folder = document.createElement("a");
-        folder.classList.add("sheetExtraButton");
-        folder.classList.add("textLink");
-        folder.appendChild(document.createTextNode("_SHEETSRENAMEFOLDER_"));
-        UI.Language.markLanguage(folder);
-        this.html.appendChild(folder);
+        if (sheet.isEditable()) {
+            var folder = document.createElement("a");
+            folder.classList.add("sheetExtraButton");
+            folder.classList.add("textLink");
+            folder.appendChild(document.createTextNode("_SHEETSRENAMEFOLDER_"));
+            UI.Language.markLanguage(folder);
+            this.html.appendChild(folder);
 
-        folder.addEventListener("click", <EventListenerObject> {
-            row : this,
-            handleEvent : function (e) {
-                e.preventDefault();
-                this.row.editFolder();
-            }
-        });
+            folder.addEventListener("click", <EventListenerObject> {
+                row: this,
+                handleEvent: function (e) {
+                    e.preventDefault();
+                    this.row.editFolder();
+                }
+            });
+        }
 
         // PERMISSIONS
-        var perm = document.createElement("a");
-        perm.classList.add("sheetExtraButton");
-        perm.classList.add("textLink");
-        perm.appendChild(document.createTextNode("_SHEETSCHANGEPERMISSIONS_"));
-        UI.Language.markLanguage(perm);
-        this.html.appendChild(perm);
+        if (sheet.isPromotable()) {
+            var perm = document.createElement("a");
+            perm.classList.add("sheetExtraButton");
+            perm.classList.add("textLink");
+            perm.appendChild(document.createTextNode("_SHEETSCHANGEPERMISSIONS_"));
+            UI.Language.markLanguage(perm);
+            this.html.appendChild(perm);
 
-        perm.addEventListener("click", <EventListenerObject> {
-            row : this,
-            handleEvent : function (e) {
-                e.preventDefault();
-                this.row.editPerm();
-            }
-        });
+            perm.addEventListener("click", <EventListenerObject> {
+                row: this,
+                handleEvent: function (e) {
+                    e.preventDefault();
+                    this.row.editPerm();
+                }
+            });
+        }
 
         // DELETE
-        var del = document.createElement("a");
-        del.classList.add("sheetExtraButton");
-        del.classList.add("textLink");
-        del.appendChild(document.createTextNode("_SHEETSDELETE_"));
-        UI.Language.markLanguage(del);
-        this.html.appendChild(del);
+        if (sheet.isDeletable()) {
+            var del = document.createElement("a");
+            del.classList.add("sheetExtraButton");
+            del.classList.add("textLink");
+            del.appendChild(document.createTextNode("_SHEETSDELETE_"));
+            UI.Language.markLanguage(del);
+            this.html.appendChild(del);
 
-        del.addEventListener("click", <EventListenerObject> {
-            row : this,
-            handleEvent : function (e) {
-                e.preventDefault();
-                this.row.deleteSheet();
-            }
-        });
+            del.addEventListener("click", <EventListenerObject> {
+                row: this,
+                handleEvent: function (e) {
+                    e.preventDefault();
+                    this.row.deleteSheet();
+                }
+            });
+        }
     }
 
     public getHTML () {

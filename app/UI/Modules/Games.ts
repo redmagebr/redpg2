@@ -193,7 +193,7 @@ module UI.Games {
                 div.appendChild(hr);
             }
 
-            if (game.isMyCreation()) {
+            if (game.isMyCreation() || game.getMe().isCreateRoom()) {
                 var p = document.createElement("p");
                 p.className = "textLink gamesAdminButton";
                 p.appendChild(document.createTextNode("_GAMESCREATEROOM_"));
