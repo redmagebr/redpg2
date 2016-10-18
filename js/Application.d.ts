@@ -531,6 +531,18 @@ declare class SheetsFolder {
     constructor(sheets: Array<SheetInstance>, open?: boolean);
     getHTML(): HTMLElement;
 }
+declare class SheetPermRow {
+    sheetId: number;
+    userId: number;
+    nickname: string;
+    nicknamesufix: string;
+    deleteSheet: boolean;
+    editSheet: boolean;
+    viewSheet: boolean;
+    promoteSheet: boolean;
+    constructor(player: any);
+    getHTML(): HTMLParagraphElement;
+}
 declare class PicaContainer {
     private container;
     private tools;
@@ -1103,6 +1115,7 @@ declare module UI {
     var idSheets: string;
     var idImages: string;
     var idSounds: string;
+    var idSheetPerm: string;
     function cleanPersona(cfg: NumberConfiguration): void;
 }
 declare module UI.WindowManager {
@@ -1177,6 +1190,11 @@ declare module UI.Sheets {
     function keepClosed(): void;
     function callSelf(): void;
     function printSheets(): void;
+}
+declare module UI.Sheets.SheetPermissionDesigner {
+    function callSelf(sheet: SheetInstance): void;
+    function empty(): void;
+    function printPlayers(players: any): void;
 }
 declare module UI.Rooms {
     function deleteRoom(room: Room): void;
@@ -1420,6 +1438,7 @@ declare module Server.Sheets {
     function updateLists(cbs?: Listener, cbe?: Listener): void;
     function sendFolder(sheet: SheetInstance, cbs?: Listener, cbe?: Listener): void;
     function deleteSheet(sheet: SheetInstance, cbs?: Listener, cbe?: Listener): void;
+    function getSheetPermissions(sheet: SheetInstance, cbs?: Listener | EventListenerObject | Function, cbe?: Listener | EventListenerObject | Function): void;
 }
 declare var change: any;
 declare module Dropbox {

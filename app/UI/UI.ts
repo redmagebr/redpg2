@@ -20,6 +20,7 @@ module UI {
     export var idSheets = "sheetsSideWindow";
     export var idImages = "imagesSideWindow";
     export var idSounds = "soundsSideWindow";
+    export var idSheetPerm = "sheetPermSideWindow";
 
     /**
      * Registered UI Configurations

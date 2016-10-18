@@ -13,6 +13,7 @@
 /// <reference path='Modules/Handles.ts' />
 /// <reference path='Modules/Language.ts' />
 /// <reference path='Modules/Sheets.ts' />
+/// <reference path='Modules/Sheets/SheetPermissionDesigner.ts' />
 /// <reference path='Modules/Rooms.ts' />
 /// <reference path='Modules/Rooms/Designer.ts' />
 /// <reference path='Modules/Games.ts' />

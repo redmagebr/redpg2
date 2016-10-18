@@ -23,7 +23,7 @@ class SheetsRow {
     }
 
     public editPerm () {
-        // TODO: Call SheetPermDesigner
+        UI.Sheets.SheetPermissionDesigner.callSelf(this.sheet);
     }
 
     public editFolder () {

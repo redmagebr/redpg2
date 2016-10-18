@@ -345,6 +345,28 @@
           .diceButton.icons-d20#chatDiceD20{:title => "d20"}
           .diceButton.icons-d100#chatDiceD100{:title => "d100"}
       -# Right Side Windows
+      -##### Sheet Permissions
+      #sheetPermSideWindow.rightSideWindow
+        .language.mainWindowHeader
+          _SHEETPERMISSIONSHEADER_
+          %a.xButton{:onclick => "UI.PageManager.closeRightPage();"}
+        .mainWindowContent.singleton
+          %p.mainWindowParagraph.language="_SHEETPERMISSIONEXP_"
+          %p.mainWindowParagraph.language#sheetPermNameTarget="_SHEETPERMISSIONSHEETNAME_"
+          %form#sheetPermList
+            %p.sheetPermRow
+              momo#0000
+              %label.sheetPermLabel.language
+                %input.sheetPermCheckbox{:type=>"checkbox"}
+                _SHEETPERMISSIONVIEW_
+              %label.sheetPermLabel.language
+                %input.sheetPermCheckbox{:type=>"checkbox"}
+                _SHEETPERMISSIONEDIT_
+              %label.sheetPermLabel.language
+                %input.sheetPermCheckbox{:type=>"checkbox"}
+                _SHEETPERMISSIONDELETE_
+            %input.language.mainWindowParagraphSubmit{:type=>"submit", :data=>{:valuelingo=>"_SHEETPERMISSIONSUBMIT_"}}
+      -##### Images
       #imagesSideWindow.rightSideWindow
         .mainWindowHeader.language
           _IMAGESTITLE_

@@ -1069,7 +1069,7 @@ body {
 }
 
 /* line 71, ../sass/generalView.scss */
-.buttonBehavior:hover, .simpleButton:hover, .textLink:hover, .sheetNameLink:hover, .mainWindowParagraphSubmit:hover, .picaTool:hover, .picaToolButton:hover, .leftPicaToolButton:hover, .rightPicaToolButton:hover, .leftPicaTool:hover, .rightPicaTool:hover, .handleButton:hover, .leftHandleButton:hover, .rightHandleButton:hover, .imagesLeftButton:hover, .imagesRightButton:hover, .imagesFolderTitle:hover, #dropboxImagesButton:hover, .musicPlayerButton:hover, #dropboxBGMInput:hover, #dropboxSoundsButton:hover, .sheetListGameName:hover, .sheetListFolderName:hover, .styleLabel:hover, #avatarUpButton:hover, #avatarDownButton:hover, #chatScrollDown:hover, .chatRightButton:hover, #chatMessageSendButton:hover, #personaAddButton:hover, .personaButton:hover, .diceButton:hover, #chatDiceTower:hover, #chatDiceSubmit:hover, .chatAvatarChoiceBoxUse:hover, .chatAvatarChoiceBoxDelete:hover, .chatWhisperLink:hover, .chatMessageVoteAmount:hover, .xButton:hover {
+.buttonBehavior:hover, .simpleButton:hover, .textLink:hover, .sheetNameLink:hover, .mainWindowParagraphSubmit:hover, .picaTool:hover, .picaToolButton:hover, .leftPicaToolButton:hover, .rightPicaToolButton:hover, .leftPicaTool:hover, .rightPicaTool:hover, .handleButton:hover, .leftHandleButton:hover, .rightHandleButton:hover, .imagesLeftButton:hover, .imagesRightButton:hover, .imagesFolderTitle:hover, #dropboxImagesButton:hover, .musicPlayerButton:hover, #dropboxBGMInput:hover, #dropboxSoundsButton:hover, .sheetListGameName:hover, .sheetListFolderName:hover, .sheetPermLabel:hover, .styleLabel:hover, #avatarUpButton:hover, #avatarDownButton:hover, #chatScrollDown:hover, .chatRightButton:hover, #chatMessageSendButton:hover, #personaAddButton:hover, .personaButton:hover, .diceButton:hover, #chatDiceTower:hover, #chatDiceSubmit:hover, .chatAvatarChoiceBoxUse:hover, .chatAvatarChoiceBoxDelete:hover, .chatWhisperLink:hover, .chatMessageVoteAmount:hover, .xButton:hover {
   cursor: pointer;
 }
 
@@ -1108,7 +1108,7 @@ body {
 }
 
 /* line 109, ../sass/generalView.scss */
-.buttonBehavior:hover, .simpleButton:hover, .textLink:hover, .sheetNameLink:hover, .mainWindowParagraphSubmit:hover, .picaTool:hover, .picaToolButton:hover, .leftPicaToolButton:hover, .rightPicaToolButton:hover, .leftPicaTool:hover, .rightPicaTool:hover, .handleButton:hover, .leftHandleButton:hover, .rightHandleButton:hover, .imagesLeftButton:hover, .imagesRightButton:hover, .imagesFolderTitle:hover, #dropboxImagesButton:hover, .musicPlayerButton:hover, #dropboxBGMInput:hover, #dropboxSoundsButton:hover, .sheetListGameName:hover, .sheetListFolderName:hover, .styleLabel:hover, #avatarUpButton:hover, #avatarDownButton:hover, #chatScrollDown:hover, .chatRightButton:hover, #chatMessageSendButton:hover, #personaAddButton:hover, .personaButton:hover, .diceButton:hover, #chatDiceTower:hover, #chatDiceSubmit:hover, .chatAvatarChoiceBoxUse:hover, .chatAvatarChoiceBoxDelete:hover, .chatWhisperLink:hover, .chatMessageVoteAmount:hover, .xButton:hover {
+.buttonBehavior:hover, .simpleButton:hover, .textLink:hover, .sheetNameLink:hover, .mainWindowParagraphSubmit:hover, .picaTool:hover, .picaToolButton:hover, .leftPicaToolButton:hover, .rightPicaToolButton:hover, .leftPicaTool:hover, .rightPicaTool:hover, .handleButton:hover, .leftHandleButton:hover, .rightHandleButton:hover, .imagesLeftButton:hover, .imagesRightButton:hover, .imagesFolderTitle:hover, #dropboxImagesButton:hover, .musicPlayerButton:hover, #dropboxBGMInput:hover, #dropboxSoundsButton:hover, .sheetListGameName:hover, .sheetListFolderName:hover, .sheetPermLabel:hover, .styleLabel:hover, #avatarUpButton:hover, #avatarDownButton:hover, #chatScrollDown:hover, .chatRightButton:hover, #chatMessageSendButton:hover, #personaAddButton:hover, .personaButton:hover, .diceButton:hover, #chatDiceTower:hover, #chatDiceSubmit:hover, .chatAvatarChoiceBoxUse:hover, .chatAvatarChoiceBoxDelete:hover, .chatWhisperLink:hover, .chatMessageVoteAmount:hover, .xButton:hover {
   cursor: pointer;
 }
 
@@ -1173,7 +1173,7 @@ body {
 
 /* UNselectable */
 /* line 167, ../sass/generalView.scss */
-.unselectable, .buttonBehavior, .simpleButton, .textLink, .sheetNameLink, .mainWindowParagraphSubmit, .picaTool, .picaToolButton, .leftPicaToolButton, .rightPicaToolButton, .leftPicaTool, .rightPicaTool, .handleButton, .leftHandleButton, .rightHandleButton, .imagesLeftButton, .imagesRightButton, .imagesFolderTitle, #dropboxImagesButton, .musicPlayerButton, #dropboxBGMInput, #dropboxSoundsButton, .sheetListGameName, .sheetListFolderName, .styleLabel, #avatarUpButton, #avatarDownButton, #chatScrollDown, .chatRightButton, #chatMessageSendButton, #personaAddButton, .personaButton, .diceButton, #chatDiceTower, #chatDiceSubmit, .chatAvatarChoiceBoxUse, .chatAvatarChoiceBoxDelete, .chatWhisperLink, .chatMessageVoteAmount, .xButton {
+.unselectable, .buttonBehavior, .simpleButton, .textLink, .sheetNameLink, .mainWindowParagraphSubmit, .picaTool, .picaToolButton, .leftPicaToolButton, .rightPicaToolButton, .leftPicaTool, .rightPicaTool, .handleButton, .leftHandleButton, .rightHandleButton, .imagesLeftButton, .imagesRightButton, .imagesFolderTitle, #dropboxImagesButton, .musicPlayerButton, #dropboxBGMInput, #dropboxSoundsButton, .sheetListGameName, .sheetListFolderName, .sheetPermLabel, .styleLabel, #avatarUpButton, #avatarDownButton, #chatScrollDown, .chatRightButton, #chatMessageSendButton, #personaAddButton, .personaButton, .diceButton, #chatDiceTower, #chatDiceSubmit, .chatAvatarChoiceBoxUse, .chatAvatarChoiceBoxDelete, .chatWhisperLink, .chatMessageVoteAmount, .xButton {
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select: none;
@@ -1837,6 +1837,22 @@ body {
   padding-right: 20px;
 }
 
+/* line 78, ../sass/mainWindowSheets.scss */
+.sheetPermRow {
+  padding: 4px;
+  font-size: 1.2em;
+  padding-left: 20px;
+  padding-right: 10px;
+  line-height: 34px;
+}
+
+/* line 87, ../sass/mainWindowSheets.scss */
+.sheetPermLabel {
+  float: right;
+  padding-left: 15px;
+  padding-right: 10px;
+}
+
 /* line 1, ../sass/mainConfig.scss */
 #configError {
   color: #d7003b;
@@ -1975,7 +1991,7 @@ body {
 }
 
 /* line 63, ../sass/mainWindowSimple.scss */
-.lightHoverable:hover, .sheetListSheet:hover, .sheetListNoSheet:hover, .sheetListNewSheetButton:hover, .changelogCurrent:hover {
+.lightHoverable:hover, .sheetListSheet:hover, .sheetListNoSheet:hover, .sheetListNewSheetButton:hover, .sheetPermRow:hover, .changelogCurrent:hover {
   background-color: rgba(0, 0, 0, 0.1);
 }
 

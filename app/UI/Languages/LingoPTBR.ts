@@ -122,7 +122,7 @@ ptbr.setLingo("", "");
 
 // Fichas
 ptbr.setLingo("_SHEETSTITLE_", "Fichas");
-ptbr.setLingo("_SHEETSEXP01_", "Fichas são algo que mestres e seus jogadores podem guardar no sistema, garantindo que todos estejam vendo a mesma versão desse recurso.");
+ptbr.setLingo("_SHEETSEXP01_", "Fichas são algo que mestres e seus jogadores podem guardar no sistema, garantindo que todos estejam vendo a mesma versão desse recurso. Um jogador só pode ver fichas para as quais ele tem permissões adequadas, então lembre-se de alterar essas opções para cada ficha que fizer.");
 ptbr.setLingo("_SHEETSEXP02_", "Normalmente são usadas para guardar as informações de personagens, mas têm o potencial para guardar qualquer tipo de informação.");
 ptbr.setLingo("_SHEETSEXP03_", "Cada ficha utiliza um \"Estilo\", que define a aparência dela e os valores que ela precisa guardar. Como alguns estilos não são criados por um administrador, tome cuidado ao abrir fichas que utilizem estilos criados por alguém em quem você não confia. Apenas os estilos criados por um administrador são considerados seguros.");
 ptbr.setLingo("_SHEETSOPENSTYLEEDITOR_", "Abrir gerenciador de estilos de ficha");
@@ -135,6 +135,16 @@ ptbr.setLingo("_SHEETSRENAMEFOLDERPROMPT_", "Escolha a nova pasta para \"%a\", a
 ptbr.setLingo("_SHEETSNEWSHEET_", "Criar nova ficha");
 ptbr.setLingo("_SHEETSNOSHEETS_", "Sem fichas para exibir.");
 ptbr.setLingo("_SHEETCONFIRMDELETE_", "Deletar \"%a\"? Fichas deletadas não podem ser recuperadas.");
+
+// Fichas Permissoes
+ptbr.setLingo("_SHEETPERMISSIONSHEADER_", "Permissões de Ficha");
+ptbr.setLingo("_SHEETPERMISSIONEXP_", "As permissões definem o que cada jogador de um grupo pode fazer com uma certa ficha. \"Ver\" indica que o jogador poderá abrir a ficha, \"Editar\" indica que o jogador poderá alterar os valores dessa ficha, \"Deletar\" permite que o jogador apague a ficha (permanentemente) e \"Promover\" permite que um jogador acesse essa tela, podendo fornecer permissões para outros jogadores.");
+ptbr.setLingo("_SHEETPERMISSIONSHEETNAME_", "Você está editando permissões para \"%a\".");
+ptbr.setLingo("_SHEETPERMISSIONVIEW_", "Ver");
+ptbr.setLingo("_SHEETPERMISSIONEDIT_", "Editar");
+ptbr.setLingo("_SHEETPERMISSIONDELETE_", "Deletar");
+ptbr.setLingo("_SHEETPERMISSIONPROMOTE_", "Promover");
+ptbr.setLingo("_SHEETPERMISSIONSUBMIT_", "Confirmar");
 
 // Jogos
 ptbr.setLingo("_GAMESTITLE_", "Grupos");

@@ -2023,6 +2023,7 @@ var SheetsRow = (function () {
         }
     };
     SheetsRow.prototype.editPerm = function () {
+        UI.Sheets.SheetPermissionDesigner.callSelf(this.sheet);
     };
     SheetsRow.prototype.editFolder = function () {
         var oldFolder = this.sheet.getFolder();
@@ -2077,6 +2078,32 @@ var SheetsFolder = (function () {
         return this.html;
     };
     return SheetsFolder;
+}());
+var SheetPermRow = (function () {
+    function SheetPermRow(player) {
+        this.deleteSheet = false;
+        this.editSheet = false;
+        this.viewSheet = false;
+        this.promoteSheet = false;
+        this.deleteSheet = player['deletar'];
+        this.editSheet = player['editar'];
+        this.viewSheet = player['visualizar'];
+        this.promoteSheet = player['promote'];
+        this.sheetId = player['id'];
+        this.userId = player['userid'];
+        this.nickname = player['nickname'];
+        this.nicknamesufix = player['nicknamesufix'];
+    }
+    SheetPermRow.prototype.getHTML = function () {
+        var p = document.createElement("p");
+        p.classList.add("sheetPermRow");
+        p.appendChild(document.createTextNode(players[i]['nickname'] + "#" + players[i]['nicknamesufix']));
+        var viewLabel = document.createElement("label");
+        viewLabel.classList.add("language");
+        viewLabel.classList.add("sheetPermLabel");
+        return p;
+    };
+    return SheetPermRow;
 }());
 var PicaContainer = (function () {
     function PicaContainer(picaWindow) {
@@ -5379,7 +5406,7 @@ ptbr.setLingo("", "");
 ptbr.setLingo("", "");
 ptbr.setLingo("", "");
 ptbr.setLingo("_SHEETSTITLE_", "Fichas");
-ptbr.setLingo("_SHEETSEXP01_", "Fichas são algo que mestres e seus jogadores podem guardar no sistema, garantindo que todos estejam vendo a mesma versão desse recurso.");
+ptbr.setLingo("_SHEETSEXP01_", "Fichas são algo que mestres e seus jogadores podem guardar no sistema, garantindo que todos estejam vendo a mesma versão desse recurso. Um jogador só pode ver fichas para as quais ele tem permissões adequadas, então lembre-se de alterar essas opções para cada ficha que fizer.");
 ptbr.setLingo("_SHEETSEXP02_", "Normalmente são usadas para guardar as informações de personagens, mas têm o potencial para guardar qualquer tipo de informação.");
 ptbr.setLingo("_SHEETSEXP03_", "Cada ficha utiliza um \"Estilo\", que define a aparência dela e os valores que ela precisa guardar. Como alguns estilos não são criados por um administrador, tome cuidado ao abrir fichas que utilizem estilos criados por alguém em quem você não confia. Apenas os estilos criados por um administrador são considerados seguros.");
 ptbr.setLingo("_SHEETSOPENSTYLEEDITOR_", "Abrir gerenciador de estilos de ficha");
@@ -5392,6 +5419,14 @@ ptbr.setLingo("_SHEETSRENAMEFOLDERPROMPT_", "Escolha a nova pasta para \"%a\", a
 ptbr.setLingo("_SHEETSNEWSHEET_", "Criar nova ficha");
 ptbr.setLingo("_SHEETSNOSHEETS_", "Sem fichas para exibir.");
 ptbr.setLingo("_SHEETCONFIRMDELETE_", "Deletar \"%a\"? Fichas deletadas não podem ser recuperadas.");
+ptbr.setLingo("_SHEETPERMISSIONSHEADER_", "Permissões de Ficha");
+ptbr.setLingo("_SHEETPERMISSIONEXP_", "As permissões definem o que cada jogador de um grupo pode fazer com uma certa ficha. \"Ver\" indica que o jogador poderá abrir a ficha, \"Editar\" indica que o jogador poderá alterar os valores dessa ficha, \"Deletar\" permite que o jogador apague a ficha (permanentemente) e \"Promover\" permite que um jogador acesse essa tela, podendo fornecer permissões para outros jogadores.");
+ptbr.setLingo("_SHEETPERMISSIONSHEETNAME_", "Você está editando permissões para \"%a\".");
+ptbr.setLingo("_SHEETPERMISSIONVIEW_", "Ver");
+ptbr.setLingo("_SHEETPERMISSIONEDIT_", "Editar");
+ptbr.setLingo("_SHEETPERMISSIONDELETE_", "Deletar");
+ptbr.setLingo("_SHEETPERMISSIONPROMOTE_", "Promover");
+ptbr.setLingo("_SHEETPERMISSIONSUBMIT_", "Confirmar");
 ptbr.setLingo("_GAMESTITLE_", "Grupos");
 ptbr.setLingo("_GAMESEXP1_", "Caso precise informar seu identificador para alguém, ele é \"%a\", sem as aspas.");
 ptbr.setLingo("_GAMESEXP2_", "Aqui você pode administrar os grupos dos quais você participa. Para convidar jogadores ao seu grupo, você irá precisar do identificador deles.");
@@ -5570,6 +5605,7 @@ var UI;
     UI.idSheets = "sheetsSideWindow";
     UI.idImages = "imagesSideWindow";
     UI.idSounds = "soundsSideWindow";
+    UI.idSheetPerm = "sheetPermSideWindow";
     Application.Config.registerConfiguration("chatMaxMessages", new NumberConfiguration(120, 60, 10000));
     Application.Config.registerConfiguration("chatshowhelp", new BooleanConfiguration(true));
     Application.Config.registerConfiguration("chatfontsize", new NumberConfiguration(16, 12, 32));
@@ -6488,6 +6524,63 @@ var UI;
             }
         }
         Sheets.printSheets = printSheets;
+    })(Sheets = UI.Sheets || (UI.Sheets = {}));
+})(UI || (UI = {}));
+var UI;
+(function (UI) {
+    var Sheets;
+    (function (Sheets) {
+        var SheetPermissionDesigner;
+        (function (SheetPermissionDesigner) {
+            var nameTarget = document.getElementById("sheetPermNameTarget");
+            var list = document.getElementById("sheetPermList");
+            var currentSheet = null;
+            var players = null;
+            function callSelf(sheet) {
+                currentSheet = sheet;
+                UI.PageManager.callPage(UI.idSheetPerm);
+                var cbs = function (arr) {
+                    UI.Sheets.SheetPermissionDesigner.printPlayers(arr);
+                };
+                var cbe = function () {
+                    UI.Sheets.SheetPermissionDesigner.empty();
+                };
+                Server.Sheets.getSheetPermissions(sheet, cbs, cbe);
+                UI.Language.addLanguageVariable(nameTarget, "a", sheet.getName());
+                UI.Language.updateElement(nameTarget);
+            }
+            SheetPermissionDesigner.callSelf = callSelf;
+            function empty() {
+                while (list.firstChild !== null)
+                    list.removeChild(list.firstChild);
+            }
+            SheetPermissionDesigner.empty = empty;
+            function printPlayers(players) {
+                empty();
+                players.sort(function (a, b) {
+                    var na = a['nickname'].toLowerCase();
+                    var nb = b['nickname'].toLowerCase();
+                    if (na < nb)
+                        return -1;
+                    if (na > nb)
+                        return 1;
+                    var na = b['nicknamesufix'].toLowerCase();
+                    var nb = b['nicknamesufix'].toLowerCase();
+                    if (na < nb)
+                        return -1;
+                    if (na > nb)
+                        return 1;
+                    return 0;
+                });
+                players = [];
+                for (var i = 0; i < players.length; i++) {
+                    var row = new SheetPermRow(players[i]);
+                    players.push(row);
+                    list.appendChild(row.getHTML());
+                }
+            }
+            SheetPermissionDesigner.printPlayers = printPlayers;
+        })(SheetPermissionDesigner = Sheets.SheetPermissionDesigner || (Sheets.SheetPermissionDesigner = {}));
     })(Sheets = UI.Sheets || (UI.Sheets = {}));
 })(UI || (UI = {}));
 var UI;
@@ -9717,6 +9810,17 @@ var Server;
             Server.AJAX.requestPage(ajax, cbs, cbe);
         }
         Sheets.deleteSheet = deleteSheet;
+        function getSheetPermissions(sheet, cbs, cbe) {
+            cbs = cbs === undefined ? emptyCallback : cbs;
+            cbe = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(SHEET_URL);
+            ajax.setResponseTypeJSON();
+            ajax.setData("action", "listPerm");
+            ajax.setData("id", sheet.getId());
+            ajax.setTargetRightWindow();
+            Server.AJAX.requestPage(ajax, cbs, cbe);
+        }
+        Sheets.getSheetPermissions = getSheetPermissions;
     })(Sheets = Server.Sheets || (Server.Sheets = {}));
 })(Server || (Server = {}));
 var change;

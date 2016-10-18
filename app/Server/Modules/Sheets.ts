@@ -75,4 +75,17 @@ module Server.Sheets {
 
         Server.AJAX.requestPage(ajax, cbs, cbe);
     }
+
+    export function getSheetPermissions (sheet : SheetInstance, cbs? : Listener | EventListenerObject | Function, cbe? : Listener | EventListenerObject | Function) {
+        cbs = cbs === undefined ? emptyCallback : cbs;
+        cbe = cbe === undefined ? emptyCallback : cbe;
+
+        var ajax = new AJAXConfig(SHEET_URL);
+        ajax.setResponseTypeJSON();
+        ajax.setData("action", "listPerm");
+        ajax.setData("id", sheet.getId());
+        ajax.setTargetRightWindow();
+
+        Server.AJAX.requestPage(ajax, cbs, cbe);
+    }
 }

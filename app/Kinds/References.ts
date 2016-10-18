@@ -49,6 +49,7 @@
 /// <reference path='Elements/ImagesFolder.ts' />
 /// <reference path='Elements/SheetsRow.ts' />
 /// <reference path='Elements/SheetsFolder.ts' />
+/// <reference path='Elements/SheetPermRow.ts' />
 /// <reference path='Elements/PicaContainer.ts' />
 /// <reference path='Elements/PicaTool.ts' />
 /// <reference path='Elements/PicaToolbar.ts' />
