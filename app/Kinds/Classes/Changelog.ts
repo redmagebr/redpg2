@@ -45,8 +45,8 @@ class Changelog {
         return null;
     }
 
-    public static getUpdates () {
-
+    public static getUpdates () : Array<Changelog> {
+        return Changelog.updates;
     }
 
     public static getMissingUpdates () {
@@ -60,10 +60,11 @@ class Changelog {
 
     public static finished () {
         if (Changelog.updatesExternal === null) {
+            Changelog.sort();
             Changelog.updatesExternal = [];
         } else {
             Changelog.sort();
-            // TODO : Populate changelog HTML
+            UI.ChangelogManager.print();
         }
     }
 
@@ -73,7 +74,7 @@ class Changelog {
 
     public static getExternalVersion () {
         if (Changelog.updatesExternal === null) {
-            return [0, 0, 0];
+            return null;
         }
         return Changelog.updatesExternal[Changelog.updatesExternal.length - 1].getVersion();
     }
@@ -110,5 +111,33 @@ class Changelog {
             return this.messages[key];
         }
         return ["Changelog contains no messages."];
+    }
+
+    public getHTML (missing : boolean) {
+        // %p.mainWindowParagraph.changelogMissing
+        //     %span.changelogChangeVersion="0.9.0"
+        //     %span.changelogChange="Adicionadas coisas legais que você não tem."
+        var p = document.createElement("p");
+        p.classList.add("mainWindowParagraph");
+        if (missing) {
+            p.classList.add("changelogMissing");
+        } else {
+            p.classList.add("changelogCurrent");
+        }
+
+        var versSpan = document.createElement("span");
+        versSpan.classList.add("changelogChangeVersion");
+        versSpan.appendChild(document.createTextNode(this.major + "." + this.minor + "." + this.release));
+        p.appendChild(versSpan);
+
+        var messages = this.getMessages();
+        for (var i = 0; i < messages.length; i++) {
+            var span = document.createElement("span");
+            span.classList.add("changelogChange");
+            span.appendChild(document.createTextNode(messages[i]));
+            p.appendChild(span);
+        }
+
+        return p;
     }
 }

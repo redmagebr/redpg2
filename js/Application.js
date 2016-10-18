@@ -74,6 +74,7 @@ var Changelog = (function () {
         return null;
     };
     Changelog.getUpdates = function () {
+        return Changelog.updates;
     };
     Changelog.getMissingUpdates = function () {
         if (Changelog.updatesExternal === null)
@@ -86,10 +87,12 @@ var Changelog = (function () {
     };
     Changelog.finished = function () {
         if (Changelog.updatesExternal === null) {
+            Changelog.sort();
             Changelog.updatesExternal = [];
         }
         else {
             Changelog.sort();
+            UI.ChangelogManager.print();
         }
     };
     Changelog.getLocalVersion = function () {
@@ -97,7 +100,7 @@ var Changelog = (function () {
     };
     Changelog.getExternalVersion = function () {
         if (Changelog.updatesExternal === null) {
-            return [0, 0, 0];
+            return null;
         }
         return Changelog.updatesExternal[Changelog.updatesExternal.length - 1].getVersion();
     };
@@ -125,6 +128,28 @@ var Changelog = (function () {
             return this.messages[key];
         }
         return ["Changelog contains no messages."];
+    };
+    Changelog.prototype.getHTML = function (missing) {
+        var p = document.createElement("p");
+        p.classList.add("mainWindowParagraph");
+        if (missing) {
+            p.classList.add("changelogMissing");
+        }
+        else {
+            p.classList.add("changelogCurrent");
+        }
+        var versSpan = document.createElement("span");
+        versSpan.classList.add("changelogChangeVersion");
+        versSpan.appendChild(document.createTextNode(this.major + "." + this.minor + "." + this.release));
+        p.appendChild(versSpan);
+        var messages = this.getMessages();
+        for (var i = 0; i < messages.length; i++) {
+            var span = document.createElement("span");
+            span.classList.add("changelogChange");
+            span.appendChild(document.createTextNode(messages[i]));
+            p.appendChild(span);
+        }
+        return p;
     };
     Changelog.updates = [];
     Changelog.updatesExternal = null;
@@ -5762,6 +5787,58 @@ var UI;
         }
         Config.setUniqueTimeout = setUniqueTimeout;
     })(Config = UI.Config || (UI.Config = {}));
+})(UI || (UI = {}));
+var UI;
+(function (UI) {
+    var ChangelogManager;
+    (function (ChangelogManager) {
+        var currentVersionNode = document.getElementById("changelogCurrentVersion").childNodes[0];
+        var externalVersionNode = document.getElementById("changelogActualVersion").childNodes[0];
+        var warning = document.getElementById("changelogWarning");
+        var target = document.getElementById("changelogTarget");
+        function print() {
+            empty();
+            var localVersion = Changelog.getLocalVersion();
+            var externalVersion = Changelog.getExternalVersion();
+            if (externalVersion !== null) {
+                if (localVersion.toString() === externalVersion.toString()) {
+                    warning.style.display = "none";
+                }
+                else {
+                    warning.style.display = "";
+                }
+                currentVersionNode.nodeValue = localVersion[0] + "." + localVersion[1] + "." + localVersion[2];
+                externalVersionNode.nodeValue = externalVersion[0] + "." + externalVersion[1] + "." + externalVersion[2];
+            }
+            else {
+                warning.style.display = "";
+                currentVersionNode.nodeValue = localVersion[0] + "." + localVersion[1] + "." + localVersion[2];
+                externalVersionNode.nodeValue = "?.?.?";
+            }
+            var updates = Changelog.getUpdates();
+            for (var i = 0; i < updates.length; i++) {
+                addOnTop(updates[i].getHTML(false));
+            }
+            updates = Changelog.getMissingUpdates();
+            for (var i = 0; i < updates.length; i++) {
+                addOnTop(updates[i].getHTML(true));
+            }
+        }
+        ChangelogManager.print = print;
+        function empty() {
+            while (target.firstChild !== null) {
+                target.removeChild(target.firstChild);
+            }
+        }
+        function addOnTop(ele) {
+            if (target.firstChild !== null) {
+                target.insertBefore(ele, target.firstChild);
+            }
+            else {
+                target.appendChild(ele);
+            }
+        }
+    })(ChangelogManager = UI.ChangelogManager || (UI.ChangelogManager = {}));
 })(UI || (UI = {}));
 var UI;
 (function (UI) {

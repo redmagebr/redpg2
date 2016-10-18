@@ -59,7 +59,7 @@ declare class Changelog {
     static sort(): void;
     static getMostRecentLocalUpdate(): Changelog;
     static getMostRecentExternalUpdate(): Changelog;
-    static getUpdates(): void;
+    static getUpdates(): Array<Changelog>;
     static getMissingUpdates(): any[];
     static finished(): void;
     static getLocalVersion(): number[];
@@ -68,6 +68,7 @@ declare class Changelog {
     getVersion(): number[];
     addMessage(msg: string, lingo: string): void;
     getMessages(): Array<string>;
+    getHTML(missing: boolean): HTMLParagraphElement;
 }
 declare class ImageRed implements ImageInt {
     private name;
@@ -1109,6 +1110,9 @@ declare module UI.Config {
     function bindInput(configName: string, input: HTMLInputElement): void;
     function saveConfig(): void;
     function setUniqueTimeout(f: Function, t: number): void;
+}
+declare module UI.ChangelogManager {
+    function print(): void;
 }
 declare module UI.PageManager {
     var $pages: {

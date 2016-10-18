@@ -5,6 +5,7 @@
 /// <reference path='UI.ts' />
 /// <reference path='Modules/WindowManager.ts' />
 /// <reference path='Modules/Config.ts' />
+/// <reference path='Modules/Changelog.ts' />
 /// <reference path='Modules/PageManager.ts' />
 /// <reference path='Modules/Images.ts' />
 /// <reference path='Modules/Loading.ts' />
