@@ -6025,10 +6025,12 @@ var UI;
         function saveLog() {
             var log = currentRoom.exportAsLog(filter());
             html = html.replace("//LOGGERTARGET", "UI.Logger.openLog(" + JSON.stringify(log) + ");")
-                .replace("<script src='js/Application.js' type='text/javascript'></script>", "<script type='text/javascript'>" + js + "</script>")
                 .replace("href='stylesheets", "href='" + Server.CLIENT_URL + "stylesheets")
                 .replace("href='images", "href='" + Server.CLIENT_URL + "images")
                 .replace("src='js/lib", "src='" + Server.CLIENT_URL + "js/lib");
+            var jsTar = "<script src='js/Application.js' type='text/javascript'></script>";
+            var jsCode = "<script type='text/javascript'>" + js + "</script>";
+            html = html.replace(jsTar, jsCode);
             var blob = new Blob([html], { type: "text/plain;charset=utf-8;" });
             var d = new Date();
             var curr_date = d.getDate() < 10 ? "0" + d.getDate().toString() : d.getDate().toString();
