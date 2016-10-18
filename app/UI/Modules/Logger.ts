@@ -201,13 +201,8 @@ module UI.Logger {
             .replace("href='images", "href='" + Server.CLIENT_URL + "images")
             .replace("src='js/lib", "src='" + Server.CLIENT_URL + "js/lib");
 
-        console.log("Sometimes this is cancer");
-        var jsTar = "<script src='js/Application.js' type='text/javascript'></script>";
-        console.log("But I don't know where it is");
         var jsCode = "<script type='text/javascript'>" + js + "</script>"
-        console.log("Maybe this");
-        html = html.replace(jsTar, jsCode);
-        console.log("Will give me a clue");
+        html = html.replace("//LOGGERJSTARGET", jsCode);
 
         var blob = new Blob([html], { type : "text/plain;charset=utf-8;"});
         var d = new Date();
