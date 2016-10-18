@@ -192,32 +192,6 @@ module UI.Logger {
         }
     }
 
-    export function saveLog () {
-        html = html.replace("<script src='js/Application.js' type='text/javascript'></script>", "<script type='text/javascript'>\n" + js + "\n</script>");
-        html = html.replace("src='js/lib", "src='" + Server.CLIENT_URL + "js/lib");
-
-        // html = html.replace("//LOGGERTARGET", "UI.Logger.openLog(" + JSON.stringify(log) + ");");
-        //
-        // html = html.replace("href='images/favicon.ico'", "href='" + Server.CLIENT_URL + "images/favicon.ico'")
-        //            .replace("src='js/lib", "src='" + Server.CLIENT_URL + "js/lib")
-        //            .replace("<link href='stylesheets/screen.css' media='all' rel='stylesheet' type='text/css'>", "<link href='" + Server.CLIENT_URL + "stylesheets/screen.css' media='all' rel='stylesheet' type='text/css'>")
-        //            .replace("<script src='js/Application.js' type='text/javascript'></script>", "<script type='text/javascript'>\n" + js + "\n</script>");
-
-
-        var blob = new Blob([html], {
-            type: "text/plain;charset=utf-8;",
-        });
-        var d = new Date();
-        var curr_date = d.getDate() < 10 ? "0" + d.getDate().toString() : d.getDate().toString();
-        var curr_month = (d.getMonth() + 1) < 10 ? "0" + (d.getMonth() + 1).toString() : (d.getMonth() + 1).toString();
-        var curr_year = d.getFullYear();
-
-        var roomName = currentRoom.name;
-        var gameName = currentRoom.getGame().getName();
-
-        saveAs(blob, gameName + " - " + roomName + " (" + curr_year + curr_month + curr_date + ").html");
-    }
-
     export function openLog (log) {
         DB.GameDB.updateFromObject([log], true);
     }
