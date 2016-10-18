@@ -6023,8 +6023,6 @@ var UI;
         }
         Logger.setJS = setJS;
         function saveLog() {
-            var log = currentRoom.exportAsLog(filter());
-            html = html.replace("//LOGGERTARGET", "UI.Logger.openLog(" + JSON.stringify(log) + ");");
             html = html.replace("href='images/favicon.ico'", "href='" + Server.CLIENT_URL + "images/favicon.ico'")
                 .replace("src='js/lib", "src='" + Server.CLIENT_URL + "js/lib");
             html = html.replace("<link href='stylesheets/screen.css' media='all' rel='stylesheet' type='text/css'>", "<link href='" + Server.CLIENT_URL + "stylesheets/screen.css' media='all' rel='stylesheet' type='text/css'>");

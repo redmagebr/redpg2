@@ -194,9 +194,9 @@ module UI.Logger {
 
     export function saveLog () {
         // //LOGGERTARGET
-        var log = currentRoom.exportAsLog(filter());
+        //var log = currentRoom.exportAsLog(filter());
 
-        html = html.replace("//LOGGERTARGET", "UI.Logger.openLog(" + JSON.stringify(log) + ");");
+        //html = html.replace("//LOGGERTARGET", "UI.Logger.openLog(" + JSON.stringify(log) + ");");
 
         html = html.replace("href='images/favicon.ico'", "href='" + Server.CLIENT_URL + "images/favicon.ico'")
             .replace("src='js/lib", "src='" + Server.CLIENT_URL + "js/lib");
