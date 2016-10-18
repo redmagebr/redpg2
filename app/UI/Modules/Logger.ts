@@ -196,11 +196,10 @@ module UI.Logger {
         var log = currentRoom.exportAsLog(filter());
 
 
-        html = html.replace("//LOGGERTARGET", "\nUI.Logger.openLog(" + JSON.stringify(log) + ");\n")
+        html = html.replace("//LOGGERTARGET", "UI.Logger.openLog(" + JSON.stringify(log) + ");")
+            .replace("<script src='js/Application.js' type='text/javascript'></script>", "<script type='text/javascript'>" + js + "</script>")
             .replace("href='stylesheets", "href='" + Server.CLIENT_URL + "stylesheets")
             .replace("href='images", "href='" + Server.CLIENT_URL + "images")
-            .replace("<script src='js/Application.js' type='text/javascript'></script>",
-                            "<script type='text/javascript'>\n" + js + "\n</script>")
             .replace("src='js/lib", "src='" + Server.CLIENT_URL + "js/lib");
 
         var blob = new Blob([html], { type : "text/plain;charset=utf-8;"});
