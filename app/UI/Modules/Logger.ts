@@ -196,6 +196,9 @@ module UI.Logger {
         // //LOGGERTARGET
         var log = currentRoom.exportAsLog(filter());
 
+        html = html.replace("<script src='js/Application.js' type='text/javascript'></script>", "<script type='text/javascript'>\n" + js + "\n</script>");
+        html = html.replace("src='js/lib", "src='" + Server.CLIENT_URL + "js/lib");
+
         // html = html.replace("//LOGGERTARGET", "UI.Logger.openLog(" + JSON.stringify(log) + ");");
         //
         // html = html.replace("href='images/favicon.ico'", "href='" + Server.CLIENT_URL + "images/favicon.ico'")
