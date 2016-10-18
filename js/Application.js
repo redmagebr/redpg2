@@ -6041,6 +6041,7 @@ var UI;
         Logger.saveLog = saveLog;
         function openLog(log) {
             DB.GameDB.updateFromObject([log], true);
+            DB.RoomDB.updateFromObject(log['rooms'], true);
         }
         Logger.openLog = openLog;
     })(Logger = UI.Logger || (UI.Logger = {}));

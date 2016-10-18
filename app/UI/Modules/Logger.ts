@@ -217,5 +217,6 @@ module UI.Logger {
 
     export function openLog (log) {
         DB.GameDB.updateFromObject([log], true);
+        DB.RoomDB.updateFromObject(log['rooms'], true);
     }
 }
