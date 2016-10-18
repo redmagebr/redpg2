@@ -1156,6 +1156,7 @@ declare module UI.Logger {
     function setHTML(code: any): void;
     function setJS(code: any): void;
     function saveLog(): void;
+    function openLog(log: any): void;
 }
 declare module UI.Config {
     function bindInput(configName: string, input: HTMLInputElement): void;

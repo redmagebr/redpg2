@@ -193,6 +193,11 @@ module UI.Logger {
     }
 
     export function saveLog () {
+        // //LOGGERTARGET
+        var log = currentRoom.exportAsLog(filter());
+
+        html = html.replace("//LOGGERTARGET", "UI.Logger.openLog(" + JSON.stringify(log) + ");");
+
         html = html.replace("href='images/favicon.ico'", "href='" + Server.CLIENT_URL + "images/favicon.ico'")
             .replace("src='js/lib", "src='" + Server.CLIENT_URL + "js/lib");
 
@@ -200,10 +205,6 @@ module UI.Logger {
 
         html = html.replace("<script src='js/Application.js' type='text/javascript'></script>", "<script type='text/javascript'>\n" + js + "\n</script>");
 
-        // //LOGGERTARGET
-        var log = currentRoom.exportAsLog(filter());
-
-        html = html.replace("//LOGGERTARGET", "UI.Logger.openLog(" + JSON.stringify(log) + ");");
 
         var blob = new Blob([html], {
             type: "text/plain;charset=utf-8;",
@@ -217,5 +218,9 @@ module UI.Logger {
         var gameName = currentRoom.getGame().getName();
 
         saveAs(blob, gameName + " - " + roomName + " (" + curr_year + curr_month + curr_date + ").html");
+    }
+
+    export function openLog (log) {
+        DB.GameDB.updateFromObject([log], true);
     }
 }

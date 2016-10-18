@@ -6023,12 +6023,12 @@ var UI;
         }
         Logger.setJS = setJS;
         function saveLog() {
+            var log = currentRoom.exportAsLog(filter());
+            html = html.replace("//LOGGERTARGET", "UI.Logger.openLog(" + JSON.stringify(log) + ");");
             html = html.replace("href='images/favicon.ico'", "href='" + Server.CLIENT_URL + "images/favicon.ico'")
                 .replace("src='js/lib", "src='" + Server.CLIENT_URL + "js/lib");
             html = html.replace("<link href='stylesheets/screen.css' media='all' rel='stylesheet' type='text/css'>", "<link href='" + Server.CLIENT_URL + "stylesheets/screen.css' media='all' rel='stylesheet' type='text/css'>");
             html = html.replace("<script src='js/Application.js' type='text/javascript'></script>", "<script type='text/javascript'>\n" + js + "\n</script>");
-            var log = currentRoom.exportAsLog(filter());
-            html = html.replace("//LOGGERTARGET", "UI.Logger.openLog(" + JSON.stringify(log) + ");");
             var blob = new Blob([html], {
                 type: "text/plain;charset=utf-8;",
             });
@@ -6041,6 +6041,10 @@ var UI;
             saveAs(blob, gameName + " - " + roomName + " (" + curr_year + curr_month + curr_date + ").html");
         }
         Logger.saveLog = saveLog;
+        function openLog(log) {
+            DB.GameDB.updateFromObject([log], true);
+        }
+        Logger.openLog = openLog;
     })(Logger = UI.Logger || (UI.Logger = {}));
 })(UI || (UI = {}));
 var UI;
