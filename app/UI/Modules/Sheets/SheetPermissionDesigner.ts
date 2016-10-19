@@ -2,7 +2,12 @@ module UI.Sheets.SheetPermissionDesigner {
     var nameTarget = document.getElementById("sheetPermNameTarget");
     var list = document.getElementById("sheetPermList");
     var currentSheet : SheetInstance = null;
-    var players : Array<SheetPermRow> = null;
+    var playerRows : Array<SheetPermRow> = null;
+
+    document.getElementById("sheetPermForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+        UI.Sheets.SheetPermissionDesigner.submit();
+    });
 
     export function callSelf (sheet : SheetInstance) {
         currentSheet = sheet;
@@ -45,11 +50,26 @@ module UI.Sheets.SheetPermissionDesigner {
             return 0;
         });
 
-        players = [];
+        playerRows = [];
         for (var i = 0; i < players.length; i++) {
             var row = new SheetPermRow(players[i]);
-            players.push(row);
+            playerRows.push(row);
             list.appendChild(row.getHTML());
         }
+    }
+
+    export function submit () {
+        var cbs = function () {
+            UI.Sheets.SheetPermissionDesigner.success();
+        };
+
+        var cbe = function () {};
+
+        Server.Sheets.sendSheetPermissions(currentSheet, playerRows, cbs, cbe);
+    }
+
+    export function success () {
+        UI.Sheets.keepOpen(currentSheet.getFolder(), currentSheet.getGameid());
+        UI.Sheets.callSelf();
     }
 }

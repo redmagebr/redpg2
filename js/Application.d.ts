@@ -565,6 +565,17 @@ declare class SheetPermRow {
     editSheet: boolean;
     viewSheet: boolean;
     promoteSheet: boolean;
+    viewInput: HTMLInputElement;
+    editInput: HTMLInputElement;
+    deleteInput: HTMLInputElement;
+    promoteInput: HTMLInputElement;
+    exportPrivileges(): {
+        userid: number;
+        deletar: boolean;
+        editar: boolean;
+        visualizar: boolean;
+        promote: boolean;
+    };
     constructor(player: any);
     getHTML(): HTMLParagraphElement;
 }
@@ -1247,6 +1258,8 @@ declare module UI.Sheets.SheetPermissionDesigner {
     function callSelf(sheet: SheetInstance): void;
     function empty(): void;
     function printPlayers(players: any): void;
+    function submit(): void;
+    function success(): void;
 }
 declare module UI.Rooms {
     function deleteRoom(room: Room): void;
@@ -1493,6 +1506,7 @@ declare module Server.Sheets {
     function sendFolder(sheet: SheetInstance, cbs?: Listener, cbe?: Listener): void;
     function deleteSheet(sheet: SheetInstance, cbs?: Listener, cbe?: Listener): void;
     function getSheetPermissions(sheet: SheetInstance, cbs?: Listener | EventListenerObject | Function, cbe?: Listener | EventListenerObject | Function): void;
+    function sendSheetPermissions(sheet: SheetInstance, permissions: Array<SheetPermRow>, cbs?: Listener | EventListenerObject | Function, cbe?: Listener | EventListenerObject | Function): void;
 }
 declare var change: any;
 declare module Dropbox {

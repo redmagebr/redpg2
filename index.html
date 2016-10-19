@@ -449,22 +449,8 @@
         <div class='mainWindowContent singleton'>
           <p class='mainWindowParagraph language'>_SHEETPERMISSIONEXP_</p>
           <p class='mainWindowParagraph language' id='sheetPermNameTarget'>_SHEETPERMISSIONSHEETNAME_</p>
-          <form id='sheetPermList'>
-            <p class='sheetPermRow'>
-              momo#0000
-              <label class='sheetPermLabel language'>
-                <input class='sheetPermCheckbox' type='checkbox'>
-                _SHEETPERMISSIONVIEW_
-              </label>
-              <label class='sheetPermLabel language'>
-                <input class='sheetPermCheckbox' type='checkbox'>
-                _SHEETPERMISSIONEDIT_
-              </label>
-              <label class='sheetPermLabel language'>
-                <input class='sheetPermCheckbox' type='checkbox'>
-                _SHEETPERMISSIONDELETE_
-              </label>
-            </p>
+          <form id='sheetPermForm'>
+            <div id='sheetPermList'></div>
             <input class='language mainWindowParagraphSubmit' data-valuelingo='_SHEETPERMISSIONSUBMIT_' type='submit'>
           </form>
         </div>

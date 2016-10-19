@@ -14,6 +14,10 @@ change = new Changelog(0, 10, 0);
 change.addMessage("/log slash command added to chat.", "en");
 change.addMessage("Comando /log adicionado ao chat.", "pt");
 
+change = new Changelog(0, 11, 0);
+change.addMessage("Sheet permissions implemented.", "en");
+change.addMessage("Implementadas permissões para fichas.", "pt");
+
 delete (change);
 
 Changelog.finished();

@@ -2144,13 +2144,46 @@ var SheetPermRow = (function () {
         this.userId = player['userid'];
         this.nickname = player['nickname'];
         this.nicknamesufix = player['nicknamesufix'];
+        this.deleteInput = document.createElement("input");
+        this.deleteInput.type = "checkbox";
+        this.deleteInput.checked = this.deleteSheet;
+        this.promoteInput = document.createElement("input");
+        this.promoteInput.type = "checkbox";
+        this.promoteInput.checked = this.promoteSheet;
+        this.editInput = document.createElement("input");
+        this.editInput.type = "checkbox";
+        this.editInput.checked = this.editSheet;
+        this.viewInput = document.createElement("input");
+        this.viewInput.type = "checkbox";
+        this.viewInput.checked = this.viewSheet;
     }
+    SheetPermRow.prototype.exportPrivileges = function () {
+        var obj = {
+            userid: this.userId,
+            deletar: this.deleteInput.checked,
+            editar: this.editInput.checked,
+            visualizar: this.viewInput.checked,
+            promote: this.promoteInput.checked
+        };
+        return obj;
+    };
     SheetPermRow.prototype.getHTML = function () {
         var p = document.createElement("p");
         p.classList.add("sheetPermRow");
+        p.appendChild(document.createTextNode(this.nickname + "#" + this.nicknamesufix));
         var viewLabel = document.createElement("label");
         viewLabel.classList.add("language");
         viewLabel.classList.add("sheetPermLabel");
+        viewLabel.appendChild(document.createTextNode("_SHEETPERMISSIONVIEW_"));
+        viewLabel.appendChild(this.viewInput);
+        p.appendChild(viewLabel);
+        var editLabel = document.createElement("label");
+        editLabel.classList.add("language");
+        editLabel.classList.add("sheetPermLabel");
+        editLabel.appendChild(document.createTextNode("_SHEETPERMISSIONEDIT_"));
+        editLabel.appendChild(this.editInput);
+        p.appendChild(editLabel);
+        UI.Language.updateScreen(p);
         return p;
     };
     return SheetPermRow;
@@ -6853,7 +6886,11 @@ var UI;
             var nameTarget = document.getElementById("sheetPermNameTarget");
             var list = document.getElementById("sheetPermList");
             var currentSheet = null;
-            var players = null;
+            var playerRows = null;
+            document.getElementById("sheetPermForm").addEventListener("submit", function (e) {
+                e.preventDefault();
+                UI.Sheets.SheetPermissionDesigner.submit();
+            });
             function callSelf(sheet) {
                 currentSheet = sheet;
                 UI.PageManager.callPage(UI.idSheetPerm);
@@ -6890,14 +6927,27 @@ var UI;
                         return 1;
                     return 0;
                 });
-                players = [];
+                playerRows = [];
                 for (var i = 0; i < players.length; i++) {
                     var row = new SheetPermRow(players[i]);
-                    players.push(row);
+                    playerRows.push(row);
                     list.appendChild(row.getHTML());
                 }
             }
             SheetPermissionDesigner.printPlayers = printPlayers;
+            function submit() {
+                var cbs = function () {
+                    UI.Sheets.SheetPermissionDesigner.success();
+                };
+                var cbe = function () { };
+                Server.Sheets.sendSheetPermissions(currentSheet, playerRows, cbs, cbe);
+            }
+            SheetPermissionDesigner.submit = submit;
+            function success() {
+                UI.Sheets.keepOpen(currentSheet.getFolder(), currentSheet.getGameid());
+                UI.Sheets.callSelf();
+            }
+            SheetPermissionDesigner.success = success;
         })(SheetPermissionDesigner = Sheets.SheetPermissionDesigner || (Sheets.SheetPermissionDesigner = {}));
     })(Sheets = UI.Sheets || (UI.Sheets = {}));
 })(UI || (UI = {}));
@@ -10150,6 +10200,22 @@ var Server;
             Server.AJAX.requestPage(ajax, cbs, cbe);
         }
         Sheets.getSheetPermissions = getSheetPermissions;
+        function sendSheetPermissions(sheet, permissions, cbs, cbe) {
+            cbs = cbs === undefined ? emptyCallback : cbs;
+            cbe = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(SHEET_URL);
+            ajax.setResponseTypeJSON();
+            ajax.setData("action", "updatePerm");
+            ajax.setData("id", sheet.getId());
+            var privileges = [];
+            for (var i = 0; i < permissions.length; i++) {
+                privileges.push(permissions[i].exportPrivileges());
+            }
+            ajax.setData("privileges", privileges);
+            ajax.setTargetRightWindow();
+            Server.AJAX.requestPage(ajax, cbs, cbe);
+        }
+        Sheets.sendSheetPermissions = sendSheetPermissions;
     })(Sheets = Server.Sheets || (Server.Sheets = {}));
 })(Server || (Server = {}));
 var change;
@@ -10162,6 +10228,9 @@ change.addMessage("Log de Mudanças implementado.", "pt");
 change = new Changelog(0, 10, 0);
 change.addMessage("/log slash command added to chat.", "en");
 change.addMessage("Comando /log adicionado ao chat.", "pt");
+change = new Changelog(0, 11, 0);
+change.addMessage("Sheet permissions implemented.", "en");
+change.addMessage("Implementadas permissões para fichas.", "pt");
 delete (change);
 Changelog.finished();
 UI.Language.searchLanguage();

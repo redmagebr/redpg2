@@ -88,4 +88,24 @@ module Server.Sheets {
 
         Server.AJAX.requestPage(ajax, cbs, cbe);
     }
+
+    export function sendSheetPermissions (sheet : SheetInstance, permissions : Array<SheetPermRow>, cbs? : Listener | EventListenerObject | Function, cbe? : Listener | EventListenerObject | Function) {
+        cbs = cbs === undefined ? emptyCallback : cbs;
+        cbe = cbe === undefined ? emptyCallback : cbe;
+
+        var ajax = new AJAXConfig(SHEET_URL);
+        ajax.setResponseTypeJSON();
+        ajax.setData("action", "updatePerm");
+        ajax.setData("id", sheet.getId());
+
+        var privileges = [];
+        for (var i = 0; i < permissions.length; i++) {
+            privileges.push(permissions[i].exportPrivileges());
+        }
+        ajax.setData("privileges", privileges);
+
+        ajax.setTargetRightWindow();
+
+        Server.AJAX.requestPage(ajax, cbs, cbe);
+    }
 }
