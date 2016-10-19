@@ -220,7 +220,9 @@ module UI.Logger {
     }
 
     export function openLog (log) {
+        Application.Config.getConfig("chatMaxMessages").storeValue(log['rooms'][0]['messages'].length + 10);
         DB.GameDB.updateFromObject([log], true);
+        UI.WindowManager.callWindow(('mainWindow'));
         UI.Chat.callSelf(0, true);
     }
 }
