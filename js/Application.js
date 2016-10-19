@@ -379,7 +379,7 @@ var Room = (function () {
         };
         var msgObj = [];
         for (var i = 0; i < messages.length; i++) {
-            msgObj.push(messages[i].exportAsObject());
+            msgObj.push(messages[i].exportAsLog());
         }
         obj['messages'] = msgObj;
         return obj;
@@ -556,6 +556,7 @@ var Game = (function () {
         }
         obj['users'] = users;
         obj['rooms'] = [DB.RoomDB.getRoom(roomid).exportAsLog(messages)];
+        return obj;
     };
     Game.prototype.getId = function () {
         return this.id;
@@ -3166,6 +3167,12 @@ var Message = (function (_super) {
             this.special = JSON.parse(this.special);
         }
         this.triggerUpdated();
+    };
+    Message.prototype.exportAsLog = function () {
+        var obj = this.exportAsObject();
+        obj['roomid'] = 0;
+        obj['id'] = this.id;
+        return obj;
     };
     Message.prototype.exportAsObject = function () {
         var result = {};
@@ -6022,6 +6029,10 @@ var UI;
             }
         }
         Logger.setJS = setJS;
+        function giveMeLog() {
+            return currentRoom.getGame().exportAsLog(currentRoom.id, filter());
+        }
+        Logger.giveMeLog = giveMeLog;
         function saveLog() {
             var log = currentRoom.getGame().exportAsLog(currentRoom.id, filter());
             html = html.replace("//LOGGERTARGET", "UI.Logger.openLog(" + JSON.stringify(log) + ");")
@@ -6041,6 +6052,7 @@ var UI;
         Logger.saveLog = saveLog;
         function openLog(log) {
             DB.GameDB.updateFromObject([log], true);
+            UI.Chat.callSelf(0, true);
         }
         Logger.openLog = openLog;
     })(Logger = UI.Logger || (UI.Logger = {}));
@@ -7865,15 +7877,18 @@ var UI;
             return !printingMany;
         }
         Chat.doAutomation = doAutomation;
-        function callSelf(roomid) {
+        function callSelf(roomid, log) {
             UI.PageManager.callPage(UI.idChat);
             clearRoom();
-            Server.Chat.enterRoom(roomid);
+            if (log !== true)
+                Server.Chat.enterRoom(roomid);
             var room = DB.RoomDB.getRoom(roomid);
             chatTitleNode.nodeValue = room.name;
             chatDescriptionNode.nodeValue = room.description;
             currentRoom = room;
             triggerRoomChanged();
+            if (log === true)
+                UI.Chat.printMessages(UI.Chat.getRoom().getOrderedMessages(), false);
         }
         Chat.callSelf = callSelf;
         function addRoomChangedListener(listener) {

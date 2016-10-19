@@ -192,6 +192,10 @@ module UI.Logger {
         }
     }
 
+    export function giveMeLog() {
+        return currentRoom.getGame().exportAsLog(currentRoom.id, filter());
+    }
+
     export function saveLog () {
         var log = currentRoom.getGame().exportAsLog(currentRoom.id, filter());
 
@@ -217,5 +221,6 @@ module UI.Logger {
 
     export function openLog (log) {
         DB.GameDB.updateFromObject([log], true);
+        UI.Chat.callSelf(0, true);
     }
 }

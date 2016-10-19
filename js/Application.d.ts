@@ -202,7 +202,15 @@ declare class Game {
     creatorid: number;
     creatornick: string;
     creatorsufix: string;
-    exportAsLog(roomid: number, messages: Array<Message>): void;
+    exportAsLog(roomid: number, messages: Array<Message>): {
+        description: string;
+        name: string;
+        id: number;
+        freejoin: boolean;
+        creatorid: number;
+        creatornick: string;
+        creatorsufix: string;
+    };
     getId(): number;
     getName(): string;
     getCreatorFullNickname(): string;
@@ -801,6 +809,7 @@ declare class Message extends SlashCommand {
     getSpecial(id: string, defaultValue?: any): any;
     setSpecial(id: string, value: any): void;
     updateFromObject(obj: Object): void;
+    exportAsLog(): Object;
     exportAsObject(): Object;
     receiveCommand(slashCommand: string, msg: string): boolean;
     setMsg(str: string): void;
@@ -1155,6 +1164,15 @@ declare module UI.Logger {
     function submit(): void;
     function setHTML(code: any): void;
     function setJS(code: any): void;
+    function giveMeLog(): {
+        description: string;
+        name: string;
+        id: number;
+        freejoin: boolean;
+        creatorid: number;
+        creatornick: string;
+        creatorsufix: string;
+    };
     function saveLog(): void;
     function openLog(log: any): void;
 }
@@ -1291,7 +1309,7 @@ declare module UI.SoundController.MusicPlayer {
 declare module UI.Chat {
     var messageCounter: number;
     function doAutomation(): boolean;
-    function callSelf(roomid: number): void;
+    function callSelf(roomid: number, log?: boolean): void;
     function addRoomChangedListener(listener: Listener | Function): void;
     function getRoom(): Room;
     function clearRoom(): void;

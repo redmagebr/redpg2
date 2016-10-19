@@ -29,7 +29,9 @@ class Game {
 
         obj['users'] = users;
 
-        obj['rooms'] = [DB.RoomDB.getRoom(roomid).exportAsLog(messages)]
+        obj['rooms'] = [DB.RoomDB.getRoom(roomid).exportAsLog(messages)];
+
+        return obj;
     }
 
     public getId () {

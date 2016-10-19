@@ -70,10 +70,10 @@ module UI.Chat {
         return !printingMany;
     }
 
-    export function callSelf (roomid : number) {
+    export function callSelf (roomid : number, log? : boolean) {
         UI.PageManager.callPage(UI.idChat);
         clearRoom();
-        Server.Chat.enterRoom(roomid);
+        if (log !== true) Server.Chat.enterRoom(roomid);
 
         var room = DB.RoomDB.getRoom(roomid);
 
@@ -81,6 +81,8 @@ module UI.Chat {
         chatDescriptionNode.nodeValue = room.description;
         currentRoom = room;
         triggerRoomChanged();
+
+        if (log === true) UI.Chat.printMessages(UI.Chat.getRoom().getOrderedMessages(), false);
     }
 
     export function addRoomChangedListener (listener : Listener | Function) {

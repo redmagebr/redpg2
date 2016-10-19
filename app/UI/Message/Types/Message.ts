@@ -254,6 +254,13 @@ class Message extends SlashCommand {
         this.triggerUpdated();
     }
 
+    public exportAsLog () {
+        var obj = this.exportAsObject();
+        obj['roomid'] = 0;
+        obj['id'] = this.id;
+        return obj;
+    }
+
     /**
      * Exports Message as an object (meant for server).
      * @returns {{}}

@@ -25,7 +25,7 @@ class Room {
 
         var msgObj = [];
         for (var i = 0; i < messages.length; i++ ){
-            msgObj.push(messages[i].exportAsObject());
+            msgObj.push(messages[i].exportAsLog());
         }
 
         obj['messages'] = msgObj;
