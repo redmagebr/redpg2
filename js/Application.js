@@ -8020,7 +8020,7 @@ var UI;
         Chat.printMessages = printMessages;
         function updateScrollPosition(instant) {
             instant = instant === undefined ? true : instant;
-            if (scrolledDown && currentRoom.id !== 0) {
+            if (scrolledDown && (currentRoom === null || currentRoom.id !== 0)) {
                 if (instant)
                     chatBox.scrollTop = chatBox.scrollHeight - chatBox.offsetHeight + 10;
                 else
