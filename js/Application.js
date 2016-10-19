@@ -6058,6 +6058,7 @@ var UI;
             UI.WindowManager.callWindow(('mainWindow'));
             UI.PageManager.callPage(UI.idHome);
             UI.Chat.callSelf(0, true);
+            document.getElementById("chatMessageStateIcon").style.display = "none";
             document.getElementById("leftHandleBar").style.display = "none";
             document.getElementById("rightHandleBar").style.display = "none";
             document.getElementById("chatMessageBox").style.display = "none";
