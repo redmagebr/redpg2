@@ -217,12 +217,14 @@ module UI.Chat {
         printingMany = false;
 
         // Scroll down to bottom, if necessary
-        updateScrollPosition();
+        if ((currentRoom === null || currentRoom.id !== 0)) {
+            updateScrollPosition();
+        }
     }
 
     export function updateScrollPosition (instant ? : boolean) {
         instant = instant === undefined ? true : instant;
-        if (scrolledDown && (currentRoom === null || currentRoom.id !== 0)) {
+        if (scrolledDown) {
             if (instant) chatBox.scrollTop = chatBox.scrollHeight - chatBox.offsetHeight + 10;
             else $chatBox.stop().animate({
                 scrollTop : chatBox.scrollHeight - chatBox.offsetHeight + 10

@@ -8016,12 +8016,14 @@ var UI;
             }
             parent.appendChild(chatTarget);
             printingMany = false;
-            updateScrollPosition();
+            if ((currentRoom === null || currentRoom.id !== 0)) {
+                updateScrollPosition();
+            }
         }
         Chat.printMessages = printMessages;
         function updateScrollPosition(instant) {
             instant = instant === undefined ? true : instant;
-            if (scrolledDown && (currentRoom === null || currentRoom.id !== 0)) {
+            if (scrolledDown) {
                 if (instant)
                     chatBox.scrollTop = chatBox.scrollHeight - chatBox.offsetHeight + 10;
                 else
