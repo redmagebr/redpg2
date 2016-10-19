@@ -8031,6 +8031,7 @@ var UI;
         }
         Chat.updateScrollPosition = updateScrollPosition;
         function scrollToTop() {
+            $chatBox.stop();
             chatBox.scrollTop = 0;
         }
         Chat.scrollToTop = scrollToTop;

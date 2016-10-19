@@ -231,6 +231,7 @@ module UI.Chat {
     }
 
     export function scrollToTop () {
+        $chatBox.stop();
         chatBox.scrollTop = 0;
     }
 
