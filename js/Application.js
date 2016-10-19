@@ -6040,8 +6040,8 @@ var UI;
             html = html.replace("//LOGGERTARGET", "UI.Logger.openLog(" + JSON.stringify(log) + ");")
                 .replace("href='stylesheets", "href='" + Server.CLIENT_URL + "stylesheets")
                 .replace("href='images", "href='" + Server.CLIENT_URL + "images")
-                .replace("src='js/lib", "src='" + Server.CLIENT_URL + "js/lib");
-            html = html.replace("//LOGGERJSTARGET", js);
+                .replace("src='js/lib", "src='" + Server.CLIENT_URL + "js/lib")
+                .replace("//LOGGERJSTARGET", js);
             var blob = new Blob([html], { type: "text/plain;charset=utf-8;" });
             var d = new Date();
             var curr_date = d.getDate() < 10 ? "0" + d.getDate().toString() : d.getDate().toString();
@@ -10159,6 +10159,9 @@ change.addMessage("Maior parte do aplicativo implementado antes da inclusão de 
 change = new Changelog(0, 9, 0);
 change.addMessage("Implemented changelog.", "en");
 change.addMessage("Log de Mudanças implementado.", "pt");
+change = new Changelog(0, 10, 0);
+change.addMessage("/log slash command added to chat.", "en");
+change.addMessage("Comando /log adicionado ao chat.", "pt");
 delete (change);
 Changelog.finished();
 UI.Language.searchLanguage();

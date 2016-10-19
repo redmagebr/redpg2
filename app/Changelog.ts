@@ -10,6 +10,10 @@ change = new Changelog(0, 9, 0);
 change.addMessage("Implemented changelog.", "en");
 change.addMessage("Log de Mudanças implementado.", "pt");
 
+change = new Changelog(0, 10, 0);
+change.addMessage("/log slash command added to chat.", "en");
+change.addMessage("Comando /log adicionado ao chat.", "pt");
+
 delete (change);
 
 Changelog.finished();

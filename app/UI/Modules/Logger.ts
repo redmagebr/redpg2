@@ -151,8 +151,8 @@ module UI.Logger {
         $window.stop().fadeOut(Application.Config.getConfig("animTime").getValue());
     }
 
-    var html : String;
-    var js : String;
+    var html : string;
+    var js : string;
     export function submit () {
         html = null;
         js = null;
@@ -203,9 +203,8 @@ module UI.Logger {
         html = html.replace("//LOGGERTARGET", "UI.Logger.openLog(" + JSON.stringify(log) + ");")
             .replace("href='stylesheets", "href='" + Server.CLIENT_URL + "stylesheets")
             .replace("href='images", "href='" + Server.CLIENT_URL + "images")
-            .replace("src='js/lib", "src='" + Server.CLIENT_URL + "js/lib");
-
-        html = html.replace("//LOGGERJSTARGET", js);
+            .replace("src='js/lib", "src='" + Server.CLIENT_URL + "js/lib")
+            .replace("//LOGGERJSTARGET", js);
 
         var blob = new Blob([html], { type : "text/plain;charset=utf-8;"});
         var d = new Date();

@@ -217,6 +217,7 @@ module UI.Chat {
         printingMany = false;
 
         // Scroll down to bottom, if necessary
+        // Don't scroll down if opening a log
         if ((currentRoom === null || currentRoom.id !== 0)) {
             updateScrollPosition();
         }
