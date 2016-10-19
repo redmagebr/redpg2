@@ -377,6 +377,11 @@ var Room = (function () {
             name: this.name,
             creatorid: this.creatorid
         };
+        var users = [];
+        for (var id in this.users) {
+            users.push(this.users[id].exportAsLog());
+        }
+        obj['users'] = users;
         var msgObj = [];
         for (var i = 0; i < messages.length; i++) {
             msgObj.push(messages[i].exportAsLog());
@@ -550,11 +555,6 @@ var Game = (function () {
             creatornick: this.creatornick,
             creatorsufix: this.creatorsufix
         };
-        var users = {};
-        for (var id in this.users) {
-            users[id] = this.users[id].exportAsLog();
-        }
-        obj['users'] = users;
         obj['rooms'] = [DB.RoomDB.getRoom(roomid).exportAsLog(messages)];
         return obj;
     };
@@ -3172,6 +3172,8 @@ var Message = (function (_super) {
         var obj = this.exportAsObject();
         obj['roomid'] = 0;
         obj['id'] = this.id;
+        obj['msg'] = obj['message'];
+        delete (obj['message']);
         return obj;
     };
     Message.prototype.exportAsObject = function () {
@@ -6055,6 +6057,18 @@ var UI;
             DB.GameDB.updateFromObject([log], true);
             UI.WindowManager.callWindow(('mainWindow'));
             UI.Chat.callSelf(0, true);
+            document.getElementById("leftHandleBar").style.display = "none";
+            document.getElementById("rightHandleBar").style.display = "none";
+            document.getElementById("chatMessageBox").style.display = "none";
+            document.getElementById("chatMessageSendButton").style.display = "none";
+            document.getElementById("personaBox").style.display = "none";
+            document.getElementById("diceFormBox").style.display = "none";
+            document.getElementById("bottomBox").style.display = "none";
+            document.getElementById("avatarBox").style.display = "none";
+            document.getElementById("avatarUpButton").style.display = "none";
+            document.getElementById("avatarDownButton").style.display = "none";
+            document.getElementById("chatBox").style.top = "5px";
+            document.getElementById("chatBox").style.bottom = "5px";
         }
         Logger.openLog = openLog;
     })(Logger = UI.Logger || (UI.Logger = {}));

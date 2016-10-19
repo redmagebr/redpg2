@@ -21,13 +21,6 @@ class Game {
             creatornick : this.creatornick,
             creatorsufix : this.creatorsufix
         };
-        var users = {};
-
-        for (var id in this.users) {
-            users[id] = this.users[id].exportAsLog();
-        }
-
-        obj['users'] = users;
 
         obj['rooms'] = [DB.RoomDB.getRoom(roomid).exportAsLog(messages)];
 

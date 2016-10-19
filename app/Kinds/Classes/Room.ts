@@ -23,6 +23,14 @@ class Room {
             creatorid : this.creatorid
         };
 
+        var users = [];
+
+        for (var id in this.users) {
+            users.push(this.users[id].exportAsLog());
+        }
+
+        obj['users'] = users;
+
         var msgObj = [];
         for (var i = 0; i < messages.length; i++ ){
             msgObj.push(messages[i].exportAsLog());

@@ -258,6 +258,8 @@ class Message extends SlashCommand {
         var obj = this.exportAsObject();
         obj['roomid'] = 0;
         obj['id'] = this.id;
+        obj['msg'] = obj['message'];
+        delete(obj['message']);
         return obj;
     }
 
