@@ -6056,6 +6056,7 @@ var UI;
             Application.Config.getConfig("chatMaxMessages").storeValue(log['rooms'][0]['messages'].length + 10);
             DB.GameDB.updateFromObject([log], true);
             UI.WindowManager.callWindow(('mainWindow'));
+            UI.PageManager.callPage(UI.idHome);
             UI.Chat.callSelf(0, true);
             document.getElementById("leftHandleBar").style.display = "none";
             document.getElementById("rightHandleBar").style.display = "none";
@@ -6067,8 +6068,13 @@ var UI;
             document.getElementById("avatarBox").style.display = "none";
             document.getElementById("avatarUpButton").style.display = "none";
             document.getElementById("avatarDownButton").style.display = "none";
+            document.getElementById("chatButtonsBox").style.top = "5px";
             document.getElementById("chatBox").style.top = "5px";
             document.getElementById("chatBox").style.bottom = "5px";
+            document.getElementById("chatScrollDown").style.bottom = "15px";
+            document.getElementById("leftSideWindow").style.left = "0px";
+            document.getElementById("rightSideWindow ").style.right = "0px";
+            UI.Chat.scrollToTop();
         }
         Logger.openLog = openLog;
     })(Logger = UI.Logger || (UI.Logger = {}));
@@ -8024,6 +8030,10 @@ var UI;
             }
         }
         Chat.updateScrollPosition = updateScrollPosition;
+        function scrollToTop() {
+            chatBox.scrollTop = 0;
+        }
+        Chat.scrollToTop = scrollToTop;
         function setScrolledDown(state) {
             if (scrolledDown === state)
                 return;

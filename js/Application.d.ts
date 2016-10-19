@@ -1317,6 +1317,7 @@ declare module UI.Chat {
     function printMessage(message: Message, doScroll?: boolean): void;
     function printMessages(messages: Array<Message>, ignoreLowIds: boolean): void;
     function updateScrollPosition(instant?: boolean): void;
+    function scrollToTop(): void;
     function setScrolledDown(state: boolean): void;
     function sendMessage(message: Message): void;
     function getGetAllButton(): HTMLElement;

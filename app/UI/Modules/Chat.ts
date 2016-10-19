@@ -230,6 +230,10 @@ module UI.Chat {
         }
     }
 
+    export function scrollToTop () {
+        chatBox.scrollTop = 0;
+    }
+
     export function setScrolledDown (state : boolean) {
         if (scrolledDown === state) return;
         scrolledDown = state;
