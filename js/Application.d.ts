@@ -1520,9 +1520,11 @@ declare module Server.Storage {
     function sendSounds(cbs?: Listener, cbe?: Listener): void;
 }
 declare module Server.Sheets {
+    function loadSheetAndStyle(sheetid: number, styleid: number, cbs?: EventListenerObject, cbe?: EventListenerObject): void;
+    function loadSheet(sheetid: number, cbs?: Listener, cbe?: Listener): void;
     function updateStyles(cbs?: Listener, cbe?: Listener): void;
     function sendStyle(style: StyleInstance, cbs?: Listener | EventListenerObject | Function, cbe?: Listener | EventListenerObject | Function): void;
-    function loadStyle(id: number, cbs?: Listener, cbe?: Listener): void;
+    function loadStyle(id: number, cbs?: Listener, cbe?: Listener, right?: boolean): void;
     function updateLists(cbs?: Listener, cbe?: Listener): void;
     function sendFolder(sheet: SheetInstance, cbs?: Listener, cbe?: Listener): void;
     function deleteSheet(sheet: SheetInstance, cbs?: Listener, cbe?: Listener): void;

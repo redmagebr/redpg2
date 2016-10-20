@@ -10359,6 +10359,53 @@ var Server;
         var SHEET_URL = "Sheet";
         var STYLE_URL = "Style";
         var emptyCallback = { handleEvent: function () { } };
+        function loadSheetAndStyle(sheetid, styleid, cbs, cbe) {
+            var loaded = {
+                style: false,
+                sheet: false,
+                success: cbs === undefined ? emptyCallback : cbs
+            };
+            var styleCBS = {
+                loaded: loaded,
+                handleEvent: function (data) {
+                    this.loaded.style = true;
+                    if (this.loaded.sheet) {
+                        this.loaded.success.handleEvent();
+                    }
+                }
+            };
+            var sheetCBS = {
+                loaded: loaded,
+                handleEvent: function (data) {
+                    this.loaded.sheet = true;
+                    if (this.loaded.style) {
+                        this.loaded.success.handleEvent();
+                    }
+                }
+            };
+            var error = cbe === undefined ? emptyCallback : cbe;
+            loadSheet(sheetid, sheetCBS, error);
+            loadStyle(styleid, styleCBS, error, true);
+        }
+        Sheets.loadSheetAndStyle = loadSheetAndStyle;
+        function loadSheet(sheetid, cbs, cbe) {
+            var success = {
+                cbs: cbs,
+                handleEvent: function (response, xhr) {
+                    DB.SheetDB.updateFromObject(response);
+                    if (this.cbs !== undefined)
+                        this.cbs.handleEvent(response, xhr);
+                }
+            };
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var sheetAjax = new AJAXConfig(SHEET_URL);
+            sheetAjax.setData("id", sheetid);
+            sheetAjax.setData("action", "request");
+            sheetAjax.setTargetRightWindow();
+            sheetAjax.setResponseTypeJSON();
+            Server.AJAX.requestPage(sheetAjax, success, error);
+        }
+        Sheets.loadSheet = loadSheet;
         function updateStyles(cbs, cbe) {
             var success = {
                 cbs: cbs,
@@ -10406,7 +10453,7 @@ var Server;
             Server.AJAX.requestPage(ajax, cbs, cbe);
         }
         Sheets.sendStyle = sendStyle;
-        function loadStyle(id, cbs, cbe) {
+        function loadStyle(id, cbs, cbe, right) {
             var success = {
                 cbs: cbs,
                 handleEvent: function (response, xhr) {
@@ -10428,7 +10475,12 @@ var Server;
             ajax.setResponseTypeJSON();
             ajax.setData("action", "request");
             ajax.setData("id", id);
-            ajax.setTargetLeftWindow();
+            if (right === true) {
+                ajax.setTargetRightWindow();
+            }
+            else {
+                ajax.setTargetLeftWindow();
+            }
             Server.AJAX.requestPage(ajax, success, error);
         }
         Sheets.loadStyle = loadStyle;

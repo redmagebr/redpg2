@@ -4,6 +4,58 @@ module Server.Sheets {
 
     var emptyCallback = <Listener> {handleEvent:function(){}};
 
+    export function loadSheetAndStyle (sheetid : number, styleid : number, cbs? : EventListenerObject, cbe? : EventListenerObject) {
+        var loaded = {
+            style : false,
+            sheet : false,
+            success : cbs === undefined ? emptyCallback : cbs
+        };
+
+        var styleCBS = <EventListenerObject> {
+            loaded : loaded,
+            handleEvent : function (data) {
+                this.loaded.style = true;
+                if (this.loaded.sheet) {
+                    this.loaded.success.handleEvent();
+                }
+            }
+        };
+
+        var sheetCBS = <EventListenerObject> {
+            loaded : loaded,
+            handleEvent : function (data) {
+                this.loaded.sheet = true;
+                if (this.loaded.style) {
+                    this.loaded.success.handleEvent();
+                }
+            }
+        };
+
+        var error = cbe === undefined ? emptyCallback : cbe;
+
+        loadSheet(sheetid, sheetCBS, error);
+        loadStyle(styleid, styleCBS, error, true);
+    }
+
+    export function loadSheet (sheetid : number, cbs? : Listener, cbe? : Listener) {
+        var success : Listener = <Listener> {
+            cbs : cbs,
+            handleEvent : function (response, xhr) {
+                DB.SheetDB.updateFromObject(response);
+                if (this.cbs !== undefined) this.cbs.handleEvent(response, xhr);
+            }
+        };
+
+        var error = cbe === undefined ? emptyCallback : cbe;
+
+        var sheetAjax = new AJAXConfig(SHEET_URL);
+        sheetAjax.setData("id", sheetid);
+        sheetAjax.setData("action", "request");
+        sheetAjax.setTargetRightWindow();
+        sheetAjax.setResponseTypeJSON();
+        Server.AJAX.requestPage(sheetAjax, success, error);
+    }
+
     export function updateStyles (cbs? : Listener, cbe? : Listener) {
         var success : Listener = <Listener> {
             cbs : cbs,
@@ -56,7 +108,7 @@ module Server.Sheets {
         Server.AJAX.requestPage(ajax, cbs, cbe);
     }
 
-    export function loadStyle (id : number, cbs? : Listener, cbe? : Listener) {
+    export function loadStyle (id : number, cbs? : Listener, cbe? : Listener, right? : boolean) {
         var success : Listener = <Listener> {
             cbs : cbs,
             handleEvent : function (response, xhr) {
@@ -79,7 +131,11 @@ module Server.Sheets {
         ajax.setResponseTypeJSON();
         ajax.setData("action", "request");
         ajax.setData("id", id);
-        ajax.setTargetLeftWindow();
+        if (right === true) {
+            ajax.setTargetRightWindow();
+        } else {
+            ajax.setTargetLeftWindow();
+        }
 
         Server.AJAX.requestPage(ajax, success, error);
     }
