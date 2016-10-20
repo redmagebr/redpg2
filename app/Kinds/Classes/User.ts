@@ -15,6 +15,10 @@ class User {
         return this.id === Application.getMyId();
     }
 
+    public isAdmin () {
+        return this.level >= 9;
+    }
+
     public exportAsLog () {
         var obj = {
             id : this.id,

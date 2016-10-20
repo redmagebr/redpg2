@@ -35,15 +35,11 @@ module UI.Styles {
             p.addEventListener("click", <EventListenerObject> {
                 id : styles[i].id,
                 handleEvent : function () {
-                    UI.Styles.open(this.id);
+                    UI.Styles.StyleDesigner.callSelf(this.id);
                 }
             });
 
             target.appendChild(p);
         }
-    }
-
-    export function open (id : number) {
-
     }
 }

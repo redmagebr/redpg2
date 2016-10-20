@@ -18,6 +18,10 @@ change = new Changelog(0, 11, 0);
 change.addMessage("Sheet permissions implemented.", "en");
 change.addMessage("Implementadas permissões para fichas.", "pt");
 
+change = new Changelog(0, 12, 0);
+change.addMessage("Style editor implemented.", "en");
+change.addMessage("Editor de estilos implementado.", "pt");
+
 delete (change);
 
 Changelog.finished();

@@ -30,6 +30,60 @@ module Server.Sheets {
         Server.AJAX.requestPage(ajax, success, error);
     }
 
+    export function sendStyle (style : StyleInstance, cbs? : Listener | EventListenerObject | Function, cbe? : Listener | EventListenerObject | Function) {
+        cbs = cbs === undefined ? emptyCallback : cbs;
+        cbe = cbe === undefined ? emptyCallback : cbe;
+
+        var ajax = new AJAXConfig(STYLE_URL);
+        ajax.setResponseTypeJSON();
+        if (style.id === 0) {
+            ajax.setData("action", "createAdvanced");
+        } else {
+            ajax.setData("action", "editAdvanced");
+            ajax.setData("id", style.id);
+        }
+
+        ajax.setData("name", style.name);
+        ajax.setData("public", style.publicStyle ? '1' : '0');
+        ajax.setData("html", style.html);
+        ajax.setData("css", style.css);
+        ajax.setData("afterProcess", style.publicCode);
+        ajax.setData("beforeProcess", style.mainCode);
+        ajax.setData("gameid", style.gameid);
+
+        ajax.setTargetLeftWindow();
+
+        Server.AJAX.requestPage(ajax, cbs, cbe);
+    }
+
+    export function loadStyle (id : number, cbs? : Listener, cbe? : Listener) {
+        var success : Listener = <Listener> {
+            cbs : cbs,
+            handleEvent : function (response, xhr) {
+                var newObj = {
+                    id : response['id'],
+                    name : response['name'],
+                    html : response['html'],
+                    css : response['css'],
+                    mainCode : response['beforeProcess'],
+                    publicCode : response['afterProcess']
+                };
+                DB.StyleDB.updateStyle(newObj);
+                if (this.cbs !== undefined) this.cbs.handleEvent(response, xhr);
+            }
+        };
+
+        var error = cbe === undefined ? emptyCallback : cbe;
+
+        var ajax = new AJAXConfig(STYLE_URL);
+        ajax.setResponseTypeJSON();
+        ajax.setData("action", "request");
+        ajax.setData("id", id);
+        ajax.setTargetLeftWindow();
+
+        Server.AJAX.requestPage(ajax, success, error);
+    }
+
     export function updateLists (cbs? : Listener, cbe? : Listener) {
         var success : Listener = <Listener> {
             cbs : cbs,

@@ -1,5 +1,5 @@
 module DB.SheetDB {
-    export var sheets : {[id : number] : SheetInstance} = {};
+    var sheets : {[id : number] : SheetInstance} = {};
     var changeTrigger = new Trigger();
 
     export function addChangeListener (list : Listener | Function) {

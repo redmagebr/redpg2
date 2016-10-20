@@ -220,6 +220,9 @@ var User = (function () {
     User.prototype.isMe = function () {
         return this.id === Application.getMyId();
     };
+    User.prototype.isAdmin = function () {
+        return this.level >= 9;
+    };
     User.prototype.exportAsLog = function () {
         var obj = {
             id: this.id,
@@ -2793,7 +2796,22 @@ var SheetButtonaddrow = (function (_super) {
 }(SheetButton));
 var StyleInstance = (function () {
     function StyleInstance() {
+        this.id = 0;
+        this.gameid = 0;
+        this.name = "";
+        this.mainCode = null;
+        this.publicCode = null;
+        this.html = null;
+        this.css = null;
+        this.publicStyle = false;
     }
+    StyleInstance.prototype.updateFromObject = function (obj) {
+        for (var id in this) {
+            if (obj[id] !== undefined) {
+                this[id] = obj[id];
+            }
+        }
+    };
     return StyleInstance;
 }());
 var SoundLink = (function () {
@@ -4703,7 +4721,7 @@ var DB;
 (function (DB) {
     var SheetDB;
     (function (SheetDB) {
-        SheetDB.sheets = {};
+        var sheets = {};
         var changeTrigger = new Trigger();
         function addChangeListener(list) {
             changeTrigger.addListener(list);
@@ -4718,37 +4736,37 @@ var DB;
         }
         SheetDB.triggerChanged = triggerChanged;
         function hasSheet(id) {
-            return SheetDB.sheets[id] !== undefined;
+            return sheets[id] !== undefined;
         }
         SheetDB.hasSheet = hasSheet;
         function getSheet(id) {
             if (hasSheet(id)) {
-                return SheetDB.sheets[id];
+                return sheets[id];
             }
             return null;
         }
         SheetDB.getSheet = getSheet;
         function releaseSheet(id) {
             if (hasSheet(id)) {
-                delete (SheetDB.sheets[id]);
+                delete (sheets[id]);
             }
         }
         SheetDB.releaseSheet = releaseSheet;
         function updateFromObject(obj) {
             for (var i = 0; i < obj.length; i++) {
-                if (SheetDB.sheets[obj[i]['id']] === undefined) {
-                    SheetDB.sheets[obj[i]['id']] = new SheetInstance();
+                if (sheets[obj[i]['id']] === undefined) {
+                    sheets[obj[i]['id']] = new SheetInstance();
                 }
-                SheetDB.sheets[obj[i]['id']].updateFromObject(obj[i]);
+                sheets[obj[i]['id']].updateFromObject(obj[i]);
             }
             triggerChanged(null);
         }
         SheetDB.updateFromObject = updateFromObject;
         function getSheetsByGame(game) {
             var wanted = [];
-            for (var id in SheetDB.sheets) {
-                if (SheetDB.sheets[id].getGameid() === game.getId()) {
-                    wanted.push(SheetDB.sheets[id]);
+            for (var id in sheets) {
+                if (sheets[id].getGameid() === game.getId()) {
+                    wanted.push(sheets[id]);
                 }
             }
             return wanted;
@@ -5112,6 +5130,66 @@ var DB;
         }
         SoundDB.removeChangeListener = removeChangeListener;
     })(SoundDB = DB.SoundDB || (DB.SoundDB = {}));
+})(DB || (DB = {}));
+var DB;
+(function (DB) {
+    var StyleDB;
+    (function (StyleDB) {
+        var styles = {};
+        var changeTrigger = new Trigger();
+        function addChangeListener(list) {
+            changeTrigger.addListener(list);
+        }
+        StyleDB.addChangeListener = addChangeListener;
+        function removeChangeListener(list) {
+            changeTrigger.removeListener(list);
+        }
+        StyleDB.removeChangeListener = removeChangeListener;
+        function triggerChanged(sheet) {
+            changeTrigger.trigger(sheet);
+        }
+        StyleDB.triggerChanged = triggerChanged;
+        function hasStyle(id) {
+            return styles[id] !== undefined;
+        }
+        StyleDB.hasStyle = hasStyle;
+        function getStyle(id) {
+            if (hasStyle(id)) {
+                return styles[id];
+            }
+            return null;
+        }
+        StyleDB.getStyle = getStyle;
+        function getStyles() {
+            var orderedStyles = [];
+            for (var id in styles) {
+                orderedStyles.push(styles[id]);
+            }
+            orderedStyles.sort(function (a, b) {
+                var na = a.name.toLowerCase();
+                var nb = b.name.toLowerCase();
+                if (na < nb)
+                    return -1;
+                if (na > nb)
+                    return 1;
+            });
+            return orderedStyles;
+        }
+        StyleDB.getStyles = getStyles;
+        function releaseStyle(id) {
+            if (hasStyle(id)) {
+                delete (styles[id]);
+            }
+        }
+        StyleDB.releaseStyle = releaseStyle;
+        function updateStyle(obj) {
+            if (!hasStyle(obj['id'])) {
+                styles[obj['id']] = new StyleInstance();
+            }
+            getStyle(obj['id']).updateFromObject(obj);
+        }
+        StyleDB.updateStyle = updateStyle;
+    })(StyleDB = DB.StyleDB || (DB.StyleDB = {}));
 })(DB || (DB = {}));
 var Application;
 (function (Application) {
@@ -9204,16 +9282,172 @@ var UI;
                 p.addEventListener("click", {
                     id: styles[i].id,
                     handleEvent: function () {
-                        UI.Styles.open(this.id);
+                        UI.Styles.StyleDesigner.callSelf(this.id);
                     }
                 });
                 target.appendChild(p);
             }
         }
         Styles.printStyles = printStyles;
-        function open(id) {
-        }
-        Styles.open = open;
+    })(Styles = UI.Styles || (UI.Styles = {}));
+})(UI || (UI = {}));
+var UI;
+(function (UI) {
+    var Styles;
+    (function (Styles) {
+        var StyleDesigner;
+        (function (StyleDesigner) {
+            var nameInput = document.getElementById("styleEditorName");
+            var publicStyleInput = document.getElementById("styleEditorPublic");
+            var gameSelect = document.getElementById("styleEditorGameSelect");
+            var copySelect = document.getElementById("styleEditorCopySelect");
+            var remainInput = document.getElementById("styleEditorRemain");
+            var htmlInput = document.getElementById("styleEditorHTML");
+            var cssInput = document.getElementById("styleEditorCSS");
+            var jsInput = document.getElementById("styleEditorJS");
+            var publicCodeInput = document.getElementById("styleEditorPublicCode");
+            var publicStyleLabel = document.getElementById("styleEditorPublicLabel");
+            var copyLabel = document.getElementById("styleEditorCopyLabel");
+            var gameLabel = document.getElementById("styleEditorGameLabel");
+            var remainLabel = document.getElementById("styleEditorRemainLabel");
+            var currentStyle = null;
+            document.getElementById("styleEditorCopyButton").addEventListener("click", function (e) {
+                e.preventDefault();
+                UI.Styles.StyleDesigner.copy();
+            });
+            document.getElementById("styleEditorForm").addEventListener("submit", function (e) {
+                e.preventDefault();
+                UI.Styles.StyleDesigner.submit();
+            });
+            document.getElementById("stylesNewStyleButton").addEventListener("click", function (e) {
+                e.preventDefault();
+                UI.Styles.StyleDesigner.callSelf();
+            });
+            function empty() {
+                nameInput.value = "";
+                htmlInput.value = "";
+                cssInput.value = "";
+                jsInput.value = "";
+                publicCodeInput.value = "";
+                publicStyleInput.checked = false;
+            }
+            function emptyGameSelect() {
+                while (gameSelect.firstChild !== null)
+                    gameSelect.removeChild(gameSelect.firstChild);
+            }
+            function callSelf(id) {
+                UI.PageManager.callPage(UI.idStyleDesigner);
+                if (Application.getMe().isAdmin()) {
+                    publicStyleLabel.style.display = "";
+                }
+                else {
+                    publicStyleLabel.style.display = "none";
+                }
+                var games = DB.GameDB.getOrderedGameList();
+                if (games.length < 1) {
+                    emptyGameSelect();
+                    var option = document.createElement("option");
+                    option.value = "0";
+                    gameSelect.appendChild(option);
+                    gameSelect.value = "0";
+                    gameLabel.style.display = "none";
+                }
+                else {
+                    gameLabel.style.display = "";
+                    emptyGameSelect();
+                    for (var i = 0; i < games.length; i++) {
+                        var game = games[i];
+                        var option = document.createElement("option");
+                        option.value = game.getId().toString();
+                        option.appendChild(document.createTextNode(game.getName()));
+                        gameSelect.appendChild(option);
+                    }
+                }
+                var styles = DB.StyleDB.getStyles();
+                copyLabel.style.display = "none";
+                while (copySelect.firstChild !== null)
+                    copySelect.removeChild(copySelect.firstChild);
+                for (var i = 0; i < styles.length; i++) {
+                    var style = styles[i];
+                    if (id !== undefined && style.id.toString() === id.toString())
+                        continue;
+                    copyLabel.style.display = "";
+                    var option = document.createElement("option");
+                    option.value = style.id.toString();
+                    option.appendChild(document.createTextNode(style.name));
+                    copySelect.appendChild(option);
+                }
+                empty();
+                currentStyle = null;
+                if (id !== undefined) {
+                    var cbs = {
+                        id: id,
+                        handleEvent: function () {
+                            UI.Styles.StyleDesigner.loadStyle(this.id);
+                        }
+                    };
+                    var cbe = {
+                        handleEvent: function () { UI.Styles.callSelf(); }
+                    };
+                    Server.Sheets.loadStyle(id, cbs, cbe);
+                }
+                if (id !== undefined) {
+                    remainLabel.style.display = "";
+                }
+                else {
+                    remainLabel.style.display = "none";
+                }
+            }
+            StyleDesigner.callSelf = callSelf;
+            function copy() {
+                fillWithStyle(DB.StyleDB.getStyle(parseInt(copySelect.value)), true);
+            }
+            StyleDesigner.copy = copy;
+            function loadStyle(id) {
+                currentStyle = DB.StyleDB.getStyle(id);
+                fillWithStyle(currentStyle);
+            }
+            StyleDesigner.loadStyle = loadStyle;
+            function fillWithStyle(style, copy) {
+                if (copy !== true) {
+                    nameInput.value = style.name;
+                    publicStyleInput.checked = style.publicStyle;
+                    gameSelect.value = style.gameid.toString();
+                }
+                htmlInput.value = style.html;
+                cssInput.value = style.css;
+                jsInput.value = style.mainCode;
+                publicCodeInput.value = style.publicCode;
+            }
+            StyleDesigner.fillWithStyle = fillWithStyle;
+            function submit() {
+                var style;
+                if (currentStyle === null) {
+                    style = new StyleInstance();
+                }
+                else {
+                    style = currentStyle;
+                }
+                style.name = nameInput.value;
+                style.mainCode = jsInput.value;
+                style.css = cssInput.value;
+                style.publicCode = publicCodeInput.value;
+                style.html = htmlInput.value;
+                style.publicStyle = publicStyleInput.checked;
+                style.gameid = parseInt(gameSelect.value);
+                var cbs = function () { UI.Styles.StyleDesigner.finish(); };
+                var cbe = function () { };
+                console.log(style);
+                Server.Sheets.sendStyle(style, cbs, cbe);
+            }
+            StyleDesigner.submit = submit;
+            function finish() {
+                if (!remainInput.checked || currentStyle === null) {
+                    UI.Styles.callSelf();
+                }
+            }
+            StyleDesigner.finish = finish;
+        })(StyleDesigner = Styles.StyleDesigner || (Styles.StyleDesigner = {}));
     })(Styles = UI.Styles || (UI.Styles = {}));
 })(UI || (UI = {}));
 var Server;
@@ -10149,6 +10383,55 @@ var Server;
             Server.AJAX.requestPage(ajax, success, error);
         }
         Sheets.updateStyles = updateStyles;
+        function sendStyle(style, cbs, cbe) {
+            cbs = cbs === undefined ? emptyCallback : cbs;
+            cbe = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(STYLE_URL);
+            ajax.setResponseTypeJSON();
+            if (style.id === 0) {
+                ajax.setData("action", "createAdvanced");
+            }
+            else {
+                ajax.setData("action", "editAdvanced");
+                ajax.setData("id", style.id);
+            }
+            ajax.setData("name", style.name);
+            ajax.setData("public", style.publicStyle ? '1' : '0');
+            ajax.setData("html", style.html);
+            ajax.setData("css", style.css);
+            ajax.setData("afterProcess", style.publicCode);
+            ajax.setData("beforeProcess", style.mainCode);
+            ajax.setData("gameid", style.gameid);
+            ajax.setTargetLeftWindow();
+            Server.AJAX.requestPage(ajax, cbs, cbe);
+        }
+        Sheets.sendStyle = sendStyle;
+        function loadStyle(id, cbs, cbe) {
+            var success = {
+                cbs: cbs,
+                handleEvent: function (response, xhr) {
+                    var newObj = {
+                        id: response['id'],
+                        name: response['name'],
+                        html: response['html'],
+                        css: response['css'],
+                        mainCode: response['beforeProcess'],
+                        publicCode: response['afterProcess']
+                    };
+                    DB.StyleDB.updateStyle(newObj);
+                    if (this.cbs !== undefined)
+                        this.cbs.handleEvent(response, xhr);
+                }
+            };
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(STYLE_URL);
+            ajax.setResponseTypeJSON();
+            ajax.setData("action", "request");
+            ajax.setData("id", id);
+            ajax.setTargetLeftWindow();
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Sheets.loadStyle = loadStyle;
         function updateLists(cbs, cbe) {
             var success = {
                 cbs: cbs,
@@ -10231,6 +10514,9 @@ change.addMessage("Comando /log adicionado ao chat.", "pt");
 change = new Changelog(0, 11, 0);
 change.addMessage("Sheet permissions implemented.", "en");
 change.addMessage("Implementadas permissões para fichas.", "pt");
+change = new Changelog(0, 12, 0);
+change.addMessage("Style editor implemented.", "en");
+change.addMessage("Editor de estilos implementado.", "pt");
 delete (change);
 Changelog.finished();
 UI.Language.searchLanguage();

@@ -8,3 +8,4 @@
 /// <reference path='Modules/SheetDB.ts' />
 /// <reference path='Modules/ImageDB.ts' />
 /// <reference path='Modules/SoundDB.ts' />
+/// <reference path='Modules/StyleDB.ts' />

@@ -107,6 +107,7 @@ declare class User {
     };
     private changedTrigger;
     isMe(): boolean;
+    isAdmin(): boolean;
     exportAsLog(): {
         id: number;
         nickname: string;
@@ -736,11 +737,15 @@ declare class SheetButtonaddrow extends SheetButton {
     click: () => void;
 }
 declare class StyleInstance {
+    id: number;
+    gameid: number;
+    name: string;
     mainCode: string;
     publicCode: string;
-    name: string;
     html: string;
     css: string;
+    publicStyle: boolean;
+    updateFromObject(obj: any): void;
 }
 declare class SoundLink {
     private name;
@@ -1031,9 +1036,6 @@ declare module DB.MessageDB {
     function updateFromObject(obj: Array<Object>): void;
 }
 declare module DB.SheetDB {
-    var sheets: {
-        [id: number]: SheetInstance;
-    };
     function addChangeListener(list: Listener | Function): void;
     function removeChangeListener(list: Listener | Function): void;
     function triggerChanged(sheet: SheetInstance): void;
@@ -1077,6 +1079,16 @@ declare module DB.SoundDB {
     function triggerChange(image: SoundLink): void;
     function addChangeListener(f: Listener | Function): void;
     function removeChangeListener(f: Listener | Function): void;
+}
+declare module DB.StyleDB {
+    function addChangeListener(list: Listener | Function): void;
+    function removeChangeListener(list: Listener | Function): void;
+    function triggerChanged(sheet: SheetInstance): void;
+    function hasStyle(id: number): boolean;
+    function getStyle(id: number): StyleInstance;
+    function getStyles(): Array<StyleInstance>;
+    function releaseStyle(id: number): void;
+    function updateStyle(obj: any): void;
 }
 declare module Application {
     function getMe(): User;
@@ -1411,7 +1423,14 @@ declare module UI.Styles {
     function callSelf(): void;
     function emptyTarget(): void;
     function printStyles(styles: Array<StyleInfo>): void;
-    function open(id: number): void;
+}
+declare module UI.Styles.StyleDesigner {
+    function callSelf(id?: number): void;
+    function copy(): void;
+    function loadStyle(id: number): void;
+    function fillWithStyle(style: StyleInstance, copy?: boolean): void;
+    function submit(): void;
+    function finish(): void;
 }
 declare module Server {
     var IMAGE_URL: string;
@@ -1502,6 +1521,8 @@ declare module Server.Storage {
 }
 declare module Server.Sheets {
     function updateStyles(cbs?: Listener, cbe?: Listener): void;
+    function sendStyle(style: StyleInstance, cbs?: Listener | EventListenerObject | Function, cbe?: Listener | EventListenerObject | Function): void;
+    function loadStyle(id: number, cbs?: Listener, cbe?: Listener): void;
     function updateLists(cbs?: Listener, cbe?: Listener): void;
     function sendFolder(sheet: SheetInstance, cbs?: Listener, cbe?: Listener): void;
     function deleteSheet(sheet: SheetInstance, cbs?: Listener, cbe?: Listener): void;

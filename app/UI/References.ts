@@ -33,6 +33,7 @@
 /// <reference path='Modules/Pica.ts' />
 /// <reference path='Modules/Sounds.ts' />
 /// <reference path='Modules/Styles.ts' />
+/// <reference path='Modules/Styles/StyleDesigner.ts' />
 
 // Message Classes
 /// <reference path='Message/References.ts' />
