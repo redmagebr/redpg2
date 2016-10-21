@@ -1,4 +1,6 @@
 class SheetInstance {
+    private tab : SheetTab;
+
     public id : number = 0;
     public gameid : number = 0;
     public folder : string = "";
@@ -22,8 +24,21 @@ class SheetInstance {
     public isPublic : boolean = false;
 
     public changed : boolean = false;
+    public loaded : boolean = false;
 
     private changeTrigger = new Trigger();
+
+    constructor () {
+        this.tab = new SheetTab(this);
+    }
+
+    public getStyleId() {
+        return this.styleId;
+    }
+
+    public getTab () {
+        return this.tab;
+    }
 
     public getGameid () {
         return this.gameid;
@@ -112,7 +127,16 @@ class SheetInstance {
         if (typeof obj['styleName'] !== 'undefined') this.styleName = obj['styleName'];
         if (typeof obj['segura'] !== 'undefined') this.styleSafe = obj['segura'];
 
-        if (typeof obj['values'] !== 'undefined') this.setValues(obj['values'], false);
+        if (typeof obj['values'] !== 'undefined') {
+            this.loaded = true;
+            this.setValues(obj['values'], false);
+        }
+    }
+
+    public getValue (id : string) {
+        if (typeof this.values === 'object') {
+            return this.values[id];
+        }
     }
 
     public isEditable () {

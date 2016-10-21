@@ -83,7 +83,7 @@ module UI.Sheets {
                     game: game,
                     handleEvent: function (e) {
                         e.preventDefault();
-                        UI.Sheets.Designer.callSelf(this.game);
+                        UI.Sheets.SheetDesigner.callSelf(this.game);
                     }
                 });
             }

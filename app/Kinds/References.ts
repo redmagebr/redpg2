@@ -57,6 +57,7 @@
 /// <reference path='Elements/PicaBG.ts' />
 /// <reference path='Elements/SoundsRow.ts' />
 /// <reference path='Elements/SoundsFolder.ts' />
+/// <reference path='Elements/Sheet/SheetTab.ts' />
 
 
 /// <reference path='Classes/Sheet/SheetStyle.ts' />

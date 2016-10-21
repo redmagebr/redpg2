@@ -744,8 +744,16 @@ var SheetInstance = (function () {
         this.promote = false;
         this.isPublic = false;
         this.changed = false;
+        this.loaded = false;
         this.changeTrigger = new Trigger();
+        this.tab = new SheetTab(this);
     }
+    SheetInstance.prototype.getStyleId = function () {
+        return this.styleId;
+    };
+    SheetInstance.prototype.getTab = function () {
+        return this.tab;
+    };
     SheetInstance.prototype.getGameid = function () {
         return this.gameid;
     };
@@ -829,8 +837,15 @@ var SheetInstance = (function () {
             this.styleName = obj['styleName'];
         if (typeof obj['segura'] !== 'undefined')
             this.styleSafe = obj['segura'];
-        if (typeof obj['values'] !== 'undefined')
+        if (typeof obj['values'] !== 'undefined') {
+            this.loaded = true;
             this.setValues(obj['values'], false);
+        }
+    };
+    SheetInstance.prototype.getValue = function (id) {
+        if (typeof this.values === 'object') {
+            return this.values[id];
+        }
     };
     SheetInstance.prototype.isEditable = function () {
         return this.edit;
@@ -2062,6 +2077,7 @@ var SheetsRow = (function () {
         }
     }
     SheetsRow.prototype.open = function () {
+        UI.Sheets.SheetManager.openSheet(this.sheet, true, false);
     };
     SheetsRow.prototype.deleteSheet = function () {
         if (confirm(UI.Language.getLanguage().getLingo("_SHEETCONFIRMDELETE_", { languagea: this.sheet.getName() }))) {
@@ -2483,6 +2499,66 @@ var SoundsFolder = (function () {
     };
     return SoundsFolder;
 }());
+var SheetTab = (function () {
+    function SheetTab(sheet) {
+        this.div = document.createElement("div");
+        this.text = document.createTextNode("");
+        this.sheet = sheet;
+        this.div.classList.add("sheetTab");
+        this.div.appendChild(this.text);
+        this.div.addEventListener("click", {
+            tab: this,
+            handleEvent: function (e) {
+                e.preventDefault();
+                this.tab.click();
+            }
+        });
+        sheet.addChangeListener({
+            tab: this,
+            handleEvent: function () {
+                this.tab.checkNPCStatus();
+                this.tab.updateName();
+            }
+        });
+        this.checkNPCStatus();
+        this.updateName();
+    }
+    SheetTab.prototype.updateName = function () {
+        this.text.nodeValue = this.sheet.getName();
+    };
+    SheetTab.prototype.checkNPCStatus = function () {
+        var player = this.sheet.getValue("Player") !== undefined ? this.sheet.getValue("Player") :
+            this.sheet.getValue("Jogador") !== undefined ? this.sheet.getValue("Jogador") :
+                this.sheet.getValue("Owner") !== undefined ? this.sheet.getValue("Owner") :
+                    this.sheet.getValue("Dono") !== undefined ? this.sheet.getValue("Dono") :
+                        undefined;
+        if (player !== undefined && player.toUpperCase() === "NPC") {
+            this.toggleNpc();
+        }
+        else {
+            this.toggleCharacter();
+        }
+    };
+    SheetTab.prototype.getHTML = function () {
+        return this.div;
+    };
+    SheetTab.prototype.toggleNpc = function () {
+        this.div.classList.remove("character");
+    };
+    SheetTab.prototype.toggleCharacter = function () {
+        this.div.classList.add("character");
+    };
+    SheetTab.prototype.toggleOn = function () {
+        this.div.classList.add("toggled");
+    };
+    SheetTab.prototype.toggleOff = function () {
+        this.div.classList.remove("toggled");
+    };
+    SheetTab.prototype.click = function () {
+        UI.Sheets.SheetManager.openSheet(this.sheet);
+    };
+    return SheetTab;
+}());
 var SheetStyle = (function () {
     function SheetStyle() {
         this.css = document.createElement("style");
@@ -2805,6 +2881,9 @@ var StyleInstance = (function () {
         this.css = null;
         this.publicStyle = false;
     }
+    StyleInstance.prototype.isLoaded = function () {
+        return this.html !== null;
+    };
     StyleInstance.prototype.updateFromObject = function (obj) {
         for (var id in this) {
             if (obj[id] !== undefined) {
@@ -5800,6 +5879,7 @@ var UI;
     UI.idInviteDesigner = "gameInviteFormSideWindow";
     UI.idGameDesigner = "gameDesignerFormSideWindow";
     UI.idRoomDesigner = "roomDesignerFormSideWindow";
+    UI.idSheetViewer = "sheetViewerSideWindow";
     UI.idHome = "homeSideWindow";
     UI.idSheets = "sheetsSideWindow";
     UI.idImages = "imagesSideWindow";
@@ -6945,7 +7025,7 @@ var UI;
                         game: game,
                         handleEvent: function (e) {
                             e.preventDefault();
-                            UI.Sheets.Designer.callSelf(this.game);
+                            UI.Sheets.SheetDesigner.callSelf(this.game);
                         }
                     });
                 }
@@ -7027,6 +7107,67 @@ var UI;
             }
             SheetPermissionDesigner.success = success;
         })(SheetPermissionDesigner = Sheets.SheetPermissionDesigner || (Sheets.SheetPermissionDesigner = {}));
+    })(Sheets = UI.Sheets || (UI.Sheets = {}));
+})(UI || (UI = {}));
+var UI;
+(function (UI) {
+    var Sheets;
+    (function (Sheets) {
+        var SheetManager;
+        (function (SheetManager) {
+            var buttons = [];
+            var buttonHolder = document.getElementById("sheetViewerSheetsTab");
+            while (buttonHolder.firstChild)
+                buttonHolder.removeChild(buttonHolder.firstChild);
+            SheetManager.currentSheet = null;
+            function switchToSheet(sheet) {
+                UI.PageManager.callPage(UI.idSheetViewer);
+                var idx = buttons.indexOf(sheet);
+                if (idx !== -1) {
+                    buttons.splice(idx, 1);
+                }
+                buttons.push(sheet);
+                buttonHolder.appendChild(sheet.getTab().getHTML());
+                sheet.getTab().toggleOn();
+                while (buttonHolder.clientHeight > sheet.getTab().getHTML().scrollHeight) {
+                    var oldTab = buttons.splice(0, 1)[0];
+                    buttonHolder.removeChild(oldTab.getTab().getHTML());
+                }
+                if (SheetManager.currentSheet !== null && SheetManager.currentSheet !== sheet) {
+                    SheetManager.currentSheet.getTab().toggleOff();
+                }
+                SheetManager.currentSheet = sheet;
+            }
+            SheetManager.switchToSheet = switchToSheet;
+            function openSheet(sheet, reloadSheet, reloadStyle) {
+                var loadSheet = !sheet.loaded || reloadSheet === true;
+                var loadStyle = reloadStyle === true || !DB.StyleDB.hasStyle(sheet.getStyleId()) || !DB.StyleDB.getStyle(sheet.getStyleId()).isLoaded();
+                var cbs = {
+                    sheet: sheet,
+                    handleEvent: function () {
+                        UI.Sheets.SheetManager.switchToSheet(this.sheet);
+                    }
+                };
+                var cbe = {
+                    handleEvent: function () {
+                        UI.Sheets.callSelf();
+                    }
+                };
+                if (loadSheet && loadStyle) {
+                    Server.Sheets.loadSheetAndStyle(sheet.getId(), sheet.getStyleId(), cbs, cbe);
+                }
+                else if (loadSheet) {
+                    Server.Sheets.loadSheet(sheet.getId(), cbs, cbe);
+                }
+                else if (loadStyle) {
+                    Server.Sheets.loadStyle(sheet.getStyleId(), cbs, cbe);
+                }
+                else {
+                    switchToSheet(sheet);
+                }
+            }
+            SheetManager.openSheet = openSheet;
+        })(SheetManager = Sheets.SheetManager || (Sheets.SheetManager = {}));
     })(Sheets = UI.Sheets || (UI.Sheets = {}));
 })(UI || (UI = {}));
 var UI;

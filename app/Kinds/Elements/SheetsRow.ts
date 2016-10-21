@@ -5,6 +5,7 @@ class SheetsRow {
 
     public open () {
         // TODO: Call Open Sheet
+        UI.Sheets.SheetManager.openSheet(this.sheet, true, false);
     }
 
     public deleteSheet () {

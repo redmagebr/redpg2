@@ -230,6 +230,7 @@ declare class Game {
     updateFromObject(game: Object, cleanup: boolean): void;
 }
 declare class SheetInstance {
+    private tab;
     id: number;
     gameid: number;
     folder: string;
@@ -249,7 +250,11 @@ declare class SheetInstance {
     promote: boolean;
     isPublic: boolean;
     changed: boolean;
+    loaded: boolean;
     private changeTrigger;
+    constructor();
+    getStyleId(): number;
+    getTab(): SheetTab;
     getGameid(): number;
     getFolder(): string;
     getId(): number;
@@ -261,6 +266,7 @@ declare class SheetInstance {
     getName(): string;
     setValues(values: Object, local: boolean): void;
     updateFromObject(obj: Object): void;
+    getValue(id: string): any;
     isEditable(): boolean;
     isPromotable(): boolean;
     isDeletable(): boolean;
@@ -641,6 +647,20 @@ declare class SoundsFolder {
     getHTML(): HTMLElement;
     considerSuicide(): void;
 }
+declare class SheetTab {
+    private sheet;
+    private div;
+    private text;
+    constructor(sheet: SheetInstance);
+    updateName(): void;
+    checkNPCStatus(): void;
+    getHTML(): HTMLElement;
+    toggleNpc(): void;
+    toggleCharacter(): void;
+    toggleOn(): void;
+    toggleOff(): void;
+    click(): void;
+}
 declare class SheetStyle {
     private css;
     private visible;
@@ -745,6 +765,7 @@ declare class StyleInstance {
     html: string;
     css: string;
     publicStyle: boolean;
+    isLoaded(): boolean;
     updateFromObject(obj: any): void;
 }
 declare class SoundLink {
@@ -1161,6 +1182,7 @@ declare module UI {
     var idInviteDesigner: string;
     var idGameDesigner: string;
     var idRoomDesigner: string;
+    var idSheetViewer: string;
     var idHome: string;
     var idSheets: string;
     var idImages: string;
@@ -1272,6 +1294,11 @@ declare module UI.Sheets.SheetPermissionDesigner {
     function printPlayers(players: any): void;
     function submit(): void;
     function success(): void;
+}
+declare module UI.Sheets.SheetManager {
+    var currentSheet: SheetInstance;
+    function switchToSheet(sheet: SheetInstance): void;
+    function openSheet(sheet: SheetInstance, reloadSheet?: boolean, reloadStyle?: boolean): void;
 }
 declare module UI.Rooms {
     function deleteRoom(room: Room): void;

@@ -1,0 +1,107 @@
+#sheetToolbox {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  height: 40px;
+  text-align: center;
+}
+
+.sheetTool {
+  @extend .buttonBehavior;
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+}
+
+#sheetViewport {
+  @extend .scrollbar;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top: 30px;
+  bottom: 40px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+#sheetViewerSheetsTab {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  text-align: right;
+  overflow: visible;
+}
+
+.sheetTab {
+  vertical-align: top;
+  display: inline-block;
+  font-variant: small-caps;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 30px;
+  padding-left: 6px;
+  padding-right: 6px;
+  height: 30px;
+  margin-right: 6px;
+  min-width: 40px;
+  text-align: center;
+  user-select: none;
+  color: #FFF;
+
+  @extend .buttonBehavior;
+
+  &.character {
+    background-color: #6c7394;
+
+    &:hover {
+      cursor: pointer;
+      background-color: #545c81;
+    }
+
+    &:active {
+      background-color: #6a6f88;
+    }
+
+    &.toggled {
+      background-color: #333745;
+      color: #0fd6c7;
+
+      &:hover {
+        cursor: default;
+        background-color: #333745;
+      }
+
+      &:active {
+        background-color: #333745;
+      }
+    }
+  }
+
+  // NPC Colors
+  background-color: #968279;
+
+  &.toggled {
+    background-color: #734443;
+    color: #fab600;
+
+    &:hover {
+      cursor: default;
+      background-color: #734443;
+    }
+
+    &:active {
+      background-color: #734443;
+    }
+  }
+
+  &:hover {
+    cursor: pointer;
+    background-color: #886c5f;
+  }
+
+  &:active {
+    background-color: #9c8175;
+  }
+}

@@ -8,6 +8,10 @@ class StyleInstance {
     public css : string = null;
     public publicStyle : boolean = false;
 
+    public isLoaded () {
+        return this.html !== null;
+    }
+
     public updateFromObject (obj) {
         for (var id in this) {
             if (obj[id] !== undefined) {
