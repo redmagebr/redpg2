@@ -10,6 +10,7 @@
 /// <reference path='Interfaces/ImageInt.ts' />
 /// <reference path='Interfaces/StyleInfo.ts' />
 
+/// <reference path='Classes/Trigger.ts' />
 /// <reference path='Classes/Changelog.ts' />
 /// <reference path='Classes/ImageRed.ts' />
 /// <reference path='Classes/ImageLink.ts' />
@@ -19,7 +20,8 @@
 /// <reference path='Classes/Room.ts' />
 /// <reference path='Classes/Game.ts' />
 /// <reference path='Classes/SheetInstance.ts' />
-/// <reference path='Classes/Trigger.ts' />
+/// <reference path='Classes/StyleInstance.ts' />
+/// <reference path='Classes/SoundLink.ts' />
 
 /// <reference path='Classes/AJAXConfig.ts' />
 /// <reference path='Classes/WebsocketController.ts' />
@@ -36,6 +38,7 @@
 /// <reference path='Classes/Memory/MemoryCombat.ts' />
 /// <reference path='Classes/Memory/MemoryPica.ts' />
 /// <reference path='Classes/Memory/MemoryVersion.ts' />
+/// <reference path='Classes/Memory/MemoryCutscene.ts' />
 /// <reference path='Classes/Memory/Combat/CombatEffect.ts' />
 /// <reference path='Classes/Memory/Combat/CombatParticipant.ts' />
 
@@ -60,12 +63,4 @@
 /// <reference path='Elements/Sheet/SheetTab.ts' />
 
 
-/// <reference path='Classes/Sheet/SheetStyle.ts' />
-/// <reference path='Classes/Sheet/StyleFactory.ts' />
-/// <reference path='Classes/Sheet/Sheet.ts' />
-/// <reference path='Classes/Sheet/SheetList.ts' />
-/// <reference path='Classes/Sheet/SheetVariable.ts' />
-/// <reference path='Classes/Sheet/SheetButton.ts' />
-/// <reference path='Classes/Sheet/Button/SheetButtonaddrow.ts' />
-/// <reference path='Classes/StyleInstance.ts' />
-/// <reference path='Classes/SoundLink.ts' />
+/// <reference path='Classes/Sheets/References.ts' />

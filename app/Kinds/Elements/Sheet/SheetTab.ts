@@ -34,13 +34,14 @@ class SheetTab {
     }
 
     public checkNPCStatus () {
-        var player = this.sheet.getValue("Player") !== undefined ? this.sheet.getValue("Player") :
-                        this.sheet.getValue("Jogador") !== undefined ? this.sheet.getValue("Jogador") :
-                            this.sheet.getValue("Owner") !== undefined ? this.sheet.getValue("Owner") :
-                                this.sheet.getValue("Dono") !== undefined ? this.sheet.getValue("Dono") :
-                                    undefined;
+        // var player = this.sheet.getValue("Player") !== undefined ? this.sheet.getValue("Player") :
+        //                 this.sheet.getValue("Jogador") !== undefined ? this.sheet.getValue("Jogador") :
+        //                     this.sheet.getValue("Owner") !== undefined ? this.sheet.getValue("Owner") :
+        //                         this.sheet.getValue("Dono") !== undefined ? this.sheet.getValue("Dono") :
+        //                             undefined;
 
-        if (player !== undefined && player.toUpperCase() === "NPC") {
+        // if (player !== undefined && player.toUpperCase() === "NPC") {
+        if (this.sheet.isNPC()) {
             this.toggleNpc();
         } else {
             this.toggleCharacter();

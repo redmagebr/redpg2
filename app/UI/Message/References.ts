@@ -24,3 +24,4 @@
 /// <reference path='Types/MessageOff.ts' />
 /// <reference path='Types/MessageRoleplay.ts' />
 /// <reference path='Types/MessageUnknown.ts' />
+/// <reference path='Types/MessageCutscene.ts' />

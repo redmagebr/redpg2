@@ -1,0 +1,3 @@
+interface SheetCreatorListener {
+    complete() : void;
+}

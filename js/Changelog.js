@@ -22,6 +22,14 @@ change = new Changelog(0, 12, 0);
 change.addMessage("Style editor implemented.", "en");
 change.addMessage("Editor de estilos implementado.", "pt");
 
+change = new Changelog(0, 13, 0);
+change.addMessage("Sheet creation implemented.", "en");
+change.addMessage("Opening sheets implemented.", "en");
+change.addMessage("Cutscene mode implemented in chats.", "en");
+change.addMessage("Criação de fichas implementada.", "pt");
+change.addMessage("Abrir fichas implementado.", "pt");
+change.addMessage("Modo Cutscene implementado em chats.", "pt");
+
 delete (change);
 
 Changelog.finished();

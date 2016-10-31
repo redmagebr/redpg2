@@ -3,6 +3,7 @@ module Server.Sheets {
     var STYLE_URL = "Style";
 
     var emptyCallback = <Listener> {handleEvent:function(){}};
+    var emptyCallbackFunction = function () {};
 
     export function loadSheetAndStyle (sheetid : number, styleid : number, cbs? : EventListenerObject, cbe? : EventListenerObject) {
         var loaded = {
@@ -120,6 +121,12 @@ module Server.Sheets {
                     mainCode : response['beforeProcess'],
                     publicCode : response['afterProcess']
                 };
+
+                if (response['gameid'] !== undefined) {
+                    newObj['gameid'] = response['gameid'];
+                } else {
+                    newObj['publicStyle'] = Application.getMe().isAdmin();
+                }
                 DB.StyleDB.updateStyle(newObj);
                 if (this.cbs !== undefined) this.cbs.handleEvent(response, xhr);
             }
@@ -214,6 +221,47 @@ module Server.Sheets {
         }
         ajax.setData("privileges", privileges);
 
+        ajax.setTargetRightWindow();
+
+        Server.AJAX.requestPage(ajax, cbs, cbe);
+    }
+
+    export function getStyleOptions (game : Game, cbs : Function | EventListenerObject, cbe : Function | EventListenerObject) {
+        cbs = <EventListenerObject> {
+            cbs : cbs,
+            handleEvent : function (data) {
+                if (typeof this.cbs === "function") {
+                    this.cbs(data);
+                } else if (typeof this.cbs === "object") {
+                    this.cbs.handleEvent(data);
+                }
+            }
+        }
+        cbe = cbe === undefined ? emptyCallbackFunction : cbe;
+
+        var ajax = new AJAXConfig(STYLE_URL);
+        ajax.setResponseTypeJSON();
+        ajax.setData("action", "list");
+        ajax.setData("id", game.getId());
+        ajax.setTargetRightWindow();
+
+        // url : 'Style',
+        //     data: {id : gameid, action : 'list'},
+
+        Server.AJAX.requestPage(ajax, cbs, cbe);
+    }
+
+    export function createSheet (game : Game, sheetName : string, styleId : number, isPublic : boolean, cbs? : Listener | EventListenerObject | Function, cbe? : Listener | EventListenerObject | Function) {
+        cbs = cbs === undefined ? emptyCallback : cbs;
+        cbe = cbe === undefined ? emptyCallback : cbe;
+
+        var ajax = new AJAXConfig(SHEET_URL);
+        ajax.setResponseTypeJSON();
+        ajax.setData("action", "create");
+        ajax.setData("gameid", game.getId());
+        ajax.setData("name", sheetName);
+        ajax.setData("idstyle", styleId);
+        ajax.setData("publica", isPublic);
         ajax.setTargetRightWindow();
 
         Server.AJAX.requestPage(ajax, cbs, cbe);

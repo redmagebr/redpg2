@@ -313,4 +313,10 @@ module Server.Chat {
         };
         socketController.addCloseListener(reconnectF);
     })();
+
+    Application.Login.addListener(function (logged) {
+        if (!logged) {
+            UI.Chat.leave();
+        }
+    });
 }

@@ -26,6 +26,59 @@ function allReady() {
         onReady[i].handleEvent();
     }
 }
+var Trigger = (function () {
+    function Trigger() {
+        this.functions = [];
+        this.objects = [];
+    }
+    Trigger.prototype.removeListener = function (f) {
+        if (typeof f === "function") {
+            var i = this.functions.indexOf(f);
+            if (i !== -1) {
+                this.functions.splice(i, 1);
+            }
+        }
+        else {
+            var i = this.objects.indexOf(f);
+            if (i !== -1) {
+                this.objects.splice(i, 1);
+            }
+        }
+    };
+    Trigger.prototype.addListener = function (f) {
+        if (typeof f === "function") {
+            this.functions.push(f);
+        }
+        else {
+            this.objects.push(f);
+        }
+    };
+    Trigger.prototype.addListenerIfMissing = function (f) {
+        if (typeof f === "function") {
+            if (this.functions.indexOf(f) === -1) {
+                this.functions.push(f);
+            }
+        }
+        else {
+            if (this.objects.indexOf(f) === -1) {
+                this.objects.push(f);
+            }
+        }
+    };
+    Trigger.prototype.trigger = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i - 0] = arguments[_i];
+        }
+        for (var i = 0; i < this.functions.length; i++) {
+            this.functions[i].apply(null, args);
+        }
+        for (var i = 0; i < this.objects.length; i++) {
+            this.objects[i].handleEvent.apply(this.objects[i], args);
+        }
+    };
+    return Trigger;
+}());
 var Changelog = (function () {
     function Changelog(release, minor, major) {
         this.messages = {};
@@ -725,6 +778,7 @@ var Game = (function () {
 }());
 var SheetInstance = (function () {
     function SheetInstance() {
+        this.tab = null;
         this.id = 0;
         this.gameid = 0;
         this.folder = "";
@@ -746,16 +800,24 @@ var SheetInstance = (function () {
         this.changed = false;
         this.loaded = false;
         this.changeTrigger = new Trigger();
-        this.tab = new SheetTab(this);
     }
     SheetInstance.prototype.getStyleId = function () {
         return this.styleId;
     };
+    SheetInstance.prototype.getStyle = function () {
+        return DB.StyleDB.getStyle(this.styleId);
+    };
     SheetInstance.prototype.getTab = function () {
+        if (this.tab === null) {
+            this.tab = new SheetTab(this);
+        }
         return this.tab;
     };
     SheetInstance.prototype.getGameid = function () {
         return this.gameid;
+    };
+    SheetInstance.prototype.getGame = function () {
+        return DB.GameDB.getGame(this.gameid);
     };
     SheetInstance.prototype.getFolder = function () {
         return this.folder;
@@ -763,8 +825,11 @@ var SheetInstance = (function () {
     SheetInstance.prototype.getId = function () {
         return this.id;
     };
+    SheetInstance.prototype.removeChangeListener = function (list) {
+        this.changeTrigger.removeListener(list);
+    };
     SheetInstance.prototype.addChangeListener = function (list) {
-        this.changeTrigger.addListener(list);
+        this.changeTrigger.addListenerIfMissing(list);
     };
     SheetInstance.prototype.triggerChanged = function () {
         this.changeTrigger.trigger(this);
@@ -786,6 +851,9 @@ var SheetInstance = (function () {
     };
     SheetInstance.prototype.getName = function () {
         return this.name;
+    };
+    SheetInstance.prototype.getValues = function () {
+        return this.values;
     };
     SheetInstance.prototype.setValues = function (values, local) {
         var newJson = JSON.stringify(values);
@@ -856,48 +924,87 @@ var SheetInstance = (function () {
     SheetInstance.prototype.isDeletable = function () {
         return this.delete;
     };
+    SheetInstance.prototype.isNPC = function () {
+        var player = this.getValue("Player") !== undefined ? this.getValue("Player") :
+            this.getValue("Jogador") !== undefined ? this.getValue("Jogador") :
+                this.getValue("Owner") !== undefined ? this.getValue("Owner") :
+                    this.getValue("Dono") !== undefined ? this.getValue("Dono") :
+                        undefined;
+        if (player !== undefined && player.toUpperCase() === "NPC") {
+            return true;
+        }
+        return false;
+    };
     return SheetInstance;
 }());
-var Trigger = (function () {
-    function Trigger() {
-        this.functions = [];
-        this.objects = [];
+var StyleInstance = (function () {
+    function StyleInstance() {
+        this.id = 0;
+        this.gameid = 0;
+        this.name = "";
+        this.mainCode = null;
+        this.publicCode = null;
+        this.html = null;
+        this.css = null;
+        this.publicStyle = false;
     }
-    Trigger.prototype.removeListener = function (f) {
-        if (typeof f === "function") {
-            var i = this.functions.indexOf(f);
-            if (i !== -1) {
-                this.functions.splice(i, 1);
+    StyleInstance.prototype.getId = function () {
+        return this.id;
+    };
+    StyleInstance.prototype.getName = function () {
+        return this.name;
+    };
+    StyleInstance.prototype.isLoaded = function () {
+        return this.html !== null;
+    };
+    StyleInstance.prototype.updateFromObject = function (obj) {
+        for (var id in this) {
+            if (obj[id] !== undefined) {
+                this[id] = obj[id];
             }
         }
-        else {
-            var i = this.objects.indexOf(f);
-            if (i !== -1) {
-                this.objects.splice(i, 1);
-            }
+    };
+    return StyleInstance;
+}());
+var SoundLink = (function () {
+    function SoundLink(name, url, folder, bgm) {
+        this.name = name;
+        this.url = url;
+        this.folder = folder;
+        this.bgm = bgm;
+    }
+    SoundLink.prototype.getFolder = function () {
+        return this.folder;
+    };
+    SoundLink.prototype.isBgm = function () {
+        return this.bgm;
+    };
+    SoundLink.prototype.setFolder = function (name) {
+        this.folder = name;
+        DB.SoundDB.considerSaving();
+    };
+    SoundLink.prototype.getLink = function () {
+        return Server.URL.fixURL(this.url);
+    };
+    SoundLink.prototype.getName = function () {
+        return this.name;
+    };
+    SoundLink.prototype.setName = function (name) {
+        if (this.name !== name) {
+            this.name = name;
+            DB.SoundDB.triggerChange(this);
+            DB.SoundDB.considerSaving();
         }
     };
-    Trigger.prototype.addListener = function (f) {
-        if (typeof f === "function") {
-            this.functions.push(f);
-        }
-        else {
-            this.objects.push(f);
-        }
+    SoundLink.prototype.exportAsObject = function () {
+        return {
+            name: this.name,
+            url: this.url,
+            folder: this.folder,
+            bgm: this.bgm
+        };
     };
-    Trigger.prototype.trigger = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i - 0] = arguments[_i];
-        }
-        for (var i = 0; i < this.functions.length; i++) {
-            this.functions[i].apply(null, args);
-        }
-        for (var i = 0; i < this.objects.length; i++) {
-            this.objects[i].handleEvent.apply(this.objects[i], args);
-        }
-    };
-    return Trigger;
+    return SoundLink;
 }());
 var AJAXConfig = (function () {
     function AJAXConfig(url) {
@@ -1442,6 +1549,61 @@ var MemoryVersion = (function (_super) {
         return Server.Chat.Memory.version;
     };
     return MemoryVersion;
+}(TrackerMemory));
+var MemoryCutscene = (function (_super) {
+    __extends(MemoryCutscene, _super);
+    function MemoryCutscene() {
+        _super.call(this);
+        this.chatAllowed = true;
+        MemoryCutscene.button.addEventListener("click", {
+            cutscene: this,
+            handleEvent: function (e) {
+                e.preventDefault();
+                this.cutscene.click();
+            }
+        });
+    }
+    MemoryCutscene.prototype.click = function () {
+        if (Server.Chat.getRoom().getMe().isStoryteller()) {
+            this.storeValue(!this.getValue());
+            if (!this.getValue()) {
+                var msg = new ChatSystemMessage(true);
+                msg.addText("_CHATSHHHHHWEHOLLYWOODACTIVE_");
+                UI.Chat.printElement(msg.getElement());
+            }
+            else {
+                var msg = new ChatSystemMessage(true);
+                msg.addText("_CHATSHHHHHWEHOLLYWOODINACTIVE_");
+                UI.Chat.printElement(msg.getElement());
+            }
+        }
+    };
+    MemoryCutscene.prototype.reset = function () {
+        this.chatAllowed = true;
+    };
+    MemoryCutscene.prototype.storeValue = function (v) {
+        var allowed = v === true;
+        if (allowed !== this.chatAllowed) {
+            this.chatAllowed = allowed;
+            this.triggerChange();
+            if (this.getValue()) {
+                MemoryCutscene.button.classList.add("icons-chatHollywood");
+                MemoryCutscene.button.classList.remove("icons-chatHollywoodOff");
+            }
+            else {
+                MemoryCutscene.button.classList.remove("icons-chatHollywood");
+                MemoryCutscene.button.classList.add("icons-chatHollywoodOff");
+            }
+        }
+    };
+    MemoryCutscene.prototype.getValue = function () {
+        return this.chatAllowed;
+    };
+    MemoryCutscene.prototype.exportAsObject = function () {
+        return this.chatAllowed;
+    };
+    MemoryCutscene.button = document.getElementById("chatHollywood");
+    return MemoryCutscene;
 }(TrackerMemory));
 var CombatEffect = (function () {
     function CombatEffect() {
@@ -2527,12 +2689,7 @@ var SheetTab = (function () {
         this.text.nodeValue = this.sheet.getName();
     };
     SheetTab.prototype.checkNPCStatus = function () {
-        var player = this.sheet.getValue("Player") !== undefined ? this.sheet.getValue("Player") :
-            this.sheet.getValue("Jogador") !== undefined ? this.sheet.getValue("Jogador") :
-                this.sheet.getValue("Owner") !== undefined ? this.sheet.getValue("Owner") :
-                    this.sheet.getValue("Dono") !== undefined ? this.sheet.getValue("Dono") :
-                        undefined;
-        if (player !== undefined && player.toUpperCase() === "NPC") {
+        if (this.sheet.isNPC()) {
             this.toggleNpc();
         }
         else {
@@ -2560,94 +2717,259 @@ var SheetTab = (function () {
     return SheetTab;
 }());
 var SheetStyle = (function () {
-    function SheetStyle() {
+    function SheetStyle(style) {
         this.css = document.createElement("style");
         this.visible = document.createElement("div");
         this.$visible = $(this.visible);
-        this.multipleChanges = false;
-        this.pendingChanges = [];
-        this.changeCounter = 0;
-        this.idCounter = 0;
-        this.after = function () { };
-        this.visible.setAttribute("id", "sheetDiv");
-        this.css.type = "text/css";
-    }
-    SheetStyle.prototype.getUniqueID = function () {
-        return "undefined" + (this.idCounter++);
-    };
-    SheetStyle.prototype.simplifyName = function (str) {
-        return str.latinise().toLowerCase().replace(/ /g, '');
-    };
-    SheetStyle.prototype.addStyle = function (style) {
+        this.styleInstance = null;
+        this.sheetInstance = null;
+        this.sheet = null;
+        this.sheetChangeTrigger = new Trigger();
+        this.loading = false;
+        this.counter = 0;
+        this.triggeredVariables = [];
+        this.nameVariable = null;
+        this.creatorListeners = [];
+        this.sheetInstanceChangeListener = {
+            style: this,
+            handleEvent: function (sheetInstance) {
+                if (this.style.sheetInstance === sheetInstance) {
+                    this.style.reloadSheetInstance();
+                }
+            }
+        };
+        var _startTime = (new Date()).getTime();
         this.styleInstance = style;
-        this.visible.innerHTML = style.html;
-        this.css.innerHTML = style.css;
-        this.sheet = new Sheet(this, this.visible.childNodes);
-        this.after();
+        this.fillElements();
+        this.createSheet();
+        this.bindSheet();
+        this.checkNPC();
+        var _endTime = (new Date()).getTime();
+        console.debug("[SheetStyle] " + this.getName() + "'s processing took " + (_endTime - _startTime) + "ms to process.");
+    }
+    SheetStyle.prototype.getSheet = function () {
+        return this.sheet;
     };
-    SheetStyle.prototype.triggerVariableChange = function (variable) {
-        if (this.multipleChanges) {
-            this.pendingChanges.push(variable);
+    SheetStyle.prototype.addCreatorListener = function (obj) {
+        this.creatorListeners.push(obj);
+    };
+    SheetStyle.prototype.triggerCreatorListeners = function () {
+        this.creatorListeners.forEach(function (creator) {
+            creator.complete();
+        });
+    };
+    SheetStyle.prototype.addSheetInstance = function (sheet) {
+        if (this.sheetInstance !== null) {
+            this.unbindSheetInstance();
+        }
+        this.sheetInstance = sheet;
+        this.bindSheetInstance();
+        this.reloadSheetInstance();
+    };
+    SheetStyle.prototype.reloadSheetInstance = function () {
+        this.loading = true;
+        if (this.nameVariable !== null) {
+            this.nameVariable.storeValue(this.sheetInstance.getName());
+        }
+        this.sheet.updateFromObject(this.sheetInstance.getValues());
+        this.triggerAllVariables();
+        this.checkNPC();
+        this.loading = false;
+    };
+    SheetStyle.prototype.checkNPC = function () {
+        if (this.sheetInstance !== null && this.sheetInstance.isNPC()) {
+            this.visible.classList.add("npctype");
+            this.visible.classList.remove("charactertype");
         }
         else {
-            variable.triggerChange(this.changeCounter++);
+            this.visible.classList.remove("npctype");
+            this.visible.classList.add("charactertype");
         }
     };
-    SheetStyle.prototype.triggerAll = function () {
-        for (var i = 0; i < this.pendingChanges.length; i++) {
-            this.pendingChanges[i].triggerChange(this.changeCounter);
+    SheetStyle.prototype.triggerAllVariables = function () {
+        var counter = this.getCounter();
+        for (var i = 0; i < this.triggeredVariables.length; i++) {
+            this.triggeredVariables[i].triggerChange(counter);
         }
-        this.changeCounter += 1;
-        this.pendingChanges = [];
+        this.triggeredVariables = [];
     };
-    SheetStyle.prototype.getStyle = function () {
+    SheetStyle.prototype.triggerVariableChange = function (variable) {
+        if (this.loading) {
+            if (this.triggeredVariables.indexOf(variable) === -1) {
+                this.triggeredVariables.push(variable);
+            }
+        }
+        else {
+            variable.triggerChange(this.getCounter());
+        }
+    };
+    SheetStyle.prototype.getCounter = function () {
+        return this.counter++;
+    };
+    SheetStyle.prototype.bindSheetInstance = function () {
+        this.sheetInstance.addChangeListener(this.sheetInstanceChangeListener);
+    };
+    SheetStyle.prototype.unbindSheetInstance = function () {
+        this.sheetInstance.removeChangeListener(this.sheetInstanceChangeListener);
+    };
+    SheetStyle.prototype.bindSheet = function () {
+        var changeListener = {
+            counter: -1,
+            handleEvent: function (sheet, style, counter) {
+                if (this.counter !== counter) {
+                    this.counter = counter;
+                    style.updateSheetInstance();
+                }
+            }
+        };
+        this.sheet.addChangeListener(changeListener);
+    };
+    SheetStyle.prototype.getSheetInstance = function () {
+        return this.sheetInstance;
+    };
+    SheetStyle.prototype.updateSheetInstance = function () {
+        if (!this.loading) {
+            if (this.nameVariable !== null) {
+                this.sheetInstance.setName(this.nameVariable.getValue());
+            }
+            this.sheetInstance.setValues(this.sheet.exportAsObject(), true);
+            this.checkNPC();
+        }
+    };
+    SheetStyle.prototype.createSheet = function () {
+        this.sheet = new Sheet(this, this, this.visible.childNodes);
+        this.triggerCreatorListeners();
+    };
+    SheetStyle.prototype.fillElements = function () {
+        this.visible.innerHTML = this.styleInstance.html;
+        this.css.innerHTML = this.styleInstance.css;
+    };
+    SheetStyle.prototype.getStyleInstance = function () {
+        return this.styleInstance;
+    };
+    SheetStyle.prototype.getId = function () {
+        return this.styleInstance.getId();
+    };
+    SheetStyle.prototype.getName = function () {
+        return this.styleInstance.getName();
+    };
+    SheetStyle.prototype.getCSS = function () {
         return this.css;
     };
-    SheetStyle.prototype.getElement = function () {
+    SheetStyle.prototype.getHTML = function () {
         return this.visible;
     };
-    SheetStyle.prototype.get$Element = function () {
-        return this.$visible;
+    SheetStyle.prototype.createNameVariable = function (sheet, element) {
+        this.nameVariable = new SheetVariabletext(sheet, this, element);
+        this.nameVariable.addChangeListener({
+            counter: -1,
+            handleEvent: function (variable, style, counter) {
+                if (this.counter !== counter) {
+                    style.updateSheetInstance();
+                }
+            }
+        });
+    };
+    SheetStyle.prototype.die = function () {
+        this.unbindSheetInstance();
     };
     return SheetStyle;
 }());
-var StyleFactory;
-(function (StyleFactory) {
-    function getCreator() {
-        var creator = SheetStyle;
-        var a = "var DFS;(function (DFS) {    function sayHi() {        console.log('Hi');    }    DFS.sayHi = sayHi;})(DFS || (DFS = {}));var SomethingElse = (function () {    function SomethingElse() {        this.gluglu = 10;    }    return SomethingElse;})();var NewSheetStyle = (function (_super) {    __extends(NewSheetStyle, _super);    function NewSheetStyle() {        _super.call(this);        this.something = 0;        this.something = 1;    }    NewSheetStyle.prototype.createGl = function () {        return new SomethingElse();    };    NewSheetStyle.prototype.sayHi = function () {        DFS.sayHi();    };    return NewSheetStyle;})(SheetStyle);creator = NewSheetStyle;";
-        try {
-            eval(a);
-        }
-        catch (e) {
-            console.error("[SheetStyle] Error in style code.");
-            console.log(e);
-            creator = SheetStyle;
-        }
-        if (creator === SheetStyle) {
-            console.warn("[SheetStyle] No changes made to SheetStyle, utilizing common style.");
-        }
-        return creator;
-    }
-    StyleFactory.getCreator = getCreator;
-})(StyleFactory || (StyleFactory = {}));
 var Sheet = (function () {
-    function Sheet(style, eles) {
+    function Sheet(parent, style, elements) {
+        this.parent = null;
+        this.style = null;
         this.elements = [];
-        this.variables = {};
-        this.lists = {};
-        this.variableShortcuts = {};
+        this.values = {};
+        this.valuesSimplified = {};
+        this.indexedLists = [];
         this.buttons = {};
+        this.idCounter = 0;
+        this.changeListener = {
+            sheet: this,
+            counter: -1,
+            handleEvent: function (variable, style, counter) {
+                if (counter !== this.counter) {
+                    this.counter = counter;
+                    this.sheet.considerTriggering();
+                }
+            }
+        };
+        this.changeTrigger = new Trigger();
+        this.parent = parent;
         this.style = style;
-        for (var i = 0; i < eles.length; i++) {
-            this.elements.push(eles[i]);
-        }
-        for (var i = 0; i < this.elements.length; i++) {
-            if (this.elements[i].nodeType === Node.ELEMENT_NODE) {
-                this.processElement(this.elements[i]);
+        for (var i = 0; i < elements.length; i++) {
+            this.elements.push(elements[i]);
+            if (elements[i].nodeType === Node.ELEMENT_NODE) {
+                this.processElement(elements[i]);
             }
         }
     }
+    Sheet.prototype.findField = function (id) {
+        var simplified = Sheet.simplifyString(id);
+        if (this.valuesSimplified[simplified] === undefined) {
+            return null;
+        }
+        return this.valuesSimplified[simplified];
+    };
+    Sheet.prototype.getLists = function () {
+        return this.indexedLists;
+    };
+    Sheet.prototype.getValueFor = function (id) {
+        var simplified = Sheet.simplifyString(id);
+        if (this.valuesSimplified[simplified] === undefined) {
+            for (var i = 0; i < this.indexedLists.length; i++) {
+                var list = this.indexedLists[i];
+                var value = list.getValueFor(simplified);
+                if (!isNaN(value)) {
+                    return value;
+                }
+            }
+            return NaN;
+        }
+        else {
+            return this.valuesSimplified[simplified].getValue();
+        }
+    };
+    Sheet.simplifyString = function (str) {
+        return str.latinise().toLowerCase().replace(/ /g, '');
+    };
+    Sheet.stringToType = function (str) {
+        return str.replace(/[^A-Za-z0-9]/g, "").toLowerCase();
+    };
+    Sheet.prototype.getElements = function () {
+        return this.elements;
+    };
+    Sheet.prototype.getUniqueID = function () {
+        return "Var" + (++this.idCounter).toString();
+    };
+    Sheet.prototype.isRoot = function () {
+        return this.parent === this.style;
+    };
+    Sheet.prototype.getParent = function () {
+        return this.parent;
+    };
+    Sheet.prototype.updateFromObject = function (obj) {
+        for (var id in this.values) {
+            if (obj[id] === undefined) {
+                this.values[id].reset();
+            }
+            else {
+                this.values[id].updateFromObject(obj[id]);
+            }
+        }
+    };
+    Sheet.prototype.exportAsObject = function () {
+        var obj = {};
+        var value;
+        for (var id in this.values) {
+            value = this.values[id].exportAsObject();
+            if (value !== null) {
+                obj[id] = value;
+            }
+        }
+        return obj;
+    };
     Sheet.prototype.processElement = function (element) {
         if (element.classList.contains("sheetList")) {
             this.createList(element);
@@ -2660,8 +2982,22 @@ var Sheet = (function () {
         }
         else {
             var lists = element.getElementsByClassName("sheetList");
+            var validLists = [];
+            var parent;
             for (var i = 0; i < lists.length; i++) {
-                this.createList(lists[i]);
+                parent = lists[i].parentElement;
+                while (parent !== element) {
+                    if (parent.classList.contains("sheetList")) {
+                        break;
+                    }
+                    parent = parent.parentElement;
+                }
+                if (parent === element) {
+                    validLists.push(lists[i]);
+                }
+            }
+            for (var i = 0; i < validLists.length; i++) {
+                this.createList(validLists[i]);
             }
             var variables = element.getElementsByClassName("sheetVariable");
             for (var i = 0; i < variables.length; i++) {
@@ -2673,266 +3009,951 @@ var Sheet = (function () {
             }
         }
     };
-    Sheet.prototype.getValueFor = function (id) {
-        id = this.style.simplifyName(id);
-        return this.getValueForSimpleId(id);
-    };
-    Sheet.prototype.getValueForSimpleId = function (id) {
-        if (this.variableShortcuts[id] !== undefined) {
-            return this.variableShortcuts[id].getValue();
+    Sheet.prototype.createList = function (element) {
+        var constructor;
+        var list;
+        var type = element.dataset['type'] === undefined ? "" : Sheet.stringToType(element.dataset['type']);
+        if (eval("typeof SheetList" + type + " !== \"function\"")) {
+            type = "";
         }
-        return null;
-    };
-    Sheet.prototype.getVariable = function (id) {
-        if (this.variables[id] !== undefined) {
-            return this.variables[id];
+        constructor = eval("SheetList" + type);
+        list = new constructor(this, this.style, element);
+        this.values[list.getId()] = list;
+        this.valuesSimplified[Sheet.simplifyString(list.getId())] = list;
+        if (list.isIndexed()) {
+            this.indexedLists.push(list);
         }
-        return null;
-    };
-    Sheet.prototype.getVariableBySimpleId = function (simpleid) {
-        if (this.variableShortcuts[simpleid] !== undefined) {
-            return this.variableShortcuts[simpleid];
-        }
-        return null;
-    };
-    Sheet.prototype.getButton = function (id) {
-        if (this.buttons[id] !== undefined) {
-            return this.buttons[id];
-        }
-        return null;
+        list.addChangeListener(this.changeListener);
     };
     Sheet.prototype.createVariable = function (element) {
         var constructor;
         var variable;
-        var type;
-        type = element.dataset['type'] === undefined ? "text" : element.dataset['type'].replace(/[^A-Za-z0-9]/g, "").toLowerCase();
+        var type = element.dataset['type'] === undefined ? "text" : Sheet.stringToType(element.dataset['type']);
+        if (type === "name") {
+            if (this.isRoot()) {
+                this.style.createNameVariable(this, element);
+            }
+            return;
+        }
         if (eval("typeof SheetVariable" + type + " !== \"function\"")) {
             type = "text";
         }
         constructor = eval("SheetVariable" + type);
         variable = new constructor(this, this.style, element);
-        this.variables[variable.id] = variable;
-        this.variableShortcuts[this.style.simplifyName(variable.id)] = variable;
+        this.values[variable.getId()] = variable;
+        this.valuesSimplified[Sheet.simplifyString(variable.getId())] = variable;
+        variable.addChangeListener(this.changeListener);
     };
     Sheet.prototype.createButton = function (element) {
         var constructor;
         var button;
-        var type;
-        type = element.dataset['type'] === undefined ? "" : element.dataset['type'].replace(/[^A-Za-z0-9]/g, "").toLowerCase();
+        var type = element.dataset['type'] === undefined ? "" : Sheet.stringToType(element.dataset['type']);
         if (eval("typeof SheetButton" + type + " !== \"function\"")) {
             type = "";
         }
         constructor = eval("SheetButton" + type);
         button = new constructor(this, this.style, element);
-        this.buttons[button.id] = button;
+        this.buttons[button.getId()] = button;
     };
-    Sheet.prototype.createList = function (element) {
-        var list = new SheetList(this, this.style, element);
-        this.lists[list.id] = list;
-        this.variableShortcuts[this.style.simplifyName(list.id)] = list;
+    Sheet.prototype.addChangeListener = function (f) {
+        this.changeTrigger.addListener(f);
+    };
+    Sheet.prototype.addChangeListenerIfMissing = function (f) {
+        this.changeTrigger.addListenerIfMissing(f);
+    };
+    Sheet.prototype.removeChangeListener = function (f) {
+        this.changeTrigger.removeListener(f);
+    };
+    Sheet.prototype.considerTriggering = function () {
+        this.style.triggerVariableChange(this);
+    };
+    Sheet.prototype.triggerChange = function (counter) {
+        this.changeTrigger.trigger(this, this.style, counter);
     };
     return Sheet;
 }());
+var SheetButton = (function () {
+    function SheetButton(parent, style, element) {
+        this.clickFunction = (function (e) {
+            this.click(e);
+        }).bind(this);
+        this.parent = parent;
+        this.visible = element;
+        this.style = style;
+        this.id = this.visible.dataset['id'] === undefined ? this.parent.getUniqueID() : this.visible.dataset['id'];
+        this.visible.addEventListener("click", this.clickFunction);
+    }
+    SheetButton.prototype.click = function (e) { };
+    ;
+    SheetButton.prototype.getId = function () {
+        return this.id;
+    };
+    return SheetButton;
+}());
 var SheetList = (function () {
-    function SheetList(sheet, style, element) {
+    function SheetList(parent, style, element) {
         this.rows = [];
         this.detachedRows = [];
-        this.rowElements = [];
-        this.keyIndex = null;
-        this.keyValue = null;
-        this.sheet = sheet;
+        this.sheetElements = [];
+        this.sheetChangeListener = {
+            list: this,
+            counter: -1,
+            handleEvent: function (sheet, style, counter) {
+                if (counter !== this.counter) {
+                    this.counter = counter;
+                    this.list.considerTriggering();
+                }
+            }
+        };
+        this.changeTrigger = new Trigger();
+        this.parent = parent;
+        this.visible = element;
         this.style = style;
         while (element.firstChild !== null) {
-            this.rowElements.push(element.removeChild(element.firstChild));
+            this.sheetElements.push(element.removeChild(element.firstChild));
         }
-        this.visible = element;
-        this.id = element.dataset['id'] === undefined ? this.style.getUniqueID() : element.dataset['id'];
+        this.id = this.visible.dataset['id'] === undefined ? this.parent.getUniqueID() : this.visible.dataset['id'];
+        this.tableIndex = this.visible.dataset['tableindex'] === undefined ? null : this.visible.dataset['tableindex'];
+        this.tableValue = this.visible.dataset['tablevalue'] === undefined ? null : this.visible.dataset['tablevalue'];
+        try {
+            this.defaultValue = this.visible.dataset['default'] === undefined ? [] : JSON.parse(this.visible.dataset['default']);
+            if (typeof this.defaultValue !== "object" || !Array.isArray(this.defaultValue)) {
+                console.warn("[SheetList] Received non-array JSON as default value for " + this.getId() + " in " + this.style.getName() + ", reverting to empty object.");
+                this.defaultValue = [];
+            }
+        }
+        catch (e) {
+            console.warn("[SheetList] Received invalid JSON as default value for " + this.getId() + " in " + this.style.getName() + ", reverting to empty object.");
+            this.defaultValue = [];
+        }
     }
+    SheetList.prototype.addRow = function () {
+        var newRow;
+        if (this.detachedRows.length > 0) {
+            newRow = this.detachedRows.pop();
+        }
+        else {
+            var newRowEles = [];
+            for (var i = 0; i < this.sheetElements.length; i++) {
+                newRowEles.push(this.sheetElements[i].cloneNode(true));
+            }
+            newRow = new Sheet(this, this.style, newRowEles);
+            newRow.addChangeListener(this.sheetChangeListener);
+        }
+        for (var i = 0; i < newRow.getElements().length; i++) {
+            this.visible.appendChild(newRow.getElements()[i]);
+        }
+        this.rows.push(newRow);
+    };
+    SheetList.prototype.removeRow = function (row) {
+        var idx = this.rows.indexOf(row);
+        if (idx !== -1) {
+            var oldRow = this.rows.splice(idx, 1)[0];
+            for (var i = 0; i < oldRow.getElements().length; i++) {
+                this.visible.removeChild(oldRow.getElements()[i]);
+            }
+            this.detachedRows.push(oldRow);
+        }
+    };
+    SheetList.prototype.removeLastRow = function () {
+        if (this.rows.length > 0) {
+            this.removeRow(this.rows[this.rows.length - 1]);
+        }
+    };
+    SheetList.prototype.isIndexed = function () {
+        return (this.tableIndex !== null || this.tableValue !== null);
+    };
+    SheetList.prototype.getId = function () {
+        return this.id;
+    };
+    SheetList.prototype.reset = function () {
+        this.updateFromObject(this.defaultValue);
+    };
+    SheetList.prototype.updateFromObject = function (obj) {
+        if (this.rows.length !== obj.length) {
+            while (this.rows.length < obj.length) {
+                this.addRow();
+            }
+            while (this.rows.length > obj.length) {
+                this.removeLastRow();
+            }
+        }
+        for (var i = 0; i < this.rows.length; i++) {
+            this.rows[i].updateFromObject(obj[i]);
+        }
+    };
     SheetList.prototype.getValueFor = function (id) {
-        id = this.style.simplifyName(id);
-        if (this.keyValue !== null && this.keyIndex !== null) {
+        if (this.tableIndex !== null && this.tableValue !== null) {
             for (var i = 0; i < this.rows.length; i++) {
-                var value = this.rows[i].getValueFor(this.keyIndex);
+                var value = this.rows[i].getValueFor(this.tableIndex);
                 if (typeof value === "string") {
-                    var simpleValue = this.style.simplifyName(value);
+                    var simpleValue = Sheet.simplifyString(value);
                     if (simpleValue === id) {
-                        return this.rows[i].getValueFor(this.keyValue);
+                        return this.rows[i].getValueFor(this.tableValue);
                     }
                 }
                 else {
-                    return null;
+                    return NaN;
                 }
             }
         }
-        return null;
+        return NaN;
     };
     SheetList.prototype.getValue = function () {
-        if (this.keyValue !== null) {
+        if (this.tableValue !== null) {
             var values = [];
             for (var i = 0; i < this.rows.length; i++) {
-                values.push(this.rows[i].getValueFor(this.keyValue));
+                values.push(this.rows[i].getValueFor(this.tableValue));
             }
             return values;
+        }
+        else {
+            return [NaN];
+        }
+    };
+    SheetList.prototype.exportAsObject = function () {
+        var arr = [];
+        for (var i = 0; i < this.rows.length; i++) {
+            arr.push(this.rows[i].exportAsObject());
+        }
+        return arr;
+    };
+    SheetList.prototype.addChangeListener = function (f) {
+        this.changeTrigger.addListener(f);
+    };
+    SheetList.prototype.addChangeListenerIfMissing = function (f) {
+        this.changeTrigger.addListenerIfMissing(f);
+    };
+    SheetList.prototype.removeChangeListener = function (f) {
+        this.changeTrigger.removeListener(f);
+    };
+    SheetList.prototype.considerTriggering = function () {
+        this.style.triggerVariableChange(this);
+    };
+    SheetList.prototype.triggerChange = function (counter) {
+        this.changeTrigger.trigger(this, this.style, counter);
+    };
+    return SheetList;
+}());
+var SheetVariable = (function () {
+    function SheetVariable(parent, style, element) {
+        this.value = null;
+        this.defaultValueString = null;
+        this.changeTrigger = new Trigger();
+        this.parent = parent;
+        this.visible = element;
+        this.style = style;
+        this.id = this.visible.dataset['id'] === undefined ? this.parent.getUniqueID() : this.visible.dataset['id'];
+        this.defaultValueString = this.visible.dataset['default'] === undefined ? null : this.visible.dataset['default'];
+        this.editable = this.visible.dataset['editable'] === undefined ? true :
+            (this.visible.dataset['editable'] === "1" ||
+                this.visible.dataset['editable'].toLowerCase() === "true");
+    }
+    SheetVariable.prototype.updateVisible = function () { };
+    SheetVariable.prototype.empty = function () {
+        while (this.visible.firstChild !== null)
+            this.visible.removeChild(this.visible.firstChild);
+    };
+    SheetVariable.prototype.storeValue = function (obj) {
+        if (this.editable && obj !== this.value) {
+            this.value = obj;
+            this.updateVisible();
+            this.considerTriggering();
+        }
+    };
+    SheetVariable.prototype.reset = function () {
+        this.storeValue(this.defaultValueString);
+    };
+    SheetVariable.prototype.getValue = function () {
+        return this.value;
+    };
+    SheetVariable.prototype.updateFromObject = function (obj) {
+        this.storeValue(obj);
+    };
+    SheetVariable.prototype.exportAsObject = function () {
+        if (this.editable) {
+            return this.value;
         }
         else {
             return null;
         }
     };
-    return SheetList;
+    SheetVariable.prototype.getId = function () {
+        return this.id;
+    };
+    SheetVariable.prototype.addChangeListener = function (f) {
+        this.changeTrigger.addListener(f);
+    };
+    SheetVariable.prototype.addChangeListenerIfMissing = function (f) {
+        this.changeTrigger.addListenerIfMissing(f);
+    };
+    SheetVariable.prototype.removeChangeListener = function (f) {
+        this.changeTrigger.removeListener(f);
+    };
+    SheetVariable.prototype.considerTriggering = function () {
+        this.style.triggerVariableChange(this);
+    };
+    SheetVariable.prototype.triggerChange = function (counter) {
+        this.changeTrigger.trigger(this, this.style, counter);
+    };
+    return SheetVariable;
 }());
-var SheetVariable = (function () {
-    function SheetVariable(parent, style, ele) {
-        this.value = null;
-        this.editable = true;
-        this.changeTrigger = new Trigger();
-        this.parent = parent;
-        this.style = style;
-        this.visible = ele;
-        this.id = ele.dataset['id'] === undefined ? this.style.getUniqueID() : ele.dataset['id'];
-        this.editable = ele.dataset['editable'] === undefined ? true : (ele.dataset['editable'].toLowerCase() === "true" || ele.dataset['editable'] === "1");
+var StyleFactory;
+(function (StyleFactory) {
+    var styles = {};
+    function getCreator(style) {
+        var _startTime = (new Date()).getTime();
+        var creator = SheetStyle;
+        try {
+            eval(style.mainCode);
+        }
+        catch (e) {
+            console.error("[SheetStyle] Error in style code.");
+            console.warn(e);
+            creator = SheetStyle;
+        }
+        if (creator === SheetStyle) {
+            console.warn("[SheetStyle] No changes made to SheetStyle, utilizing common style.");
+        }
+        var _endTime = (new Date()).getTime();
+        console.debug("[StyleFactory] " + style.name + "'s Creator took " + (_endTime - _startTime) + "ms to process.");
+        return creator;
+    }
+    StyleFactory.getCreator = getCreator;
+    function getSheetStyle(style, reload) {
+        if (styles[style.id] !== undefined) {
+            if (reload !== true) {
+                return styles[style.id];
+            }
+            else {
+                styles[style.id].die();
+            }
+        }
+        styles[style.id] = new (getCreator(style))(style);
+        return styles[style.id];
+    }
+    StyleFactory.getSheetStyle = getSheetStyle;
+})(StyleFactory || (StyleFactory = {}));
+var SheetVariabletext = (function (_super) {
+    __extends(SheetVariabletext, _super);
+    function SheetVariabletext(parent, style, ele) {
+        _super.call(this, parent, style, ele);
+        this.mouse = false;
+        this.textNode = document.createTextNode(this.defaultValueString === null ? "" : this.defaultValueString);
+        this.defaultValueString = this.defaultValueString === null ? "" : this.defaultValueString;
+        this.empty();
+        this.attachTextNode();
         if (this.editable) {
-            ele.contentEditable = "true";
+            ele.addEventListener("click", (function (e) {
+                this.click();
+            }).bind(this));
+            ele.addEventListener("mousedown", (function (e) {
+                this.mousedown();
+            }).bind(this));
+            ele.addEventListener("focus", (function (e) {
+                this.focus();
+            }).bind(this));
             ele.addEventListener("input", {
                 variable: this,
                 handleEvent: function (e) {
-                    this.variable.triggerInput(e);
+                    this.variable.input(e);
+                }
+            });
+            ele.addEventListener("keyup", {
+                variable: this,
+                handleEvent: function (e) {
+                    this.variable.keyup(e);
+                }
+            });
+            ele.addEventListener("keydown", {
+                variable: this,
+                handleEvent: function (e) {
+                    this.variable.keydown(e);
                 }
             });
             ele.addEventListener("blur", {
                 variable: this,
                 handleEvent: function (e) {
-                    this.variable.triggerBlur();
+                    this.variable.blur();
                 }
             });
+            this.updateContentEditable();
+        }
+    }
+    SheetVariabletext.prototype.attachTextNode = function () {
+        this.visible.appendChild(this.textNode);
+    };
+    SheetVariabletext.prototype.click = function (e) {
+    };
+    SheetVariabletext.prototype.mousedown = function () {
+        this.mouse = true;
+    };
+    SheetVariabletext.prototype.input = function (e) {
+    };
+    SheetVariabletext.prototype.keyup = function (e) {
+    };
+    SheetVariabletext.prototype.isAllowedKey = function (key) {
+        return true;
+    };
+    SheetVariabletext.prototype.keydown = function (e) {
+        if (e.key === "Enter" || !this.isAllowedKey(e.key)) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    };
+    SheetVariabletext.prototype.focus = function () {
+        if (!this.mouse) {
+            var selection = window.getSelection();
+            var range = document.createRange();
+            range.selectNodeContents(this.visible);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
+        this.mouse = false;
+    };
+    SheetVariabletext.prototype.blur = function () {
+        this.storeValue(this.visible.innerText.trim());
+        if (this.visible.childNodes.length !== 1) {
+            this.empty();
+            this.attachTextNode();
+        }
+    };
+    SheetVariabletext.prototype.updateContentEditable = function () {
+        this.visible.contentEditable = (this.editable && (this.style.getSheetInstance() === null || this.style.getSheetInstance().isEditable())) ? "true" : "false";
+        if (this.visible.contentEditable === "true") {
+            this.visible.classList.add("contenteditable");
         }
         else {
-            ele.contentEditable = "false";
-        }
-    }
-    SheetVariable.prototype.cleanChildren = function () {
-        while (this.visible.lastChild !== null) {
-            this.visible.removeChild(this.visible.lastChild);
+            this.visible.classList.remove("contenteditable");
         }
     };
-    SheetVariable.prototype.updateVisible = function () {
-        this.cleanChildren();
-        this.visible.appendChild(document.createTextNode(this.value));
-    };
-    SheetVariable.prototype.triggerInput = function (e) {
-    };
-    SheetVariable.prototype.triggerBlur = function () {
-        this.storeValue(this.visible.innerText);
-    };
-    SheetVariable.prototype.storeValue = function (val) {
-        if (val !== this.value) {
-            this.value = val;
-            this.style.triggerVariableChange(this);
-            this.updateVisible();
-        }
-    };
-    SheetVariable.prototype.triggerChange = function (counter) {
-        this.changeTrigger.trigger(this, counter);
-    };
-    SheetVariable.prototype.getValue = function () {
-        return this.value;
-    };
-    SheetVariable.prototype.exportObject = function () {
-        return this.value;
-    };
-    SheetVariable.prototype.addOnChange = function (f) {
-        this.changeTrigger.addListener(f);
-    };
-    return SheetVariable;
-}());
-var SheetButton = (function () {
-    function SheetButton(sheet, style, ele) {
-        this.click = function () { };
-        this.sheet = sheet;
-        this.style = style;
-        this.visible = ele;
-        this.visible.addEventListener("click", {
-            button: this,
-            handleEvent: function (e) {
-                this.button.click(e);
+    SheetVariabletext.prototype.storeValue = function (value) {
+        if (this.editable) {
+            if (typeof value === "string" && value !== this.value) {
+                this.value = value;
+                this.considerTriggering();
             }
-        });
-        this.id = ele.dataset['id'] === undefined ? this.style.getUniqueID() : ele.dataset['id'];
+            this.updateVisible();
+            this.updateContentEditable();
+        }
+    };
+    SheetVariabletext.prototype.updateVisible = function () {
+        if (this.value !== null) {
+            this.textNode.nodeValue = this.value;
+        }
+        else {
+            this.textNode.nodeValue = this.defaultValueString === null ? "" : this.defaultValueString;
+        }
+    };
+    return SheetVariabletext;
+}(SheetVariable));
+var SheetVariablelongtext = (function (_super) {
+    __extends(SheetVariablelongtext, _super);
+    function SheetVariablelongtext(parent, style, ele) {
+        _super.call(this, parent, style, ele);
+        this.allowEmptyLines = false;
+        this.pClass = null;
+        this.mouse = false;
+        this.empty();
+        this.allowEmptyLines = this.visible.dataset['allowempty'] === undefined ? false :
+            (this.visible.dataset['allowempty'] === "1" ||
+                this.visible.dataset['allowempty'].toLowerCase() === "true");
+        this.pClass = this.visible.dataset['pclass'] === undefined ? null : this.visible.dataset['pclass'];
+        if (this.editable) {
+            ele.addEventListener("click", (function (e) {
+                this.click();
+            }).bind(this));
+            ele.addEventListener("mousedown", (function (e) {
+                this.mousedown();
+            }).bind(this));
+            ele.addEventListener("focus", (function (e) {
+                this.focus();
+            }).bind(this));
+            ele.addEventListener("input", {
+                variable: this,
+                handleEvent: function (e) {
+                    this.variable.input(e);
+                }
+            });
+            ele.addEventListener("keyup", {
+                variable: this,
+                handleEvent: function (e) {
+                    this.variable.keyup(e);
+                }
+            });
+            ele.addEventListener("keydown", {
+                variable: this,
+                handleEvent: function (e) {
+                    this.variable.keydown(e);
+                }
+            });
+            ele.addEventListener("blur", {
+                variable: this,
+                handleEvent: function (e) {
+                    this.variable.blur();
+                }
+            });
+            this.updateContentEditable();
+        }
+        this.updateVisible();
     }
-    return SheetButton;
-}());
+    SheetVariablelongtext.prototype.mousedown = function () {
+        this.mouse = true;
+    };
+    SheetVariablelongtext.prototype.click = function (e) {
+    };
+    SheetVariablelongtext.prototype.input = function (e) {
+    };
+    SheetVariablelongtext.prototype.keyup = function (e) {
+    };
+    SheetVariablelongtext.prototype.keydown = function (e) {
+    };
+    SheetVariablelongtext.prototype.focus = function () {
+        if (!this.mouse) {
+            var selection = window.getSelection();
+            var range = document.createRange();
+            range.selectNodeContents(this.visible);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
+        this.mouse = false;
+    };
+    SheetVariablelongtext.prototype.blur = function () {
+        var lines = [];
+        for (var i = 0; i < this.visible.children.length; i++) {
+            var line = this.visible.children[i].innerText.trim();
+            if (line !== "" || this.allowEmptyLines) {
+                lines.push(line);
+            }
+        }
+        this.storeValue(lines.join("\n"));
+    };
+    SheetVariablelongtext.prototype.updateContentEditable = function () {
+        this.visible.contentEditable = (this.editable && (this.style.getSheetInstance() === null || this.style.getSheetInstance().isEditable())) ? "true" : "false";
+        if (this.visible.contentEditable === "true") {
+            this.visible.classList.add("contenteditable");
+        }
+        else {
+            this.visible.classList.remove("contenteditable");
+        }
+    };
+    SheetVariablelongtext.prototype.storeValue = function (value) {
+        if (this.editable) {
+            if (typeof value === "string" && value !== this.value) {
+                this.value = value;
+                this.considerTriggering();
+            }
+            this.updateVisible();
+            this.updateContentEditable();
+        }
+    };
+    SheetVariablelongtext.prototype.updateVisible = function () {
+        this.empty();
+        var curValue = this.value !== null ? this.value : this.defaultValueString !== null ? this.defaultValueString : "";
+        var lines = curValue.split("\n");
+        for (var i = 0; i < lines.length; i++) {
+            var p = document.createElement("p");
+            if (this.pClass !== null)
+                p.classList.add(this.pClass);
+            p.appendChild(document.createTextNode(lines[i]));
+            this.visible.appendChild(p);
+        }
+    };
+    return SheetVariablelongtext;
+}(SheetVariable));
+var SheetVariablenumber = (function (_super) {
+    __extends(SheetVariablenumber, _super);
+    function SheetVariablenumber(parent, style, ele) {
+        _super.call(this, parent, style, ele);
+        if (this.defaultValueString !== null) {
+            this.defaultValue = this.parseString(this.defaultValueString);
+            if (isNaN(this.defaultValue)) {
+                this.defaultValue = 0;
+            }
+        }
+        else {
+            this.defaultValue = 0;
+        }
+        this.value = this.defaultValue;
+        this.updateVisible();
+    }
+    SheetVariablenumber.prototype.parseString = function (str) {
+        return parseFloat(str);
+    };
+    SheetVariablenumber.prototype.parseNumber = function (n) {
+        return +(n.toFixed(2));
+    };
+    SheetVariablenumber.prototype.reset = function () {
+        this.storeValue(this.defaultValue);
+    };
+    SheetVariablenumber.prototype.storeValue = function (value) {
+        if (this.editable) {
+            if (typeof value !== "number") {
+                if (typeof value === "string") {
+                    value = value.replace(/,/g, ".");
+                }
+                value = this.parseString(value);
+                if (isNaN(value)) {
+                    value = this.value;
+                }
+            }
+            value = this.parseNumber(value);
+            if (value !== this.value) {
+                this.value = value;
+                this.considerTriggering();
+            }
+            this.updateVisible();
+            this.updateContentEditable();
+        }
+    };
+    SheetVariablenumber.prototype.isImportantInputKey = function (key) {
+        return key === "Tab" || key === "Backspace" || key === "Delete" || key === "ArrowLeft" || key === "ArrowRight" || key === "-" || key === "+";
+    };
+    SheetVariablenumber.prototype.isAllowedKey = function (key) {
+        return this.isImportantInputKey(key) || key === "." || key === "," || !isNaN(key);
+    };
+    SheetVariablenumber.prototype.updateVisible = function () {
+        if (this.value !== null) {
+            this.textNode.nodeValue = this.value.toString();
+        }
+        else {
+            this.textNode.nodeValue = this.defaultValue.toString();
+        }
+    };
+    return SheetVariablenumber;
+}(SheetVariabletext));
+var SheetVariableinteger = (function (_super) {
+    __extends(SheetVariableinteger, _super);
+    function SheetVariableinteger() {
+        _super.apply(this, arguments);
+    }
+    SheetVariableinteger.prototype.isAllowedKey = function (key) {
+        return this.isImportantInputKey(key) || !isNaN(key);
+    };
+    SheetVariableinteger.prototype.parseString = function (str) {
+        return parseInt(str);
+    };
+    SheetVariableinteger.prototype.parseNumber = function (n) {
+        return Math.floor(n);
+    };
+    return SheetVariableinteger;
+}(SheetVariablenumber));
+var SheetVariablemath = (function (_super) {
+    __extends(SheetVariablemath, _super);
+    function SheetVariablemath(parent, style, ele) {
+        _super.call(this, parent, style, ele);
+        this.changeListener = {
+            math: this,
+            counter: -1,
+            handleEvent: function (variable, style, counter) {
+                if (this.counter !== counter) {
+                    this.math.checkForChange();
+                    this.counter = counter;
+                }
+            }
+        };
+        this.parse();
+        this.style.addCreatorListener(this);
+    }
+    SheetVariablemath.prototype.checkForChange = function () {
+        var newValue = this.getValue();
+        if (this.lastValue !== newValue && !(isNaN(newValue) && isNaN(this.lastValue))) {
+            this.lastValue = newValue;
+            this.updateVisible();
+            this.considerTriggering();
+        }
+    };
+    SheetVariablemath.prototype.parse = function () {
+        var expr = this.value === null ? this.defaultValueString === null ? "0" : this.defaultValueString : this.value;
+        expr = Sheet.simplifyString(expr);
+        try {
+            this.parsed = math.parse(expr);
+            this.compiled = math.compile(expr);
+        }
+        catch (e) {
+            console.warn("[SheetVariableMath] Invalid Math variable at " + this.id + ". Error:", e);
+            this.parsed = math.parse("0");
+            this.compiled = math.compile("0");
+        }
+        this.symbols = this.getSymbols();
+        this.scope = this.getScope(this.symbols);
+    };
+    SheetVariablemath.prototype.getSymbols = function () {
+        var symbols = [];
+        var nodes = this.parsed.filter(function (node) {
+            return node.type == 'SymbolNode';
+        });
+        for (var i = 0; i < nodes.length; i++) {
+            symbols.push(nodes[i].name);
+        }
+        return symbols;
+    };
+    SheetVariablemath.prototype.getScope = function (symbols) {
+        var scope = {};
+        for (var i = 0; i < symbols.length; i++) {
+            scope[symbols[i]] = 0;
+        }
+        return scope;
+    };
+    SheetVariablemath.prototype.complete = function () {
+        if (this.editable) {
+            this.style.getSheet().addChangeListener(this.changeListener);
+        }
+        else {
+            var variables = [];
+            var takeLists = false;
+            for (var i = 0; i < this.symbols.length; i++) {
+                var variable = this.style.getSheet().findField(this.symbols[i]);
+                if (variable === null) {
+                    takeLists = true;
+                }
+                else {
+                    variables.push(variable);
+                }
+            }
+            variables = variables.concat(this.style.getSheet().getLists());
+            for (var i = 0; i < variables.length; i++) {
+                variables[i].addChangeListener(this.changeListener);
+            }
+        }
+        this.updateVisible();
+    };
+    SheetVariablemath.prototype.focus = function () {
+        this.updateVisible();
+        this.visible.focus();
+        if (!this.mouse) {
+            var selection = window.getSelection();
+            var range = document.createRange();
+            range.selectNodeContents(this.visible);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
+        this.mouse = false;
+    };
+    SheetVariablemath.prototype.storeValue = function (value) {
+        if (this.editable) {
+            if (typeof value === "string" && value !== this.value) {
+                this.value = value;
+                this.parse();
+                this.considerTriggering();
+            }
+            this.updateVisible();
+            this.updateContentEditable();
+        }
+    };
+    SheetVariablemath.prototype.getValue = function () {
+        for (var i = 0; i < this.symbols.length; i++) {
+            this.scope[this.symbols[i]] = this.style.getSheet().getValueFor(this.symbols[i]);
+        }
+        try {
+            var result = this.compiled.eval(this.scope);
+            return result;
+        }
+        catch (e) {
+            console.warn("[SheetVariableMath] Evaluation error", e);
+            return NaN;
+        }
+    };
+    SheetVariablemath.prototype.updateVisible = function () {
+        if (document.activeElement === this.visible) {
+            this.textNode.nodeValue = this.value === null ? this.defaultValueString === null ? "0" : this.defaultValueString : this.value;
+        }
+        else {
+            var value = this.getValue();
+            if (isNaN(value)) {
+                this.textNode.nodeValue = UI.Language.getLanguage().getLingo("_SHEETVARIABLEMATHNAN_");
+            }
+            else {
+                this.textNode.nodeValue = (+value.toFixed(1)).toString();
+            }
+        }
+    };
+    return SheetVariablemath;
+}(SheetVariabletext));
+var SheetVariableimage = (function (_super) {
+    __extends(SheetVariableimage, _super);
+    function SheetVariableimage(parent, style, element) {
+        _super.call(this, parent, style, element);
+        this.img = document.createElement("img");
+        this.select = document.createElement("select");
+        this.errorUrl = "images/sheetImgError.png";
+        if (this.defaultValueString === null) {
+            this.defaultName = "";
+            this.defaultUrl = "";
+        }
+        else {
+            var obj;
+            try {
+                obj = JSON.parse(this.defaultValueString);
+                if (Array.isArray(obj) && obj.length === 2) {
+                    this.defaultName = obj[0];
+                    this.defaultUrl = obj[1];
+                }
+                else {
+                    this.defaultName = "";
+                    this.defaultUrl = "";
+                }
+            }
+            catch (e) {
+                console.log("[SheetVariableImage] Produced invalid Default Value at " + this.id + ":", this.defaultValueString);
+                this.defaultName = "";
+                this.defaultUrl = "";
+            }
+        }
+        if (this.visible.dataset['imgclass'] !== undefined) {
+            this.img.classList.add(this.visible.dataset['imgclass']);
+        }
+        if (this.visible.dataset['selectclass'] !== undefined) {
+            this.select.classList.add(this.visible.dataset['selectclass']);
+        }
+        this.select.addEventListener("blur", (function (e) { this.blur(e); }).bind(this));
+        this.select.addEventListener("change", (function (e) { this.change(e); }).bind(this));
+        this.img.addEventListener("error", (function (e) { this.error(e); }).bind(this));
+        if (this.editable) {
+            this.img.addEventListener("click", (function (e) {
+                this.click(e);
+            }).bind(this));
+        }
+        this.value = [this.defaultName, this.defaultUrl];
+        this.updateVisible();
+    }
+    SheetVariableimage.prototype.reset = function () {
+        this.storeValue([this.defaultName, this.defaultUrl]);
+    };
+    SheetVariableimage.prototype.blur = function () {
+        this.empty();
+        this.visible.appendChild(this.img);
+        var obj;
+        try {
+            obj = JSON.parse(this.select.value);
+            if (Array.isArray(obj) && obj.length === 2) {
+                this.storeValue(obj);
+            }
+        }
+        catch (e) {
+            console.log("[SheetVariableImage] Produced invalid Array at " + this.id + ":", this.select.value, e);
+            this.storeValue([this.defaultName, this.defaultUrl]);
+        }
+        this.updateVisible();
+    };
+    SheetVariableimage.prototype.change = function () {
+    };
+    SheetVariableimage.prototype.click = function (e) {
+        e.preventDefault();
+        if (this.style.getSheetInstance().isEditable()) {
+            this.showSelect();
+        }
+    };
+    SheetVariableimage.prototype.error = function (e) {
+        e.preventDefault();
+        this.img.src = this.errorUrl;
+    };
+    SheetVariableimage.prototype.createOptions = function (name, arr) {
+        var optgroup = document.createElement("optgroup");
+        optgroup.label = name;
+        for (var i = 0; i < arr.length; i++) {
+            optgroup.appendChild(this.createOption(arr[i][0], arr[i][1]));
+        }
+        return optgroup;
+    };
+    SheetVariableimage.prototype.createOption = function (name, url) {
+        var option = document.createElement("option");
+        option.value = JSON.stringify([name, url]);
+        option.appendChild(document.createTextNode(name));
+        return option;
+    };
+    SheetVariableimage.prototype.showSelect = function () {
+        this.empty();
+        this.visible.appendChild(this.select);
+        while (this.select.firstChild !== null)
+            this.select.removeChild(this.select.firstChild);
+        if (this.value !== null && this.value[0] !== "" && this.value[1] !== "") {
+            var lastValueName = UI.Language.getLanguage().getLingo("_SHEETVARIABLEIMAGELASTVALUE_");
+            this.select.appendChild(this.createOptions(lastValueName, [this.value]));
+        }
+        if (this.defaultName !== "" && this.defaultUrl !== "") {
+            this.select.appendChild(this.createOption(this.defaultName, this.defaultUrl));
+        }
+        else {
+            var opt = this.createOption(UI.Language.getLanguage().getLingo("_SHEETVARIABLEIMAGENONE_"), this.errorUrl);
+            this.select.appendChild(opt);
+        }
+        var images = DB.ImageDB.getImagesByFolder();
+        if (images.length === 0) {
+            var opt = this.createOption(UI.Language.getLanguage().getLingo("_SHEETVARIABLEIMAGESNOTLOADED_"), "");
+            opt.disabled = true;
+            this.select.appendChild(opt);
+        }
+        else {
+            for (var i = 0; i < images.length; i++) {
+                if (images[i].length > 0) {
+                    var group = {
+                        name: images[i][0].getFolder(),
+                        images: []
+                    };
+                    if (group.name === "") {
+                        group.name = UI.Language.getLanguage().getLingo("_IMAGESNOFOLDERNAME_");
+                    }
+                    for (var k = 0; k < images[i].length; k++) {
+                        group.images.push([images[i][k].getName(), images[i][k].getLink()]);
+                    }
+                    this.select.appendChild(this.createOptions(group.name, group.images));
+                }
+            }
+        }
+        this.select.value = JSON.stringify(this.value);
+        this.select.focus();
+        this.select.click();
+    };
+    SheetVariableimage.prototype.storeValue = function (arr) {
+        if (!Array.isArray(arr) || arr.length !== 2) {
+            arr = [this.defaultName, this.defaultUrl];
+        }
+        if (this.value[0] !== arr[0] || this.value[1] !== arr[1]) {
+            this.value = arr;
+            this.considerTriggering();
+        }
+        this.updateVisible();
+    };
+    SheetVariableimage.prototype.updateVisible = function () {
+        if (this.editable) {
+            if (this.style.getSheetInstance() !== null && this.style.getSheetInstance().isEditable()) {
+                this.img.classList.add("editable");
+            }
+            else {
+                this.img.classList.remove("editable");
+            }
+        }
+        if (this.img.parentElement !== this.visible) {
+            this.empty();
+            this.visible.appendChild(this.img);
+        }
+        this.img.src = this.value[1];
+    };
+    return SheetVariableimage;
+}(SheetVariable));
 var SheetButtonaddrow = (function (_super) {
     __extends(SheetButtonaddrow, _super);
     function SheetButtonaddrow() {
         _super.apply(this, arguments);
-        this.click = function () {
-            alert("Add Row!");
-        };
     }
+    SheetButtonaddrow.prototype.click = function (e) {
+        e.preventDefault();
+        this.parent.getParent().addRow();
+    };
     return SheetButtonaddrow;
 }(SheetButton));
-var StyleInstance = (function () {
-    function StyleInstance() {
-        this.id = 0;
-        this.gameid = 0;
-        this.name = "";
-        this.mainCode = null;
-        this.publicCode = null;
-        this.html = null;
-        this.css = null;
-        this.publicStyle = false;
+var SheetButtonremoverow = (function (_super) {
+    __extends(SheetButtonremoverow, _super);
+    function SheetButtonremoverow() {
+        _super.apply(this, arguments);
     }
-    StyleInstance.prototype.isLoaded = function () {
-        return this.html !== null;
+    SheetButtonremoverow.prototype.click = function (e) {
+        e.preventDefault();
+        this.parent.getParent().removeRow(this.parent);
     };
-    StyleInstance.prototype.updateFromObject = function (obj) {
-        for (var id in this) {
-            if (obj[id] !== undefined) {
-                this[id] = obj[id];
-            }
-        }
-    };
-    return StyleInstance;
-}());
-var SoundLink = (function () {
-    function SoundLink(name, url, folder, bgm) {
-        this.name = name;
-        this.url = url;
-        this.folder = folder;
-        this.bgm = bgm;
-    }
-    SoundLink.prototype.getFolder = function () {
-        return this.folder;
-    };
-    SoundLink.prototype.isBgm = function () {
-        return this.bgm;
-    };
-    SoundLink.prototype.setFolder = function (name) {
-        this.folder = name;
-        DB.SoundDB.considerSaving();
-    };
-    SoundLink.prototype.getLink = function () {
-        return Server.URL.fixURL(this.url);
-    };
-    SoundLink.prototype.getName = function () {
-        return this.name;
-    };
-    SoundLink.prototype.setName = function (name) {
-        if (this.name !== name) {
-            this.name = name;
-            DB.SoundDB.triggerChange(this);
-            DB.SoundDB.considerSaving();
-        }
-    };
-    SoundLink.prototype.exportAsObject = function () {
-        return {
-            name: this.name,
-            url: this.url,
-            folder: this.folder,
-            bgm: this.bgm
-        };
-    };
-    return SoundLink;
-}());
+    return SheetButtonremoverow;
+}(SheetButton));
 var MessageFactory;
 (function (MessageFactory) {
     var messageClasses = {};
@@ -3212,6 +4233,9 @@ var Message = (function (_super) {
             }
             return [context];
         }
+    };
+    Message.prototype.hasDestination = function () {
+        return this.destination !== null;
     };
     Message.prototype.makeMockUp = function () {
         this.msg = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent volutpat orci nulla, et dictum turpis commodo a. Duis iaculis neque lectus, ac sodales diam varius id.";
@@ -4609,6 +5633,33 @@ var MessageUnknown = (function (_super) {
     return MessageUnknown;
 }(Message));
 MessageFactory.registerMessage(MessageUnknown, "unkn", []);
+var MessageCutscene = (function (_super) {
+    __extends(MessageCutscene, _super);
+    function MessageCutscene() {
+        _super.apply(this, arguments);
+        this.module = "csc";
+    }
+    MessageCutscene.prototype.createHTML = function () {
+        if (!this.getUser().isStoryteller() || this.getUser().getUser().isMe()) {
+            return null;
+        }
+        var msg = new ChatSystemMessage(true);
+        if (this.getMsg() === "1") {
+            msg.addText("_CHATSHHHHHWEHOLLYWOODTURNDOWN_");
+        }
+        else {
+            msg.addText("_CHATSHHHHHWEHOLLYWOODTURNUP_");
+        }
+        return msg.getElement();
+    };
+    MessageCutscene.sendNotification = function (chatAllowed) {
+        var newMessage = new MessageCutscene();
+        newMessage.setMsg(chatAllowed ? "1" : "0");
+        UI.Chat.sendMessage(newMessage);
+    };
+    return MessageCutscene;
+}(Message));
+MessageFactory.registerMessage(MessageCutscene, "csc", []);
 var DB;
 (function (DB) {
     var UserDB;
@@ -5513,6 +6564,1169 @@ var Application;
         }
     })(Login = Application.Login || (Application.Login = {}));
 })(Application || (Application = {}));
+var Server;
+(function (Server) {
+    Server.IMAGE_URL = "http://img.redpg.com.br/";
+    Server.APPLICATION_URL = "http://app.redpg.com.br/service/";
+    Server.CLIENT_URL = "http://beta.redpg.com.br/";
+    Server.WEBSOCKET_SERVERURL = "ws://app.redpg.com.br";
+    Server.WEBSOCKET_CONTEXT = "/service/";
+    Server.WEBSOCKET_PORTS = [80, 8080, 8081];
+    Application.Config.registerConfiguration("wsPort", new WsportConfiguration(Server.WEBSOCKET_PORTS[0]));
+    function getWebsocketURL() {
+        return Server.WEBSOCKET_SERVERURL + ":" + Application.Config.getConfig("wsPort").getValue() + Server.WEBSOCKET_CONTEXT;
+    }
+    Server.getWebsocketURL = getWebsocketURL;
+})(Server || (Server = {}));
+var Server;
+(function (Server) {
+    var AJAX;
+    (function (AJAX) {
+        function requestPage(ajax, success, error) {
+            var url = ajax.url;
+            if (url.indexOf("://") === -1) {
+                url = Server.APPLICATION_URL + url;
+                if (Application.Login.hasSession()) {
+                    url += ';jsessionid=' + Application.Login.getSession();
+                }
+            }
+            var xhr = new XMLHttpRequest();
+            var method = ajax.data !== null ? "POST" : "GET";
+            xhr.open(method, url, true);
+            xhr.responseType = ajax.responseType;
+            xhr.addEventListener("loadend", {
+                ajax: ajax,
+                handleEvent: function (e) {
+                    console.debug("AJAX request for " + this.ajax.url + " is complete.");
+                    this.ajax.finishConditionalLoading();
+                }
+            });
+            xhr.addEventListener("load", {
+                xhr: xhr,
+                ajax: ajax,
+                success: success,
+                error: error,
+                handleEvent: function (e) {
+                    if (this.xhr.status >= 200 && this.xhr.status < 300) {
+                        console.debug("[SUCCESS " + this.xhr.status + "]: AJAX (" + this.ajax.url + ")...", this.xhr);
+                        if (typeof this.success === 'function') {
+                            this.success(this.xhr.response, this.xhr);
+                        }
+                        else {
+                            this.success.handleEvent(this.xhr.response, this.xhr);
+                        }
+                    }
+                    else {
+                        console.error("[ERROR " + this.xhr.status + "]: AJAX (" + this.ajax.url + ")...", this.xhr);
+                        if (this.xhr.status === 401) {
+                            Server.Login.requestSession(false);
+                        }
+                        if (typeof this.error === 'function') {
+                            this.error(this.xhr.response, this.xhr);
+                        }
+                        else {
+                            this.error.handleEvent(this.xhr.response, this.xhr);
+                        }
+                    }
+                }
+            });
+            xhr.addEventListener("error", {
+                xhr: xhr,
+                ajax: ajax,
+                error: error,
+                handleEvent: function (e) {
+                    console.error("[ERROR] AJAX call for " + this.ajax.url + " resulted in network error. Event, XHR:", e, this.xhr);
+                    if (typeof this.error === 'function') {
+                        this.error(this.xhr.response, this.xhr);
+                    }
+                    else {
+                        this.error.handleEvent(this.xhr.response, this.xhr);
+                    }
+                }
+            });
+            ajax.startConditionalLoading();
+            if (ajax.data !== null) {
+                var data = {};
+                for (var key in ajax.data) {
+                    if (typeof ajax.data[key] === "number" || typeof ajax.data[key] === "string") {
+                        data[key] = ajax.data[key];
+                    }
+                    else {
+                        data[key] = JSON.stringify(ajax.data[key]);
+                    }
+                }
+                console.debug("Ajax request for " + url + " includes Data. Data:", data);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.send($.param(data));
+            }
+            else {
+                xhr.send();
+            }
+        }
+        AJAX.requestPage = requestPage;
+    })(AJAX = Server.AJAX || (Server.AJAX = {}));
+})(Server || (Server = {}));
+var Server;
+(function (Server) {
+    var Config;
+    (function (Config) {
+        var CONFIG_URL = "Account";
+        function saveConfig(config, cbs, cbe) {
+            var ajax = new AJAXConfig(CONFIG_URL);
+            ajax.setData("action", "StoreConfig");
+            ajax.setData("config", config);
+            ajax.setTargetLeftWindow();
+            ajax.setResponseTypeJSON();
+            var success = {
+                cbs: cbs,
+                handleEvent: function (response, xhr) {
+                    if (this.cbs !== null) {
+                        if (typeof this.cbs === "function") {
+                            this.cbs(response, xhr);
+                        }
+                        else {
+                            this.cbs.handleEvent(response, xhr);
+                        }
+                    }
+                }
+            };
+            var error = {
+                cbe: cbe,
+                handleEvent: function (response, xhr) {
+                    if (this.cbe !== null) {
+                        if (typeof this.cbe === "function") {
+                            this.cbe(response, xhr);
+                        }
+                        else {
+                            this.cbe.handleEvent(response, xhr);
+                        }
+                    }
+                }
+            };
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Config.saveConfig = saveConfig;
+    })(Config = Server.Config || (Server.Config = {}));
+})(Server || (Server = {}));
+var Server;
+(function (Server) {
+    var Login;
+    (function (Login) {
+        var ACCOUNT_URL = "Account";
+        function requestSession(silent, cbs, cbe) {
+            var success = {
+                cbs: cbs,
+                cbe: cbe,
+                handleEvent: function (response, xhr) {
+                    if (response.user !== undefined || response.logged === true) {
+                        if (response.user !== undefined) {
+                            Application.Login.receiveLogin(response.user, response.session);
+                            if (response.user.config !== undefined) {
+                                Application.Config.updateFromObject(response.user.config);
+                            }
+                        }
+                        else {
+                            Application.Login.updateSessionLife();
+                        }
+                        if (this.cbs !== undefined) {
+                            this.cbs.handleEvent(response, xhr);
+                        }
+                    }
+                    else {
+                        Application.Login.logout();
+                        if (this.cbe !== undefined)
+                            this.cbe.handleEvent(response, xhr);
+                    }
+                }
+            };
+            var error = {
+                cbe: cbe,
+                handleEvent: function (response, xhr) {
+                    Application.Login.logout();
+                    if (this.cbe !== undefined) {
+                        this.cbe.handleEvent(response, xhr);
+                    }
+                }
+            };
+            var ajax = new AJAXConfig(ACCOUNT_URL);
+            ajax.setResponseTypeJSON();
+            if (silent) {
+                ajax.data = { action: "requestSession" };
+                ajax.setTargetNone();
+            }
+            else {
+                ajax.data = { action: "login" };
+                ajax.setTargetGlobal();
+            }
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Login.requestSession = requestSession;
+        function doLogin(email, password, cbs, cbe) {
+            var success = {
+                cbs: cbs,
+                handleEvent: function (response, xhr) {
+                    Application.Login.receiveLogin(response.user, response.session);
+                    if (response.user !== undefined && response.user.config !== undefined) {
+                        Application.Config.updateFromObject(response.user.config);
+                    }
+                    if (this.cbs !== undefined) {
+                        this.cbs.handleEvent(response, xhr);
+                    }
+                }
+            };
+            var ajax = new AJAXConfig(ACCOUNT_URL);
+            ajax.data = {
+                login: email,
+                password: password,
+                action: "login"
+            };
+            ajax.setResponseTypeJSON();
+            ajax.setTargetGlobal();
+            Server.AJAX.requestPage(ajax, success, cbe);
+        }
+        Login.doLogin = doLogin;
+        function doLogout(cbs, cbe) {
+            var success = {
+                cbs: cbs,
+                handleEvent: function (response, xhr) {
+                    Application.Login.logout();
+                    if (this.cbs !== undefined) {
+                        this.cbs.handleEvent(response, xhr);
+                    }
+                }
+            };
+            var error = {
+                cbe: cbe,
+                handleEvent: function (response, xhr) {
+                    console.error("[ERROR] Failure while attempting to logout.");
+                    if (this.cbe !== undefined) {
+                        this.cbe.handleEvent(response, xhr);
+                    }
+                }
+            };
+            var ajax = new AJAXConfig(ACCOUNT_URL);
+            ajax.data = { action: "logout" };
+            ajax.setResponseTypeJSON();
+            ajax.setTargetGlobal();
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Login.doLogout = doLogout;
+    })(Login = Server.Login || (Server.Login = {}));
+})(Server || (Server = {}));
+var Server;
+(function (Server) {
+    var Images;
+    (function (Images) {
+        var IMAGES_URL = "Image";
+        var emptyCallback = function () { };
+        function getImages(cbs, cbe) {
+            var success = cbs === undefined ? emptyCallback : cbs;
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(IMAGES_URL);
+            ajax.setResponseTypeJSON();
+            ajax.data = { action: "list" };
+            ajax.setTargetRightWindow();
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Images.getImages = getImages;
+    })(Images = Server.Images || (Server.Images = {}));
+})(Server || (Server = {}));
+var Server;
+(function (Server) {
+    var Games;
+    (function (Games) {
+        var GAMES_URL = "Game";
+        var INVITE_URL = "Invite";
+        var ROOMS_URL = "Room";
+        var emptyCallback = { handleEvent: function () { } };
+        function updateLists(cbs, cbe) {
+            var success = {
+                cbs: cbs,
+                handleEvent: function (response, xhr) {
+                    DB.GameDB.updateFromObject(response, true);
+                    if (this.cbs !== undefined)
+                        this.cbs.handleEvent(response, xhr);
+                }
+            };
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(GAMES_URL);
+            ajax.setResponseTypeJSON();
+            ajax.data = { action: "list" };
+            ajax.setTargetLeftWindow();
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Games.updateLists = updateLists;
+        function createRoom(room, cbs, cbe) {
+            var success = cbs === undefined ? emptyCallback : cbs;
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(ROOMS_URL);
+            ajax.setResponseTypeJSON();
+            ajax.data = room.exportAsNewRoom();
+            ajax.setData("action", "create");
+            ajax.setTargetLeftWindow();
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Games.createRoom = createRoom;
+        function createGame(game, cbs, cbe) {
+            var success = cbs === undefined ? emptyCallback : cbs;
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(GAMES_URL);
+            ajax.setResponseTypeJSON();
+            ajax.data = game.exportAsObject();
+            ajax.setData("action", "create");
+            ajax.setTargetLeftWindow();
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Games.createGame = createGame;
+        function editGame(game, cbs, cbe) {
+            var success = cbs === undefined ? emptyCallback : cbs;
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(GAMES_URL);
+            ajax.setResponseTypeJSON();
+            ajax.data = game.exportAsObject();
+            ajax.setData("action", "edit");
+            ajax.setTargetLeftWindow();
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Games.editGame = editGame;
+        function getInviteList(cbs, cbe) {
+            var success = cbs === undefined ? emptyCallback : cbs;
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(INVITE_URL);
+            ajax.setResponseTypeJSON();
+            ajax.data = { action: "list" };
+            ajax.setTargetLeftWindow();
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Games.getInviteList = getInviteList;
+        function sendInvite(gameid, nickname, nicknamesufix, message, cbs, cbe) {
+            var success = cbs === undefined ? emptyCallback : cbs;
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(INVITE_URL);
+            ajax.setResponseTypeJSON();
+            ajax.setData("action", "send");
+            ajax.setData("gameid", gameid.toString());
+            ajax.setData("nickname", nickname);
+            ajax.setData("nicksufix", nicknamesufix);
+            if (message !== "") {
+                ajax.setData("message", message);
+            }
+            ajax.setTargetLeftWindow();
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Games.sendInvite = sendInvite;
+        function acceptInvite(gameid, cbs, cbe) {
+            var success = cbs === undefined ? emptyCallback : cbs;
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(INVITE_URL);
+            ajax.setResponseTypeJSON();
+            ajax.setData("action", "accept");
+            ajax.setData("gameid", gameid.toString());
+            ajax.setTargetLeftWindow();
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Games.acceptInvite = acceptInvite;
+        function rejectInvite(gameid, cbs, cbe) {
+            var success = cbs === undefined ? emptyCallback : cbs;
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(INVITE_URL);
+            ajax.setResponseTypeJSON();
+            ajax.setData("action", "reject");
+            ajax.setData("gameid", gameid.toString());
+            ajax.setTargetLeftWindow();
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Games.rejectInvite = rejectInvite;
+        function leaveGame(gameid, cbs, cbe) {
+            var success = cbs === undefined ? emptyCallback : cbs;
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(GAMES_URL);
+            ajax.setResponseTypeJSON();
+            ajax.setData("action", "leave");
+            ajax.setData("id", gameid.toString());
+            ajax.setTargetLeftWindow();
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Games.leaveGame = leaveGame;
+        function deleteGame(gameid, cbs, cbe) {
+            var success = cbs === undefined ? emptyCallback : cbs;
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(GAMES_URL);
+            ajax.setResponseTypeJSON();
+            ajax.setData("action", "delete");
+            ajax.setData("id", gameid.toString());
+            ajax.setTargetLeftWindow();
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Games.deleteGame = deleteGame;
+        function deleteRoom(roomid, cbs, cbe) {
+            var success = cbs === undefined ? emptyCallback : cbs;
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(ROOMS_URL);
+            ajax.setResponseTypeJSON();
+            ajax.setData("action", "delete");
+            ajax.setData("id", roomid.toString());
+            ajax.setTargetLeftWindow();
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Games.deleteRoom = deleteRoom;
+        function getPrivileges(gameid, cbs, cbe) {
+            var success = cbs === undefined ? emptyCallback : cbs;
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(GAMES_URL);
+            ajax.setResponseTypeJSON();
+            ajax.setData("action", "privileges");
+            ajax.setData("id", gameid.toString());
+            ajax.setTargetLeftWindow();
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Games.getPrivileges = getPrivileges;
+        function setPrivileges(gameid, cbs, cbe) {
+            var success = cbs === undefined ? emptyCallback : cbs;
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(GAMES_URL);
+            ajax.setResponseTypeJSON();
+            ajax.setData("action", "setPrivileges");
+            ajax.setData("privileges", "permissions");
+            ajax.setData("id", gameid.toString());
+            ajax.setTargetLeftWindow();
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Games.setPrivileges = setPrivileges;
+    })(Games = Server.Games || (Server.Games = {}));
+})(Server || (Server = {}));
+var Server;
+(function (Server) {
+    var URL;
+    (function (URL) {
+        function fixURL(url) {
+            url = url.trim();
+            if (url.indexOf("://") === -1) {
+                url = "http://" + url;
+            }
+            if (url.indexOf("www.dropbox.com") !== -1) {
+                url = url.replace("www.dropbox.com", "dl.dropboxusercontent.com");
+                var interr = url.lastIndexOf("?dl");
+                if (interr !== -1) {
+                    url = url.substr(0, interr);
+                }
+            }
+            return url;
+        }
+        URL.fixURL = fixURL;
+    })(URL = Server.URL || (Server.URL = {}));
+})(Server || (Server = {}));
+var Server;
+(function (Server) {
+    var Chat;
+    (function (Chat) {
+        var ROOM_URL = "Room";
+        Chat.CHAT_URL = "Chat";
+        var emptyCallback = { handleEvent: function () { } };
+        var socketController = new ChatWsController();
+        var pollingController;
+        Chat.currentController = socketController;
+        var currentRoom = null;
+        var openListener = undefined;
+        var errorListener = undefined;
+        var messageTrigger = new Trigger();
+        var personaTrigger = new Trigger();
+        var statusTrigger = new Trigger();
+        var disconnectTrigger = new Trigger();
+        var personaInfo = {
+            afk: false,
+            focused: true,
+            typing: false,
+            persona: null,
+            avatar: null
+        };
+        var reconnecting = false;
+        var reconnectAttempts = 0;
+        var maxReconnectAttempts = 5;
+        Application.Login.addListener(function (isLogged) {
+            if (!isLogged) {
+                Server.Chat.end();
+            }
+        });
+        function isReconnecting() {
+            return reconnecting;
+        }
+        Chat.isReconnecting = isReconnecting;
+        function setConnected() {
+            reconnectAttempts = 0;
+            reconnecting = false;
+            UI.Chat.Notification.hideDisconnected();
+            UI.Chat.Notification.hideReconnecting();
+        }
+        Chat.setConnected = setConnected;
+        function giveUpReconnect() {
+            var reconnectPls = {
+                room: currentRoom,
+                handleEvent: function () {
+                    Server.Chat.enterRoom(this.room.id);
+                }
+            };
+            var reconnectForMe = new ChatSystemMessage(true);
+            reconnectForMe.addText("_CHATYOUAREDISCONNECTED_");
+            reconnectForMe.addText(" ");
+            reconnectForMe.addTextLink("_CHATDISCONNECTEDRECONNECT_", true, reconnectPls);
+            UI.Chat.printElement(reconnectForMe.getElement(), true);
+            UI.Chat.Notification.hideReconnecting();
+            UI.Chat.Notification.showDisconnected();
+        }
+        Chat.giveUpReconnect = giveUpReconnect;
+        function reconnect() {
+            if (currentRoom === null) {
+                return;
+            }
+            UI.Chat.Notification.showReconnecting();
+            if (reconnectAttempts++ <= maxReconnectAttempts && Application.Login.isLogged()) {
+                reconnecting = true;
+                enterRoom(currentRoom.id);
+            }
+            else {
+                giveUpReconnect();
+            }
+        }
+        Chat.reconnect = reconnect;
+        function leaveRoom() {
+            currentRoom = null;
+            reconnecting = false;
+            Chat.currentController.end();
+        }
+        Chat.leaveRoom = leaveRoom;
+        function enterRoom(roomid) {
+            currentRoom = DB.RoomDB.getRoom(roomid);
+            if (currentRoom === null) {
+                console.error("[CHAT] Entering an unknown room at id " + roomid + ". Risky business.");
+            }
+            UI.Chat.Notification.showReconnecting();
+            if (Chat.currentController.isReady()) {
+                Chat.currentController.enterRoom(roomid);
+            }
+            else {
+                Chat.currentController.onReady = {
+                    controller: Chat.currentController,
+                    roomid: roomid,
+                    handleEvent: function () {
+                        this.controller.enterRoom(this.roomid);
+                    }
+                };
+                Chat.currentController.start();
+            }
+        }
+        Chat.enterRoom = enterRoom;
+        function sendStatus(info) {
+            if (Chat.currentController.isReady()) {
+                Chat.currentController.sendStatus(info);
+            }
+        }
+        Chat.sendStatus = sendStatus;
+        function sendPersona(info) {
+            if (Chat.currentController.isReady()) {
+                Chat.currentController.sendPersona(info);
+            }
+            else {
+                console.debug("[CHAT] Attempt to send Persona while disconnected. Ignoring.", info);
+            }
+        }
+        Chat.sendPersona = sendPersona;
+        function isConnected() {
+            return Chat.currentController.isReady();
+        }
+        Chat.isConnected = isConnected;
+        function sendMessage(message) {
+            if (Chat.currentController.isReady()) {
+                Chat.currentController.sendMessage(message);
+                message.roomid = currentRoom.id;
+            }
+            else {
+                console.warn("[CHAT] Attempt to send messages while disconnected. Ignoring. Offending Message:", message);
+            }
+        }
+        Chat.sendMessage = sendMessage;
+        function saveMemory(memory) {
+            if (Chat.currentController.isReady()) {
+                Chat.currentController.saveMemory(memory);
+            }
+            else {
+                console.warn("[CHAT] Attempt to save memory while disconnected. Ignoring. Offending Memory:", memory);
+            }
+        }
+        Chat.saveMemory = saveMemory;
+        function hasRoom() {
+            return currentRoom !== null;
+        }
+        Chat.hasRoom = hasRoom;
+        function getRoom() {
+            return currentRoom;
+        }
+        Chat.getRoom = getRoom;
+        function getAllMessages(roomid, cbs, cbe) {
+            if (!DB.RoomDB.hasRoom(roomid)) {
+                console.warn("[CHAT] Attempted to load messages for undefined room.");
+                if (cbe !== undefined)
+                    cbe.handleEvent();
+                return;
+            }
+            var success = {
+                roomid: roomid,
+                cbs: cbs,
+                handleEvent: function (response, xhr) {
+                    DB.RoomDB.getRoom(this.roomid).updateFromObject({ messages: response }, true);
+                    if (this.cbs !== undefined)
+                        this.cbs.handleEvent(response, xhr);
+                }
+            };
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(ROOM_URL);
+            ajax.setResponseTypeJSON();
+            ajax.data = { action: "messages", roomid: roomid };
+            ajax.setTargetLeftWindow();
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Chat.getAllMessages = getAllMessages;
+        function end() {
+            currentRoom = null;
+            Chat.currentController.end();
+        }
+        Chat.end = end;
+        function addStatusListener(f) {
+            statusTrigger.addListener(f);
+        }
+        Chat.addStatusListener = addStatusListener;
+        function triggerStatus(info) {
+            statusTrigger.trigger(info);
+        }
+        Chat.triggerStatus = triggerStatus;
+        function addPersonaListener(f) {
+            personaTrigger.addListener(f);
+        }
+        Chat.addPersonaListener = addPersonaListener;
+        function triggerPersona(f) {
+            personaTrigger.trigger(f);
+        }
+        Chat.triggerPersona = triggerPersona;
+        function addMessageListener(f) {
+            messageTrigger.addListener(f);
+        }
+        Chat.addMessageListener = addMessageListener;
+        function triggerMessage(f) {
+            messageTrigger.trigger(f);
+        }
+        Chat.triggerMessage = triggerMessage;
+        (function () {
+            var getRoom = {
+                handleEvent: function (e) {
+                    var room = Server.Chat.getRoom();
+                    var users = [];
+                    for (var id in e[1]) {
+                        e[1][id]['id'] = id;
+                        users.push(e[1][id]);
+                    }
+                    UI.Chat.Avatar.resetForConnect();
+                    room.updateFromObject({ users: users }, true);
+                    Server.Chat.Memory.updateFromObject(e[2]);
+                    room.updateFromObject({ messages: e[3] }, false);
+                    if (!Server.Chat.isReconnecting()) {
+                        UI.Chat.clearRoom();
+                        UI.Chat.printGetAllButton();
+                    }
+                    Server.Chat.setConnected();
+                    UI.Chat.Avatar.updateFromObject(users, true);
+                    UI.Chat.printMessages(room.getOrderedMessages(), false);
+                }
+            };
+            socketController.addMessageListener("getroom", getRoom);
+            var status = {
+                handleEvent: function (array) {
+                    var info = {
+                        id: array[1],
+                        typing: array[2] === 1,
+                        idle: array[3] === 1,
+                        focused: array[4] === 1
+                    };
+                    UI.Chat.Avatar.updateFromObject([info], false);
+                    Server.Chat.triggerStatus(info);
+                }
+            };
+            socketController.addMessageListener("status", status);
+            var persona = {
+                handleEvent: function (array) {
+                    var info = {
+                        id: array[1],
+                        persona: array[2]['persona'] === undefined ? null : array[2]['persona'],
+                        avatar: array[2]['avatar'] === undefined ? null : array[2]['avatar'],
+                    };
+                    UI.Chat.Avatar.updateFromObject([info], false);
+                    Server.Chat.triggerPersona(info);
+                }
+            };
+            socketController.addMessageListener("persona", persona);
+            var left = {
+                handleEvent: function (array) {
+                    var info = {
+                        id: array[1],
+                        online: false
+                    };
+                    UI.Chat.Avatar.updateFromObject([info], false);
+                }
+            };
+            socketController.addMessageListener("left", left);
+            var joined = {
+                handleEvent: function (array) {
+                    array[1].roomid = currentRoom.id;
+                    DB.UserDB.updateFromObject([array[1]]);
+                    UI.Chat.Avatar.updateFromObject([array[1]], false);
+                }
+            };
+            socketController.addMessageListener("joined", joined);
+            var message = {
+                handleEvent: function (array) {
+                    Server.Chat.getRoom().updateFromObject({ messages: [array[1]] }, false);
+                    var message = DB.MessageDB.getMessage(array[1]['id']);
+                    if (message.localid === null) {
+                        UI.Chat.printMessage(message);
+                    }
+                    Server.Chat.triggerMessage(message);
+                }
+            };
+            socketController.addMessageListener("message", message);
+            var memory = {
+                handleEvent: function (array) {
+                    Server.Chat.Memory.updateFromObject(array[2]);
+                }
+            };
+            socketController.addMessageListener("memory", memory);
+            var reconnectF = {
+                handleEvent: function () {
+                    Server.Chat.reconnect();
+                }
+            };
+            socketController.addCloseListener(reconnectF);
+        })();
+        Application.Login.addListener(function (logged) {
+            if (!logged) {
+                UI.Chat.leave();
+            }
+        });
+    })(Chat = Server.Chat || (Server.Chat = {}));
+})(Server || (Server = {}));
+var Server;
+(function (Server) {
+    var Chat;
+    (function (Chat) {
+        var Memory;
+        (function (Memory) {
+            var configList = {};
+            var readableConfigList = {};
+            var changeTrigger = new Trigger();
+            var updating = false;
+            Memory.version = 2;
+            function addChangeListener(f) {
+                changeTrigger.addListener(f);
+            }
+            Memory.addChangeListener = addChangeListener;
+            function getConfig(id) {
+                return configList[id];
+            }
+            Memory.getConfig = getConfig;
+            function registerChangeListener(id, listener) {
+                if (configList[id] === undefined) {
+                    console.warn("[RoomMemory] Attempt to register a listener to unregistered configuration at " + id + ". Offending listener:", listener);
+                    return;
+                }
+                configList[id].addChangeListener(listener);
+            }
+            Memory.registerChangeListener = registerChangeListener;
+            function getConfiguration(name) {
+                if (typeof readableConfigList[name] !== "undefined") {
+                    return readableConfigList[name];
+                }
+                console.warn("[RoomMemory] Attempt to retrieve invalid memory " + name + ", returning", null);
+                return null;
+            }
+            Memory.getConfiguration = getConfiguration;
+            function registerConfiguration(id, name, config) {
+                if (configList[id] !== undefined) {
+                    console.warn("[RoomMemory] Attempt to overwrite registered Configuration at " + id + ". Offending configuration:", config);
+                    return;
+                }
+                configList[id] = config;
+                config.addChangeListener({
+                    trigger: changeTrigger,
+                    id: id,
+                    handleEvent: function (memo) {
+                        this.trigger.trigger(memo, id);
+                        console.debug("[RoomMemory] Global change triggered by " + id + ".");
+                    }
+                });
+                readableConfigList[name] = config;
+            }
+            Memory.registerConfiguration = registerConfiguration;
+            function exportAsObject() {
+                var result = {};
+                for (var key in configList) {
+                    var val = configList[key].exportAsObject();
+                    if (val !== null) {
+                        result[key] = val;
+                    }
+                }
+                return result;
+            }
+            Memory.exportAsObject = exportAsObject;
+            function updateFromObject(obj) {
+                updating = true;
+                for (var key in configList) {
+                    if (obj[key] === undefined) {
+                        configList[key].reset();
+                    }
+                    else {
+                        configList[key].storeValue(obj[key]);
+                    }
+                }
+                updating = false;
+                console.debug("[RoomMemory] Updated values from:", obj);
+            }
+            Memory.updateFromObject = updateFromObject;
+            function saveMemory() {
+                var room = Server.Chat.getRoom();
+                if (room !== null) {
+                    var user = room.getMe();
+                    if (user.isStoryteller()) {
+                        var memoryString = JSON.stringify(exportAsObject());
+                        console.debug("[RoomMemory] Memory string: " + memoryString);
+                        Server.Chat.saveMemory(memoryString);
+                    }
+                }
+            }
+            Memory.saveMemory = saveMemory;
+            function considerSaving() {
+                if (!updating) {
+                    saveMemory();
+                }
+            }
+            Memory.considerSaving = considerSaving;
+            changeTrigger.addListener(function () {
+                Server.Chat.Memory.considerSaving();
+            });
+        })(Memory = Chat.Memory || (Chat.Memory = {}));
+    })(Chat = Server.Chat || (Server.Chat = {}));
+})(Server || (Server = {}));
+Server.Chat.Memory.registerConfiguration("c", "Combat", new MemoryCombat());
+Server.Chat.Memory.registerConfiguration("v", "Version", new MemoryVersion());
+Server.Chat.Memory.registerConfiguration("p", "Pica", new MemoryPica());
+Server.Chat.Memory.registerConfiguration("m", "Cutscene", new MemoryCutscene());
+var Server;
+(function (Server) {
+    var Storage;
+    (function (Storage) {
+        var STORAGE_URL = "Storage";
+        var validStorage = ["sounds", "images", "custom1", "custom2"];
+        var IMAGES_ID = "images";
+        var SOUNDS_ID = "sounds";
+        var ACTION_RESTORE = "restore";
+        var ACTION_STORE = "store";
+        var emptyCallback = { handleEvent: function () { } };
+        function requestImages(cbs, cbe) {
+            var success = cbs === undefined ? emptyCallback : cbs;
+            var error = cbe === undefined ? emptyCallback : cbe;
+            success = {
+                success: success,
+                handleEvent: function (data) {
+                    DB.ImageDB.updateFromObject(data);
+                    this.success.handleEvent(data);
+                }
+            };
+            var ajax = new AJAXConfig(STORAGE_URL);
+            ajax.setTargetRightWindow();
+            ajax.setResponseTypeJSON();
+            ajax.data = { action: ACTION_RESTORE, id: IMAGES_ID };
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Storage.requestImages = requestImages;
+        function requestSounds(cbs, cbe) {
+            var success = cbs === undefined ? emptyCallback : cbs;
+            var error = cbe === undefined ? emptyCallback : cbe;
+            success = {
+                success: success,
+                handleEvent: function (data) {
+                    DB.SoundDB.updateFromObject(data);
+                    this.success.handleEvent(data);
+                }
+            };
+            var ajax = new AJAXConfig(STORAGE_URL);
+            ajax.setTargetRightWindow();
+            ajax.setResponseTypeJSON();
+            ajax.data = { action: ACTION_RESTORE, id: SOUNDS_ID };
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Storage.requestSounds = requestSounds;
+        function sendImages(cbs, cbe) {
+            var success = cbs === undefined ? emptyCallback : cbs;
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(STORAGE_URL);
+            ajax.setTargetRightWindow();
+            ajax.setResponseTypeJSON();
+            ajax.data = { action: ACTION_STORE, id: IMAGES_ID, storage: DB.ImageDB.exportAsObject() };
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Storage.sendImages = sendImages;
+        function sendSounds(cbs, cbe) {
+            var success = cbs === undefined ? emptyCallback : cbs;
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(STORAGE_URL);
+            ajax.setTargetRightWindow();
+            ajax.setResponseTypeJSON();
+            ajax.data = { action: ACTION_STORE, id: SOUNDS_ID, storage: DB.SoundDB.exportAsObject() };
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Storage.sendSounds = sendSounds;
+    })(Storage = Server.Storage || (Server.Storage = {}));
+})(Server || (Server = {}));
+var Server;
+(function (Server) {
+    var Sheets;
+    (function (Sheets) {
+        var SHEET_URL = "Sheet";
+        var STYLE_URL = "Style";
+        var emptyCallback = { handleEvent: function () { } };
+        var emptyCallbackFunction = function () { };
+        function loadSheetAndStyle(sheetid, styleid, cbs, cbe) {
+            var loaded = {
+                style: false,
+                sheet: false,
+                success: cbs === undefined ? emptyCallback : cbs
+            };
+            var styleCBS = {
+                loaded: loaded,
+                handleEvent: function (data) {
+                    this.loaded.style = true;
+                    if (this.loaded.sheet) {
+                        this.loaded.success.handleEvent();
+                    }
+                }
+            };
+            var sheetCBS = {
+                loaded: loaded,
+                handleEvent: function (data) {
+                    this.loaded.sheet = true;
+                    if (this.loaded.style) {
+                        this.loaded.success.handleEvent();
+                    }
+                }
+            };
+            var error = cbe === undefined ? emptyCallback : cbe;
+            loadSheet(sheetid, sheetCBS, error);
+            loadStyle(styleid, styleCBS, error, true);
+        }
+        Sheets.loadSheetAndStyle = loadSheetAndStyle;
+        function loadSheet(sheetid, cbs, cbe) {
+            var success = {
+                cbs: cbs,
+                handleEvent: function (response, xhr) {
+                    DB.SheetDB.updateFromObject(response);
+                    if (this.cbs !== undefined)
+                        this.cbs.handleEvent(response, xhr);
+                }
+            };
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var sheetAjax = new AJAXConfig(SHEET_URL);
+            sheetAjax.setData("id", sheetid);
+            sheetAjax.setData("action", "request");
+            sheetAjax.setTargetRightWindow();
+            sheetAjax.setResponseTypeJSON();
+            Server.AJAX.requestPage(sheetAjax, success, error);
+        }
+        Sheets.loadSheet = loadSheet;
+        function updateStyles(cbs, cbe) {
+            var success = {
+                cbs: cbs,
+                handleEvent: function (response, xhr) {
+                    var ids = [];
+                    var styles = [];
+                    for (var i = 0; i < response.length; i++) {
+                        if (ids.indexOf(response[i]['id']) === -1) {
+                            ids.push(response[i]['id']);
+                            styles.push(response[i]);
+                        }
+                    }
+                    if (this.cbs !== undefined)
+                        this.cbs.handleEvent(styles, xhr);
+                }
+            };
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(STYLE_URL);
+            ajax.setResponseTypeJSON();
+            ajax.data = { action: "listMine" };
+            ajax.setTargetLeftWindow();
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Sheets.updateStyles = updateStyles;
+        function sendStyle(style, cbs, cbe) {
+            cbs = cbs === undefined ? emptyCallback : cbs;
+            cbe = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(STYLE_URL);
+            ajax.setResponseTypeJSON();
+            if (style.id === 0) {
+                ajax.setData("action", "createAdvanced");
+            }
+            else {
+                ajax.setData("action", "editAdvanced");
+                ajax.setData("id", style.id);
+            }
+            ajax.setData("name", style.name);
+            ajax.setData("public", style.publicStyle ? '1' : '0');
+            ajax.setData("html", style.html);
+            ajax.setData("css", style.css);
+            ajax.setData("afterProcess", style.publicCode);
+            ajax.setData("beforeProcess", style.mainCode);
+            ajax.setData("gameid", style.gameid);
+            ajax.setTargetLeftWindow();
+            Server.AJAX.requestPage(ajax, cbs, cbe);
+        }
+        Sheets.sendStyle = sendStyle;
+        function loadStyle(id, cbs, cbe, right) {
+            var success = {
+                cbs: cbs,
+                handleEvent: function (response, xhr) {
+                    var newObj = {
+                        id: response['id'],
+                        name: response['name'],
+                        html: response['html'],
+                        css: response['css'],
+                        mainCode: response['beforeProcess'],
+                        publicCode: response['afterProcess']
+                    };
+                    if (response['gameid'] !== undefined) {
+                        newObj['gameid'] = response['gameid'];
+                    }
+                    else {
+                        newObj['publicStyle'] = Application.getMe().isAdmin();
+                    }
+                    DB.StyleDB.updateStyle(newObj);
+                    if (this.cbs !== undefined)
+                        this.cbs.handleEvent(response, xhr);
+                }
+            };
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(STYLE_URL);
+            ajax.setResponseTypeJSON();
+            ajax.setData("action", "request");
+            ajax.setData("id", id);
+            if (right === true) {
+                ajax.setTargetRightWindow();
+            }
+            else {
+                ajax.setTargetLeftWindow();
+            }
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Sheets.loadStyle = loadStyle;
+        function updateLists(cbs, cbe) {
+            var success = {
+                cbs: cbs,
+                handleEvent: function (response, xhr) {
+                    DB.GameDB.updateFromObject(response, true);
+                    if (this.cbs !== undefined)
+                        this.cbs.handleEvent(response, xhr);
+                }
+            };
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(SHEET_URL);
+            ajax.setResponseTypeJSON();
+            ajax.data = { action: "list" };
+            ajax.setTargetRightWindow();
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Sheets.updateLists = updateLists;
+        function sendFolder(sheet, cbs, cbe) {
+            cbs = cbs === undefined ? emptyCallback : cbs;
+            cbe = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(SHEET_URL);
+            ajax.setResponseTypeJSON();
+            ajax.setData("action", "folder");
+            ajax.setData("id", sheet.getId());
+            ajax.setData("folder", sheet.getFolder());
+            ajax.setTargetRightWindow();
+            Server.AJAX.requestPage(ajax, cbs, cbe);
+        }
+        Sheets.sendFolder = sendFolder;
+        function deleteSheet(sheet, cbs, cbe) {
+            cbs = cbs === undefined ? emptyCallback : cbs;
+            cbe = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(SHEET_URL);
+            ajax.setResponseTypeJSON();
+            ajax.setData("action", "delete");
+            ajax.setData("id", sheet.getId());
+            ajax.setTargetRightWindow();
+            Server.AJAX.requestPage(ajax, cbs, cbe);
+        }
+        Sheets.deleteSheet = deleteSheet;
+        function getSheetPermissions(sheet, cbs, cbe) {
+            cbs = cbs === undefined ? emptyCallback : cbs;
+            cbe = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(SHEET_URL);
+            ajax.setResponseTypeJSON();
+            ajax.setData("action", "listPerm");
+            ajax.setData("id", sheet.getId());
+            ajax.setTargetRightWindow();
+            Server.AJAX.requestPage(ajax, cbs, cbe);
+        }
+        Sheets.getSheetPermissions = getSheetPermissions;
+        function sendSheetPermissions(sheet, permissions, cbs, cbe) {
+            cbs = cbs === undefined ? emptyCallback : cbs;
+            cbe = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(SHEET_URL);
+            ajax.setResponseTypeJSON();
+            ajax.setData("action", "updatePerm");
+            ajax.setData("id", sheet.getId());
+            var privileges = [];
+            for (var i = 0; i < permissions.length; i++) {
+                privileges.push(permissions[i].exportPrivileges());
+            }
+            ajax.setData("privileges", privileges);
+            ajax.setTargetRightWindow();
+            Server.AJAX.requestPage(ajax, cbs, cbe);
+        }
+        Sheets.sendSheetPermissions = sendSheetPermissions;
+        function getStyleOptions(game, cbs, cbe) {
+            cbs = {
+                cbs: cbs,
+                handleEvent: function (data) {
+                    if (typeof this.cbs === "function") {
+                        this.cbs(data);
+                    }
+                    else if (typeof this.cbs === "object") {
+                        this.cbs.handleEvent(data);
+                    }
+                }
+            };
+            cbe = cbe === undefined ? emptyCallbackFunction : cbe;
+            var ajax = new AJAXConfig(STYLE_URL);
+            ajax.setResponseTypeJSON();
+            ajax.setData("action", "list");
+            ajax.setData("id", game.getId());
+            ajax.setTargetRightWindow();
+            Server.AJAX.requestPage(ajax, cbs, cbe);
+        }
+        Sheets.getStyleOptions = getStyleOptions;
+        function createSheet(game, sheetName, styleId, isPublic, cbs, cbe) {
+            cbs = cbs === undefined ? emptyCallback : cbs;
+            cbe = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(SHEET_URL);
+            ajax.setResponseTypeJSON();
+            ajax.setData("action", "create");
+            ajax.setData("gameid", game.getId());
+            ajax.setData("name", sheetName);
+            ajax.setData("idstyle", styleId);
+            ajax.setData("publica", isPublic);
+            ajax.setTargetRightWindow();
+            Server.AJAX.requestPage(ajax, cbs, cbe);
+        }
+        Sheets.createSheet = createSheet;
+    })(Sheets = Server.Sheets || (Server.Sheets = {}));
+})(Server || (Server = {}));
 var Lingo = (function () {
     function Lingo() {
         this.ids = [];
@@ -5683,6 +7897,7 @@ ptbr.setLingo("_LOGGEREXP1_", "O excerto a seguir representa as primeiras e as �
 ptbr.setLingo("_LOGGEREXP2_", "Aqui você pode definir quais tipos de mensagens não serão salvas. Lembrando que apenas mensagens públicas (visível a todos) serão salvas no log.");
 ptbr.setLingo("_LOGGERSUBMIT_", "Criar Log");
 ptbr.setLingo("", "");
+ptbr.setLingo("_MENUSHEETREOPEN_", "Ficha");
 ptbr.setLingo("_SHEETSTITLE_", "Fichas");
 ptbr.setLingo("_SHEETSEXP01_", "Fichas são algo que mestres e seus jogadores podem guardar no sistema, garantindo que todos estejam vendo a mesma versão desse recurso. Um jogador só pode ver fichas para as quais ele tem permissões adequadas, então lembre-se de alterar essas opções para cada ficha que fizer.");
 ptbr.setLingo("_SHEETSEXP02_", "Normalmente são usadas para guardar as informações de personagens, mas têm o potencial para guardar qualquer tipo de informação.");
@@ -5697,6 +7912,25 @@ ptbr.setLingo("_SHEETSRENAMEFOLDERPROMPT_", "Escolha a nova pasta para \"%a\", a
 ptbr.setLingo("_SHEETSNEWSHEET_", "Criar nova ficha");
 ptbr.setLingo("_SHEETSNOSHEETS_", "Sem fichas para exibir.");
 ptbr.setLingo("_SHEETCONFIRMDELETE_", "Deletar \"%a\"? Fichas deletadas não podem ser recuperadas.");
+ptbr.setLingo("_SHEETDESIGNERTITLE_", "Criador de Fichas");
+ptbr.setLingo("_SHEETDESIGNEREXP_", "Aqui você definirá duas partes importantes da ficha: o seu nome e qual seu estilo. O estilo da ficha é como o formulário dela, definindo quais campos ela terá, enquanto a ficha, em si, é apenas os valores que vão nesse formulário. Escolha o estilo apropriado para o tipo de informação que vá guardar.");
+ptbr.setLingo("_SHEETDESIGNERERROR_", "Houve um erro na criação da ficha. Tente novamente.");
+ptbr.setLingo("_SHEETDESIGNERNAMEPLACEHOLDER_", "Nome da Ficha");
+ptbr.setLingo("_SHEETDESIGNERSUBMIT_", "Enviar");
+ptbr.setLingo("_SHEETDESIGNERSTYLE_", "Estilo da Ficha:");
+ptbr.setLingo("_SHEETDESIGNERREMAIN_", "Continuar criando fichas");
+ptbr.setLingo("_SHEETDESIGNERPUBLIC_", "Ficha Pública:");
+ptbr.setLingo("_SHEETVIEWERSAVE_", "Salvar");
+ptbr.setLingo("_SHEETVIEWERFULLRELOAD_", "Recarregar ficha completamente");
+ptbr.setLingo("_SHEETVIEWERIMPORT_", "Carregar valores de .json");
+ptbr.setLingo("_SHEETVIEWEREXPORT_", "Salvar valores como .json");
+ptbr.setLingo("_SHEETVIEWERAUTOMATIC_", "Recarregar a ficha automaticamente");
+ptbr.setLingo("_SHEETVIEWERCLOSE_", "Fechar ficha");
+ptbr.setLingo("_SHEETIMPORTFAILED_", "O arquivo escolhido não continha uma ficha válida e não pôde ser importado.");
+ptbr.setLingo("_SHEETVARIABLEIMAGENONE_", "Sem imagem");
+ptbr.setLingo("_SHEETVARIABLEIMAGESNOTLOADED_", "Imagens não carregadas");
+ptbr.setLingo("_SHEETVARIABLEIMAGELASTVALUE_", "Imagem atual");
+ptbr.setLingo("_SHEETVARIABLEMATHNAN_", "Não é um Número");
 ptbr.setLingo("_SHEETPERMISSIONSHEADER_", "Permissões de Ficha");
 ptbr.setLingo("_SHEETPERMISSIONEXP_", "As permissões definem o que cada jogador de um grupo pode fazer com uma certa ficha. \"Ver\" indica que o jogador poderá abrir a ficha, \"Editar\" indica que o jogador poderá alterar os valores dessa ficha, \"Deletar\" permite que o jogador apague a ficha (permanentemente) e \"Promover\" permite que um jogador acesse essa tela, podendo fornecer permissões para outros jogadores.");
 ptbr.setLingo("_SHEETPERMISSIONSHEETNAME_", "Você está editando permissões para \"%a\".");
@@ -5815,6 +8049,16 @@ ptbr.setLingo("_CHATMESSAGEANNOUNCEMENT_", "AVISO DO SISTEMA");
 ptbr.setLingo("_CHATMESSAGESFROM_", "Mensagens de %a.");
 ptbr.setLingo("_CHATIMAGESNOIMAGES_", "Sem imagens recentes.");
 ptbr.setLingo("_CHATIMAGESPRINTINGIMAGES_", "Imagens recentes:");
+ptbr.setLingo("_CHATSHHHHHWEHOLLYWOODNOW_", "Essa sala está com o modo Cutscene ativo, apenas narradores podem enviar mensagens.");
+ptbr.setLingo("_CHATBUTTONFONTPLUS_", "Aumentar tamanho da fonte");
+ptbr.setLingo("_CHATBUTTONFONTMINUS_", "Diminuir tamanho da fonte");
+ptbr.setLingo("_CHATBUTTONLEAVE_", "Sair da sala");
+ptbr.setLingo("_CHATBUTTONHOLLYWOOD_", "Ativar/Desativar modo Cutscene");
+ptbr.setLingo("_CHATBUTTONSEND_", "Enviar");
+ptbr.setLingo("_CHATPERSONAMANAGERBUTTON_", "Abrir administrador de personas");
+ptbr.setLingo("_CHATDICETOWER_", "Ativar/Desativar rolagem secreta");
+ptbr.setLingo("_CHATSHHHHHWEHOLLYWOODACTIVE_", "Modo Cutscene ativado. Apenas narradores podem enviar mensagens.");
+ptbr.setLingo("_CHATSHHHHHWEHOLLYWOODINACTIVE_", "Modo Cutscene desativado. Todos os jogadores podem enviar mensagens.");
 ptbr.setLingo("", "");
 ptbr.setLingo("_PERSONADESIGNERTITLE_", "Administrador de Personas");
 ptbr.setLingo("_PERSONADESIGNERNAME_", "Nome do Personagem");
@@ -5880,6 +8124,7 @@ var UI;
     UI.idGameDesigner = "gameDesignerFormSideWindow";
     UI.idRoomDesigner = "roomDesignerFormSideWindow";
     UI.idSheetViewer = "sheetViewerSideWindow";
+    UI.idSheetDesigner = "sheetDesignerFormSideWindow";
     UI.idHome = "homeSideWindow";
     UI.idSheets = "sheetsSideWindow";
     UI.idImages = "imagesSideWindow";
@@ -7115,19 +9360,32 @@ var UI;
     (function (Sheets) {
         var SheetManager;
         (function (SheetManager) {
+            var myButton = document.getElementById("sheetOpenButton");
+            myButton.style.display = "none";
+            myButton.addEventListener("click", function () {
+                UI.PageManager.callPage(UI.idSheetViewer);
+            });
+            var viewport = document.getElementById("sheetViewport");
+            while (viewport.firstChild)
+                viewport.removeChild(viewport.firstChild);
             var buttons = [];
             var buttonHolder = document.getElementById("sheetViewerSheetsTab");
             while (buttonHolder.firstChild)
                 buttonHolder.removeChild(buttonHolder.firstChild);
             SheetManager.currentSheet = null;
-            function switchToSheet(sheet) {
-                UI.PageManager.callPage(UI.idSheetViewer);
+            SheetManager.currentStyle = null;
+            var sheetChangeListener = function () {
+                UI.Sheets.SheetManager.updateButtons();
+            };
+            function addButton(sheet) {
                 var idx = buttons.indexOf(sheet);
                 if (idx !== -1) {
                     buttons.splice(idx, 1);
                 }
                 buttons.push(sheet);
-                buttonHolder.appendChild(sheet.getTab().getHTML());
+                if (idx === -1) {
+                    buttonHolder.appendChild(sheet.getTab().getHTML());
+                }
                 sheet.getTab().toggleOn();
                 while (buttonHolder.clientHeight > sheet.getTab().getHTML().scrollHeight) {
                     var oldTab = buttons.splice(0, 1)[0];
@@ -7136,16 +9394,63 @@ var UI;
                 if (SheetManager.currentSheet !== null && SheetManager.currentSheet !== sheet) {
                     SheetManager.currentSheet.getTab().toggleOff();
                 }
+                myButton.style.display = "";
+            }
+            function close() {
+                if (SheetManager.currentStyle !== null && SheetManager.currentSheet !== null) {
+                    buttons.splice(buttons.indexOf(SheetManager.currentSheet), 1);
+                    buttonHolder.removeChild(SheetManager.currentSheet.getTab().getHTML());
+                    detachStyle();
+                    SheetManager.currentSheet = null;
+                    SheetManager.currentStyle = null;
+                    if (buttons.length === 0) {
+                        myButton.style.display = "none";
+                    }
+                }
+            }
+            SheetManager.close = close;
+            function detachStyle() {
+                if (SheetManager.currentStyle !== null) {
+                    document.head.removeChild(SheetManager.currentStyle.getCSS());
+                    viewport.removeChild(SheetManager.currentStyle.getHTML());
+                }
+            }
+            SheetManager.detachStyle = detachStyle;
+            function attachStyle() {
+                if (SheetManager.currentStyle !== null) {
+                    document.head.appendChild(SheetManager.currentStyle.getCSS());
+                    viewport.appendChild(SheetManager.currentStyle.getHTML());
+                }
+            }
+            SheetManager.attachStyle = attachStyle;
+            function switchToSheet(sheet, reloadStyle) {
+                UI.PageManager.callPage(UI.idSheetViewer);
+                addButton(sheet);
                 SheetManager.currentSheet = sheet;
+                var newStyle = StyleFactory.getSheetStyle(SheetManager.currentSheet.getStyle(), reloadStyle === true);
+                if (SheetManager.currentStyle !== newStyle) {
+                    detachStyle();
+                }
+                if (SheetManager.currentStyle !== newStyle) {
+                    SheetManager.currentStyle = newStyle;
+                    attachStyle();
+                }
+                SheetManager.currentSheet.addChangeListener(sheetChangeListener);
+                SheetManager.currentStyle.addSheetInstance(SheetManager.currentSheet);
             }
             SheetManager.switchToSheet = switchToSheet;
             function openSheet(sheet, reloadSheet, reloadStyle) {
                 var loadSheet = !sheet.loaded || reloadSheet === true;
                 var loadStyle = reloadStyle === true || !DB.StyleDB.hasStyle(sheet.getStyleId()) || !DB.StyleDB.getStyle(sheet.getStyleId()).isLoaded();
+                if (reloadStyle === true && SheetManager.currentStyle !== null && SheetManager.currentStyle.getStyleInstance() === sheet.getStyle()) {
+                    detachStyle();
+                    SheetManager.currentStyle = null;
+                }
                 var cbs = {
                     sheet: sheet,
+                    reloadStyle: reloadStyle === true,
                     handleEvent: function () {
-                        UI.Sheets.SheetManager.switchToSheet(this.sheet);
+                        UI.Sheets.SheetManager.switchToSheet(this.sheet, this.reloadStyle);
                     }
                 };
                 var cbe = {
@@ -7167,7 +9472,171 @@ var UI;
                 }
             }
             SheetManager.openSheet = openSheet;
+            var sheetSave = document.getElementById("sheetSave");
+            var importInput = document.getElementById("sheetViewerJSONImporter");
+            var sheetAutomatic = document.getElementById("sheetAutomatic");
+            sheetAutomatic.addEventListener("click", function (e) {
+                e.preventDefault();
+                this.classList.toggle("icons-sheetAutomaticOn");
+                this.classList.toggle("icons-sheetAutomatic");
+            });
+            document.getElementById("sheetClose").addEventListener("click", function (e) {
+                e.preventDefault();
+                UI.Sheets.SheetManager.close();
+            });
+            var sheetImport = document.getElementById("sheetImport");
+            sheetImport.addEventListener("click", function (e) {
+                e.preventDefault();
+                UI.Sheets.SheetManager.importFromJSON();
+            });
+            document.getElementById("sheetExport").addEventListener("click", function (e) {
+                e.preventDefault();
+                UI.Sheets.SheetManager.exportAsJSON();
+            });
+            document.getElementById("sheetFullReload").addEventListener("click", function () {
+                UI.Sheets.SheetManager.reload(true);
+            });
+            function reload(reloadStyle) {
+                openSheet(SheetManager.currentSheet, true, reloadStyle === true);
+            }
+            SheetManager.reload = reload;
+            function isAutoUpdate() {
+                return sheetAutomatic.classList.contains("icons-sheetAutomaticOn");
+            }
+            SheetManager.isAutoUpdate = isAutoUpdate;
+            function updateButtons() {
+                if (SheetManager.currentSheet.isEditable()) {
+                    sheetSave.style.display = "";
+                    sheetImport.style.display = "";
+                }
+                else {
+                    sheetSave.style.display = "none";
+                    sheetImport.style.display = "none";
+                }
+                if (SheetManager.currentSheet.changed) {
+                    sheetSave.classList.remove("icons-sheetSave");
+                    sheetSave.classList.add("icons-sheetSaveChanged");
+                }
+                else {
+                    sheetSave.classList.add("icons-sheetSave");
+                    sheetSave.classList.remove("icons-sheetSaveChanged");
+                }
+            }
+            SheetManager.updateButtons = updateButtons;
+            importInput.addEventListener("change", function () {
+                UI.Sheets.SheetManager.importFromJSON(true);
+            });
+            function importFromJSON(ready, json) {
+                if (ready !== true) {
+                    importInput.value = "";
+                    importInput.click();
+                    return;
+                }
+                if (json !== undefined) {
+                    try {
+                        json = JSON.parse(json);
+                        SheetManager.currentSheet.setValues(json, true);
+                    }
+                    catch (e) {
+                        alert(UI.Language.getLanguage().getLingo("_SHEETIMPORTFAILED_"));
+                    }
+                    return;
+                }
+                if (importInput.files.length === 1) {
+                    var file = importInput.files[0];
+                    var reader = new FileReader();
+                    reader.addEventListener("load", function (e) {
+                        UI.Sheets.SheetManager.importFromJSON(true, e.target['result']);
+                    });
+                    reader.readAsText(file);
+                }
+            }
+            SheetManager.importFromJSON = importFromJSON;
+            function exportAsJSON() {
+                var blob = new Blob([JSON.stringify(SheetManager.currentSheet.values, null, 4)], { type: "text/plain;charset=utf-8;" });
+                var d = new Date();
+                var curr_date = d.getDate() < 10 ? "0" + d.getDate().toString() : d.getDate().toString();
+                var curr_month = (d.getMonth() + 1) < 10 ? "0" + (d.getMonth() + 1).toString() : (d.getMonth() + 1).toString();
+                var curr_year = d.getFullYear();
+                saveAs(blob, SheetManager.currentSheet.getGame().getName() + " - " + SheetManager.currentSheet.getName() + " (" + curr_year + curr_month + curr_date + ").json");
+            }
+            SheetManager.exportAsJSON = exportAsJSON;
         })(SheetManager = Sheets.SheetManager || (Sheets.SheetManager = {}));
+    })(Sheets = UI.Sheets || (UI.Sheets = {}));
+})(UI || (UI = {}));
+var UI;
+(function (UI) {
+    var Sheets;
+    (function (Sheets) {
+        var SheetDesigner;
+        (function (SheetDesigner) {
+            var currentGame;
+            var inputName = document.getElementById("sheetDesignerName");
+            var selectStyle = document.getElementById("sheetDesignerStyleSelect");
+            var checkboxRemain = document.getElementById("sheetDesignerRemain");
+            var checkboxPublic = document.getElementById("sheetDesignerPublicSheet");
+            var $error = $(document.getElementById("sheetDesignerError")).css("opacity", "0");
+            document.getElementById("sheetDesignerForm").addEventListener("submit", function (e) {
+                e.preventDefault();
+                UI.Sheets.SheetDesigner.submit();
+            });
+            function callSelf(game) {
+                $error.stop().css("opacity", 0);
+                currentGame = game;
+                UI.PageManager.callPage(UI.idSheetDesigner);
+                inputName.value = "";
+                checkboxRemain.checked = false;
+                checkboxPublic.checked = false;
+                var cbs = function (data) {
+                    UI.Sheets.SheetDesigner.fillStyles(data);
+                };
+                var cbe = function () {
+                    UI.Sheets.callSelf();
+                };
+                Server.Sheets.getStyleOptions(currentGame, cbs, cbe);
+            }
+            SheetDesigner.callSelf = callSelf;
+            function success() {
+                $error.stop().css("opacity", 0);
+                if (!checkboxRemain.checked) {
+                    UI.Sheets.callSelf();
+                }
+                else {
+                    inputName.value = "";
+                    checkboxPublic.checked = false;
+                    inputName.focus();
+                }
+            }
+            SheetDesigner.success = success;
+            function fillStyles(data) {
+                while (selectStyle.firstChild !== null)
+                    selectStyle.removeChild(selectStyle.firstChild);
+                for (var i = 0; i < data.length; i++) {
+                    var option = document.createElement("option");
+                    option.value = data[i]['id'];
+                    option.appendChild(document.createTextNode(data[i]['name']));
+                    selectStyle.appendChild(option);
+                }
+                selectStyle.value = "1";
+            }
+            SheetDesigner.fillStyles = fillStyles;
+            function submit() {
+                $error.stop().css("opacity", 0);
+                var cbe = {
+                    $error: $error,
+                    handleEvent: function () {
+                        this.$error.stop().animate({ "opacity": 1 }, Application.Config.getConfig("animTime").getValue());
+                    }
+                };
+                var cbs = function () {
+                    UI.Sheets.SheetDesigner.success();
+                };
+                var sheetName = inputName.value.trim();
+                var styleId = parseInt(selectStyle.value);
+                Server.Sheets.createSheet(currentGame, sheetName, styleId, checkboxPublic.checked, cbs, cbe);
+            }
+            SheetDesigner.submit = submit;
+        })(SheetDesigner = Sheets.SheetDesigner || (Sheets.SheetDesigner = {}));
     })(Sheets = UI.Sheets || (UI.Sheets = {}));
 })(UI || (UI = {}));
 var UI;
@@ -8228,6 +10697,10 @@ var UI;
         }
         Chat.printElement = printElement;
         function printMessage(message, doScroll) {
+            var chatAllowed = Server.Chat.Memory.getConfiguration("Cutscene").getValue();
+            if (!chatAllowed && !(Server.Chat.getRoom().getMe().isStoryteller() || message.hasDestination())) {
+                return;
+            }
             var element = message.getHTML();
             if (element !== null) {
                 if (message.getDate() !== null && message.getDate() !== lastDate) {
@@ -8322,6 +10795,13 @@ var UI;
         function sendMessage(message) {
             if (currentRoom === null) {
                 console.warn("[CHAT] Attempt to send messages while not in a room. Ignoring. Offending message:", message);
+                return;
+            }
+            var chatAllowed = Server.Chat.Memory.getConfiguration("Cutscene").getValue();
+            if (!chatAllowed && !(Server.Chat.getRoom().getMe().isStoryteller() || message.hasDestination())) {
+                var msg = new ChatSystemMessage(true);
+                msg.addText("_CHATSHHHHHWEHOLLYWOODNOW_");
+                UI.Chat.printElement(msg.getElement());
                 return;
             }
             message.roomid = currentRoom.id;
@@ -8553,7 +11033,10 @@ var UI;
             var diceFaces = document.getElementById("chatDiceFaces");
             var diceMod = document.getElementById("chatDiceMod");
             var diceReason = document.getElementById("chatDiceReason");
-            document.getElementById("chatMessageSendButton");
+            document.getElementById("chatMessageSendButton").addEventListener("click", function (e) {
+                e.preventDefault();
+                UI.Chat.Forms.sendMessage();
+            });
             var typing = false;
             var afk = false;
             var focused = true;
@@ -8839,7 +11322,7 @@ var UI;
                     if (UI.PageManager.getCurrentLeft() === UI.idChat) {
                         var focus = document.activeElement;
                         var focusTag = focus.tagName.toLowerCase();
-                        if (focusTag !== "input" && focusTag !== "textarea" && focusTag !== "select") {
+                        if (focusTag !== "input" && focusTag !== "textarea" && focusTag !== "select" && focus.contentEditable !== "true") {
                             formInput.focus();
                         }
                     }
@@ -8887,7 +11370,7 @@ var UI;
                 }
             });
             document.addEventListener("keydown", function (e) {
-                if (e.which === 8 && !$(e.target).is("input, textarea")) {
+                if (e.which === 8 && !$(e.target).is("input, textarea") && e.target.contentEditable !== "true") {
                     e.preventDefault();
                 }
             });
@@ -9591,1109 +12074,6 @@ var UI;
         })(StyleDesigner = Styles.StyleDesigner || (Styles.StyleDesigner = {}));
     })(Styles = UI.Styles || (UI.Styles = {}));
 })(UI || (UI = {}));
-var Server;
-(function (Server) {
-    Server.IMAGE_URL = "http://img.redpg.com.br/";
-    Server.APPLICATION_URL = "http://app.redpg.com.br/service/";
-    Server.CLIENT_URL = "http://beta.redpg.com.br/";
-    Server.WEBSOCKET_SERVERURL = "ws://app.redpg.com.br";
-    Server.WEBSOCKET_CONTEXT = "/service/";
-    Server.WEBSOCKET_PORTS = [80, 8080, 8081];
-    Application.Config.registerConfiguration("wsPort", new WsportConfiguration(Server.WEBSOCKET_PORTS[0]));
-    function getWebsocketURL() {
-        return Server.WEBSOCKET_SERVERURL + ":" + Application.Config.getConfig("wsPort").getValue() + Server.WEBSOCKET_CONTEXT;
-    }
-    Server.getWebsocketURL = getWebsocketURL;
-})(Server || (Server = {}));
-var Server;
-(function (Server) {
-    var AJAX;
-    (function (AJAX) {
-        function requestPage(ajax, success, error) {
-            var url = ajax.url;
-            if (url.indexOf("://") === -1) {
-                url = Server.APPLICATION_URL + url;
-                if (Application.Login.hasSession()) {
-                    url += ';jsessionid=' + Application.Login.getSession();
-                }
-            }
-            var xhr = new XMLHttpRequest();
-            var method = ajax.data !== null ? "POST" : "GET";
-            xhr.open(method, url, true);
-            xhr.responseType = ajax.responseType;
-            xhr.addEventListener("loadend", {
-                ajax: ajax,
-                handleEvent: function (e) {
-                    console.debug("AJAX request for " + this.ajax.url + " is complete.");
-                    this.ajax.finishConditionalLoading();
-                }
-            });
-            xhr.addEventListener("load", {
-                xhr: xhr,
-                ajax: ajax,
-                success: success,
-                error: error,
-                handleEvent: function (e) {
-                    if (this.xhr.status >= 200 && this.xhr.status < 300) {
-                        console.debug("[SUCCESS " + this.xhr.status + "]: AJAX (" + this.ajax.url + ")...", this.xhr);
-                        if (typeof this.success === 'function') {
-                            this.success(this.xhr.response, this.xhr);
-                        }
-                        else {
-                            this.success.handleEvent(this.xhr.response, this.xhr);
-                        }
-                    }
-                    else {
-                        console.error("[ERROR " + this.xhr.status + "]: AJAX (" + this.ajax.url + ")...", this.xhr);
-                        if (this.xhr.status === 401) {
-                            Server.Login.requestSession(false);
-                        }
-                        if (typeof this.error === 'function') {
-                            this.error(this.xhr.response, this.xhr);
-                        }
-                        else {
-                            this.error.handleEvent(this.xhr.response, this.xhr);
-                        }
-                    }
-                }
-            });
-            xhr.addEventListener("error", {
-                xhr: xhr,
-                ajax: ajax,
-                error: error,
-                handleEvent: function (e) {
-                    console.error("[ERROR] AJAX call for " + this.ajax.url + " resulted in network error. Event, XHR:", e, this.xhr);
-                    if (typeof this.error === 'function') {
-                        this.error(this.xhr.response, this.xhr);
-                    }
-                    else {
-                        this.error.handleEvent(this.xhr.response, this.xhr);
-                    }
-                }
-            });
-            ajax.startConditionalLoading();
-            if (ajax.data !== null) {
-                var data = {};
-                for (var key in ajax.data) {
-                    if (typeof ajax.data[key] === "number" || typeof ajax.data[key] === "string") {
-                        data[key] = ajax.data[key];
-                    }
-                    else {
-                        data[key] = JSON.stringify(ajax.data[key]);
-                    }
-                }
-                console.debug("Ajax request for " + url + " includes Data. Data:", data);
-                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                xhr.send($.param(data));
-            }
-            else {
-                xhr.send();
-            }
-        }
-        AJAX.requestPage = requestPage;
-    })(AJAX = Server.AJAX || (Server.AJAX = {}));
-})(Server || (Server = {}));
-var Server;
-(function (Server) {
-    var Config;
-    (function (Config) {
-        var CONFIG_URL = "Account";
-        function saveConfig(config, cbs, cbe) {
-            var ajax = new AJAXConfig(CONFIG_URL);
-            ajax.setData("action", "StoreConfig");
-            ajax.setData("config", config);
-            ajax.setTargetLeftWindow();
-            ajax.setResponseTypeJSON();
-            var success = {
-                cbs: cbs,
-                handleEvent: function (response, xhr) {
-                    if (this.cbs !== null) {
-                        if (typeof this.cbs === "function") {
-                            this.cbs(response, xhr);
-                        }
-                        else {
-                            this.cbs.handleEvent(response, xhr);
-                        }
-                    }
-                }
-            };
-            var error = {
-                cbe: cbe,
-                handleEvent: function (response, xhr) {
-                    if (this.cbe !== null) {
-                        if (typeof this.cbe === "function") {
-                            this.cbe(response, xhr);
-                        }
-                        else {
-                            this.cbe.handleEvent(response, xhr);
-                        }
-                    }
-                }
-            };
-            Server.AJAX.requestPage(ajax, success, error);
-        }
-        Config.saveConfig = saveConfig;
-    })(Config = Server.Config || (Server.Config = {}));
-})(Server || (Server = {}));
-var Server;
-(function (Server) {
-    var Login;
-    (function (Login) {
-        var ACCOUNT_URL = "Account";
-        function requestSession(silent, cbs, cbe) {
-            var success = {
-                cbs: cbs,
-                cbe: cbe,
-                handleEvent: function (response, xhr) {
-                    if (response.user !== undefined || response.logged === true) {
-                        if (response.user !== undefined) {
-                            Application.Login.receiveLogin(response.user, response.session);
-                            if (response.user.config !== undefined) {
-                                Application.Config.updateFromObject(response.user.config);
-                            }
-                        }
-                        else {
-                            Application.Login.updateSessionLife();
-                        }
-                        if (this.cbs !== undefined) {
-                            this.cbs.handleEvent(response, xhr);
-                        }
-                    }
-                    else {
-                        Application.Login.logout();
-                        if (this.cbe !== undefined)
-                            this.cbe.handleEvent(response, xhr);
-                    }
-                }
-            };
-            var error = {
-                cbe: cbe,
-                handleEvent: function (response, xhr) {
-                    Application.Login.logout();
-                    if (this.cbe !== undefined) {
-                        this.cbe.handleEvent(response, xhr);
-                    }
-                }
-            };
-            var ajax = new AJAXConfig(ACCOUNT_URL);
-            ajax.setResponseTypeJSON();
-            if (silent) {
-                ajax.data = { action: "requestSession" };
-                ajax.setTargetNone();
-            }
-            else {
-                ajax.data = { action: "login" };
-                ajax.setTargetGlobal();
-            }
-            Server.AJAX.requestPage(ajax, success, error);
-        }
-        Login.requestSession = requestSession;
-        function doLogin(email, password, cbs, cbe) {
-            var success = {
-                cbs: cbs,
-                handleEvent: function (response, xhr) {
-                    Application.Login.receiveLogin(response.user, response.session);
-                    if (response.user !== undefined && response.user.config !== undefined) {
-                        Application.Config.updateFromObject(response.user.config);
-                    }
-                    if (this.cbs !== undefined) {
-                        this.cbs.handleEvent(response, xhr);
-                    }
-                }
-            };
-            var ajax = new AJAXConfig(ACCOUNT_URL);
-            ajax.data = {
-                login: email,
-                password: password,
-                action: "login"
-            };
-            ajax.setResponseTypeJSON();
-            ajax.setTargetGlobal();
-            Server.AJAX.requestPage(ajax, success, cbe);
-        }
-        Login.doLogin = doLogin;
-        function doLogout(cbs, cbe) {
-            var success = {
-                cbs: cbs,
-                handleEvent: function (response, xhr) {
-                    Application.Login.logout();
-                    if (this.cbs !== undefined) {
-                        this.cbs.handleEvent(response, xhr);
-                    }
-                }
-            };
-            var error = {
-                cbe: cbe,
-                handleEvent: function (response, xhr) {
-                    console.error("[ERROR] Failure while attempting to logout.");
-                    if (this.cbe !== undefined) {
-                        this.cbe.handleEvent(response, xhr);
-                    }
-                }
-            };
-            var ajax = new AJAXConfig(ACCOUNT_URL);
-            ajax.data = { action: "logout" };
-            ajax.setResponseTypeJSON();
-            ajax.setTargetGlobal();
-            Server.AJAX.requestPage(ajax, success, error);
-        }
-        Login.doLogout = doLogout;
-    })(Login = Server.Login || (Server.Login = {}));
-})(Server || (Server = {}));
-var Server;
-(function (Server) {
-    var Images;
-    (function (Images) {
-        var IMAGES_URL = "Image";
-        var emptyCallback = function () { };
-        function getImages(cbs, cbe) {
-            var success = cbs === undefined ? emptyCallback : cbs;
-            var error = cbe === undefined ? emptyCallback : cbe;
-            var ajax = new AJAXConfig(IMAGES_URL);
-            ajax.setResponseTypeJSON();
-            ajax.data = { action: "list" };
-            ajax.setTargetRightWindow();
-            Server.AJAX.requestPage(ajax, success, error);
-        }
-        Images.getImages = getImages;
-    })(Images = Server.Images || (Server.Images = {}));
-})(Server || (Server = {}));
-var Server;
-(function (Server) {
-    var Games;
-    (function (Games) {
-        var GAMES_URL = "Game";
-        var INVITE_URL = "Invite";
-        var ROOMS_URL = "Room";
-        var emptyCallback = { handleEvent: function () { } };
-        function updateLists(cbs, cbe) {
-            var success = {
-                cbs: cbs,
-                handleEvent: function (response, xhr) {
-                    DB.GameDB.updateFromObject(response, true);
-                    if (this.cbs !== undefined)
-                        this.cbs.handleEvent(response, xhr);
-                }
-            };
-            var error = cbe === undefined ? emptyCallback : cbe;
-            var ajax = new AJAXConfig(GAMES_URL);
-            ajax.setResponseTypeJSON();
-            ajax.data = { action: "list" };
-            ajax.setTargetLeftWindow();
-            Server.AJAX.requestPage(ajax, success, error);
-        }
-        Games.updateLists = updateLists;
-        function createRoom(room, cbs, cbe) {
-            var success = cbs === undefined ? emptyCallback : cbs;
-            var error = cbe === undefined ? emptyCallback : cbe;
-            var ajax = new AJAXConfig(ROOMS_URL);
-            ajax.setResponseTypeJSON();
-            ajax.data = room.exportAsNewRoom();
-            ajax.setData("action", "create");
-            ajax.setTargetLeftWindow();
-            Server.AJAX.requestPage(ajax, success, error);
-        }
-        Games.createRoom = createRoom;
-        function createGame(game, cbs, cbe) {
-            var success = cbs === undefined ? emptyCallback : cbs;
-            var error = cbe === undefined ? emptyCallback : cbe;
-            var ajax = new AJAXConfig(GAMES_URL);
-            ajax.setResponseTypeJSON();
-            ajax.data = game.exportAsObject();
-            ajax.setData("action", "create");
-            ajax.setTargetLeftWindow();
-            Server.AJAX.requestPage(ajax, success, error);
-        }
-        Games.createGame = createGame;
-        function editGame(game, cbs, cbe) {
-            var success = cbs === undefined ? emptyCallback : cbs;
-            var error = cbe === undefined ? emptyCallback : cbe;
-            var ajax = new AJAXConfig(GAMES_URL);
-            ajax.setResponseTypeJSON();
-            ajax.data = game.exportAsObject();
-            ajax.setData("action", "edit");
-            ajax.setTargetLeftWindow();
-            Server.AJAX.requestPage(ajax, success, error);
-        }
-        Games.editGame = editGame;
-        function getInviteList(cbs, cbe) {
-            var success = cbs === undefined ? emptyCallback : cbs;
-            var error = cbe === undefined ? emptyCallback : cbe;
-            var ajax = new AJAXConfig(INVITE_URL);
-            ajax.setResponseTypeJSON();
-            ajax.data = { action: "list" };
-            ajax.setTargetLeftWindow();
-            Server.AJAX.requestPage(ajax, success, error);
-        }
-        Games.getInviteList = getInviteList;
-        function sendInvite(gameid, nickname, nicknamesufix, message, cbs, cbe) {
-            var success = cbs === undefined ? emptyCallback : cbs;
-            var error = cbe === undefined ? emptyCallback : cbe;
-            var ajax = new AJAXConfig(INVITE_URL);
-            ajax.setResponseTypeJSON();
-            ajax.setData("action", "send");
-            ajax.setData("gameid", gameid.toString());
-            ajax.setData("nickname", nickname);
-            ajax.setData("nicksufix", nicknamesufix);
-            if (message !== "") {
-                ajax.setData("message", message);
-            }
-            ajax.setTargetLeftWindow();
-            Server.AJAX.requestPage(ajax, success, error);
-        }
-        Games.sendInvite = sendInvite;
-        function acceptInvite(gameid, cbs, cbe) {
-            var success = cbs === undefined ? emptyCallback : cbs;
-            var error = cbe === undefined ? emptyCallback : cbe;
-            var ajax = new AJAXConfig(INVITE_URL);
-            ajax.setResponseTypeJSON();
-            ajax.setData("action", "accept");
-            ajax.setData("gameid", gameid.toString());
-            ajax.setTargetLeftWindow();
-            Server.AJAX.requestPage(ajax, success, error);
-        }
-        Games.acceptInvite = acceptInvite;
-        function rejectInvite(gameid, cbs, cbe) {
-            var success = cbs === undefined ? emptyCallback : cbs;
-            var error = cbe === undefined ? emptyCallback : cbe;
-            var ajax = new AJAXConfig(INVITE_URL);
-            ajax.setResponseTypeJSON();
-            ajax.setData("action", "reject");
-            ajax.setData("gameid", gameid.toString());
-            ajax.setTargetLeftWindow();
-            Server.AJAX.requestPage(ajax, success, error);
-        }
-        Games.rejectInvite = rejectInvite;
-        function leaveGame(gameid, cbs, cbe) {
-            var success = cbs === undefined ? emptyCallback : cbs;
-            var error = cbe === undefined ? emptyCallback : cbe;
-            var ajax = new AJAXConfig(GAMES_URL);
-            ajax.setResponseTypeJSON();
-            ajax.setData("action", "leave");
-            ajax.setData("id", gameid.toString());
-            ajax.setTargetLeftWindow();
-            Server.AJAX.requestPage(ajax, success, error);
-        }
-        Games.leaveGame = leaveGame;
-        function deleteGame(gameid, cbs, cbe) {
-            var success = cbs === undefined ? emptyCallback : cbs;
-            var error = cbe === undefined ? emptyCallback : cbe;
-            var ajax = new AJAXConfig(GAMES_URL);
-            ajax.setResponseTypeJSON();
-            ajax.setData("action", "delete");
-            ajax.setData("id", gameid.toString());
-            ajax.setTargetLeftWindow();
-            Server.AJAX.requestPage(ajax, success, error);
-        }
-        Games.deleteGame = deleteGame;
-        function deleteRoom(roomid, cbs, cbe) {
-            var success = cbs === undefined ? emptyCallback : cbs;
-            var error = cbe === undefined ? emptyCallback : cbe;
-            var ajax = new AJAXConfig(ROOMS_URL);
-            ajax.setResponseTypeJSON();
-            ajax.setData("action", "delete");
-            ajax.setData("id", roomid.toString());
-            ajax.setTargetLeftWindow();
-            Server.AJAX.requestPage(ajax, success, error);
-        }
-        Games.deleteRoom = deleteRoom;
-        function getPrivileges(gameid, cbs, cbe) {
-            var success = cbs === undefined ? emptyCallback : cbs;
-            var error = cbe === undefined ? emptyCallback : cbe;
-            var ajax = new AJAXConfig(GAMES_URL);
-            ajax.setResponseTypeJSON();
-            ajax.setData("action", "privileges");
-            ajax.setData("id", gameid.toString());
-            ajax.setTargetLeftWindow();
-            Server.AJAX.requestPage(ajax, success, error);
-        }
-        Games.getPrivileges = getPrivileges;
-        function setPrivileges(gameid, cbs, cbe) {
-            var success = cbs === undefined ? emptyCallback : cbs;
-            var error = cbe === undefined ? emptyCallback : cbe;
-            var ajax = new AJAXConfig(GAMES_URL);
-            ajax.setResponseTypeJSON();
-            ajax.setData("action", "setPrivileges");
-            ajax.setData("privileges", "permissions");
-            ajax.setData("id", gameid.toString());
-            ajax.setTargetLeftWindow();
-            Server.AJAX.requestPage(ajax, success, error);
-        }
-        Games.setPrivileges = setPrivileges;
-    })(Games = Server.Games || (Server.Games = {}));
-})(Server || (Server = {}));
-var Server;
-(function (Server) {
-    var URL;
-    (function (URL) {
-        function fixURL(url) {
-            url = url.trim();
-            if (url.indexOf("://") === -1) {
-                url = "http://" + url;
-            }
-            if (url.indexOf("www.dropbox.com") !== -1) {
-                url = url.replace("www.dropbox.com", "dl.dropboxusercontent.com");
-                var interr = url.lastIndexOf("?dl");
-                if (interr !== -1) {
-                    url = url.substr(0, interr);
-                }
-            }
-            return url;
-        }
-        URL.fixURL = fixURL;
-    })(URL = Server.URL || (Server.URL = {}));
-})(Server || (Server = {}));
-var Server;
-(function (Server) {
-    var Chat;
-    (function (Chat) {
-        var ROOM_URL = "Room";
-        Chat.CHAT_URL = "Chat";
-        var emptyCallback = { handleEvent: function () { } };
-        var socketController = new ChatWsController();
-        var pollingController;
-        Chat.currentController = socketController;
-        var currentRoom = null;
-        var openListener = undefined;
-        var errorListener = undefined;
-        var messageTrigger = new Trigger();
-        var personaTrigger = new Trigger();
-        var statusTrigger = new Trigger();
-        var disconnectTrigger = new Trigger();
-        var personaInfo = {
-            afk: false,
-            focused: true,
-            typing: false,
-            persona: null,
-            avatar: null
-        };
-        var reconnecting = false;
-        var reconnectAttempts = 0;
-        var maxReconnectAttempts = 5;
-        Application.Login.addListener(function (isLogged) {
-            if (!isLogged) {
-                Server.Chat.end();
-            }
-        });
-        function isReconnecting() {
-            return reconnecting;
-        }
-        Chat.isReconnecting = isReconnecting;
-        function setConnected() {
-            reconnectAttempts = 0;
-            reconnecting = false;
-            UI.Chat.Notification.hideDisconnected();
-            UI.Chat.Notification.hideReconnecting();
-        }
-        Chat.setConnected = setConnected;
-        function giveUpReconnect() {
-            var reconnectPls = {
-                room: currentRoom,
-                handleEvent: function () {
-                    Server.Chat.enterRoom(this.room.id);
-                }
-            };
-            var reconnectForMe = new ChatSystemMessage(true);
-            reconnectForMe.addText("_CHATYOUAREDISCONNECTED_");
-            reconnectForMe.addText(" ");
-            reconnectForMe.addTextLink("_CHATDISCONNECTEDRECONNECT_", true, reconnectPls);
-            UI.Chat.printElement(reconnectForMe.getElement(), true);
-            UI.Chat.Notification.hideReconnecting();
-            UI.Chat.Notification.showDisconnected();
-        }
-        Chat.giveUpReconnect = giveUpReconnect;
-        function reconnect() {
-            if (currentRoom === null) {
-                return;
-            }
-            UI.Chat.Notification.showReconnecting();
-            if (reconnectAttempts++ <= maxReconnectAttempts && Application.Login.isLogged()) {
-                reconnecting = true;
-                enterRoom(currentRoom.id);
-            }
-            else {
-                giveUpReconnect();
-            }
-        }
-        Chat.reconnect = reconnect;
-        function leaveRoom() {
-            currentRoom = null;
-            reconnecting = false;
-            Chat.currentController.end();
-        }
-        Chat.leaveRoom = leaveRoom;
-        function enterRoom(roomid) {
-            currentRoom = DB.RoomDB.getRoom(roomid);
-            if (currentRoom === null) {
-                console.error("[CHAT] Entering an unknown room at id " + roomid + ". Risky business.");
-            }
-            UI.Chat.Notification.showReconnecting();
-            if (Chat.currentController.isReady()) {
-                Chat.currentController.enterRoom(roomid);
-            }
-            else {
-                Chat.currentController.onReady = {
-                    controller: Chat.currentController,
-                    roomid: roomid,
-                    handleEvent: function () {
-                        this.controller.enterRoom(this.roomid);
-                    }
-                };
-                Chat.currentController.start();
-            }
-        }
-        Chat.enterRoom = enterRoom;
-        function sendStatus(info) {
-            if (Chat.currentController.isReady()) {
-                Chat.currentController.sendStatus(info);
-            }
-        }
-        Chat.sendStatus = sendStatus;
-        function sendPersona(info) {
-            if (Chat.currentController.isReady()) {
-                Chat.currentController.sendPersona(info);
-            }
-            else {
-                console.debug("[CHAT] Attempt to send Persona while disconnected. Ignoring.", info);
-            }
-        }
-        Chat.sendPersona = sendPersona;
-        function isConnected() {
-            return Chat.currentController.isReady();
-        }
-        Chat.isConnected = isConnected;
-        function sendMessage(message) {
-            if (Chat.currentController.isReady()) {
-                Chat.currentController.sendMessage(message);
-                message.roomid = currentRoom.id;
-            }
-            else {
-                console.warn("[CHAT] Attempt to send messages while disconnected. Ignoring. Offending Message:", message);
-            }
-        }
-        Chat.sendMessage = sendMessage;
-        function saveMemory(memory) {
-            if (Chat.currentController.isReady()) {
-                Chat.currentController.saveMemory(memory);
-            }
-            else {
-                console.warn("[CHAT] Attempt to save memory while disconnected. Ignoring. Offending Memory:", memory);
-            }
-        }
-        Chat.saveMemory = saveMemory;
-        function hasRoom() {
-            return currentRoom !== null;
-        }
-        Chat.hasRoom = hasRoom;
-        function getRoom() {
-            return currentRoom;
-        }
-        Chat.getRoom = getRoom;
-        function getAllMessages(roomid, cbs, cbe) {
-            if (!DB.RoomDB.hasRoom(roomid)) {
-                console.warn("[CHAT] Attempted to load messages for undefined room.");
-                if (cbe !== undefined)
-                    cbe.handleEvent();
-                return;
-            }
-            var success = {
-                roomid: roomid,
-                cbs: cbs,
-                handleEvent: function (response, xhr) {
-                    DB.RoomDB.getRoom(this.roomid).updateFromObject({ messages: response }, true);
-                    if (this.cbs !== undefined)
-                        this.cbs.handleEvent(response, xhr);
-                }
-            };
-            var error = cbe === undefined ? emptyCallback : cbe;
-            var ajax = new AJAXConfig(ROOM_URL);
-            ajax.setResponseTypeJSON();
-            ajax.data = { action: "messages", roomid: roomid };
-            ajax.setTargetLeftWindow();
-            Server.AJAX.requestPage(ajax, success, error);
-        }
-        Chat.getAllMessages = getAllMessages;
-        function end() {
-            currentRoom = null;
-            Chat.currentController.end();
-        }
-        Chat.end = end;
-        function addStatusListener(f) {
-            statusTrigger.addListener(f);
-        }
-        Chat.addStatusListener = addStatusListener;
-        function triggerStatus(info) {
-            statusTrigger.trigger(info);
-        }
-        Chat.triggerStatus = triggerStatus;
-        function addPersonaListener(f) {
-            personaTrigger.addListener(f);
-        }
-        Chat.addPersonaListener = addPersonaListener;
-        function triggerPersona(f) {
-            personaTrigger.trigger(f);
-        }
-        Chat.triggerPersona = triggerPersona;
-        function addMessageListener(f) {
-            messageTrigger.addListener(f);
-        }
-        Chat.addMessageListener = addMessageListener;
-        function triggerMessage(f) {
-            messageTrigger.trigger(f);
-        }
-        Chat.triggerMessage = triggerMessage;
-        (function () {
-            var getRoom = {
-                handleEvent: function (e) {
-                    var room = Server.Chat.getRoom();
-                    var users = [];
-                    for (var id in e[1]) {
-                        e[1][id]['id'] = id;
-                        users.push(e[1][id]);
-                    }
-                    UI.Chat.Avatar.resetForConnect();
-                    room.updateFromObject({ users: users }, true);
-                    Server.Chat.Memory.updateFromObject(e[2]);
-                    room.updateFromObject({ messages: e[3] }, false);
-                    if (!Server.Chat.isReconnecting()) {
-                        UI.Chat.clearRoom();
-                        UI.Chat.printGetAllButton();
-                    }
-                    Server.Chat.setConnected();
-                    UI.Chat.Avatar.updateFromObject(users, true);
-                    UI.Chat.printMessages(room.getOrderedMessages(), false);
-                }
-            };
-            socketController.addMessageListener("getroom", getRoom);
-            var status = {
-                handleEvent: function (array) {
-                    var info = {
-                        id: array[1],
-                        typing: array[2] === 1,
-                        idle: array[3] === 1,
-                        focused: array[4] === 1
-                    };
-                    UI.Chat.Avatar.updateFromObject([info], false);
-                    Server.Chat.triggerStatus(info);
-                }
-            };
-            socketController.addMessageListener("status", status);
-            var persona = {
-                handleEvent: function (array) {
-                    var info = {
-                        id: array[1],
-                        persona: array[2]['persona'] === undefined ? null : array[2]['persona'],
-                        avatar: array[2]['avatar'] === undefined ? null : array[2]['avatar'],
-                    };
-                    UI.Chat.Avatar.updateFromObject([info], false);
-                    Server.Chat.triggerPersona(info);
-                }
-            };
-            socketController.addMessageListener("persona", persona);
-            var left = {
-                handleEvent: function (array) {
-                    var info = {
-                        id: array[1],
-                        online: false
-                    };
-                    UI.Chat.Avatar.updateFromObject([info], false);
-                }
-            };
-            socketController.addMessageListener("left", left);
-            var joined = {
-                handleEvent: function (array) {
-                    array[1].roomid = currentRoom.id;
-                    DB.UserDB.updateFromObject([array[1]]);
-                    UI.Chat.Avatar.updateFromObject([array[1]], false);
-                }
-            };
-            socketController.addMessageListener("joined", joined);
-            var message = {
-                handleEvent: function (array) {
-                    Server.Chat.getRoom().updateFromObject({ messages: [array[1]] }, false);
-                    var message = DB.MessageDB.getMessage(array[1]['id']);
-                    if (message.localid === null) {
-                        UI.Chat.printMessage(message);
-                    }
-                    Server.Chat.triggerMessage(message);
-                }
-            };
-            socketController.addMessageListener("message", message);
-            var memory = {
-                handleEvent: function (array) {
-                    Server.Chat.Memory.updateFromObject(array[2]);
-                }
-            };
-            socketController.addMessageListener("memory", memory);
-            var reconnectF = {
-                handleEvent: function () {
-                    Server.Chat.reconnect();
-                }
-            };
-            socketController.addCloseListener(reconnectF);
-        })();
-    })(Chat = Server.Chat || (Server.Chat = {}));
-})(Server || (Server = {}));
-var Server;
-(function (Server) {
-    var Chat;
-    (function (Chat) {
-        var Memory;
-        (function (Memory) {
-            var configList = {};
-            var readableConfigList = {};
-            var changeTrigger = new Trigger();
-            Memory.version = 2;
-            function addChangeListener(f) {
-                changeTrigger.addListener(f);
-            }
-            Memory.addChangeListener = addChangeListener;
-            function getConfig(id) {
-                return configList[id];
-            }
-            Memory.getConfig = getConfig;
-            function registerChangeListener(id, listener) {
-                if (configList[id] === undefined) {
-                    console.warn("[RoomMemory] Attempt to register a listener to unregistered configuration at " + id + ". Offending listener:", listener);
-                    return;
-                }
-                configList[id].addChangeListener(listener);
-            }
-            Memory.registerChangeListener = registerChangeListener;
-            function getConfiguration(name) {
-                if (typeof readableConfigList[name] !== "undefined") {
-                    return readableConfigList[name];
-                }
-                console.warn("[RoomMemory] Attempt to retrieve invalid memory " + name + ", returning", null);
-                return null;
-            }
-            Memory.getConfiguration = getConfiguration;
-            function registerConfiguration(id, name, config) {
-                if (configList[id] !== undefined) {
-                    console.warn("[RoomMemory] Attempt to overwrite registered Configuration at " + id + ". Offending configuration:", config);
-                    return;
-                }
-                configList[id] = config;
-                config.addChangeListener({
-                    trigger: changeTrigger,
-                    id: id,
-                    handleEvent: function (memo) {
-                        this.trigger.trigger(memo, id);
-                        console.debug("[RoomMemory] Global change triggered by " + id + ".");
-                    }
-                });
-                readableConfigList[name] = config;
-            }
-            Memory.registerConfiguration = registerConfiguration;
-            function exportAsObject() {
-                var result = {};
-                for (var key in configList) {
-                    var val = configList[key].exportAsObject();
-                    if (val !== null) {
-                        result[key] = val;
-                    }
-                }
-                return result;
-            }
-            Memory.exportAsObject = exportAsObject;
-            function updateFromObject(obj) {
-                for (var key in configList) {
-                    if (obj[key] === undefined) {
-                        configList[key].reset();
-                    }
-                    else {
-                        configList[key].storeValue(obj[key]);
-                    }
-                }
-                console.debug("[RoomMemory] Updated values from:", obj);
-            }
-            Memory.updateFromObject = updateFromObject;
-            function saveMemory() {
-                var room = Server.Chat.getRoom();
-                if (room !== null) {
-                    var user = room.getMe();
-                    if (user.isStoryteller()) {
-                        var memoryString = JSON.stringify(exportAsObject());
-                        console.debug("[RoomMemory] Memory string: " + memoryString);
-                        Server.Chat.saveMemory(memoryString);
-                    }
-                }
-            }
-            Memory.saveMemory = saveMemory;
-        })(Memory = Chat.Memory || (Chat.Memory = {}));
-    })(Chat = Server.Chat || (Server.Chat = {}));
-})(Server || (Server = {}));
-Server.Chat.Memory.registerConfiguration("c", "Combat", new MemoryCombat());
-Server.Chat.Memory.registerConfiguration("v", "Version", new MemoryVersion());
-Server.Chat.Memory.registerConfiguration("p", "Pica", new MemoryPica());
-var Server;
-(function (Server) {
-    var Storage;
-    (function (Storage) {
-        var STORAGE_URL = "Storage";
-        var validStorage = ["sounds", "images", "custom1", "custom2"];
-        var IMAGES_ID = "images";
-        var SOUNDS_ID = "sounds";
-        var ACTION_RESTORE = "restore";
-        var ACTION_STORE = "store";
-        var emptyCallback = { handleEvent: function () { } };
-        function requestImages(cbs, cbe) {
-            var success = cbs === undefined ? emptyCallback : cbs;
-            var error = cbe === undefined ? emptyCallback : cbe;
-            success = {
-                success: success,
-                handleEvent: function (data) {
-                    DB.ImageDB.updateFromObject(data);
-                    this.success.handleEvent(data);
-                }
-            };
-            var ajax = new AJAXConfig(STORAGE_URL);
-            ajax.setTargetRightWindow();
-            ajax.setResponseTypeJSON();
-            ajax.data = { action: ACTION_RESTORE, id: IMAGES_ID };
-            Server.AJAX.requestPage(ajax, success, error);
-        }
-        Storage.requestImages = requestImages;
-        function requestSounds(cbs, cbe) {
-            var success = cbs === undefined ? emptyCallback : cbs;
-            var error = cbe === undefined ? emptyCallback : cbe;
-            success = {
-                success: success,
-                handleEvent: function (data) {
-                    DB.SoundDB.updateFromObject(data);
-                    this.success.handleEvent(data);
-                }
-            };
-            var ajax = new AJAXConfig(STORAGE_URL);
-            ajax.setTargetRightWindow();
-            ajax.setResponseTypeJSON();
-            ajax.data = { action: ACTION_RESTORE, id: SOUNDS_ID };
-            Server.AJAX.requestPage(ajax, success, error);
-        }
-        Storage.requestSounds = requestSounds;
-        function sendImages(cbs, cbe) {
-            var success = cbs === undefined ? emptyCallback : cbs;
-            var error = cbe === undefined ? emptyCallback : cbe;
-            var ajax = new AJAXConfig(STORAGE_URL);
-            ajax.setTargetRightWindow();
-            ajax.setResponseTypeJSON();
-            ajax.data = { action: ACTION_STORE, id: IMAGES_ID, storage: DB.ImageDB.exportAsObject() };
-            Server.AJAX.requestPage(ajax, success, error);
-        }
-        Storage.sendImages = sendImages;
-        function sendSounds(cbs, cbe) {
-            var success = cbs === undefined ? emptyCallback : cbs;
-            var error = cbe === undefined ? emptyCallback : cbe;
-            var ajax = new AJAXConfig(STORAGE_URL);
-            ajax.setTargetRightWindow();
-            ajax.setResponseTypeJSON();
-            ajax.data = { action: ACTION_STORE, id: SOUNDS_ID, storage: DB.SoundDB.exportAsObject() };
-            Server.AJAX.requestPage(ajax, success, error);
-        }
-        Storage.sendSounds = sendSounds;
-    })(Storage = Server.Storage || (Server.Storage = {}));
-})(Server || (Server = {}));
-var Server;
-(function (Server) {
-    var Sheets;
-    (function (Sheets) {
-        var SHEET_URL = "Sheet";
-        var STYLE_URL = "Style";
-        var emptyCallback = { handleEvent: function () { } };
-        function loadSheetAndStyle(sheetid, styleid, cbs, cbe) {
-            var loaded = {
-                style: false,
-                sheet: false,
-                success: cbs === undefined ? emptyCallback : cbs
-            };
-            var styleCBS = {
-                loaded: loaded,
-                handleEvent: function (data) {
-                    this.loaded.style = true;
-                    if (this.loaded.sheet) {
-                        this.loaded.success.handleEvent();
-                    }
-                }
-            };
-            var sheetCBS = {
-                loaded: loaded,
-                handleEvent: function (data) {
-                    this.loaded.sheet = true;
-                    if (this.loaded.style) {
-                        this.loaded.success.handleEvent();
-                    }
-                }
-            };
-            var error = cbe === undefined ? emptyCallback : cbe;
-            loadSheet(sheetid, sheetCBS, error);
-            loadStyle(styleid, styleCBS, error, true);
-        }
-        Sheets.loadSheetAndStyle = loadSheetAndStyle;
-        function loadSheet(sheetid, cbs, cbe) {
-            var success = {
-                cbs: cbs,
-                handleEvent: function (response, xhr) {
-                    DB.SheetDB.updateFromObject(response);
-                    if (this.cbs !== undefined)
-                        this.cbs.handleEvent(response, xhr);
-                }
-            };
-            var error = cbe === undefined ? emptyCallback : cbe;
-            var sheetAjax = new AJAXConfig(SHEET_URL);
-            sheetAjax.setData("id", sheetid);
-            sheetAjax.setData("action", "request");
-            sheetAjax.setTargetRightWindow();
-            sheetAjax.setResponseTypeJSON();
-            Server.AJAX.requestPage(sheetAjax, success, error);
-        }
-        Sheets.loadSheet = loadSheet;
-        function updateStyles(cbs, cbe) {
-            var success = {
-                cbs: cbs,
-                handleEvent: function (response, xhr) {
-                    var ids = [];
-                    var styles = [];
-                    for (var i = 0; i < response.length; i++) {
-                        if (ids.indexOf(response[i]['id']) === -1) {
-                            ids.push(response[i]['id']);
-                            styles.push(response[i]);
-                        }
-                    }
-                    if (this.cbs !== undefined)
-                        this.cbs.handleEvent(styles, xhr);
-                }
-            };
-            var error = cbe === undefined ? emptyCallback : cbe;
-            var ajax = new AJAXConfig(STYLE_URL);
-            ajax.setResponseTypeJSON();
-            ajax.data = { action: "listMine" };
-            ajax.setTargetLeftWindow();
-            Server.AJAX.requestPage(ajax, success, error);
-        }
-        Sheets.updateStyles = updateStyles;
-        function sendStyle(style, cbs, cbe) {
-            cbs = cbs === undefined ? emptyCallback : cbs;
-            cbe = cbe === undefined ? emptyCallback : cbe;
-            var ajax = new AJAXConfig(STYLE_URL);
-            ajax.setResponseTypeJSON();
-            if (style.id === 0) {
-                ajax.setData("action", "createAdvanced");
-            }
-            else {
-                ajax.setData("action", "editAdvanced");
-                ajax.setData("id", style.id);
-            }
-            ajax.setData("name", style.name);
-            ajax.setData("public", style.publicStyle ? '1' : '0');
-            ajax.setData("html", style.html);
-            ajax.setData("css", style.css);
-            ajax.setData("afterProcess", style.publicCode);
-            ajax.setData("beforeProcess", style.mainCode);
-            ajax.setData("gameid", style.gameid);
-            ajax.setTargetLeftWindow();
-            Server.AJAX.requestPage(ajax, cbs, cbe);
-        }
-        Sheets.sendStyle = sendStyle;
-        function loadStyle(id, cbs, cbe, right) {
-            var success = {
-                cbs: cbs,
-                handleEvent: function (response, xhr) {
-                    var newObj = {
-                        id: response['id'],
-                        name: response['name'],
-                        html: response['html'],
-                        css: response['css'],
-                        mainCode: response['beforeProcess'],
-                        publicCode: response['afterProcess']
-                    };
-                    DB.StyleDB.updateStyle(newObj);
-                    if (this.cbs !== undefined)
-                        this.cbs.handleEvent(response, xhr);
-                }
-            };
-            var error = cbe === undefined ? emptyCallback : cbe;
-            var ajax = new AJAXConfig(STYLE_URL);
-            ajax.setResponseTypeJSON();
-            ajax.setData("action", "request");
-            ajax.setData("id", id);
-            if (right === true) {
-                ajax.setTargetRightWindow();
-            }
-            else {
-                ajax.setTargetLeftWindow();
-            }
-            Server.AJAX.requestPage(ajax, success, error);
-        }
-        Sheets.loadStyle = loadStyle;
-        function updateLists(cbs, cbe) {
-            var success = {
-                cbs: cbs,
-                handleEvent: function (response, xhr) {
-                    DB.GameDB.updateFromObject(response, true);
-                    if (this.cbs !== undefined)
-                        this.cbs.handleEvent(response, xhr);
-                }
-            };
-            var error = cbe === undefined ? emptyCallback : cbe;
-            var ajax = new AJAXConfig(SHEET_URL);
-            ajax.setResponseTypeJSON();
-            ajax.data = { action: "list" };
-            ajax.setTargetRightWindow();
-            Server.AJAX.requestPage(ajax, success, error);
-        }
-        Sheets.updateLists = updateLists;
-        function sendFolder(sheet, cbs, cbe) {
-            cbs = cbs === undefined ? emptyCallback : cbs;
-            cbe = cbe === undefined ? emptyCallback : cbe;
-            var ajax = new AJAXConfig(SHEET_URL);
-            ajax.setResponseTypeJSON();
-            ajax.setData("action", "folder");
-            ajax.setData("id", sheet.getId());
-            ajax.setData("folder", sheet.getFolder());
-            ajax.setTargetRightWindow();
-            Server.AJAX.requestPage(ajax, cbs, cbe);
-        }
-        Sheets.sendFolder = sendFolder;
-        function deleteSheet(sheet, cbs, cbe) {
-            cbs = cbs === undefined ? emptyCallback : cbs;
-            cbe = cbe === undefined ? emptyCallback : cbe;
-            var ajax = new AJAXConfig(SHEET_URL);
-            ajax.setResponseTypeJSON();
-            ajax.setData("action", "delete");
-            ajax.setData("id", sheet.getId());
-            ajax.setTargetRightWindow();
-            Server.AJAX.requestPage(ajax, cbs, cbe);
-        }
-        Sheets.deleteSheet = deleteSheet;
-        function getSheetPermissions(sheet, cbs, cbe) {
-            cbs = cbs === undefined ? emptyCallback : cbs;
-            cbe = cbe === undefined ? emptyCallback : cbe;
-            var ajax = new AJAXConfig(SHEET_URL);
-            ajax.setResponseTypeJSON();
-            ajax.setData("action", "listPerm");
-            ajax.setData("id", sheet.getId());
-            ajax.setTargetRightWindow();
-            Server.AJAX.requestPage(ajax, cbs, cbe);
-        }
-        Sheets.getSheetPermissions = getSheetPermissions;
-        function sendSheetPermissions(sheet, permissions, cbs, cbe) {
-            cbs = cbs === undefined ? emptyCallback : cbs;
-            cbe = cbe === undefined ? emptyCallback : cbe;
-            var ajax = new AJAXConfig(SHEET_URL);
-            ajax.setResponseTypeJSON();
-            ajax.setData("action", "updatePerm");
-            ajax.setData("id", sheet.getId());
-            var privileges = [];
-            for (var i = 0; i < permissions.length; i++) {
-                privileges.push(permissions[i].exportPrivileges());
-            }
-            ajax.setData("privileges", privileges);
-            ajax.setTargetRightWindow();
-            Server.AJAX.requestPage(ajax, cbs, cbe);
-        }
-        Sheets.sendSheetPermissions = sendSheetPermissions;
-    })(Sheets = Server.Sheets || (Server.Sheets = {}));
-})(Server || (Server = {}));
 var change;
 change = new Changelog(0, 8, 0);
 change.addMessage("Implemented most of the application before Changelog implemented.", "en");
@@ -10710,6 +12090,13 @@ change.addMessage("Implementadas permissões para fichas.", "pt");
 change = new Changelog(0, 12, 0);
 change.addMessage("Style editor implemented.", "en");
 change.addMessage("Editor de estilos implementado.", "pt");
+change = new Changelog(0, 13, 0);
+change.addMessage("Sheet creation implemented.", "en");
+change.addMessage("Opening sheets implemented.", "en");
+change.addMessage("Cutscene mode implemented in chats.", "en");
+change.addMessage("Criação de fichas implementada.", "pt");
+change.addMessage("Abrir fichas implementado.", "pt");
+change.addMessage("Modo Cutscene implementado em chats.", "pt");
 delete (change);
 Changelog.finished();
 UI.Language.searchLanguage();

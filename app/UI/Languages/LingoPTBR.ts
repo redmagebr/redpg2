@@ -128,6 +128,7 @@ ptbr.setLingo("", "");
 
 
 // Fichas
+ptbr.setLingo("_MENUSHEETREOPEN_", "Ficha");
 ptbr.setLingo("_SHEETSTITLE_", "Fichas");
 ptbr.setLingo("_SHEETSEXP01_", "Fichas são algo que mestres e seus jogadores podem guardar no sistema, garantindo que todos estejam vendo a mesma versão desse recurso. Um jogador só pode ver fichas para as quais ele tem permissões adequadas, então lembre-se de alterar essas opções para cada ficha que fizer.");
 ptbr.setLingo("_SHEETSEXP02_", "Normalmente são usadas para guardar as informações de personagens, mas têm o potencial para guardar qualquer tipo de informação.");
@@ -142,6 +143,27 @@ ptbr.setLingo("_SHEETSRENAMEFOLDERPROMPT_", "Escolha a nova pasta para \"%a\", a
 ptbr.setLingo("_SHEETSNEWSHEET_", "Criar nova ficha");
 ptbr.setLingo("_SHEETSNOSHEETS_", "Sem fichas para exibir.");
 ptbr.setLingo("_SHEETCONFIRMDELETE_", "Deletar \"%a\"? Fichas deletadas não podem ser recuperadas.");
+ptbr.setLingo("_SHEETDESIGNERTITLE_", "Criador de Fichas");
+ptbr.setLingo("_SHEETDESIGNEREXP_", "Aqui você definirá duas partes importantes da ficha: o seu nome e qual seu estilo. O estilo da ficha é como o formulário dela, definindo quais campos ela terá, enquanto a ficha, em si, é apenas os valores que vão nesse formulário. Escolha o estilo apropriado para o tipo de informação que vá guardar.");
+ptbr.setLingo("_SHEETDESIGNERERROR_", "Houve um erro na criação da ficha. Tente novamente.");
+ptbr.setLingo("_SHEETDESIGNERNAMEPLACEHOLDER_", "Nome da Ficha");
+ptbr.setLingo("_SHEETDESIGNERSUBMIT_", "Enviar");
+ptbr.setLingo("_SHEETDESIGNERSTYLE_", "Estilo da Ficha:");
+ptbr.setLingo("_SHEETDESIGNERREMAIN_", "Continuar criando fichas");
+ptbr.setLingo("_SHEETDESIGNERPUBLIC_", "Ficha Pública:");
+ptbr.setLingo("_SHEETVIEWERSAVE_", "Salvar");
+ptbr.setLingo("_SHEETVIEWERFULLRELOAD_", "Recarregar ficha completamente");
+ptbr.setLingo("_SHEETVIEWERIMPORT_", "Carregar valores de .json");
+ptbr.setLingo("_SHEETVIEWEREXPORT_", "Salvar valores como .json");
+ptbr.setLingo("_SHEETVIEWERAUTOMATIC_", "Recarregar a ficha automaticamente");
+ptbr.setLingo("_SHEETVIEWERCLOSE_", "Fechar ficha");
+ptbr.setLingo("_SHEETIMPORTFAILED_", "O arquivo escolhido não continha uma ficha válida e não pôde ser importado.");
+
+// SHEET VARIABLES
+ptbr.setLingo("_SHEETVARIABLEIMAGENONE_", "Sem imagem");
+ptbr.setLingo("_SHEETVARIABLEIMAGESNOTLOADED_", "Imagens não carregadas");
+ptbr.setLingo("_SHEETVARIABLEIMAGELASTVALUE_", "Imagem atual");
+ptbr.setLingo("_SHEETVARIABLEMATHNAN_", "Não é um Número");
 
 // Fichas Permissoes
 ptbr.setLingo("_SHEETPERMISSIONSHEADER_", "Permissões de Ficha");
@@ -272,6 +294,16 @@ ptbr.setLingo("_CHATMESSAGEANNOUNCEMENT_", "AVISO DO SISTEMA");
 ptbr.setLingo("_CHATMESSAGESFROM_", "Mensagens de %a.");
 ptbr.setLingo("_CHATIMAGESNOIMAGES_", "Sem imagens recentes.");
 ptbr.setLingo("_CHATIMAGESPRINTINGIMAGES_", "Imagens recentes:");
+ptbr.setLingo("_CHATSHHHHHWEHOLLYWOODNOW_", "Essa sala está com o modo Cutscene ativo, apenas narradores podem enviar mensagens.");
+ptbr.setLingo("_CHATBUTTONFONTPLUS_", "Aumentar tamanho da fonte");
+ptbr.setLingo("_CHATBUTTONFONTMINUS_", "Diminuir tamanho da fonte");
+ptbr.setLingo("_CHATBUTTONLEAVE_", "Sair da sala");
+ptbr.setLingo("_CHATBUTTONHOLLYWOOD_", "Ativar/Desativar modo Cutscene");
+ptbr.setLingo("_CHATBUTTONSEND_", "Enviar");
+ptbr.setLingo("_CHATPERSONAMANAGERBUTTON_", "Abrir administrador de personas");
+ptbr.setLingo("_CHATDICETOWER_", "Ativar/Desativar rolagem secreta");
+ptbr.setLingo("_CHATSHHHHHWEHOLLYWOODACTIVE_", "Modo Cutscene ativado. Apenas narradores podem enviar mensagens.");
+ptbr.setLingo("_CHATSHHHHHWEHOLLYWOODINACTIVE_", "Modo Cutscene desativado. Todos os jogadores podem enviar mensagens.");
 ptbr.setLingo("", "");
 
 // Chat Persona Designer

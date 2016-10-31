@@ -1,5 +1,5 @@
 class SheetInstance {
-    private tab : SheetTab;
+    private tab : SheetTab = null;
 
     public id : number = 0;
     public gameid : number = 0;
@@ -28,20 +28,27 @@ class SheetInstance {
 
     private changeTrigger = new Trigger();
 
-    constructor () {
-        this.tab = new SheetTab(this);
-    }
-
     public getStyleId() {
         return this.styleId;
     }
 
+    public getStyle () {
+        return DB.StyleDB.getStyle(this.styleId);
+    }
+
     public getTab () {
+        if (this.tab === null) {
+            this.tab = new SheetTab(this);
+        }
         return this.tab;
     }
 
     public getGameid () {
         return this.gameid;
+    }
+
+    public getGame () {
+        return DB.GameDB.getGame(this.gameid);
     }
 
     public getFolder () {
@@ -52,8 +59,12 @@ class SheetInstance {
         return this.id;
     }
 
+    public removeChangeListener (list : Listener | Function) {
+        this.changeTrigger.removeListener(list);
+    }
+
     public addChangeListener (list : Listener | Function) {
-        this.changeTrigger.addListener(list);
+        this.changeTrigger.addListenerIfMissing(list);
     }
 
     public triggerChanged () {
@@ -80,6 +91,10 @@ class SheetInstance {
 
     public getName () {
         return this.name;
+    }
+
+    public getValues () {
+        return this.values;
     }
 
     public setValues (values : Object, local : boolean) {
@@ -149,5 +164,18 @@ class SheetInstance {
 
     public isDeletable () {
         return this.delete;
+    }
+
+    public isNPC (){
+        var player = this.getValue("Player") !== undefined ? this.getValue("Player") :
+            this.getValue("Jogador") !== undefined ? this.getValue("Jogador") :
+                this.getValue("Owner") !== undefined ? this.getValue("Owner") :
+                    this.getValue("Dono") !== undefined ? this.getValue("Dono") :
+                        undefined;
+
+        if (player !== undefined && player.toUpperCase() === "NPC") {
+            return true;
+        }
+        return false;
     }
 }

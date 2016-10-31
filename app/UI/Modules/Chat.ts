@@ -136,6 +136,11 @@ module UI.Chat {
     }
 
     export function printMessage (message : Message, doScroll? : boolean) {
+        var chatAllowed = Server.Chat.Memory.getConfiguration("Cutscene").getValue();
+        if (!chatAllowed && !(Server.Chat.getRoom().getMe().isStoryteller() || message.hasDestination())) {
+            return;
+        }
+
         var element = message.getHTML();
         if (element !== null) {
             if (message.getDate() !== null && message.getDate() !== lastDate) {
@@ -253,6 +258,15 @@ module UI.Chat {
             console.warn("[CHAT] Attempt to send messages while not in a room. Ignoring. Offending message:", message);
             return;
         }
+
+        var chatAllowed = Server.Chat.Memory.getConfiguration("Cutscene").getValue();
+        if (!chatAllowed && !(Server.Chat.getRoom().getMe().isStoryteller() || message.hasDestination())) {
+            var msg = new ChatSystemMessage(true);
+            msg.addText("_CHATSHHHHHWEHOLLYWOODNOW_");
+            UI.Chat.printElement(msg.getElement());
+            return;
+        }
+
         message.roomid = currentRoom.id;
         message.prepareSending();
         printMessage(message);

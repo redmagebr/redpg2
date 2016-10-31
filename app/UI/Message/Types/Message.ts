@@ -119,6 +119,14 @@ class Message extends SlashCommand {
     }
 
     /**
+     * Returns whether this message is public or has a given destinatary
+     * @return boolean
+     */
+    public hasDestination () {
+        return this.destination !== null;
+    }
+
+    /**
      * Returns an Array of Messages meant for testing. This array should include all variations of this message type. Should include self for optimization.
      * @returns {Message[]}
      */

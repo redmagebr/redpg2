@@ -1,6 +1,7 @@
 /// <reference path='../typings/jquery/jquery.d.ts' />
 /// <reference path='../typings/jqueryui/jqueryui.d.ts' />
 /// <reference path='../typings/NonLatin.d.ts' />
+/// <reference path='../typings/math.js.d.ts' />
 /// <reference path='Debug.ts' />
 /// <reference path='OnReady.ts' />
 
@@ -13,8 +14,8 @@
 
 // Main Modules
 /// <reference path='Application/References.ts' />
-/// <reference path='UI/References.ts' />
 /// <reference path='Server/References.ts' />
+/// <reference path='UI/References.ts' />
 
 // Changelog
 /// <reference path="Changelog.ts" />

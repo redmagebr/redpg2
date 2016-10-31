@@ -2,6 +2,7 @@ module Server.Chat.Memory {
     var configList : { [id : string] : TrackerMemory } = {};
     var readableConfigList : { [id : string] : TrackerMemory } = {};
     var changeTrigger = new Trigger();
+    var updating : boolean = false;
 
     export var version : number = 2;
 
@@ -63,6 +64,7 @@ module Server.Chat.Memory {
 
     // TODO: Trigger all changes at once
     export function updateFromObject (obj : {[id : string] : any}) {
+        updating = true;
         for (var key in configList) {
             if (obj[key] === undefined) {
                 configList[key].reset();
@@ -70,6 +72,7 @@ module Server.Chat.Memory {
                 configList[key].storeValue(obj[key]);
             }
         }
+        updating = false;
         console.debug("[RoomMemory] Updated values from:", obj);
     }
 
@@ -86,8 +89,19 @@ module Server.Chat.Memory {
             }
         }
     }
+
+    export function considerSaving () {
+        if (!updating) {
+            saveMemory();
+        }
+    }
+
+    changeTrigger.addListener(function () {
+        Server.Chat.Memory.considerSaving();
+    });
 }
 
 Server.Chat.Memory.registerConfiguration("c", "Combat", new MemoryCombat());
 Server.Chat.Memory.registerConfiguration("v", "Version", new MemoryVersion());
 Server.Chat.Memory.registerConfiguration("p", "Pica", new MemoryPica());
+Server.Chat.Memory.registerConfiguration("m", "Cutscene", new MemoryCutscene());

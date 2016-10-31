@@ -43,10 +43,11 @@
       #rightHandleBar.handleBar
         #rightHandleIcon.icons-handlerRTL
         %a.icons-handleSheets#sheetsButton.rightHandleButton.language="_MENUSHEETS_"
+        %a.icons-handleSheets#sheetOpenButton.rightHandleButton.language="_MENUSHEETREOPEN_"
         %a.icons-handleImages#imagesButton.rightHandleButton.language="_MENUIMAGES_"
         %a.icons-handleSounds#soundsButton.rightHandleButton.language="_MENUSOUNDS_"
-        %a.icons-handleHitbox#hitboxButton.rightHandleButton.language="_MENUHITBOX_"
-        %a.icons-handleYoutube#youtubeButton.rightHandleButton.language="_MENUYOUTUBE_"
+        -#%a.icons-handleHitbox#hitboxButton.rightHandleButton.language="_MENUHITBOX_"
+        -#%a.icons-handleYoutube#youtubeButton.rightHandleButton.language="_MENUYOUTUBE_"
       -# Loading Screens
       #leftLoading.leftSideWindow.flexCentering.dontDetach
         %a.loadingCircleWhite.centeredBlock
@@ -321,13 +322,14 @@
           #chatMessages
         #chatScrollDown
         #chatButtonsBox
-          %a.chatRightButton.icons-chatFontPlus{:onclick => "Application.Config.getConfig('chatfontsize').storeValue(Application.Config.getConfig('chatfontsize').getValue() + 1);"}
-          %a.chatRightButton.icons-chatFontMinus{:onclick => "Application.Config.getConfig('chatfontsize').storeValue(Application.Config.getConfig('chatfontsize').getValue() - 1);"}
-          %a.chatRightButton.icons-chatLeave{:onclick => "UI.Chat.leave();"}
+          %a.chatRightButton.icons-chatLeave.language{:data => {:titlelingo => "_CHATBUTTONLEAVE_"}, :onclick => "UI.Chat.leave();"}
+          %a.chatRightButton.icons-chatFontPlus.language{:data => {:titlelingo => "_CHATBUTTONFONTPLUS_"}, :onclick => "Application.Config.getConfig('chatfontsize').storeValue(Application.Config.getConfig('chatfontsize').getValue() + 1);"}
+          %a.chatRightButton.icons-chatFontMinus.language{:data => {:titlelingo => "_CHATBUTTONFONTMINUS_"}, :onclick => "Application.Config.getConfig('chatfontsize').storeValue(Application.Config.getConfig('chatfontsize').getValue() - 1);"}
+          %a.chatRightButton.icons-chatHollywood.language#chatHollywood{:data => {:titlelingo => "_CHATBUTTONHOLLYWOOD_"}}
         #chatMessageStateIcon
         #chatMessageBox
           %input.chatInput#chatMessageInput{:autocomplete => "off"}
-        %a.icons-chatSend#chatMessageSendButton
+        %a.icons-chatSend#chatMessageSendButton.language{:data => {:titlelingo => "_CHATBUTTONSEND_"}}
         #personaDesignerBox
           #personaDesigner
             .language.mainWindowHeader
@@ -340,7 +342,7 @@
                 %input.language#personaDesignerSubmit{:type => "submit", :data => {:valuelingo => "_PERSONADESIGNERCREATE_"}}
               #personaDesignerHolder
         #personaBox
-          %a#personaAddButton
+          %a#personaAddButton.language{:data => {:titlelingo => "_CHATPERSONAMANAGERBUTTON_"}}
           #personaContainer
             .personaButton.active="Example"
         %form#diceFormBox
@@ -349,7 +351,7 @@
           %input#chatDiceMod.chatInput.language{:data => {:placeholderlingo => "_CHATDICEMOD_"}, :type => "number"}
           #diceReasonHolder
             %input#chatDiceReason.chatInput.language{:data => {:placeholderlingo => "_CHATDICEREASON_"}}
-          %a.icons-chatDiceTower#chatDiceTower
+          %a.icons-chatDiceTower#chatDiceTower.language{:data => {:titlelingo => "_CHATDICETOWER_"}}
           %input.icons-chatDiceRoll#chatDiceSubmit{:type => "submit", :value => ""}
         #bottomBox
           .diceButton.icons-d4#chatDiceD4{:title => "d4"}
@@ -360,19 +362,37 @@
           .diceButton.icons-d20#chatDiceD20{:title => "d20"}
           .diceButton.icons-d100#chatDiceD100{:title => "d100"}
       -# Right Side Windows
+      -#### SHEET DESIGNER FORM
+      #sheetDesignerFormSideWindow.rightSideWindow
+        .language.mainWindowHeader="_SHEETDESIGNERTITLE_"
+        .mainWindowContent.singleton
+          %p.mainWindowParagraph.language="_SHEETDESIGNEREXP_"
+          %p.mainWindowParagraphError.gameInviteDesignerMessage.language#sheetDesignerError="_SHEETDESIGNERERROR_"
+          %form.mainWindowParagraphMessageMargin#sheetDesignerForm
+            %input.mainWindowWideInput.language#sheetDesignerName{:data=>{:placeholderlingo=>"_SHEETDESIGNERNAMEPLACEHOLDER_"}}
+            %label.styleLabel.language
+              _SHEETDESIGNERSTYLE_
+              %select.styleInputMargin#sheetDesignerStyleSelect
+                %option="História dos Seis"
+            %label.language.styleLabel{:style=>"display:none"}
+              %input#sheetDesignerPublicSheet{:type=>"checkbox"}
+                _SHEETDESIGNERPUBLIC_
+            %label.language.styleLabel
+              %input#sheetDesignerRemain{:type=>"checkbox"}
+                _SHEETDESIGNERREMAIN_
+            %input.mainWindowParagraphSubmit.language{:type=>"submit", :data=>{:valuelingo => "_SHEETDESIGNERSUBMIT_"}}
       -##### Sheet Viewer
       #sheetViewerSideWindow.rightSideWindow
+        %input#sheetViewerJSONImporter{:type => "file"}
         #sheetViewerSheetsTab
         #sheetViewport
         #sheetToolbox
-          .sheetTool.icons-sheetSave#sheetSave
-          .sheetTool.icons-sheetEdit#sheetEdit
-          .sheetTool.icons-sheetReload#sheetReload
-          .sheetTool.icons-sheetFullReload#sheetFullReload
-          .sheetTool.icons-sheetImport#sheetImport
-          .sheetTool.icons-sheetExport#sheetExport
-          .sheetTool.icons-sheetAutomatic#sheetAutomatic
-          .sheetTool.icons-sheetClose#sheetClose
+          .sheetTool.icons-sheetSave#sheetSave.language{:data => {:titlelingo => "_SHEETVIEWERSAVE_"}}
+          .sheetTool.icons-sheetFullReload#sheetFullReload.language{:data => {:titlelingo => "_SHEETVIEWERFULLRELOAD_"}}
+          .sheetTool.icons-sheetExport#sheetImport.language{:data => {:titlelingo => "_SHEETVIEWERIMPORT_"}}
+          .sheetTool.icons-sheetImport#sheetExport.language{:data => {:titlelingo => "_SHEETVIEWEREXPORT_"}}
+          .sheetTool.icons-sheetAutomatic#sheetAutomatic.language{:data => {:titlelingo => "_SHEETVIEWERAUTOMATIC_"}}
+          .sheetTool.icons-sheetClose#sheetClose.language{:data => {:titlelingo => "_SHEETVIEWERCLOSE_"}}
       -##### Sheet Permissions
       #sheetPermSideWindow.rightSideWindow
         .language.mainWindowHeader
@@ -490,7 +510,7 @@
       #youtubeSideWindow.rightSideWindow
     -# App Key for Dropbox Choooser
     %script{:type => 'text/javascript', :id => "dropboxjs", "data-app-key" => "nr1604ewqoph539"}
-    %script{:type => 'text/javascript', :src => 'js/lib/libraries161018.js'}
+    %script{:type => 'text/javascript', :src => 'js/lib/libraries161029.js'}
     %script{:type => 'text/javascript', :src => 'js/Application.js'}
     %script{:type => "text/javascript"}="//LOGGERJSTARGET"
     %script{:type => 'text/javascript', :src => 'http://beta.redpg.com.br/js/Changelog.js'}

@@ -24,6 +24,18 @@ class Trigger {
         }
     }
 
+    public addListenerIfMissing (f : Function | Listener) {
+        if (typeof f === "function") {
+            if (this.functions.indexOf(f) === -1) {
+                this.functions.push(<Function> f);
+            }
+        } else {
+            if (this.objects.indexOf(f) === -1) {
+                this.objects.push(<Listener> f);
+            }
+        }
+    }
+
     public trigger (...args : any[]) {
         for (var i = 0; i < this.functions.length; i++) {
             this.functions[i].apply(null, args);

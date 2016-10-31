@@ -38,6 +38,10 @@
   }
 }
 
+.mainWindowParagraphMessageMargin {
+  margin-top: 40px;
+}
+
 .mainWindowParagraphError {
   @extend .mainWindowParagraph;
   color: #cb000f;

@@ -1,13 +1,21 @@
 class Sheet {
     protected elements : Array<Node> = [];
     public style : SheetStyle;
+    protected parentList : SheetList = null;
 
     protected variables : { [id : string] : SheetVariable} = {};
     protected lists : { [id : string] : SheetList} = {};
     protected variableShortcuts : { [id : string] : SheetVariable | SheetList} = {};
+    protected valueHolder : {[id : string] : SheetVariable | SheetList} = {};
     protected buttons : { [id : string] : SheetButton} = {};
 
-    constructor (style : SheetStyle, eles : NodeList) {
+    protected changeTrigger : Trigger = new Trigger();
+
+    constructor (style : SheetStyle, eles : NodeList | Array<Node>, parentList? : SheetList) {
+        if (parentList !== undefined) {
+            this.parentList = parentList;
+        }
+
         this.style = style;
         for (var i = 0; i < eles.length; i++) {
             this.elements.push(eles[i]);
@@ -16,6 +24,34 @@ class Sheet {
         for (var i = 0; i < this.elements.length; i++) {
             if (this.elements[i].nodeType === Node.ELEMENT_NODE) {
                 this.processElement(<HTMLElement> this.elements[i]);
+            }
+        }
+    }
+
+    public exportAsObject () {
+        var values = {};
+        for (var id in this.valueHolder) {
+            values[id] = this.valueHolder[id].exportAsObject();
+        }
+        return values;
+    }
+
+    public reset () {
+        for (var id in this.valueHolder) {
+            this.valueHolder[id].reset();
+        }
+    }
+
+    public getElements () {
+        return this.elements;
+    }
+
+    public storeValue (obj) {
+        for (var id in this.valueHolder) {
+            if (obj[id] === undefined) {
+                this.valueHolder[id].reset();
+            } else {
+                this.valueHolder[id].storeValue(obj[id]);
             }
         }
     }
@@ -89,6 +125,18 @@ class Sheet {
 
         this.variables[variable.id] = variable;
         this.variableShortcuts[this.style.simplifyName(variable.id)] = variable;
+        this.valueHolder[variable.id] = variable;
+
+        variable.addOnChange(<Listener> {
+            sheet : this,
+            lastCounter : -1,
+            handleEvent : function (variable, counter) {
+                if (counter !== this.lastCounter) {
+                    this.lastCounter = counter;
+                    this.sheet.triggerChange(counter);
+                }
+            }
+        });
     }
 
     protected createButton (element : HTMLElement) {
@@ -108,5 +156,18 @@ class Sheet {
         var list = new SheetList(this, this.style, element);
         this.lists[list.id] = list;
         this.variableShortcuts[this.style.simplifyName(list.id)] = list;
+        this.valueHolder[list.id] = list;
+    }
+
+    public triggerChange (counter : number) {
+        this.changeTrigger.trigger(this, counter);
+    }
+
+    public addOnChange (f : Function | Listener) {
+        this.changeTrigger.addListener(f);
+    }
+
+    public removeOnChange (f : Function | Listener) {
+        this.changeTrigger.removeListener(f);
     }
 }

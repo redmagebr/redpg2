@@ -24,7 +24,10 @@ module UI.Chat.Forms {
     var diceMod : HTMLInputElement = <HTMLInputElement> document.getElementById("chatDiceMod");
     var diceReason : HTMLInputElement = <HTMLInputElement> document.getElementById("chatDiceReason");
 
-    document.getElementById("chatMessageSendButton");
+    document.getElementById("chatMessageSendButton").addEventListener("click", function (e) {
+        e.preventDefault();
+        UI.Chat.Forms.sendMessage();
+    });
 
     var typing = false;
     var afk = false;
@@ -314,9 +317,9 @@ module UI.Chat.Forms {
     export function considerRedirecting (event : KeyboardEvent) {
         if ((!event.ctrlKey && !event.altKey) || (event.ctrlKey && event.keyCode === 86)) {
             if (UI.PageManager.getCurrentLeft() === UI.idChat) {
-                var focus = document.activeElement;
+                var focus = <HTMLElement> document.activeElement;
                 var focusTag = focus.tagName.toLowerCase();
-                if (focusTag !== "input"  && focusTag !== "textarea" && focusTag !== "select") {
+                if (focusTag !== "input"  && focusTag !== "textarea" && focusTag !== "select" && focus.contentEditable !== "true") {
                     formInput.focus();
                 }
             }
@@ -371,7 +374,7 @@ module UI.Chat.Forms {
 
     // Please don't go BACK on backspace, this is an application so this only happens on accident.
     document.addEventListener("keydown", function (e : KeyboardEvent) {
-        if (e.which === 8 && !$(e.target).is("input, textarea")) {
+        if (e.which === 8 && !$(e.target).is("input, textarea") && (<HTMLElement> e.target).contentEditable !== "true") {
             e.preventDefault();
         }
     })

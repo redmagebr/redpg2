@@ -8,6 +8,14 @@ class StyleInstance {
     public css : string = null;
     public publicStyle : boolean = false;
 
+    public getId () {
+        return this.id;
+    }
+
+    public getName () {
+        return this.name;
+    }
+
     public isLoaded () {
         return this.html !== null;
     }

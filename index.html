@@ -46,10 +46,9 @@
       <div class='handleBar' id='rightHandleBar'>
         <div class='icons-handlerRTL' id='rightHandleIcon'></div>
         <a class='icons-handleSheets rightHandleButton language' id='sheetsButton'>_MENUSHEETS_</a>
+        <a class='icons-handleSheets rightHandleButton language' id='sheetOpenButton'>_MENUSHEETREOPEN_</a>
         <a class='icons-handleImages rightHandleButton language' id='imagesButton'>_MENUIMAGES_</a>
         <a class='icons-handleSounds rightHandleButton language' id='soundsButton'>_MENUSOUNDS_</a>
-        <a class='icons-handleHitbox rightHandleButton language' id='hitboxButton'>_MENUHITBOX_</a>
-        <a class='icons-handleYoutube rightHandleButton language' id='youtubeButton'>_MENUYOUTUBE_</a>
       </div>
       <div class='leftSideWindow flexCentering dontDetach' id='leftLoading'>
         <a class='loadingCircleWhite centeredBlock'></a>
@@ -390,15 +389,16 @@
         </div>
         <div id='chatScrollDown'></div>
         <div id='chatButtonsBox'>
-          <a class='chatRightButton icons-chatFontPlus' onclick="Application.Config.getConfig('chatfontsize').storeValue(Application.Config.getConfig('chatfontsize').getValue() + 1);"></a>
-          <a class='chatRightButton icons-chatFontMinus' onclick="Application.Config.getConfig('chatfontsize').storeValue(Application.Config.getConfig('chatfontsize').getValue() - 1);"></a>
-          <a class='chatRightButton icons-chatLeave' onclick='UI.Chat.leave();'></a>
+          <a class='chatRightButton icons-chatLeave language' data-titlelingo='_CHATBUTTONLEAVE_' onclick='UI.Chat.leave();'></a>
+          <a class='chatRightButton icons-chatFontPlus language' data-titlelingo='_CHATBUTTONFONTPLUS_' onclick="Application.Config.getConfig('chatfontsize').storeValue(Application.Config.getConfig('chatfontsize').getValue() + 1);"></a>
+          <a class='chatRightButton icons-chatFontMinus language' data-titlelingo='_CHATBUTTONFONTMINUS_' onclick="Application.Config.getConfig('chatfontsize').storeValue(Application.Config.getConfig('chatfontsize').getValue() - 1);"></a>
+          <a class='chatRightButton icons-chatHollywood language' data-titlelingo='_CHATBUTTONHOLLYWOOD_' id='chatHollywood'></a>
         </div>
         <div id='chatMessageStateIcon'></div>
         <div id='chatMessageBox'>
           <input autocomplete='off' class='chatInput' id='chatMessageInput'>
         </div>
-        <a class='icons-chatSend' id='chatMessageSendButton'></a>
+        <a class='icons-chatSend language' data-titlelingo='_CHATBUTTONSEND_' id='chatMessageSendButton'></a>
         <div id='personaDesignerBox'>
           <div id='personaDesigner'>
             <div class='language mainWindowHeader'>
@@ -416,7 +416,7 @@
           </div>
         </div>
         <div id='personaBox'>
-          <a id='personaAddButton'></a>
+          <a class='language' data-titlelingo='_CHATPERSONAMANAGERBUTTON_' id='personaAddButton'></a>
           <div id='personaContainer'>
             <div class='personaButton active'>Example</div>
           </div>
@@ -428,7 +428,7 @@
           <div id='diceReasonHolder'>
             <input class='chatInput language' data-placeholderlingo='_CHATDICEREASON_' id='chatDiceReason'>
           </div>
-          <a class='icons-chatDiceTower' id='chatDiceTower'></a>
+          <a class='icons-chatDiceTower language' data-titlelingo='_CHATDICETOWER_' id='chatDiceTower'></a>
           <input class='icons-chatDiceRoll' id='chatDiceSubmit' type='submit' value=''>
         </form>
         <div id='bottomBox'>
@@ -441,18 +441,44 @@
           <div class='diceButton icons-d100' id='chatDiceD100' title='d100'></div>
         </div>
       </div>
+      <div class='rightSideWindow' id='sheetDesignerFormSideWindow'>
+        <div class='language mainWindowHeader'>_SHEETDESIGNERTITLE_</div>
+        <div class='mainWindowContent singleton'>
+          <p class='mainWindowParagraph language'>_SHEETDESIGNEREXP_</p>
+          <p class='mainWindowParagraphError gameInviteDesignerMessage language' id='sheetDesignerError'>_SHEETDESIGNERERROR_</p>
+          <form class='mainWindowParagraphMessageMargin' id='sheetDesignerForm'>
+            <input class='mainWindowWideInput language' data-placeholderlingo='_SHEETDESIGNERNAMEPLACEHOLDER_' id='sheetDesignerName'>
+            <label class='styleLabel language'>
+              _SHEETDESIGNERSTYLE_
+              <select class='styleInputMargin' id='sheetDesignerStyleSelect'>
+                <option>História dos Seis</option>
+              </select>
+            </label>
+            <label class='language styleLabel' style='display:none'>
+              <input id='sheetDesignerPublicSheet' type='checkbox'>
+                _SHEETDESIGNERPUBLIC_
+              </input>
+            </label>
+            <label class='language styleLabel'>
+              <input id='sheetDesignerRemain' type='checkbox'>
+                _SHEETDESIGNERREMAIN_
+              </input>
+            </label>
+            <input class='mainWindowParagraphSubmit language' data-valuelingo='_SHEETDESIGNERSUBMIT_' type='submit'>
+          </form>
+        </div>
+      </div>
       <div class='rightSideWindow' id='sheetViewerSideWindow'>
+        <input id='sheetViewerJSONImporter' type='file'>
         <div id='sheetViewerSheetsTab'></div>
         <div id='sheetViewport'></div>
         <div id='sheetToolbox'>
-          <div class='sheetTool icons-sheetSave' id='sheetSave'></div>
-          <div class='sheetTool icons-sheetEdit' id='sheetEdit'></div>
-          <div class='sheetTool icons-sheetReload' id='sheetReload'></div>
-          <div class='sheetTool icons-sheetFullReload' id='sheetFullReload'></div>
-          <div class='sheetTool icons-sheetImport' id='sheetImport'></div>
-          <div class='sheetTool icons-sheetExport' id='sheetExport'></div>
-          <div class='sheetTool icons-sheetAutomatic' id='sheetAutomatic'></div>
-          <div class='sheetTool icons-sheetClose' id='sheetClose'></div>
+          <div class='sheetTool icons-sheetSave language' data-titlelingo='_SHEETVIEWERSAVE_' id='sheetSave'></div>
+          <div class='sheetTool icons-sheetFullReload language' data-titlelingo='_SHEETVIEWERFULLRELOAD_' id='sheetFullReload'></div>
+          <div class='sheetTool icons-sheetExport language' data-titlelingo='_SHEETVIEWERIMPORT_' id='sheetImport'></div>
+          <div class='sheetTool icons-sheetImport language' data-titlelingo='_SHEETVIEWEREXPORT_' id='sheetExport'></div>
+          <div class='sheetTool icons-sheetAutomatic language' data-titlelingo='_SHEETVIEWERAUTOMATIC_' id='sheetAutomatic'></div>
+          <div class='sheetTool icons-sheetClose language' data-titlelingo='_SHEETVIEWERCLOSE_' id='sheetClose'></div>
         </div>
       </div>
       <div class='rightSideWindow' id='sheetPermSideWindow'>
@@ -594,7 +620,7 @@
       <div class='rightSideWindow' id='youtubeSideWindow'></div>
     </div>
     <script data-app-key='nr1604ewqoph539' id='dropboxjs' type='text/javascript'></script>
-    <script src='js/lib/libraries161018.js' type='text/javascript'></script>
+    <script src='js/lib/libraries161029.js' type='text/javascript'></script>
     <script src='js/Application.js' type='text/javascript'></script>
     <script type='text/javascript'>//LOGGERJSTARGET</script>
     <script src='http://beta.redpg.com.br/js/Changelog.js' type='text/javascript'></script>

@@ -1,6 +1,7 @@
 /// <reference path="typings/jquery/jquery.d.ts" />
 /// <reference path="typings/jqueryui/jqueryui.d.ts" />
 /// <reference path="typings/NonLatin.d.ts" />
+/// <reference path="typings/math.js.d.ts" />
 declare function startDebugging(): void;
 declare function stopDebugging(): void;
 declare var onReady: Array<Listener>;
@@ -47,6 +48,14 @@ interface StyleInfo {
     id: number;
     idCreator: number;
     name: string;
+}
+declare class Trigger {
+    private functions;
+    private objects;
+    removeListener(f: Function | Listener): void;
+    addListener(f: Function | Listener): void;
+    addListenerIfMissing(f: Function | Listener): void;
+    trigger(...args: any[]): void;
 }
 declare class Changelog {
     private release;
@@ -252,31 +261,61 @@ declare class SheetInstance {
     changed: boolean;
     loaded: boolean;
     private changeTrigger;
-    constructor();
     getStyleId(): number;
+    getStyle(): StyleInstance;
     getTab(): SheetTab;
     getGameid(): number;
+    getGame(): Game;
     getFolder(): string;
     getId(): number;
+    removeChangeListener(list: Listener | Function): void;
     addChangeListener(list: Listener | Function): void;
     triggerChanged(): void;
     getMemoryId(): string;
     setSaved(): void;
     setName(name: string): void;
     getName(): string;
+    getValues(): Object;
     setValues(values: Object, local: boolean): void;
     updateFromObject(obj: Object): void;
     getValue(id: string): any;
     isEditable(): boolean;
     isPromotable(): boolean;
     isDeletable(): boolean;
+    isNPC(): boolean;
 }
-declare class Trigger {
-    private functions;
-    private objects;
-    removeListener(f: Function | Listener): void;
-    addListener(f: Function | Listener): void;
-    trigger(...args: any[]): void;
+declare class StyleInstance {
+    id: number;
+    gameid: number;
+    name: string;
+    mainCode: string;
+    publicCode: string;
+    html: string;
+    css: string;
+    publicStyle: boolean;
+    getId(): number;
+    getName(): string;
+    isLoaded(): boolean;
+    updateFromObject(obj: any): void;
+}
+declare class SoundLink {
+    private name;
+    private url;
+    private folder;
+    private bgm;
+    getFolder(): string;
+    isBgm(): boolean;
+    setFolder(name: any): void;
+    getLink(): string;
+    getName(): string;
+    setName(name: string): void;
+    constructor(name: string, url: string, folder: string, bgm: boolean);
+    exportAsObject(): {
+        name: string;
+        url: string;
+        folder: string;
+        bgm: boolean;
+    };
 }
 declare class AJAXConfig {
     private _target;
@@ -421,6 +460,16 @@ declare class MemoryVersion extends TrackerMemory {
     storeValue(v: number): void;
     getValue(): number;
     exportAsObject(): number;
+}
+declare class MemoryCutscene extends TrackerMemory {
+    private chatAllowed;
+    private static button;
+    constructor();
+    click(): void;
+    reset(): void;
+    storeValue(v: boolean): void;
+    getValue(): boolean;
+    exportAsObject(): boolean;
 }
 declare class CombatEffect {
     name: string;
@@ -662,130 +711,248 @@ declare class SheetTab {
     click(): void;
 }
 declare class SheetStyle {
-    private css;
-    private visible;
-    private $visible;
+    protected css: HTMLStyleElement;
+    protected visible: HTMLElement;
+    protected $visible: JQuery;
     protected styleInstance: StyleInstance;
-    protected sheet: Sheet;
     protected sheetInstance: SheetInstance;
-    protected multipleChanges: boolean;
-    protected pendingChanges: Array<SheetVariable>;
-    protected changeCounter: number;
-    protected idCounter: number;
-    protected after: Function;
-    constructor();
-    getUniqueID(): string;
-    simplifyName(str: String): string;
-    addStyle(style: StyleInstance): void;
-    triggerVariableChange(variable: SheetVariable): void;
-    triggerAll(): void;
-    getStyle(): HTMLStyleElement;
-    getElement(): HTMLElement;
-    get$Element(): JQuery;
-}
-declare module StyleFactory {
-    function getCreator(): typeof SheetStyle;
+    protected sheet: Sheet;
+    protected sheetChangeTrigger: Trigger;
+    protected loading: boolean;
+    protected counter: number;
+    protected triggeredVariables: Array<SheetVariable | SheetList | Sheet>;
+    protected nameVariable: SheetVariabletext;
+    protected creatorListeners: Array<SheetCreatorListener>;
+    protected sheetInstanceChangeListener: Listener;
+    getSheet(): Sheet;
+    addCreatorListener(obj: SheetCreatorListener): void;
+    triggerCreatorListeners(): void;
+    addSheetInstance(sheet: SheetInstance): void;
+    reloadSheetInstance(): void;
+    checkNPC(): void;
+    triggerAllVariables(): void;
+    triggerVariableChange(variable: SheetVariable | SheetList | Sheet): void;
+    getCounter(): number;
+    constructor(style: StyleInstance);
+    protected bindSheetInstance(): void;
+    protected unbindSheetInstance(): void;
+    protected bindSheet(): void;
+    getSheetInstance(): SheetInstance;
+    updateSheetInstance(): void;
+    protected createSheet(): void;
+    protected fillElements(): void;
+    getStyleInstance(): StyleInstance;
+    getId(): number;
+    getName(): string;
+    getCSS(): HTMLStyleElement;
+    getHTML(): HTMLElement;
+    createNameVariable(sheet: Sheet, element: HTMLElement): void;
+    die(): void;
 }
 declare class Sheet {
+    protected parent: SheetStyle | SheetList;
+    protected style: SheetStyle;
     protected elements: Array<Node>;
-    style: SheetStyle;
-    protected variables: {
-        [id: string]: SheetVariable;
-    };
-    protected lists: {
-        [id: string]: SheetList;
-    };
-    protected variableShortcuts: {
+    protected values: {
         [id: string]: SheetVariable | SheetList;
     };
+    protected valuesSimplified: {
+        [id: string]: SheetVariable | SheetList;
+    };
+    protected indexedLists: Array<SheetList>;
     protected buttons: {
         [id: string]: SheetButton;
     };
-    constructor(style: SheetStyle, eles: NodeList);
-    protected processElement(element: HTMLElement): void;
+    protected idCounter: number;
+    protected changeListener: Listener;
+    findField(id: string): SheetVariable | SheetList;
+    getLists(): SheetList[];
     getValueFor(id: string): any;
-    getValueForSimpleId(id: string): any;
-    getVariable(id: string): SheetList | SheetVariable;
-    getVariableBySimpleId(simpleid: string): SheetVariable | SheetList;
-    getButton(id: string): SheetButton;
-    protected createVariable(element: HTMLElement): void;
-    protected createButton(element: HTMLElement): void;
-    protected createList(element: HTMLElement): void;
-}
-declare class SheetList {
-    id: string;
-    protected sheet: Sheet;
-    protected style: SheetStyle;
-    protected visible: HTMLElement;
-    protected rows: Array<Sheet>;
-    protected detachedRows: Array<Sheet>;
-    protected rowElements: Array<Node>;
-    protected keyIndex: String;
-    protected keyValue: String;
-    constructor(sheet: Sheet, style: SheetStyle, element: HTMLElement);
-    getValueFor(id: string): any;
-    getValue(): any[];
-}
-declare class SheetVariable {
-    id: string;
-    parent: Sheet;
-    style: SheetStyle;
-    protected visible: HTMLElement;
-    protected value: any;
-    protected editable: boolean;
+    static simplifyString(str: String): string;
+    static stringToType(str: String): string;
+    getElements(): Node[];
+    getUniqueID(): string;
+    isRoot(): boolean;
+    getParent(): SheetStyle | SheetList;
+    constructor(parent: SheetStyle | SheetList, style: SheetStyle, elements: NodeList | Array<Node>);
+    updateFromObject(obj: Object): void;
+    exportAsObject(): {};
+    processElement(element: HTMLElement): void;
+    createList(element: HTMLElement): void;
+    createVariable(element: HTMLElement): void;
+    createButton(element: HTMLElement): void;
     protected changeTrigger: Trigger;
-    constructor(parent: Sheet, style: SheetStyle, ele: HTMLElement);
-    protected cleanChildren(): void;
-    updateVisible(): void;
-    triggerInput(e: Event): void;
-    triggerBlur(): void;
-    storeValue(val: any): void;
+    addChangeListener(f: Listener | Function): void;
+    addChangeListenerIfMissing(f: Listener | Function): void;
+    removeChangeListener(f: Listener | Function): void;
+    protected considerTriggering(): void;
     triggerChange(counter: number): void;
-    getValue(): any;
-    exportObject(): any;
-    addOnChange(f: Function | Listener): void;
 }
 declare class SheetButton {
-    id: string;
+    protected id: string;
     protected visible: HTMLElement;
-    protected click: Function;
-    protected sheet: Sheet;
+    protected parent: Sheet;
     protected style: SheetStyle;
-    constructor(sheet: Sheet, style: SheetStyle, ele: HTMLElement);
+    protected clickFunction: any;
+    constructor(parent: Sheet, style: SheetStyle, element: HTMLElement);
+    click(e: Event): void;
+    getId(): string;
+}
+declare class SheetList {
+    protected id: string;
+    protected visible: HTMLElement;
+    protected parent: Sheet;
+    protected style: SheetStyle;
+    protected rows: Array<Sheet>;
+    protected detachedRows: Array<Sheet>;
+    protected sheetElements: Array<Node>;
+    protected defaultValue: Array<Object>;
+    protected sheetChangeListener: Listener;
+    protected tableIndex: string;
+    protected tableValue: string;
+    constructor(parent: Sheet, style: SheetStyle, element: HTMLElement);
+    addRow(): void;
+    removeRow(row: Sheet): void;
+    removeLastRow(): void;
+    isIndexed(): boolean;
+    getId(): string;
+    reset(): void;
+    updateFromObject(obj: any): void;
+    getValueFor(id: string): number;
+    getValue(): Array<number>;
+    exportAsObject(): any[];
+    protected changeTrigger: Trigger;
+    addChangeListener(f: Listener | Function): void;
+    addChangeListenerIfMissing(f: Listener | Function): void;
+    removeChangeListener(f: Listener | Function): void;
+    protected considerTriggering(): void;
+    triggerChange(counter: number): void;
+}
+declare class SheetVariable {
+    protected visible: HTMLElement;
+    protected parent: Sheet;
+    protected style: SheetStyle;
+    protected id: string;
+    protected editable: boolean;
+    protected value: any;
+    protected defaultValueString: String;
+    constructor(parent: Sheet, style: SheetStyle, element: HTMLElement);
+    updateVisible(): void;
+    empty(): void;
+    storeValue(obj: any): void;
+    reset(): void;
+    getValue(): any;
+    updateFromObject(obj: any): void;
+    exportAsObject(): any;
+    getId(): string;
+    protected changeTrigger: Trigger;
+    addChangeListener(f: Listener | Function): void;
+    addChangeListenerIfMissing(f: Listener | Function): void;
+    removeChangeListener(f: Listener | Function): void;
+    protected considerTriggering(): void;
+    triggerChange(counter: number): void;
+}
+declare module StyleFactory {
+    function getCreator(style: StyleInstance): typeof SheetStyle;
+    function getSheetStyle(style: StyleInstance, reload?: boolean): SheetStyle;
+}
+interface SheetCreatorListener {
+    complete(): void;
+}
+declare class SheetVariabletext extends SheetVariable {
+    protected textNode: Text;
+    protected mouse: boolean;
+    constructor(parent: Sheet, style: SheetStyle, ele: HTMLElement);
+    attachTextNode(): void;
+    click(e: Event): void;
+    mousedown(): void;
+    input(e: any): void;
+    keyup(e: any): void;
+    isAllowedKey(key: any): boolean;
+    keydown(e: any): void;
+    focus(): void;
+    blur(): void;
+    updateContentEditable(): void;
+    storeValue(value: string): void;
+    updateVisible(): void;
+}
+declare class SheetVariablelongtext extends SheetVariable {
+    private allowEmptyLines;
+    private pClass;
+    protected mouse: boolean;
+    constructor(parent: Sheet, style: SheetStyle, ele: HTMLElement);
+    mousedown(): void;
+    click(e: Event): void;
+    input(e: any): void;
+    keyup(e: any): void;
+    keydown(e: any): void;
+    focus(): void;
+    blur(): void;
+    updateContentEditable(): void;
+    storeValue(value: string): void;
+    updateVisible(): void;
+}
+declare class SheetVariablenumber extends SheetVariabletext {
+    protected defaultValue: number;
+    parseString(str: string): number;
+    parseNumber(n: number): number;
+    reset(): void;
+    constructor(parent: Sheet, style: SheetStyle, ele: HTMLElement);
+    storeValue(value: string | number): void;
+    isImportantInputKey(key: any): boolean;
+    isAllowedKey(key: any): boolean;
+    updateVisible(): void;
+}
+declare class SheetVariableinteger extends SheetVariablenumber {
+    isAllowedKey(key: any): boolean;
+    parseString(str: string): number;
+    parseNumber(n: number): number;
+}
+declare class SheetVariablemath extends SheetVariabletext implements SheetCreatorListener {
+    protected parsed: any;
+    protected compiled: any;
+    protected symbols: Array<string>;
+    protected scope: {
+        [id: string]: number;
+    };
+    protected lastValue: number;
+    protected changeListener: Listener;
+    constructor(parent: Sheet, style: SheetStyle, ele: HTMLElement);
+    checkForChange(): void;
+    protected parse(): void;
+    getSymbols(): Array<string>;
+    getScope(symbols: Array<string>): {
+        [id: string]: number;
+    };
+    complete(): void;
+    focus(): void;
+    storeValue(value: string): void;
+    getValue(): number;
+    updateVisible(): void;
+}
+declare class SheetVariableimage extends SheetVariable {
+    protected defaultName: string;
+    protected defaultUrl: string;
+    protected img: HTMLImageElement;
+    protected select: HTMLSelectElement;
+    protected errorUrl: string;
+    constructor(parent: Sheet, style: SheetStyle, element: HTMLElement);
+    reset(): void;
+    blur(): void;
+    change(): void;
+    click(e: Event): void;
+    error(e: Event): void;
+    createOptions(name: string, arr: Array<Array<string>>): HTMLOptGroupElement;
+    createOption(name: string, url: string): HTMLOptionElement;
+    showSelect(): void;
+    storeValue(arr: Array<string>): void;
+    updateVisible(): void;
 }
 declare class SheetButtonaddrow extends SheetButton {
-    click: () => void;
+    click(e: any): void;
 }
-declare class StyleInstance {
-    id: number;
-    gameid: number;
-    name: string;
-    mainCode: string;
-    publicCode: string;
-    html: string;
-    css: string;
-    publicStyle: boolean;
-    isLoaded(): boolean;
-    updateFromObject(obj: any): void;
-}
-declare class SoundLink {
-    private name;
-    private url;
-    private folder;
-    private bgm;
-    getFolder(): string;
-    isBgm(): boolean;
-    setFolder(name: any): void;
-    getLink(): string;
-    getName(): string;
-    setName(name: string): void;
-    constructor(name: string, url: string, folder: string, bgm: boolean);
-    exportAsObject(): {
-        name: string;
-        url: string;
-        folder: string;
-        bgm: boolean;
-    };
+declare class SheetButtonremoverow extends SheetButton {
+    click(e: any): void;
 }
 declare module MessageFactory {
     function registerMessage(msg: typeof Message, id: string, slashCommands: Array<string>): void;
@@ -837,6 +1004,7 @@ declare class Message extends SlashCommand {
     addDestinationStorytellers(room: Room): void;
     addDestination(user: User): void;
     getDestinations(): Array<UserRoomContext>;
+    hasDestination(): boolean;
     makeMockUp(): Array<Message>;
     isWhisper(): boolean;
     isMine(): boolean;
@@ -1019,6 +1187,11 @@ declare class MessageUnknown extends Message {
     module: string;
     createHTML(): HTMLElement;
 }
+declare class MessageCutscene extends Message {
+    module: string;
+    createHTML(): HTMLElement;
+    static sendNotification(chatAllowed: boolean): void;
+}
 declare module DB {
 }
 declare module DB.UserDB {
@@ -1151,6 +1324,108 @@ declare module Application.Login {
     function addListener(listener: Listener | Function): void;
     function getUser(): User;
 }
+declare module Server {
+    var IMAGE_URL: string;
+    var APPLICATION_URL: string;
+    var CLIENT_URL: string;
+    var WEBSOCKET_SERVERURL: string;
+    var WEBSOCKET_CONTEXT: string;
+    var WEBSOCKET_PORTS: Array<number>;
+    function getWebsocketURL(): string;
+}
+declare module Server.AJAX {
+    function requestPage(ajax: AJAXConfig, success: Listener | Function, error: Listener | Function): void;
+}
+declare module Server.Config {
+    function saveConfig(config: Object, cbs?: Listener | Function, cbe?: Listener | Function): void;
+}
+declare module Server.Login {
+    function requestSession(silent: boolean, cbs?: Listener, cbe?: Listener): void;
+    function doLogin(email: string, password: string, cbs?: Listener, cbe?: Listener): void;
+    function doLogout(cbs?: Listener, cbe?: Listener): void;
+}
+declare module Server.Images {
+    function getImages(cbs?: Listener, cbe?: Listener): void;
+}
+declare module Server.Games {
+    function updateLists(cbs?: Listener, cbe?: Listener): void;
+    function createRoom(room: Room, cbs?: Listener, cbe?: Listener): void;
+    function createGame(game: Game, cbs?: Listener, cbe?: Listener): void;
+    function editGame(game: Game, cbs?: Listener, cbe?: Listener): void;
+    function getInviteList(cbs?: Listener, cbe?: Listener): void;
+    function sendInvite(gameid: number, nickname: string, nicknamesufix: string, message: string, cbs?: Listener, cbe?: Listener): void;
+    function acceptInvite(gameid: number, cbs?: Listener, cbe?: Listener): void;
+    function rejectInvite(gameid: number, cbs?: Listener, cbe?: Listener): void;
+    function leaveGame(gameid: number, cbs?: Listener, cbe?: Listener): void;
+    function deleteGame(gameid: number, cbs?: Listener, cbe?: Listener): void;
+    function deleteRoom(roomid: number, cbs?: Listener, cbe?: Listener): void;
+    function getPrivileges(gameid: number, cbs?: Listener, cbe?: Listener): void;
+    function setPrivileges(gameid: number, cbs?: Listener, cbe?: Listener): void;
+}
+declare module Server.URL {
+    function fixURL(url: string): string;
+}
+declare module Server.Chat {
+    var CHAT_URL: string;
+    var currentController: ChatController;
+    function isReconnecting(): boolean;
+    function setConnected(): void;
+    function giveUpReconnect(): void;
+    function reconnect(): void;
+    function leaveRoom(): void;
+    function enterRoom(roomid: number): void;
+    function sendStatus(info: PersonaInfo): void;
+    function sendPersona(info: PersonaInfo): void;
+    function isConnected(): boolean;
+    function sendMessage(message: Message): void;
+    function saveMemory(memory: string): void;
+    function hasRoom(): boolean;
+    function getRoom(): Room;
+    function getAllMessages(roomid: number, cbs?: Listener, cbe?: Listener): void;
+    function end(): void;
+    function addStatusListener(f: Function | Listener): void;
+    function triggerStatus(info: Object): void;
+    function addPersonaListener(f: Function | Listener): void;
+    function triggerPersona(f: Object): void;
+    function addMessageListener(f: Function | Listener): void;
+    function triggerMessage(f: Message): void;
+}
+declare module Server.Chat.Memory {
+    var version: number;
+    function addChangeListener(f: Function | Listener): void;
+    function getConfig(id: string): TrackerMemory;
+    function registerChangeListener(id: string, listener: Listener): void;
+    function getConfiguration(name: string): TrackerMemory;
+    function registerConfiguration(id: string, name: string, config: TrackerMemory): void;
+    function exportAsObject(): {
+        [id: string]: any;
+    };
+    function updateFromObject(obj: {
+        [id: string]: any;
+    }): void;
+    function saveMemory(): void;
+    function considerSaving(): void;
+}
+declare module Server.Storage {
+    function requestImages(cbs?: Listener, cbe?: Listener): void;
+    function requestSounds(cbs?: Listener, cbe?: Listener): void;
+    function sendImages(cbs?: Listener, cbe?: Listener): void;
+    function sendSounds(cbs?: Listener, cbe?: Listener): void;
+}
+declare module Server.Sheets {
+    function loadSheetAndStyle(sheetid: number, styleid: number, cbs?: EventListenerObject, cbe?: EventListenerObject): void;
+    function loadSheet(sheetid: number, cbs?: Listener, cbe?: Listener): void;
+    function updateStyles(cbs?: Listener, cbe?: Listener): void;
+    function sendStyle(style: StyleInstance, cbs?: Listener | EventListenerObject | Function, cbe?: Listener | EventListenerObject | Function): void;
+    function loadStyle(id: number, cbs?: Listener, cbe?: Listener, right?: boolean): void;
+    function updateLists(cbs?: Listener, cbe?: Listener): void;
+    function sendFolder(sheet: SheetInstance, cbs?: Listener, cbe?: Listener): void;
+    function deleteSheet(sheet: SheetInstance, cbs?: Listener, cbe?: Listener): void;
+    function getSheetPermissions(sheet: SheetInstance, cbs?: Listener | EventListenerObject | Function, cbe?: Listener | EventListenerObject | Function): void;
+    function sendSheetPermissions(sheet: SheetInstance, permissions: Array<SheetPermRow>, cbs?: Listener | EventListenerObject | Function, cbe?: Listener | EventListenerObject | Function): void;
+    function getStyleOptions(game: Game, cbs: Function | EventListenerObject, cbe: Function | EventListenerObject): void;
+    function createSheet(game: Game, sheetName: string, styleId: number, isPublic: boolean, cbs?: Listener | EventListenerObject | Function, cbe?: Listener | EventListenerObject | Function): void;
+}
 declare class Lingo {
     ids: Array<string>;
     name: string;
@@ -1183,6 +1458,7 @@ declare module UI {
     var idGameDesigner: string;
     var idRoomDesigner: string;
     var idSheetViewer: string;
+    var idSheetDesigner: string;
     var idHome: string;
     var idSheets: string;
     var idImages: string;
@@ -1297,8 +1573,23 @@ declare module UI.Sheets.SheetPermissionDesigner {
 }
 declare module UI.Sheets.SheetManager {
     var currentSheet: SheetInstance;
-    function switchToSheet(sheet: SheetInstance): void;
+    var currentStyle: SheetStyle;
+    function close(): void;
+    function detachStyle(): void;
+    function attachStyle(): void;
+    function switchToSheet(sheet: SheetInstance, reloadStyle?: boolean): void;
     function openSheet(sheet: SheetInstance, reloadSheet?: boolean, reloadStyle?: boolean): void;
+    function reload(reloadStyle?: boolean): void;
+    function isAutoUpdate(): boolean;
+    function updateButtons(): void;
+    function importFromJSON(ready?: boolean, json?: string): void;
+    function exportAsJSON(): void;
+}
+declare module UI.Sheets.SheetDesigner {
+    function callSelf(game: Game): void;
+    function success(): void;
+    function fillStyles(data: any): void;
+    function submit(): void;
 }
 declare module UI.Rooms {
     function deleteRoom(room: Room): void;
@@ -1458,105 +1749,6 @@ declare module UI.Styles.StyleDesigner {
     function fillWithStyle(style: StyleInstance, copy?: boolean): void;
     function submit(): void;
     function finish(): void;
-}
-declare module Server {
-    var IMAGE_URL: string;
-    var APPLICATION_URL: string;
-    var CLIENT_URL: string;
-    var WEBSOCKET_SERVERURL: string;
-    var WEBSOCKET_CONTEXT: string;
-    var WEBSOCKET_PORTS: Array<number>;
-    function getWebsocketURL(): string;
-}
-declare module Server.AJAX {
-    function requestPage(ajax: AJAXConfig, success: Listener | Function, error: Listener | Function): void;
-}
-declare module Server.Config {
-    function saveConfig(config: Object, cbs?: Listener | Function, cbe?: Listener | Function): void;
-}
-declare module Server.Login {
-    function requestSession(silent: boolean, cbs?: Listener, cbe?: Listener): void;
-    function doLogin(email: string, password: string, cbs?: Listener, cbe?: Listener): void;
-    function doLogout(cbs?: Listener, cbe?: Listener): void;
-}
-declare module Server.Images {
-    function getImages(cbs?: Listener, cbe?: Listener): void;
-}
-declare module Server.Games {
-    function updateLists(cbs?: Listener, cbe?: Listener): void;
-    function createRoom(room: Room, cbs?: Listener, cbe?: Listener): void;
-    function createGame(game: Game, cbs?: Listener, cbe?: Listener): void;
-    function editGame(game: Game, cbs?: Listener, cbe?: Listener): void;
-    function getInviteList(cbs?: Listener, cbe?: Listener): void;
-    function sendInvite(gameid: number, nickname: string, nicknamesufix: string, message: string, cbs?: Listener, cbe?: Listener): void;
-    function acceptInvite(gameid: number, cbs?: Listener, cbe?: Listener): void;
-    function rejectInvite(gameid: number, cbs?: Listener, cbe?: Listener): void;
-    function leaveGame(gameid: number, cbs?: Listener, cbe?: Listener): void;
-    function deleteGame(gameid: number, cbs?: Listener, cbe?: Listener): void;
-    function deleteRoom(roomid: number, cbs?: Listener, cbe?: Listener): void;
-    function getPrivileges(gameid: number, cbs?: Listener, cbe?: Listener): void;
-    function setPrivileges(gameid: number, cbs?: Listener, cbe?: Listener): void;
-}
-declare module Server.URL {
-    function fixURL(url: string): string;
-}
-declare module Server.Chat {
-    var CHAT_URL: string;
-    var currentController: ChatController;
-    function isReconnecting(): boolean;
-    function setConnected(): void;
-    function giveUpReconnect(): void;
-    function reconnect(): void;
-    function leaveRoom(): void;
-    function enterRoom(roomid: number): void;
-    function sendStatus(info: PersonaInfo): void;
-    function sendPersona(info: PersonaInfo): void;
-    function isConnected(): boolean;
-    function sendMessage(message: Message): void;
-    function saveMemory(memory: string): void;
-    function hasRoom(): boolean;
-    function getRoom(): Room;
-    function getAllMessages(roomid: number, cbs?: Listener, cbe?: Listener): void;
-    function end(): void;
-    function addStatusListener(f: Function | Listener): void;
-    function triggerStatus(info: Object): void;
-    function addPersonaListener(f: Function | Listener): void;
-    function triggerPersona(f: Object): void;
-    function addMessageListener(f: Function | Listener): void;
-    function triggerMessage(f: Message): void;
-}
-declare module Server.Chat.Memory {
-    var version: number;
-    function addChangeListener(f: Function | Listener): void;
-    function getConfig(id: string): TrackerMemory;
-    function registerChangeListener(id: string, listener: Listener): void;
-    function getConfiguration(name: string): TrackerMemory;
-    function registerConfiguration(id: string, name: string, config: TrackerMemory): void;
-    function exportAsObject(): {
-        [id: string]: any;
-    };
-    function updateFromObject(obj: {
-        [id: string]: any;
-    }): void;
-    function saveMemory(): void;
-}
-declare module Server.Storage {
-    function requestImages(cbs?: Listener, cbe?: Listener): void;
-    function requestSounds(cbs?: Listener, cbe?: Listener): void;
-    function sendImages(cbs?: Listener, cbe?: Listener): void;
-    function sendSounds(cbs?: Listener, cbe?: Listener): void;
-}
-declare module Server.Sheets {
-    function loadSheetAndStyle(sheetid: number, styleid: number, cbs?: EventListenerObject, cbe?: EventListenerObject): void;
-    function loadSheet(sheetid: number, cbs?: Listener, cbe?: Listener): void;
-    function updateStyles(cbs?: Listener, cbe?: Listener): void;
-    function sendStyle(style: StyleInstance, cbs?: Listener | EventListenerObject | Function, cbe?: Listener | EventListenerObject | Function): void;
-    function loadStyle(id: number, cbs?: Listener, cbe?: Listener, right?: boolean): void;
-    function updateLists(cbs?: Listener, cbe?: Listener): void;
-    function sendFolder(sheet: SheetInstance, cbs?: Listener, cbe?: Listener): void;
-    function deleteSheet(sheet: SheetInstance, cbs?: Listener, cbe?: Listener): void;
-    function getSheetPermissions(sheet: SheetInstance, cbs?: Listener | EventListenerObject | Function, cbe?: Listener | EventListenerObject | Function): void;
-    function sendSheetPermissions(sheet: SheetInstance, permissions: Array<SheetPermRow>, cbs?: Listener | EventListenerObject | Function, cbe?: Listener | EventListenerObject | Function): void;
 }
 declare var change: any;
 declare module Dropbox {
