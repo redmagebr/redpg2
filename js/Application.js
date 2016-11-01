@@ -3112,6 +3112,11 @@ var SheetList = (function () {
         while (element.firstChild !== null) {
             this.sheetElements.push(element.removeChild(element.firstChild));
         }
+        var type = element.dataset['sheettype'] === undefined ? "" : Sheet.stringToType(element.dataset['sheettype']);
+        if (eval("typeof Sheet" + type + " !== \"function\"")) {
+            type = "";
+        }
+        this.sheetType = eval("Sheet" + type);
         this.id = this.visible.dataset['id'] === undefined ? this.parent.getUniqueID() : this.visible.dataset['id'];
         this.tableIndex = this.visible.dataset['tableindex'] === undefined ? null : this.visible.dataset['tableindex'];
         this.tableValue = this.visible.dataset['tablevalue'] === undefined ? null : this.visible.dataset['tablevalue'];
@@ -3127,6 +3132,7 @@ var SheetList = (function () {
             this.defaultValue = [];
         }
     }
+    SheetList.prototype.breakIn = function (sheet) { };
     SheetList.prototype.addRow = function () {
         var newRow;
         if (this.detachedRows.length > 0) {
@@ -3137,7 +3143,8 @@ var SheetList = (function () {
             for (var i = 0; i < this.sheetElements.length; i++) {
                 newRowEles.push(this.sheetElements[i].cloneNode(true));
             }
-            newRow = new Sheet(this, this.style, newRowEles);
+            newRow = new this.sheetType(this, this.style, newRowEles);
+            this.breakIn(newRow);
             newRow.addChangeListener(this.sheetChangeListener);
         }
         for (var i = 0; i < newRow.getElements().length; i++) {
@@ -3961,9 +3968,9 @@ var SheetVariableselect = (function (_super) {
         this.select.focus();
     };
     SheetVariableselect.prototype.selectBlur = function (e) {
-        this.storeValue(this.select.value);
     };
     SheetVariableselect.prototype.selectChange = function (e) {
+        this.storeValue(this.select.value);
     };
     SheetVariableselect.prototype.showSelect = function () {
         this.empty();

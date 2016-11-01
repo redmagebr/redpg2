@@ -807,10 +807,12 @@ declare class SheetList {
     protected detachedRows: Array<Sheet>;
     protected sheetElements: Array<Node>;
     protected defaultValue: Array<Object>;
+    protected sheetType: typeof Sheet;
     protected sheetChangeListener: Listener;
     protected tableIndex: string;
     protected tableValue: string;
     constructor(parent: Sheet, style: SheetStyle, element: HTMLElement);
+    breakIn(sheet: Sheet): void;
     addRow(): void;
     removeRow(row: Sheet): void;
     removeLastRow(): void;

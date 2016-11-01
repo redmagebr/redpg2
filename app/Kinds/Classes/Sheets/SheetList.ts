@@ -11,6 +11,8 @@ class SheetList {
 
     protected defaultValue : Array<Object>;
 
+    protected sheetType : typeof Sheet;
+
     protected sheetChangeListener = <Listener> {
         list : this,
         counter : -1,
@@ -36,6 +38,12 @@ class SheetList {
             this.sheetElements.push(element.removeChild(element.firstChild));
         }
 
+        var type : string = element.dataset['sheettype'] === undefined ? "" : Sheet.stringToType(element.dataset['sheettype']);
+        if (eval("typeof Sheet" + type + " !== \"function\"")) {
+            type = "";
+        }
+        this.sheetType = eval("Sheet" + type);
+
         this.id = this.visible.dataset['id'] === undefined ? this.parent.getUniqueID() : this.visible.dataset['id'];
         this.tableIndex = this.visible.dataset['tableindex'] === undefined ? null : this.visible.dataset['tableindex'];
         this.tableValue = this.visible.dataset['tablevalue'] === undefined ? null : this.visible.dataset['tablevalue'];
@@ -51,6 +59,8 @@ class SheetList {
         }
     }
 
+    public breakIn (sheet : Sheet) {}
+
     public addRow () {
         var newRow : Sheet;
         if (this.detachedRows.length > 0) {
@@ -60,7 +70,9 @@ class SheetList {
             for (var i = 0; i < this.sheetElements.length; i++) {
                 newRowEles.push(this.sheetElements[i].cloneNode(true));
             }
-            newRow = new Sheet(this, this.style, newRowEles);
+            newRow = new this.sheetType(this, this.style, newRowEles);
+
+            this.breakIn(newRow);
 
             newRow.addChangeListener(this.sheetChangeListener);
         }

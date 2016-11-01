@@ -35,11 +35,11 @@ class SheetVariableselect extends SheetVariabletext {
     }
 
     public selectBlur (e : Event) {
-        this.storeValue(this.select.value);
+
     }
 
     public selectChange (e : Event) {
-
+        this.storeValue(this.select.value);
     }
 
     public showSelect () {
