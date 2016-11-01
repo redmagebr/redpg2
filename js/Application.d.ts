@@ -948,6 +948,18 @@ declare class SheetVariableimage extends SheetVariable {
     storeValue(arr: Array<string>): void;
     updateVisible(): void;
 }
+declare class SheetVariableselect extends SheetVariabletext {
+    protected select: HTMLSelectElement;
+    protected values: Array<string>;
+    constructor(parent: Sheet, style: SheetStyle, element: HTMLElement);
+    blur(): void;
+    focus(): void;
+    selectBlur(e: Event): void;
+    selectChange(e: Event): void;
+    showSelect(): void;
+    storeValue(value: string): void;
+    updateVisible(): void;
+}
 declare class SheetButtonaddrow extends SheetButton {
     click(e: any): void;
 }

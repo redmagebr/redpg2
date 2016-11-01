@@ -14,6 +14,7 @@
 /// <reference path='SheetVariable/SheetVariableinteger.ts' />
 /// <reference path='SheetVariable/SheetVariablemath.ts' />
 /// <reference path='SheetVariable/SheetVariableimage.ts' />
+/// <reference path='SheetVariable/SheetVariableselect.ts' />
 
 
 /// <reference path='SheetButton/SheetButtonaddrow.ts' />

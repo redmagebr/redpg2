@@ -3932,6 +3932,66 @@ var SheetVariableimage = (function (_super) {
     };
     return SheetVariableimage;
 }(SheetVariable));
+var SheetVariableselect = (function (_super) {
+    __extends(SheetVariableselect, _super);
+    function SheetVariableselect(parent, style, element) {
+        _super.call(this, parent, style, element);
+        this.select = document.createElement("select");
+        this.values = [""];
+        if (this.visible.dataset['values'] !== undefined) {
+            this.values = this.visible.dataset['values'].split(";");
+            for (var i = 0; i < this.values.length; i++) {
+                var opt = document.createElement("option");
+                opt.value = this.values[i];
+                opt.appendChild(document.createTextNode(this.values[i]));
+                this.select.appendChild(opt);
+            }
+        }
+        if (this.visible.dataset['selectclass'] !== undefined) {
+            this.select.classList.add(this.visible.dataset['selectclass']);
+        }
+        if (this.editable) {
+            this.select.addEventListener("blur", (function (e) { this.selectBlur(e); }).bind(this));
+            this.select.addEventListener("change", (function (e) { this.selectChange(e); }).bind(this));
+        }
+    }
+    SheetVariableselect.prototype.blur = function () { };
+    SheetVariableselect.prototype.focus = function () {
+        this.showSelect();
+        this.select.focus();
+    };
+    SheetVariableselect.prototype.selectBlur = function (e) {
+        this.storeValue(this.select.value);
+    };
+    SheetVariableselect.prototype.selectChange = function (e) {
+    };
+    SheetVariableselect.prototype.showSelect = function () {
+        this.empty();
+        this.visible.appendChild(this.select);
+        this.select.value = this.value === null ? this.values[0] : this.value;
+    };
+    SheetVariableselect.prototype.storeValue = function (value) {
+        if (this.editable) {
+            if (typeof value === "string" && value !== this.value && this.values.indexOf(value) !== -1) {
+                this.value = value;
+                this.considerTriggering();
+            }
+            this.updateVisible();
+            this.updateContentEditable();
+        }
+    };
+    SheetVariableselect.prototype.updateVisible = function () {
+        this.empty();
+        this.visible.appendChild(this.textNode);
+        if (this.value !== null) {
+            this.textNode.nodeValue = this.value;
+        }
+        else {
+            this.textNode.nodeValue = this.defaultValueString === null ? "" : this.defaultValueString;
+        }
+    };
+    return SheetVariableselect;
+}(SheetVariabletext));
 var SheetButtonaddrow = (function (_super) {
     __extends(SheetButtonaddrow, _super);
     function SheetButtonaddrow() {
