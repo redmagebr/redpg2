@@ -727,7 +727,7 @@ declare class SheetStyle {
     protected sheetInstanceChangeTrigger: Trigger;
     addSheetInstanceChangeListener(f: Listener | Function): void;
     stringToType(str: String): string;
-    getCreator(kind: string, type: string, def: string): typeof Sheet | typeof SheetButton | typeof SheetList;
+    getCreator(kind: string, type: string, def: string): any;
     getSheet(): Sheet;
     addCreatorListener(obj: SheetCreatorListener): void;
     triggerCreatorListeners(): void;

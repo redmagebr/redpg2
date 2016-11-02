@@ -116,7 +116,7 @@ class SheetList {
     }
 
     public isIndexed () {
-        return (this.tableIndex !== null || this.tableValue !== null);
+        return (this.tableIndex !== null && this.tableValue !== null);
     }
 
     public getId () {
@@ -148,10 +148,10 @@ class SheetList {
     public getValueFor (id : string) : number {
         if (this.tableIndex !== null && this.tableValue !== null) {
             for (var i = 0; i < this.rows.length; i++) {
-                var value = this.rows[i].getValueFor(<string> this.tableIndex);
-                if (typeof value === "string") {
-                    var simpleValue = Sheet.simplifyString(value);
-                    if (simpleValue === id) {
+                var name = this.rows[i].getValueFor(<string> this.tableIndex);
+                if (typeof name === "string") {
+                    var simpleName = Sheet.simplifyString(name);
+                    if (simpleName === id) {
                         return this.rows[i].getValueFor(<string> this.tableValue);
                     }
                 } else {

@@ -43,7 +43,7 @@ class SheetStyle {
      * @param def = string, default id
      * @returns {typeof Sheet | typeof SheetButton | typeof SheetList}
      */
-    public getCreator (kind : string, type : string, def : string) : typeof Sheet | typeof SheetButton | typeof SheetList {
+    public getCreator (kind : string, type : string, def : string) {
         var name = kind + this.stringToType(type);
         if (eval ("typeof " + name) === "function") {
             return eval(name);

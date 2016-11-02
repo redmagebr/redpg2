@@ -3185,7 +3185,7 @@ var SheetList = (function () {
         }
     };
     SheetList.prototype.isIndexed = function () {
-        return (this.tableIndex !== null || this.tableValue !== null);
+        return (this.tableIndex !== null && this.tableValue !== null);
     };
     SheetList.prototype.getId = function () {
         return this.id;
@@ -3211,10 +3211,10 @@ var SheetList = (function () {
     SheetList.prototype.getValueFor = function (id) {
         if (this.tableIndex !== null && this.tableValue !== null) {
             for (var i = 0; i < this.rows.length; i++) {
-                var value = this.rows[i].getValueFor(this.tableIndex);
-                if (typeof value === "string") {
-                    var simpleValue = Sheet.simplifyString(value);
-                    if (simpleValue === id) {
+                var name = this.rows[i].getValueFor(this.tableIndex);
+                if (typeof name === "string") {
+                    var simpleName = Sheet.simplifyString(name);
+                    if (simpleName === id) {
                         return this.rows[i].getValueFor(this.tableValue);
                     }
                 }
@@ -3786,6 +3786,7 @@ var SheetVariablemath = (function (_super) {
         }
         else {
             var value = this.getValue();
+            value = value === null ? NaN : value;
             if (isNaN(value)) {
                 this.textNode.nodeValue = UI.Language.getLanguage().getLingo("_SHEETVARIABLEMATHNAN_");
             }
@@ -12214,8 +12215,10 @@ change.addMessage("Modo Cutscene implementado em chats.", "pt");
 change = new Changelog(0, 14, 0);
 change.addMessage("Improvements to custom types in custom styles.", "en");
 change.addMessage("Fix: sharing Sound Effects correctly shares as a Sound Effect, rather than a BGM.", "en");
+change.addMessage("Fix: Scouring SheetLists for values.", "en");
 change.addMessage("Melhoras para tipos personalizados em estilos personalizados.", "pt");
 change.addMessage("Fix: compartilhar Efeitos Sonoros corretamente compartilha como Efeito Sonoro e não BGM.", "pt");
+change.addMessage("Fix: Buscar valores dentro de SheetLists.", "pt");
 delete (change);
 Changelog.finished();
 UI.Language.searchLanguage();

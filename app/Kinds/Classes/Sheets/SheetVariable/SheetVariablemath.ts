@@ -142,6 +142,7 @@ class SheetVariablemath extends SheetVariabletext implements SheetCreatorListene
             this.textNode.nodeValue = this.value === null ? this.defaultValueString === null ? "0" : <string> this.defaultValueString : this.value;
         } else {
             var value = this.getValue();
+            value = value === null ? NaN : value;
             if (isNaN(value)) {
                 this.textNode.nodeValue = UI.Language.getLanguage().getLingo("_SHEETVARIABLEMATHNAN_");
             } else {
