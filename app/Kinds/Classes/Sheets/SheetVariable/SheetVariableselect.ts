@@ -35,7 +35,9 @@ class SheetVariableselect extends SheetVariabletext {
     }
 
     public selectBlur (e : Event) {
-
+        this.storeValue(this.select.value);
+        this.empty();
+        this.visible.appendChild(this.textNode);
     }
 
     public selectChange (e : Event) {
@@ -50,7 +52,10 @@ class SheetVariableselect extends SheetVariabletext {
 
     public storeValue (value : string) {
         if (this.editable) {
-            if (typeof value === "string" && value !== this.value && this.values.indexOf(value) !== -1) {
+            if (typeof value === "string" && value !== this.value) {
+                if (this.values.indexOf(value) === -1) {
+                    value = this.values[0];
+                }
                 this.value = value;
                 this.considerTriggering();
             }
@@ -60,8 +65,6 @@ class SheetVariableselect extends SheetVariabletext {
     }
 
     public updateVisible () {
-        this.empty();
-        this.visible.appendChild(this.textNode);
         if (this.value !== null) {
             this.textNode.nodeValue = this.value;
         } else {

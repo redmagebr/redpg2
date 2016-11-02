@@ -13,6 +13,8 @@ class SheetList {
 
     protected sheetType : typeof Sheet;
 
+    protected busy : boolean = false;
+
     protected sheetChangeListener = <Listener> {
         list : this,
         counter : -1,
@@ -38,11 +40,12 @@ class SheetList {
             this.sheetElements.push(element.removeChild(element.firstChild));
         }
 
-        var type : string = element.dataset['sheettype'] === undefined ? "" : Sheet.stringToType(element.dataset['sheettype']);
-        if (eval("typeof Sheet" + type + " !== \"function\"")) {
-            type = "";
-        }
-        this.sheetType = eval("Sheet" + type);
+        var type : string = element.dataset['sheettype'] === undefined ? "" : element.dataset['sheettype'];
+        // if (eval("typeof Sheet" + type + " !== \"function\"")) {
+        //     type = "";
+        // }
+        // this.sheetType = eval("Sheet" + type);
+        this.sheetType = this.style.getCreator("Sheet", type, "");
 
         this.id = this.visible.dataset['id'] === undefined ? this.parent.getUniqueID() : this.visible.dataset['id'];
         this.tableIndex = this.visible.dataset['tableindex'] === undefined ? null : this.visible.dataset['tableindex'];
@@ -71,6 +74,7 @@ class SheetList {
                 newRowEles.push(this.sheetElements[i].cloneNode(true));
             }
             newRow = new this.sheetType(this, this.style, newRowEles);
+            newRow.reset();
 
             this.breakIn(newRow);
 
@@ -82,6 +86,10 @@ class SheetList {
         }
 
         this.rows.push(newRow);
+
+        if (!this.busy) {
+            this.considerTriggering();
+        }
     }
 
     public removeRow (row : Sheet) {
@@ -94,6 +102,10 @@ class SheetList {
             }
 
             this.detachedRows.push(oldRow);
+        }
+
+        if (!this.busy) {
+            this.considerTriggering();
         }
     }
 
@@ -116,6 +128,7 @@ class SheetList {
     }
 
     public updateFromObject (obj) {
+        this.busy = true;
         if (this.rows.length !== obj.length) {
             while (this.rows.length < obj.length) {
                 this.addRow();
@@ -129,6 +142,7 @@ class SheetList {
         for (var i = 0; i < this.rows.length; i++) {
             this.rows[i].updateFromObject(obj[i]);
         }
+        this.busy = false;
     }
 
     public getValueFor (id : string) : number {

@@ -26,6 +26,31 @@ class SheetStyle {
         }
     };
 
+    protected sheetInstanceChangeTrigger : Trigger = new Trigger();
+
+    public addSheetInstanceChangeListener (f : Listener | Function) {
+        this.sheetInstanceChangeTrigger.addListenerIfMissing(f);
+    }
+
+    public stringToType (str : String) {
+        return str.replace(/[^A-Za-z0-9]/g, "").toLowerCase();
+    }
+
+    /**
+     * This function needs to be rewritten anytime a Style has custom types.
+     * @param kind = string, "Sheet" | "SheetButton" | "SheetList"
+     * @param type = string, "text" | "number"
+     * @param def = string, default id
+     * @returns {typeof Sheet | typeof SheetButton | typeof SheetList}
+     */
+    public getCreator (kind : string, type : string, def : string) : typeof Sheet | typeof SheetButton | typeof SheetList {
+        var name = kind + this.stringToType(type);
+        if (eval ("typeof " + name) === "function") {
+            return eval(name);
+        }
+        return eval(kind + def);
+    }
+
     public getSheet () {
         return this.sheet;
     }
@@ -58,6 +83,7 @@ class SheetStyle {
         this.triggerAllVariables();
         this.checkNPC();
         this.loading = false;
+        this.sheetInstanceChangeTrigger.trigger();
     }
 
     public checkNPC () {

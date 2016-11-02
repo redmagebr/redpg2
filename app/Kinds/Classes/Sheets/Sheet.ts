@@ -21,6 +21,13 @@ class Sheet {
         }
     };
 
+    public getField (id : string) {
+        if (this.values[id] === undefined) {
+            return null;
+        }
+        return this.values[id];
+    }
+
     public findField (id : string) {
         var simplified = Sheet.simplifyString(id);
         if (this.valuesSimplified[simplified] === undefined) {
@@ -53,10 +60,6 @@ class Sheet {
         return (<Latinisable> str).latinise().toLowerCase().replace(/ /g,'');
     }
 
-    public static stringToType (str : String) {
-        return str.replace(/[^A-Za-z0-9]/g, "").toLowerCase();
-    }
-
     public getElements () {
         return this.elements;
     }
@@ -83,6 +86,10 @@ class Sheet {
                 this.processElement(<HTMLElement> elements[i]);
             }
         }
+    }
+
+    public reset () {
+        this.updateFromObject({});
     }
 
     public updateFromObject (obj : Object) {
@@ -162,11 +169,12 @@ class Sheet {
     public createList (element : HTMLElement) {
         var constructor : typeof SheetList;
         var list : SheetList;
-        var type : string = element.dataset['type'] === undefined ? "" : Sheet.stringToType(element.dataset['type']);
-        if (eval("typeof SheetList" + type + " !== \"function\"")) {
-            type = "";
-        }
-        constructor = eval("SheetList" + type);
+        var type : string = element.dataset['type'] === undefined ? "" : element.dataset['type'];
+        // if (eval("typeof SheetList" + type + " !== \"function\"")) {
+        //     type = "";
+        // }
+        // constructor = eval("SheetList" + type);
+        constructor = this.style.getCreator("SheetList", type, "");
         list = new constructor(this, this.style, element);
         this.values[list.getId()] = list;
         this.valuesSimplified[Sheet.simplifyString(list.getId())] = list;
@@ -181,7 +189,7 @@ class Sheet {
     public createVariable (element : HTMLElement) {
         var constructor : typeof SheetVariable;
         var variable : SheetVariable;
-        var type : string = element.dataset['type'] === undefined ? "text" : Sheet.stringToType(element.dataset['type']);
+        var type : string = element.dataset['type'] === undefined ? "text" : element.dataset['type'];
 
         if (type === "name") {
             if (this.isRoot()) {
@@ -190,10 +198,11 @@ class Sheet {
             return;
         }
 
-        if (eval("typeof SheetVariable" + type + " !== \"function\"")) {
-            type = "text";
-        }
-        constructor = eval("SheetVariable" + type);
+        // if (eval("typeof SheetVariable" + type + " !== \"function\"")) {
+        //     type = "text";
+        // }
+        // constructor = eval("SheetVariable" + type);
+        constructor = this.style.getCreator("SheetVariable", type, "text");
         variable = new constructor(this, this.style, element);
         this.values[variable.getId()] = variable;
         this.valuesSimplified[Sheet.simplifyString(variable.getId())] = variable;
@@ -204,11 +213,12 @@ class Sheet {
     public createButton (element : HTMLElement) {
         var constructor : typeof SheetButton;
         var button : SheetButton;
-        var type : string = element.dataset['type'] === undefined ? "" : Sheet.stringToType(element.dataset['type']);
-        if (eval("typeof SheetButton" + type + " !== \"function\"")) {
-            type = "";
-        }
-        constructor = eval("SheetButton" + type);
+        var type : string = element.dataset['type'] === undefined ? "" : element.dataset['type'];
+        // if (eval("typeof SheetButton" + type + " !== \"function\"")) {
+        //     type = "";
+        // }
+        // constructor = eval("SheetButton" + type);
+        constructor = this.style.getCreator("SheetButton", type, "");
         button = new constructor(this, this.style, element);
         this.buttons[button.getId()] = button;
     }

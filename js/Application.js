@@ -2738,6 +2738,7 @@ var SheetStyle = (function () {
                 }
             }
         };
+        this.sheetInstanceChangeTrigger = new Trigger();
         var _startTime = (new Date()).getTime();
         this.styleInstance = style;
         this.fillElements();
@@ -2747,6 +2748,19 @@ var SheetStyle = (function () {
         var _endTime = (new Date()).getTime();
         console.debug("[SheetStyle] " + this.getName() + "'s processing took " + (_endTime - _startTime) + "ms to process.");
     }
+    SheetStyle.prototype.addSheetInstanceChangeListener = function (f) {
+        this.sheetInstanceChangeTrigger.addListenerIfMissing(f);
+    };
+    SheetStyle.prototype.stringToType = function (str) {
+        return str.replace(/[^A-Za-z0-9]/g, "").toLowerCase();
+    };
+    SheetStyle.prototype.getCreator = function (kind, type, def) {
+        var name = kind + this.stringToType(type);
+        if (eval("typeof " + name) === "function") {
+            return eval(name);
+        }
+        return eval(kind + def);
+    };
     SheetStyle.prototype.getSheet = function () {
         return this.sheet;
     };
@@ -2775,6 +2789,7 @@ var SheetStyle = (function () {
         this.triggerAllVariables();
         this.checkNPC();
         this.loading = false;
+        this.sheetInstanceChangeTrigger.trigger();
     };
     SheetStyle.prototype.checkNPC = function () {
         if (this.sheetInstance !== null && this.sheetInstance.isNPC()) {
@@ -2905,6 +2920,12 @@ var Sheet = (function () {
             }
         }
     }
+    Sheet.prototype.getField = function (id) {
+        if (this.values[id] === undefined) {
+            return null;
+        }
+        return this.values[id];
+    };
     Sheet.prototype.findField = function (id) {
         var simplified = Sheet.simplifyString(id);
         if (this.valuesSimplified[simplified] === undefined) {
@@ -2934,9 +2955,6 @@ var Sheet = (function () {
     Sheet.simplifyString = function (str) {
         return str.latinise().toLowerCase().replace(/ /g, '');
     };
-    Sheet.stringToType = function (str) {
-        return str.replace(/[^A-Za-z0-9]/g, "").toLowerCase();
-    };
     Sheet.prototype.getElements = function () {
         return this.elements;
     };
@@ -2948,6 +2966,9 @@ var Sheet = (function () {
     };
     Sheet.prototype.getParent = function () {
         return this.parent;
+    };
+    Sheet.prototype.reset = function () {
+        this.updateFromObject({});
     };
     Sheet.prototype.updateFromObject = function (obj) {
         for (var id in this.values) {
@@ -3012,11 +3033,8 @@ var Sheet = (function () {
     Sheet.prototype.createList = function (element) {
         var constructor;
         var list;
-        var type = element.dataset['type'] === undefined ? "" : Sheet.stringToType(element.dataset['type']);
-        if (eval("typeof SheetList" + type + " !== \"function\"")) {
-            type = "";
-        }
-        constructor = eval("SheetList" + type);
+        var type = element.dataset['type'] === undefined ? "" : element.dataset['type'];
+        constructor = this.style.getCreator("SheetList", type, "");
         list = new constructor(this, this.style, element);
         this.values[list.getId()] = list;
         this.valuesSimplified[Sheet.simplifyString(list.getId())] = list;
@@ -3028,17 +3046,14 @@ var Sheet = (function () {
     Sheet.prototype.createVariable = function (element) {
         var constructor;
         var variable;
-        var type = element.dataset['type'] === undefined ? "text" : Sheet.stringToType(element.dataset['type']);
+        var type = element.dataset['type'] === undefined ? "text" : element.dataset['type'];
         if (type === "name") {
             if (this.isRoot()) {
                 this.style.createNameVariable(this, element);
             }
             return;
         }
-        if (eval("typeof SheetVariable" + type + " !== \"function\"")) {
-            type = "text";
-        }
-        constructor = eval("SheetVariable" + type);
+        constructor = this.style.getCreator("SheetVariable", type, "text");
         variable = new constructor(this, this.style, element);
         this.values[variable.getId()] = variable;
         this.valuesSimplified[Sheet.simplifyString(variable.getId())] = variable;
@@ -3047,11 +3062,8 @@ var Sheet = (function () {
     Sheet.prototype.createButton = function (element) {
         var constructor;
         var button;
-        var type = element.dataset['type'] === undefined ? "" : Sheet.stringToType(element.dataset['type']);
-        if (eval("typeof SheetButton" + type + " !== \"function\"")) {
-            type = "";
-        }
-        constructor = eval("SheetButton" + type);
+        var type = element.dataset['type'] === undefined ? "" : element.dataset['type'];
+        constructor = this.style.getCreator("SheetButton", type, "");
         button = new constructor(this, this.style, element);
         this.buttons[button.getId()] = button;
     };
@@ -3095,6 +3107,7 @@ var SheetList = (function () {
         this.rows = [];
         this.detachedRows = [];
         this.sheetElements = [];
+        this.busy = false;
         this.sheetChangeListener = {
             list: this,
             counter: -1,
@@ -3112,11 +3125,8 @@ var SheetList = (function () {
         while (element.firstChild !== null) {
             this.sheetElements.push(element.removeChild(element.firstChild));
         }
-        var type = element.dataset['sheettype'] === undefined ? "" : Sheet.stringToType(element.dataset['sheettype']);
-        if (eval("typeof Sheet" + type + " !== \"function\"")) {
-            type = "";
-        }
-        this.sheetType = eval("Sheet" + type);
+        var type = element.dataset['sheettype'] === undefined ? "" : element.dataset['sheettype'];
+        this.sheetType = this.style.getCreator("Sheet", type, "");
         this.id = this.visible.dataset['id'] === undefined ? this.parent.getUniqueID() : this.visible.dataset['id'];
         this.tableIndex = this.visible.dataset['tableindex'] === undefined ? null : this.visible.dataset['tableindex'];
         this.tableValue = this.visible.dataset['tablevalue'] === undefined ? null : this.visible.dataset['tablevalue'];
@@ -3144,6 +3154,7 @@ var SheetList = (function () {
                 newRowEles.push(this.sheetElements[i].cloneNode(true));
             }
             newRow = new this.sheetType(this, this.style, newRowEles);
+            newRow.reset();
             this.breakIn(newRow);
             newRow.addChangeListener(this.sheetChangeListener);
         }
@@ -3151,6 +3162,9 @@ var SheetList = (function () {
             this.visible.appendChild(newRow.getElements()[i]);
         }
         this.rows.push(newRow);
+        if (!this.busy) {
+            this.considerTriggering();
+        }
     };
     SheetList.prototype.removeRow = function (row) {
         var idx = this.rows.indexOf(row);
@@ -3160,6 +3174,9 @@ var SheetList = (function () {
                 this.visible.removeChild(oldRow.getElements()[i]);
             }
             this.detachedRows.push(oldRow);
+        }
+        if (!this.busy) {
+            this.considerTriggering();
         }
     };
     SheetList.prototype.removeLastRow = function () {
@@ -3177,6 +3194,7 @@ var SheetList = (function () {
         this.updateFromObject(this.defaultValue);
     };
     SheetList.prototype.updateFromObject = function (obj) {
+        this.busy = true;
         if (this.rows.length !== obj.length) {
             while (this.rows.length < obj.length) {
                 this.addRow();
@@ -3188,6 +3206,7 @@ var SheetList = (function () {
         for (var i = 0; i < this.rows.length; i++) {
             this.rows[i].updateFromObject(obj[i]);
         }
+        this.busy = false;
     };
     SheetList.prototype.getValueFor = function (id) {
         if (this.tableIndex !== null && this.tableValue !== null) {
@@ -3968,6 +3987,9 @@ var SheetVariableselect = (function (_super) {
         this.select.focus();
     };
     SheetVariableselect.prototype.selectBlur = function (e) {
+        this.storeValue(this.select.value);
+        this.empty();
+        this.visible.appendChild(this.textNode);
     };
     SheetVariableselect.prototype.selectChange = function (e) {
         this.storeValue(this.select.value);
@@ -3979,7 +4001,10 @@ var SheetVariableselect = (function (_super) {
     };
     SheetVariableselect.prototype.storeValue = function (value) {
         if (this.editable) {
-            if (typeof value === "string" && value !== this.value && this.values.indexOf(value) !== -1) {
+            if (typeof value === "string" && value !== this.value) {
+                if (this.values.indexOf(value) === -1) {
+                    value = this.values[0];
+                }
                 this.value = value;
                 this.considerTriggering();
             }
@@ -3988,8 +4013,6 @@ var SheetVariableselect = (function (_super) {
         }
     };
     SheetVariableselect.prototype.updateVisible = function () {
-        this.empty();
-        this.visible.appendChild(this.textNode);
         if (this.value !== null) {
             this.textNode.nodeValue = this.value;
         }
@@ -4001,20 +4024,44 @@ var SheetVariableselect = (function (_super) {
 }(SheetVariabletext));
 var SheetButtonaddrow = (function (_super) {
     __extends(SheetButtonaddrow, _super);
-    function SheetButtonaddrow() {
-        _super.apply(this, arguments);
+    function SheetButtonaddrow(parent, style, element) {
+        _super.call(this, parent, style, element);
+        this.sheetInstanceChangeListener = (function () { this.updateVisible(); }).bind(this);
+        this.target = this.visible.dataset["target"] === undefined ? "" : this.visible.dataset['target'];
+        style.addSheetInstanceChangeListener(this.sheetInstanceChangeListener);
     }
+    SheetButtonaddrow.prototype.updateVisible = function () {
+        if (this.style.getSheetInstance().isEditable()) {
+            this.visible.style.display = "";
+        }
+        else {
+            this.visible.style.display = "none";
+        }
+    };
     SheetButtonaddrow.prototype.click = function (e) {
         e.preventDefault();
-        this.parent.getParent().addRow();
+        var list = this.parent.getField(this.target);
+        if (list !== null) {
+            list.addRow();
+        }
     };
     return SheetButtonaddrow;
 }(SheetButton));
 var SheetButtonremoverow = (function (_super) {
     __extends(SheetButtonremoverow, _super);
-    function SheetButtonremoverow() {
-        _super.apply(this, arguments);
+    function SheetButtonremoverow(parent, style, element) {
+        _super.call(this, parent, style, element);
+        this.sheetInstanceChangeListener = (function () { this.updateVisible(); }).bind(this);
+        style.addSheetInstanceChangeListener(this.sheetInstanceChangeListener);
     }
+    SheetButtonremoverow.prototype.updateVisible = function () {
+        if (this.style.getSheetInstance().isEditable()) {
+            this.visible.style.display = "";
+        }
+        else {
+            this.visible.style.display = "none";
+        }
+    };
     SheetButtonremoverow.prototype.click = function (e) {
         e.preventDefault();
         this.parent.getParent().removeRow(this.parent);
@@ -4791,7 +4838,7 @@ var MessageSE = (function (_super) {
         this.setSpecial("name", name);
     };
     MessageSE.shareLink = function (name, url) {
-        var msg = new MessageBGM();
+        var msg = new MessageSE();
         msg.findPersona();
         msg.setName(name);
         msg.setMsg(url);
@@ -12164,6 +12211,11 @@ change.addMessage("Cutscene mode implemented in chats.", "en");
 change.addMessage("Criação de fichas implementada.", "pt");
 change.addMessage("Abrir fichas implementado.", "pt");
 change.addMessage("Modo Cutscene implementado em chats.", "pt");
+change = new Changelog(0, 14, 0);
+change.addMessage("Improvements to custom types in custom styles.", "en");
+change.addMessage("Fix: sharing Sound Effects correctly shares as a Sound Effect, rather than a BGM.", "en");
+change.addMessage("Melhoras para tipos personalizados em estilos personalizados.", "pt");
+change.addMessage("Fix: compartilhar Efeitos Sonoros corretamente compartilha como Efeito Sonoro e não BGM.", "pt");
 delete (change);
 Changelog.finished();
 UI.Language.searchLanguage();

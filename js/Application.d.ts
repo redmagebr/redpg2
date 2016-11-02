@@ -724,6 +724,10 @@ declare class SheetStyle {
     protected nameVariable: SheetVariabletext;
     protected creatorListeners: Array<SheetCreatorListener>;
     protected sheetInstanceChangeListener: Listener;
+    protected sheetInstanceChangeTrigger: Trigger;
+    addSheetInstanceChangeListener(f: Listener | Function): void;
+    stringToType(str: String): string;
+    getCreator(kind: string, type: string, def: string): typeof Sheet | typeof SheetButton | typeof SheetList;
     getSheet(): Sheet;
     addCreatorListener(obj: SheetCreatorListener): void;
     triggerCreatorListeners(): void;
@@ -765,16 +769,17 @@ declare class Sheet {
     };
     protected idCounter: number;
     protected changeListener: Listener;
+    getField(id: string): SheetVariable | SheetList;
     findField(id: string): SheetVariable | SheetList;
     getLists(): SheetList[];
     getValueFor(id: string): any;
     static simplifyString(str: String): string;
-    static stringToType(str: String): string;
     getElements(): Node[];
     getUniqueID(): string;
     isRoot(): boolean;
     getParent(): SheetStyle | SheetList;
     constructor(parent: SheetStyle | SheetList, style: SheetStyle, elements: NodeList | Array<Node>);
+    reset(): void;
     updateFromObject(obj: Object): void;
     exportAsObject(): {};
     processElement(element: HTMLElement): void;
@@ -808,6 +813,7 @@ declare class SheetList {
     protected sheetElements: Array<Node>;
     protected defaultValue: Array<Object>;
     protected sheetType: typeof Sheet;
+    protected busy: boolean;
     protected sheetChangeListener: Listener;
     protected tableIndex: string;
     protected tableValue: string;
@@ -963,9 +969,16 @@ declare class SheetVariableselect extends SheetVariabletext {
     updateVisible(): void;
 }
 declare class SheetButtonaddrow extends SheetButton {
+    protected target: string;
+    protected sheetInstanceChangeListener: any;
+    constructor(parent: Sheet, style: SheetStyle, element: HTMLElement);
+    updateVisible(): void;
     click(e: any): void;
 }
 declare class SheetButtonremoverow extends SheetButton {
+    protected sheetInstanceChangeListener: any;
+    constructor(parent: Sheet, style: SheetStyle, element: HTMLElement);
+    updateVisible(): void;
     click(e: any): void;
 }
 declare module MessageFactory {

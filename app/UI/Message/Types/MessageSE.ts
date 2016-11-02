@@ -56,7 +56,7 @@ class MessageSE extends Message {
         this.setSpecial("name", name);
     }
     public static shareLink (name : string, url : string) {
-        var msg = new MessageBGM();
+        var msg = new MessageSE();
         msg.findPersona();
         msg.setName(name);
         msg.setMsg(url);

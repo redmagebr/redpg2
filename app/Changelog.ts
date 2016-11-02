@@ -30,6 +30,12 @@ change.addMessage("Criação de fichas implementada.", "pt");
 change.addMessage("Abrir fichas implementado.", "pt");
 change.addMessage("Modo Cutscene implementado em chats.", "pt");
 
+change = new Changelog(0, 14, 0);
+change.addMessage("Improvements to custom types in custom styles.", "en");
+change.addMessage("Fix: sharing Sound Effects correctly shares as a Sound Effect, rather than a BGM.", "en");
+change.addMessage("Melhoras para tipos personalizados em estilos personalizados.", "pt");
+change.addMessage("Fix: compartilhar Efeitos Sonoros corretamente compartilha como Efeito Sonoro e não BGM.", "pt");
+
 delete (change);
 
 Changelog.finished();
