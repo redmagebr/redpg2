@@ -43,7 +43,7 @@ class SheetButtondice extends SheetButton {
                 if (reason === "") {
                     reason = this.modifier + " = " + value;
                 } else {
-                    reason += " + (" + this.modifier + ") = " + reason + " + " + value;
+                    reason += " + " + this.modifier + " = " + reason + " + " + value;
                 }
             }
 

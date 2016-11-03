@@ -4142,7 +4142,7 @@ var SheetButtondice = (function (_super) {
                     reason = this.modifier + " = " + value;
                 }
                 else {
-                    reason += " + (" + this.modifier + ") = " + reason + " + " + value;
+                    reason += " + " + this.modifier + " = " + reason + " + " + value;
                 }
             }
             dice.setMsg(reason);
