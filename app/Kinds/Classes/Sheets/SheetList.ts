@@ -81,14 +81,31 @@ class SheetList {
             newRow.addChangeListener(this.sheetChangeListener);
         }
 
-        for (var i = 0; i < newRow.getElements().length; i++ ){
-            this.visible.appendChild(newRow.getElements()[i]);
-        }
+        this.appendRow(newRow);
 
         this.rows.push(newRow);
 
         if (!this.busy) {
             this.considerTriggering();
+        }
+    }
+
+    public empty () {
+        while (this.visible.firstChild !== null) {
+            this.visible.removeChild(this.visible.firstChild);
+        }
+    }
+
+    public reattachRows () {
+        this.empty();
+        for (var i = 0; i < this.rows.length; i++) {
+            this.appendRow(this.rows[i]);
+        }
+    }
+
+    public appendRow (newRow : Sheet) {
+        for (var i = 0; i < newRow.getElements().length; i++ ){
+            this.visible.appendChild(newRow.getElements()[i]);
         }
     }
 
@@ -143,6 +160,30 @@ class SheetList {
             this.rows[i].updateFromObject(obj[i]);
         }
         this.busy = false;
+    }
+
+    public getTableIndex () {
+        return this.tableIndex;
+    }
+
+    public sort () {
+        if (this.tableIndex !== null) {
+            this.rows.sort(function (a : Sheet, b : Sheet) {
+                var na = a.findField((<SheetList> a.getParent()).getTableIndex()).getValue();
+                var nb = b.findField((<SheetList> b.getParent()).getTableIndex()).getValue();
+                if (typeof na === "string") {
+                    na = na.toLowerCase();
+                    nb = nb.toLowerCase();
+                    if (na < nb) return -1;
+                    if (na > nb) return 1;
+                    return 0;
+                } else if (typeof na === "number") {
+                    return na - nb;
+                }
+                return 0;
+            });
+            this.reattachRows();
+        }
     }
 
     public getValueFor (id : string) : number {

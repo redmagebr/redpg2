@@ -19,3 +19,5 @@
 
 /// <reference path='SheetButton/SheetButtonaddrow.ts' />
 /// <reference path='SheetButton/SheetButtonremoverow.ts' />
+/// <reference path='SheetButton/SheetButtonDice.ts' />
+/// <reference path='SheetButton/SheetButtonsort.ts' />

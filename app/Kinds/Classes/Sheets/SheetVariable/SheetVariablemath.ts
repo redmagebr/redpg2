@@ -117,7 +117,7 @@ class SheetVariablemath extends SheetVariabletext implements SheetCreatorListene
             if (typeof value === "string" && value !== this.value) {
                 this.value = value;
                 this.parse();
-                this.considerTriggering();
+                this.checkForChange();
             }
             this.updateVisible();
             this.updateContentEditable();

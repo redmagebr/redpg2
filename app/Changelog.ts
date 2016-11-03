@@ -34,9 +34,15 @@ change = new Changelog(0, 14, 0);
 change.addMessage("Improvements to custom types in custom styles.", "en");
 change.addMessage("Fix: sharing Sound Effects correctly shares as a Sound Effect, rather than a BGM.", "en");
 change.addMessage("Fix: Scouring SheetLists for values.", "en");
+change.addMessage("Exporting sheets as JSON always exports current state.", "en");
+change.addMessage("Reduce unnecessary Math field change trigger.", "en");
+change.addMessage("Adds more SheetVariables and SheetButtons.", "en");
 change.addMessage("Melhoras para tipos personalizados em estilos personalizados.", "pt");
 change.addMessage("Fix: compartilhar Efeitos Sonoros corretamente compartilha como Efeito Sonoro e não BGM.", "pt");
 change.addMessage("Fix: Buscar valores dentro de SheetLists.", "pt");
+change.addMessage("Exportar fichas como JSON sempre exporta o estado atual da ficha.", "pt");
+change.addMessage("Reduz atualizações desnecessárias causadas por campos Math.", "pt");
+change.addMessage("Adiciona mais SheetVariables e SheetButtons.", "pt");
 
 delete (change);
 

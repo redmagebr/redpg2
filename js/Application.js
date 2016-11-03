@@ -3158,12 +3158,26 @@ var SheetList = (function () {
             this.breakIn(newRow);
             newRow.addChangeListener(this.sheetChangeListener);
         }
-        for (var i = 0; i < newRow.getElements().length; i++) {
-            this.visible.appendChild(newRow.getElements()[i]);
-        }
+        this.appendRow(newRow);
         this.rows.push(newRow);
         if (!this.busy) {
             this.considerTriggering();
+        }
+    };
+    SheetList.prototype.empty = function () {
+        while (this.visible.firstChild !== null) {
+            this.visible.removeChild(this.visible.firstChild);
+        }
+    };
+    SheetList.prototype.reattachRows = function () {
+        this.empty();
+        for (var i = 0; i < this.rows.length; i++) {
+            this.appendRow(this.rows[i]);
+        }
+    };
+    SheetList.prototype.appendRow = function (newRow) {
+        for (var i = 0; i < newRow.getElements().length; i++) {
+            this.visible.appendChild(newRow.getElements()[i]);
         }
     };
     SheetList.prototype.removeRow = function (row) {
@@ -3207,6 +3221,31 @@ var SheetList = (function () {
             this.rows[i].updateFromObject(obj[i]);
         }
         this.busy = false;
+    };
+    SheetList.prototype.getTableIndex = function () {
+        return this.tableIndex;
+    };
+    SheetList.prototype.sort = function () {
+        if (this.tableIndex !== null) {
+            this.rows.sort(function (a, b) {
+                var na = a.findField(a.getParent().getTableIndex()).getValue();
+                var nb = b.findField(b.getParent().getTableIndex()).getValue();
+                if (typeof na === "string") {
+                    na = na.toLowerCase();
+                    nb = nb.toLowerCase();
+                    if (na < nb)
+                        return -1;
+                    if (na > nb)
+                        return 1;
+                    return 0;
+                }
+                else if (typeof na === "number") {
+                    return na - nb;
+                }
+                return 0;
+            });
+            this.reattachRows();
+        }
     };
     SheetList.prototype.getValueFor = function (id) {
         if (this.tableIndex !== null && this.tableValue !== null) {
@@ -3761,7 +3800,7 @@ var SheetVariablemath = (function (_super) {
             if (typeof value === "string" && value !== this.value) {
                 this.value = value;
                 this.parse();
-                this.considerTriggering();
+                this.checkForChange();
             }
             this.updateVisible();
             this.updateContentEditable();
@@ -4069,6 +4108,113 @@ var SheetButtonremoverow = (function (_super) {
     };
     return SheetButtonremoverow;
 }(SheetButton));
+var SheetButtondice = (function (_super) {
+    __extends(SheetButtondice, _super);
+    function SheetButtondice(parent, style, element) {
+        _super.call(this, parent, style, element);
+        this.diceAmount = this.visible.dataset['dices'] === undefined ? 0 : parseInt(this.visible.dataset['dices']);
+        this.diceFaces = this.visible.dataset['faces'] === undefined ? 0 : parseInt(this.visible.dataset['faces']);
+        this.modifier = this.visible.dataset['modifier'] === undefined ? "0" : this.visible.dataset['modifier'];
+        this.parse();
+    }
+    SheetButtondice.prototype.click = function (e) {
+        e.preventDefault();
+        if (UI.Chat.getRoom() !== null) {
+            var dice = new MessageDice();
+            dice.setPersona(this.style.getSheetInstance().getName());
+            var reason = this.diceAmount !== 0 && this.diceFaces !== 0 ? this.diceAmount.toString() + "d" + this.diceFaces.toString() : "";
+            var value = this.getValue();
+            if (value.toString() === this.modifier) {
+                if (value === 0 && reason === "") {
+                    reason = value.toString();
+                }
+                else if (value !== 0) {
+                    if (value < 0) {
+                        reason += " - " + Math.abs(value).toString();
+                    }
+                    else {
+                        reason += " + " + value;
+                    }
+                }
+            }
+            else {
+                if (reason === "") {
+                    reason = this.modifier + " = " + value;
+                }
+                else {
+                    reason += " + (" + this.modifier + ") = " + reason + " + " + value;
+                }
+            }
+            dice.setMsg(reason);
+            dice.setMod(value);
+            dice.addDice(this.diceAmount, this.diceFaces);
+            if (UI.Chat.Forms.isDiceTower()) {
+                dice.addDestinationStorytellers(UI.Chat.getRoom());
+            }
+            UI.Chat.sendMessage(dice);
+        }
+    };
+    SheetButtondice.prototype.parse = function () {
+        var expr = this.modifier;
+        expr = Sheet.simplifyString(expr);
+        try {
+            this.parsed = math.parse(expr);
+            this.compiled = math.compile(expr);
+        }
+        catch (e) {
+            console.warn("[SheetButtonDice] Invalid Math expression. Error:", e);
+            this.parsed = math.parse("0");
+            this.compiled = math.compile("0");
+        }
+        this.symbols = this.getSymbols();
+        this.scope = this.getScope(this.symbols);
+    };
+    SheetButtondice.prototype.getSymbols = function () {
+        var symbols = [];
+        var nodes = this.parsed.filter(function (node) {
+            return node.type == 'SymbolNode';
+        });
+        for (var i = 0; i < nodes.length; i++) {
+            symbols.push(nodes[i].name);
+        }
+        return symbols;
+    };
+    SheetButtondice.prototype.getScope = function (symbols) {
+        var scope = {};
+        for (var i = 0; i < symbols.length; i++) {
+            scope[symbols[i]] = 0;
+        }
+        return scope;
+    };
+    SheetButtondice.prototype.getValue = function () {
+        for (var i = 0; i < this.symbols.length; i++) {
+            this.scope[this.symbols[i]] = this.style.getSheet().getValueFor(this.symbols[i]);
+        }
+        try {
+            var result = this.compiled.eval(this.scope);
+            return result;
+        }
+        catch (e) {
+            console.warn("[SheetButtonDice] Evaluation error", e);
+            return NaN;
+        }
+    };
+    return SheetButtondice;
+}(SheetButton));
+var SheetButtonsort = (function (_super) {
+    __extends(SheetButtonsort, _super);
+    function SheetButtonsort() {
+        _super.apply(this, arguments);
+    }
+    SheetButtonsort.prototype.click = function (e) {
+        e.preventDefault();
+        var list = this.parent.getField(this.target);
+        if (list !== null) {
+            list.sort();
+        }
+    };
+    return SheetButtonsort;
+}(SheetButtonaddrow));
 var MessageFactory;
 (function (MessageFactory) {
     var messageClasses = {};
@@ -5447,7 +5593,7 @@ var MessageDice = (function (_super) {
         this.setSpecial("mod", mod);
     };
     MessageDice.prototype.addDice = function (amount, faces) {
-        if (faces === 0) {
+        if (faces === 0 || amount === 0) {
             return;
         }
         var dices = this.getDice();
@@ -9541,6 +9687,9 @@ var UI;
             function switchToSheet(sheet, reloadStyle) {
                 UI.PageManager.callPage(UI.idSheetViewer);
                 addButton(sheet);
+                if (SheetManager.currentSheet !== sheet && SheetManager.currentSheet !== null) {
+                    SheetManager.currentSheet.removeChangeListener(sheetChangeListener);
+                }
                 SheetManager.currentSheet = sheet;
                 var newStyle = StyleFactory.getSheetStyle(SheetManager.currentSheet.getStyle(), reloadStyle === true);
                 if (SheetManager.currentStyle !== newStyle) {
@@ -9552,6 +9701,7 @@ var UI;
                 }
                 SheetManager.currentSheet.addChangeListener(sheetChangeListener);
                 SheetManager.currentStyle.addSheetInstance(SheetManager.currentSheet);
+                updateButtons();
             }
             SheetManager.switchToSheet = switchToSheet;
             function openSheet(sheet, reloadSheet, reloadStyle) {
@@ -9668,7 +9818,7 @@ var UI;
             }
             SheetManager.importFromJSON = importFromJSON;
             function exportAsJSON() {
-                var blob = new Blob([JSON.stringify(SheetManager.currentSheet.values, null, 4)], { type: "text/plain;charset=utf-8;" });
+                var blob = new Blob([JSON.stringify(SheetManager.currentStyle.getSheet().exportAsObject(), null, 4)], { type: "text/plain;charset=utf-8;" });
                 var d = new Date();
                 var curr_date = d.getDate() < 10 ? "0" + d.getDate().toString() : d.getDate().toString();
                 var curr_month = (d.getMonth() + 1) < 10 ? "0" + (d.getMonth() + 1).toString() : (d.getMonth() + 1).toString();
@@ -11444,6 +11594,10 @@ var UI;
                 }
             }
             Forms.considerRedirecting = considerRedirecting;
+            function isDiceTower() {
+                return diceTower.classList.contains("icons-chatDiceTowerOn");
+            }
+            Forms.isDiceTower = isDiceTower;
             function rollDice(faces) {
                 var amount = parseInt(diceAmount.value);
                 faces = faces === undefined ? parseInt(diceFaces.value) : faces;
@@ -12216,9 +12370,15 @@ change = new Changelog(0, 14, 0);
 change.addMessage("Improvements to custom types in custom styles.", "en");
 change.addMessage("Fix: sharing Sound Effects correctly shares as a Sound Effect, rather than a BGM.", "en");
 change.addMessage("Fix: Scouring SheetLists for values.", "en");
+change.addMessage("Exporting sheets as JSON always exports current state.", "en");
+change.addMessage("Reduce unnecessary Math field change trigger.", "en");
+change.addMessage("Adds more SheetVariables and SheetButtons.", "en");
 change.addMessage("Melhoras para tipos personalizados em estilos personalizados.", "pt");
 change.addMessage("Fix: compartilhar Efeitos Sonoros corretamente compartilha como Efeito Sonoro e não BGM.", "pt");
 change.addMessage("Fix: Buscar valores dentro de SheetLists.", "pt");
+change.addMessage("Exportar fichas como JSON sempre exporta o estado atual da ficha.", "pt");
+change.addMessage("Reduz atualizações desnecessárias causadas por campos Math.", "pt");
+change.addMessage("Adiciona mais SheetVariables e SheetButtons.", "pt");
 delete (change);
 Changelog.finished();
 UI.Language.searchLanguage();

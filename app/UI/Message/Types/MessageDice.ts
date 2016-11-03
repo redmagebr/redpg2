@@ -222,8 +222,8 @@ class MessageDice extends Message {
     }
 
     public addDice (amount : number, faces : number) {
-        if (faces === 0) {
-            return; // face = 0 is an invalid roll
+        if (faces === 0 || amount === 0) {
+            return; // face = 0 is an invalid roll, as is amount = 0
         }
         var dices = this.getDice();
         for (var i = 0; i < amount; i++) {

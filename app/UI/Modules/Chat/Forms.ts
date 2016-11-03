@@ -326,6 +326,10 @@ module UI.Chat.Forms {
         }
     }
 
+    export function isDiceTower () {
+        return diceTower.classList.contains("icons-chatDiceTowerOn");
+    }
+
     export function rollDice (faces? : number) {
         var amount = parseInt(diceAmount.value);
         faces = faces === undefined ? parseInt(diceFaces.value) : faces;

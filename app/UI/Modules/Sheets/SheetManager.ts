@@ -80,6 +80,10 @@ module UI.Sheets.SheetManager {
     export function switchToSheet (sheet : SheetInstance, reloadStyle? : boolean) {
         UI.PageManager.callPage(UI.idSheetViewer);
         addButton(sheet);
+        if (currentSheet !== sheet && currentSheet !== null) {
+            currentSheet.removeChangeListener(sheetChangeListener);
+        }
+
         currentSheet = sheet;
 
         var newStyle : SheetStyle = StyleFactory.getSheetStyle(currentSheet.getStyle(), reloadStyle === true);
@@ -94,8 +98,8 @@ module UI.Sheets.SheetManager {
         }
 
         currentSheet.addChangeListener(sheetChangeListener);
-
         currentStyle.addSheetInstance(currentSheet);
+        updateButtons();
     }
 
     export function openSheet (sheet : SheetInstance, reloadSheet? : boolean, reloadStyle? : boolean) {
@@ -225,7 +229,7 @@ module UI.Sheets.SheetManager {
     }
 
     export function exportAsJSON () {
-        var blob = new Blob([JSON.stringify(currentSheet.values, null, 4)], { type : "text/plain;charset=utf-8;"});
+        var blob = new Blob([JSON.stringify(currentStyle.getSheet().exportAsObject(), null, 4)], { type : "text/plain;charset=utf-8;"});
         var d = new Date();
         var curr_date = d.getDate() < 10 ? "0" + d.getDate().toString() : d.getDate().toString();
         var curr_month = (d.getMonth() + 1) < 10 ? "0" + (d.getMonth() + 1).toString() : (d.getMonth() + 1).toString();

@@ -820,12 +820,17 @@ declare class SheetList {
     constructor(parent: Sheet, style: SheetStyle, element: HTMLElement);
     breakIn(sheet: Sheet): void;
     addRow(): void;
+    empty(): void;
+    reattachRows(): void;
+    appendRow(newRow: Sheet): void;
     removeRow(row: Sheet): void;
     removeLastRow(): void;
     isIndexed(): boolean;
     getId(): string;
     reset(): void;
     updateFromObject(obj: any): void;
+    getTableIndex(): string;
+    sort(): void;
     getValueFor(id: string): number;
     getValue(): Array<number>;
     exportAsObject(): any[];
@@ -980,6 +985,28 @@ declare class SheetButtonremoverow extends SheetButton {
     constructor(parent: Sheet, style: SheetStyle, element: HTMLElement);
     updateVisible(): void;
     click(e: any): void;
+}
+declare class SheetButtondice extends SheetButton {
+    protected parsed: any;
+    protected compiled: any;
+    protected symbols: Array<string>;
+    protected scope: {
+        [id: string]: number;
+    };
+    protected diceAmount: number;
+    protected diceFaces: number;
+    protected modifier: string;
+    constructor(parent: Sheet, style: SheetStyle, element: HTMLElement);
+    click(e: Event): void;
+    protected parse(): void;
+    getSymbols(): Array<string>;
+    getScope(symbols: Array<string>): {
+        [id: string]: number;
+    };
+    getValue(): number;
+}
+declare class SheetButtonsort extends SheetButtonaddrow {
+    click(e: Event): void;
 }
 declare module MessageFactory {
     function registerMessage(msg: typeof Message, id: string, slashCommands: Array<string>): void;
@@ -1717,6 +1744,7 @@ declare module UI.Chat.Forms {
     function setFocused(newFocused: boolean): void;
     function setAfk(newAfk: boolean): void;
     function considerRedirecting(event: KeyboardEvent): void;
+    function isDiceTower(): boolean;
     function rollDice(faces?: number): void;
     function setInput(str: string): void;
     function setLastWhisperFrom(user: UserRoomContext): void;
