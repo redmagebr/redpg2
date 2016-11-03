@@ -4013,6 +4013,9 @@ var SheetVariableselect = (function (_super) {
                 this.select.appendChild(opt);
             }
         }
+        else {
+            this.values = [""];
+        }
         if (this.visible.dataset['selectclass'] !== undefined) {
             this.select.classList.add(this.visible.dataset['selectclass']);
         }
@@ -4020,16 +4023,14 @@ var SheetVariableselect = (function (_super) {
             this.select.addEventListener("blur", (function (e) { this.selectBlur(e); }).bind(this));
             this.select.addEventListener("change", (function (e) { this.selectChange(e); }).bind(this));
         }
+        this.select.disabled = !this.editable;
+        this.showSelect();
     }
     SheetVariableselect.prototype.blur = function () { };
     SheetVariableselect.prototype.focus = function () {
-        this.showSelect();
-        this.select.focus();
     };
     SheetVariableselect.prototype.selectBlur = function (e) {
         this.storeValue(this.select.value);
-        this.empty();
-        this.visible.appendChild(this.textNode);
     };
     SheetVariableselect.prototype.selectChange = function (e) {
         this.storeValue(this.select.value);
@@ -4049,19 +4050,14 @@ var SheetVariableselect = (function (_super) {
                 this.considerTriggering();
             }
             this.updateVisible();
-            this.updateContentEditable();
         }
     };
     SheetVariableselect.prototype.updateVisible = function () {
-        if (this.value !== null) {
-            this.textNode.nodeValue = this.value;
-        }
-        else {
-            this.textNode.nodeValue = this.defaultValueString === null ? "" : this.defaultValueString;
-        }
+        this.select.value = this.value === null ? this.values[0] : this.value;
+        this.select.disabled = (!this.editable || (this.style.getSheetInstance() !== null && !this.style.getSheetInstance().isEditable()));
     };
     return SheetVariableselect;
-}(SheetVariabletext));
+}(SheetVariable));
 var SheetButtonaddrow = (function (_super) {
     __extends(SheetButtonaddrow, _super);
     function SheetButtonaddrow(parent, style, element) {

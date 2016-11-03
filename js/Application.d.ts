@@ -961,7 +961,7 @@ declare class SheetVariableimage extends SheetVariable {
     storeValue(arr: Array<string>): void;
     updateVisible(): void;
 }
-declare class SheetVariableselect extends SheetVariabletext {
+declare class SheetVariableselect extends SheetVariable {
     protected select: HTMLSelectElement;
     protected values: Array<string>;
     constructor(parent: Sheet, style: SheetStyle, element: HTMLElement);

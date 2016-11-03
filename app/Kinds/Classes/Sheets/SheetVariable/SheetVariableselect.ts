@@ -1,4 +1,4 @@
-class SheetVariableselect extends SheetVariabletext {
+class SheetVariableselect extends SheetVariable {
     protected select : HTMLSelectElement = <HTMLSelectElement> document.createElement("select");
     protected values : Array<string> = [""];
 
@@ -15,6 +15,8 @@ class SheetVariableselect extends SheetVariabletext {
 
                 this.select.appendChild(opt);
             }
+        } else {
+            this.values = [""];
         }
 
         if (this.visible.dataset['selectclass'] !== undefined) {
@@ -25,19 +27,24 @@ class SheetVariableselect extends SheetVariabletext {
             this.select.addEventListener("blur", (function (e) {this.selectBlur(e)}).bind(this));
             this.select.addEventListener("change", (function (e) {this.selectChange(e)}).bind(this));
         }
+
+        this.select.disabled = !this.editable;
+
+
+        this.showSelect();
     }
 
     public blur () {}
 
     public focus () {
-        this.showSelect();
-        this.select.focus();
+        // this.showSelect();
+        // this.select.focus();
     }
 
     public selectBlur (e : Event) {
         this.storeValue(this.select.value);
-        this.empty();
-        this.visible.appendChild(this.textNode);
+        // this.empty();
+        // this.visible.appendChild(this.textNode);
     }
 
     public selectChange (e : Event) {
@@ -60,15 +67,11 @@ class SheetVariableselect extends SheetVariabletext {
                 this.considerTriggering();
             }
             this.updateVisible();
-            this.updateContentEditable();
         }
     }
 
     public updateVisible () {
-        if (this.value !== null) {
-            this.textNode.nodeValue = this.value;
-        } else {
-            this.textNode.nodeValue = this.defaultValueString === null ? "" : <string> this.defaultValueString;
-        }
+        this.select.value = this.value === null ? this.values[0] : this.value;
+        this.select.disabled = (!this.editable || (this.style.getSheetInstance() !== null && !this.style.getSheetInstance().isEditable()));
     }
 }
