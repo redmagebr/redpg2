@@ -8,6 +8,7 @@ class SheetButtondice extends SheetButton {
     protected diceAmount : number;
     protected diceFaces : number;
     protected modifier : string;
+    protected reason : String;
 
     constructor (parent : Sheet, style : SheetStyle, element : HTMLElement) {
         super(parent, style, element);
@@ -15,6 +16,7 @@ class SheetButtondice extends SheetButton {
         this.diceAmount = this.visible.dataset['dices'] === undefined ? 0 : parseInt(this.visible.dataset['dices']);
         this.diceFaces = this.visible.dataset['faces'] === undefined ? 0 : parseInt(this.visible.dataset['faces']);
         this.modifier = this.visible.dataset['modifier'] === undefined ? "0" : this.visible.dataset['modifier'];
+        this.reason = this.visible.dataset['reason'] === undefined ? null : this.visible.dataset['reason'];
 
         this.parse();
     }
@@ -45,6 +47,10 @@ class SheetButtondice extends SheetButton {
                 } else {
                     reason += " + " + this.modifier + " = " + reason + " + " + value;
                 }
+            }
+
+            if (this.reason !== null) {
+                reason += ". " + this.reason;
             }
 
             dice.setMsg(reason);

@@ -109,14 +109,21 @@ class SheetList {
         }
     }
 
+    public detachRow (oldRow : Sheet) {
+        for (var i = 0; i < oldRow.getElements().length; i++ ){
+            var element = oldRow.getElements()[i];
+            if (element.parentNode !== null) {
+                element.parentNode.removeChild(element);
+            }
+        }
+    }
+
     public removeRow (row : Sheet) {
         var idx = this.rows.indexOf(row);
         if (idx !== -1) {
             var oldRow = this.rows.splice(idx, 1)[0];
 
-            for (var i = 0; i < oldRow.getElements().length; i++ ){
-                this.visible.removeChild(oldRow.getElements()[i]);
-            }
+            this.detachRow(oldRow);
 
             this.detachedRows.push(oldRow);
         }

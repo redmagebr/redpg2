@@ -3180,13 +3180,19 @@ var SheetList = (function () {
             this.visible.appendChild(newRow.getElements()[i]);
         }
     };
+    SheetList.prototype.detachRow = function (oldRow) {
+        for (var i = 0; i < oldRow.getElements().length; i++) {
+            var element = oldRow.getElements()[i];
+            if (element.parentNode !== null) {
+                element.parentNode.removeChild(element);
+            }
+        }
+    };
     SheetList.prototype.removeRow = function (row) {
         var idx = this.rows.indexOf(row);
         if (idx !== -1) {
             var oldRow = this.rows.splice(idx, 1)[0];
-            for (var i = 0; i < oldRow.getElements().length; i++) {
-                this.visible.removeChild(oldRow.getElements()[i]);
-            }
+            this.detachRow(oldRow);
             this.detachedRows.push(oldRow);
         }
         if (!this.busy) {
@@ -4111,6 +4117,7 @@ var SheetButtondice = (function (_super) {
         this.diceAmount = this.visible.dataset['dices'] === undefined ? 0 : parseInt(this.visible.dataset['dices']);
         this.diceFaces = this.visible.dataset['faces'] === undefined ? 0 : parseInt(this.visible.dataset['faces']);
         this.modifier = this.visible.dataset['modifier'] === undefined ? "0" : this.visible.dataset['modifier'];
+        this.reason = this.visible.dataset['reason'] === undefined ? null : this.visible.dataset['reason'];
         this.parse();
     }
     SheetButtondice.prototype.click = function (e) {
@@ -4140,6 +4147,9 @@ var SheetButtondice = (function (_super) {
                 else {
                     reason += " + " + this.modifier + " = " + reason + " + " + value;
                 }
+            }
+            if (this.reason !== null) {
+                reason += ". " + this.reason;
             }
             dice.setMsg(reason);
             dice.setMod(value);

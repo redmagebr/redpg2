@@ -823,6 +823,7 @@ declare class SheetList {
     empty(): void;
     reattachRows(): void;
     appendRow(newRow: Sheet): void;
+    detachRow(oldRow: Sheet): void;
     removeRow(row: Sheet): void;
     removeLastRow(): void;
     isIndexed(): boolean;
@@ -996,6 +997,7 @@ declare class SheetButtondice extends SheetButton {
     protected diceAmount: number;
     protected diceFaces: number;
     protected modifier: string;
+    protected reason: String;
     constructor(parent: Sheet, style: SheetStyle, element: HTMLElement);
     click(e: Event): void;
     protected parse(): void;
