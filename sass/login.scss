@@ -1,3 +1,77 @@
+// New Account Screen
+#accCreationReturnButton {
+  float: left;
+}
+
+#accCreationSubmitButton {
+  float: right;
+}
+
+.accError {
+  display: none;
+}
+
+.error + .accError {
+  display: block;
+}
+
+.accountCreationError {
+  color: #7b0600;
+  font-weight: bold;
+  line-height: 30px;
+  text-align: center;
+  display: block;
+  margin-bottom: -30px;
+}
+
+#accountCreationForm {
+  margin-top: 30px;
+}
+
+#accountBox {
+  width: 450px;
+  position: relative;
+  margin: auto;
+}
+
+.accCreationInput {
+  display: block;
+  margin: auto;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  width: 300px;
+  height: 30px;
+  border: solid 2px #000;
+  font-size: 18px;
+  text-align: center;
+  background-color: #d4d4d4;
+  font-family: $mainFont;
+
+  &:hover {
+    border-color: #7e83ff;
+    outline: 0;
+  }
+
+  &:focus {
+    outline: 0;
+    border-color: #0b27a9;
+    background-color: #fff;
+  }
+
+  &.error {
+    background-color: #ffc5c5;
+    border-color: #a90b0b;
+    &:hover {
+      border-color:#e70d0d;
+    }
+    &:focus {
+      border-color: #e78489;
+      background-color: #fff;
+    }
+  }
+}
+
+// Login Screen
 #loginBox {
   position: relative;
   width: 500px;
@@ -8,6 +82,7 @@
   display: block;
   text-align: center;
   margin-bottom: 10px;
+  margin-top: 30px;
 }
 
 .loginInput {
@@ -37,9 +112,42 @@
   }
 }
 
-#loginSubmitButton {
+#loginSubmitButton, #accCreationSubmitButton, #accCreationReturnButton {
   font-size: 20px;
   padding: 3px;
   padding-left: 6px;
   padding-right: 6px;
+}
+
+#loginError404, #loginError {
+  display: block;
+  color: #850015;
+  font-weight: bold;
+  position:absolute;
+  line-height: 30px;
+}
+
+
+#loginNewAccount, #loginForgotPassword {
+  @extend .unselectable;
+  padding: 10px;
+  font-weight: bold;
+  color: #001fba;
+
+  &:hover {
+    cursor: pointer;
+    color: #4d52ff;
+  }
+
+  &:active {
+    color: #00198a;
+  }
+}
+
+#loginNewAccount {
+  float: right;
+}
+
+#loginForgotPassword {
+  float: left;
 }

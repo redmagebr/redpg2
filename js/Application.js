@@ -6980,6 +6980,8 @@ var Server;
     var Login;
     (function (Login) {
         var ACCOUNT_URL = "Account";
+        var emptyCallback = { handleEvent: function () { } };
+        var emptyCallbackFunction = function () { };
         function requestSession(silent, cbs, cbe) {
             var success = {
                 cbs: cbs,
@@ -7078,6 +7080,20 @@ var Server;
             Server.AJAX.requestPage(ajax, success, error);
         }
         Login.doLogout = doLogout;
+        function createAccount(name, pass, email, nick, cbs, cbe) {
+            cbs = cbs === undefined ? emptyCallback : cbs;
+            cbe = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(ACCOUNT_URL);
+            ajax.setResponseTypeText();
+            ajax.setTargetGlobal();
+            ajax.setData("action", "newAccount");
+            ajax.setData("name", name);
+            ajax.setData("nickname", nick);
+            ajax.setData("email", email);
+            ajax.setData("password", pass);
+            Server.AJAX.requestPage(ajax, cbs, cbe);
+        }
+        Login.createAccount = createAccount;
     })(Login = Server.Login || (Server.Login = {}));
 })(Server || (Server = {}));
 var Server;
@@ -8069,6 +8085,23 @@ ptbr.flagIcon = "PT_BR";
 ptbr.setLingo("_LOGINEMAIL_", "E-mail");
 ptbr.setLingo("_LOGINPASSWORD_", "Senha");
 ptbr.setLingo("_LOGINSUBMIT_", "Entrar");
+ptbr.setLingo("_LOGINERROR404_", "Credenciais inválidas.");
+ptbr.setLingo("_LOGINERROR_", "Houve um erro na tentativa de login, tente novamente.");
+ptbr.setLingo("_LOGINFORGOTPASSWORD_", "Esqueceu sua senha?");
+ptbr.setLingo("_LOGINCREATEACCOUNT_", "Criar nova conta");
+ptbr.setLingo("_CREATEACCOUNTNAME_", "Nome");
+ptbr.setLingo("_CREATEACCOUNTNAMEERROR_", "O nome deve ter entre 3 a 200 caracteres e apenas caracteres Latinos.");
+ptbr.setLingo("_CREATEACCOUNTNICKNAME_", "Apelido");
+ptbr.setLingo("_LOGINPASSWORDREPEAT_", "Senha (Repetir)");
+ptbr.setLingo("_CREATEACCOUNTNICKNAMEERROR_", "O apelido deve conter entre 3 e 12 caracteres e apenas letras e números são aceitos, sem espaços.");
+ptbr.setLingo("_CREATEACCOUNTEMAILERROR_", "O e-mail deve ser válido.");
+ptbr.setLingo("_CREATEACCOUNTPASSWORDMATCHING_", "As senhas devem ser a mesma.");
+ptbr.setLingo("_ACCCREATIONSUBMIT_", "Criar Conta");
+ptbr.setLingo("_ACCCREATIONRETURN_", "Cancelar");
+ptbr.setLingo("_CREATEACCOUNTGENERALERROR_", "Houve um erro no processamento. Tente novamente.");
+ptbr.setLingo("_CREATEACCOUNTSTUPIDERROR_", "Alguma informação enviada foi inválida. Corrija e tente novamente.");
+ptbr.setLingo("_CREATEACCOUNTPASSWORDINVALID_", "3 a 12 caracteres, apenas letras e números.");
+ptbr.setLingo("_CREATEACCOUNTALREADYEXISTS_", "E-mail já está registrado.");
 ptbr.setLingo("_CHANGELOGTITLE_", "Histórico de mudanças");
 ptbr.setLingo("_CHANGELOGP1_", "Para receber os updates marcados em vermelho você precisa atualizar sua aplicação para a última versão.");
 ptbr.setLingo("_CHANGELOGP2_", "Compatibilidade com versões anteriores não é intencional. Não existem garantias de que versões desatualizadas funcionem e é recomendável sempre utilizar a versão mais recente do aplicativo.");
@@ -8380,6 +8413,9 @@ LingoList.storeLingo(ptbr);
 delete (ptbr);
 var UI;
 (function (UI) {
+    UI.idMainWindow = "mainWindow";
+    UI.idLoginWindow = "loginWindow";
+    UI.idAccountCreationWindow = "createAccountWindow";
     UI.idChangelog = "changelogSideWindow";
     UI.idGames = "gamesSideWindow";
     UI.idChat = "chatSideWindow";
@@ -9184,6 +9220,30 @@ var UI;
         document.getElementById("loginForm").addEventListener("submit", function (e) { UI.Login.submitLogin(e); });
         var inputEmail = document.getElementById("loginEmailInput");
         var inputPassword = document.getElementById("loginPasswordInput");
+        var $error404 = $("#loginError404").hide();
+        var $error = $("#loginError").hide();
+        var forgotPasswordButton = document.getElementById("loginForgotPassword");
+        forgotPasswordButton.style.display = "none";
+        function callSelf() {
+            UI.WindowManager.callWindow(UI.idLoginWindow);
+            hideErrors();
+        }
+        Login.callSelf = callSelf;
+        function hideErrors() {
+            $error404.stop(true, true).hide();
+            $error.stop(true, true).hide();
+        }
+        Login.hideErrors = hideErrors;
+        function showError(code) {
+            hideErrors();
+            if (code === 404) {
+                $error404.fadeIn(Application.Config.getConfig("animTime").getValue() / 2);
+            }
+            else {
+                $error.fadeIn(Application.Config.getConfig("animTime").getValue() / 2);
+            }
+        }
+        Login.showError = showError;
         function resetState() {
             if (Application.Login.hasLastEmail()) {
                 inputEmail.value = Application.Login.getLastEmail();
@@ -9209,6 +9269,7 @@ var UI;
         Login.assumeEmail = assumeEmail;
         function submitLogin(e) {
             e.preventDefault();
+            hideErrors();
             var cbs = {
                 handleEvent: function () {
                     if (Application.Login.isLogged()) {
@@ -9221,17 +9282,112 @@ var UI;
                 }
             };
             var cbe = {
-                handleEvent: function () {
-                    alert("Failed login attempt");
+                handleEvent: function (response, xhr) {
+                    UI.Login.showError(xhr.status);
                 }
             };
             Application.Login.attemptLogin(inputEmail.value, inputPassword.value, cbs, cbe);
         }
         Login.submitLogin = submitLogin;
-        function exposeLoginFailure(e, statusCode) {
-            alert("Invalid Login or Error, status: " + statusCode);
-        }
-        Login.exposeLoginFailure = exposeLoginFailure;
+    })(Login = UI.Login || (UI.Login = {}));
+})(UI || (UI = {}));
+var UI;
+(function (UI) {
+    var Login;
+    (function (Login) {
+        var NewAccount;
+        (function (NewAccount) {
+            document.getElementById("loginNewAccount").addEventListener("click", function () {
+                UI.Login.NewAccount.callSelf();
+            });
+            document.getElementById("accountCreationForm").addEventListener("submit", function (e) {
+                e.preventDefault();
+                UI.Login.NewAccount.submit();
+            });
+            document.getElementById("accCreationReturnButton").addEventListener("click", function (e) {
+                e.preventDefault();
+                UI.Login.callSelf();
+            });
+            var $error401 = $("#accCreationError401").hide();
+            var $error409 = $("#accCreationError409").hide();
+            var $error = $("#accCreationError").hide();
+            var nameInput = document.getElementById("accName");
+            var nickInput = document.getElementById("accNickname");
+            var emailInput = document.getElementById("accEmail");
+            var passInput = document.getElementById("accPassword");
+            var pass2Input = document.getElementById("accPassword2");
+            function callSelf() {
+                UI.WindowManager.callWindow(UI.idAccountCreationWindow);
+                hideErrors();
+            }
+            NewAccount.callSelf = callSelf;
+            function getAnimTime() {
+                return (Application.Config.getConfig("animTime").getValue() / 2);
+            }
+            function hideErrors() {
+                $error401.stop(true, true).fadeOut(getAnimTime());
+                $error409.stop(true, true).fadeOut(getAnimTime());
+                $error.stop(true, true).fadeOut(getAnimTime());
+            }
+            NewAccount.hideErrors = hideErrors;
+            function showError(code) {
+                hideErrors();
+                if (code === 401) {
+                    $error401.fadeIn(getAnimTime());
+                }
+                else if (code === 409) {
+                    $error409.fadeIn(getAnimTime());
+                }
+                else {
+                    $error.fadeIn(getAnimTime());
+                }
+            }
+            NewAccount.showError = showError;
+            function submit() {
+                nameInput.classList.remove("error");
+                nickInput.classList.remove("error");
+                emailInput.classList.remove("error");
+                passInput.classList.remove("error");
+                pass2Input.classList.remove("error");
+                var name = nameInput.value.trim();
+                var nick = nickInput.value.trim();
+                var email = emailInput.value.trim();
+                var pass = passInput.value.trim();
+                var pass2 = pass2Input.value.trim();
+                var fail = false;
+                if (!name.match('^[a-zA-Z0-9 çÇéÉíÍóÓáÁàÀâÂÊêãÃõÕôÔ]{3,200}$')) {
+                    nameInput.classList.add("error");
+                    fail = true;
+                }
+                if (!/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email)) {
+                    emailInput.classList.add("error");
+                    fail = true;
+                }
+                if (!nick.match('^[a-zA-Z0-9çÇéÉíÍóÓáÁàÀâÂÊêãÃõÕôÔ]{3,12}$')) {
+                    nickInput.classList.add("error");
+                    fail = true;
+                }
+                if (!pass.match('^[a-zA-Z0-9]{3,12}$')) {
+                    passInput.classList.add("error");
+                    fail = true;
+                }
+                else if (pass2 !== pass) {
+                    pass2Input.classList.add("error");
+                    fail = true;
+                }
+                if (!fail) {
+                    var cbs = function () {
+                        UI.Login.callSelf();
+                    };
+                    var cbe = function (response, xhr) {
+                        console.log(xhr);
+                        UI.Login.NewAccount.showError(xhr.status);
+                    };
+                    Server.Login.createAccount(name, pass, email, nick, cbs, cbe);
+                }
+            }
+            NewAccount.submit = submit;
+        })(NewAccount = Login.NewAccount || (Login.NewAccount = {}));
     })(Login = UI.Login || (UI.Login = {}));
 })(UI || (UI = {}));
 var UI;
@@ -10881,7 +11037,7 @@ var UI;
         Application.Config.getConfig("chatfontfamily").addChangeListener({
             chatBox: chatBox,
             handleEvent: function () {
-                this.chatBox.style.fontFamily = Application.Config.getConfig("chatfontfamily").getValue();
+                this.chatBox.style.fontFamily = '"' + Application.Config.getConfig("chatfontfamily").getValue() + '", "Arial"';
             }
         });
         chatBox.style.fontFamily = Application.Config.getConfig("chatfontfamily").getValue();
@@ -12385,6 +12541,11 @@ change.addMessage("Fix: Buscar valores dentro de SheetLists.", "pt");
 change.addMessage("Exportar fichas como JSON sempre exporta o estado atual da ficha.", "pt");
 change.addMessage("Reduz atualizações desnecessárias causadas por campos Math.", "pt");
 change.addMessage("Adiciona mais SheetVariables e SheetButtons.", "pt");
+change = new Changelog(0, 15, 0);
+change.addMessage("Create Account.", "en");
+change.addMessage("Login error messages.", "en");
+change.addMessage("Criação de contas.", "pt");
+change.addMessage("Mensagens de erro para login.", "pt");
 delete (change);
 Changelog.finished();
 UI.Language.searchLanguage();

@@ -44,6 +44,13 @@ change.addMessage("Exportar fichas como JSON sempre exporta o estado atual da fi
 change.addMessage("Reduz atualizações desnecessárias causadas por campos Math.", "pt");
 change.addMessage("Adiciona mais SheetVariables e SheetButtons.", "pt");
 
+change = new Changelog(0, 15, 0);
+change.addMessage("Create Account.", "en");
+change.addMessage("Login error messages.", "en");
+change.addMessage("Criação de contas.", "pt");
+change.addMessage("Mensagens de erro para login.", "pt");
+
+
 delete (change);
 
 Changelog.finished();

@@ -30,7 +30,7 @@ module UI.Chat {
     Application.Config.getConfig("chatfontfamily").addChangeListener(<Listener> {
         chatBox : chatBox,
         handleEvent : function () {
-            this.chatBox.style.fontFamily = Application.Config.getConfig("chatfontfamily").getValue();
+            this.chatBox.style.fontFamily = '"'+ Application.Config.getConfig("chatfontfamily").getValue() + '", "Arial"';
         }
     });
     chatBox.style.fontFamily = Application.Config.getConfig("chatfontfamily").getValue();

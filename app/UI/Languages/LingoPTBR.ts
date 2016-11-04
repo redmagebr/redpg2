@@ -10,6 +10,23 @@ ptbr.flagIcon = "PT_BR";
 ptbr.setLingo("_LOGINEMAIL_", "E-mail");
 ptbr.setLingo("_LOGINPASSWORD_", "Senha");
 ptbr.setLingo("_LOGINSUBMIT_", "Entrar");
+ptbr.setLingo("_LOGINERROR404_", "Credenciais inválidas.");
+ptbr.setLingo("_LOGINERROR_", "Houve um erro na tentativa de login, tente novamente.");
+ptbr.setLingo("_LOGINFORGOTPASSWORD_", "Esqueceu sua senha?");
+ptbr.setLingo("_LOGINCREATEACCOUNT_", "Criar nova conta");
+ptbr.setLingo("_CREATEACCOUNTNAME_", "Nome");
+ptbr.setLingo("_CREATEACCOUNTNAMEERROR_", "O nome deve ter entre 3 a 200 caracteres e apenas caracteres Latinos.");
+ptbr.setLingo("_CREATEACCOUNTNICKNAME_", "Apelido");
+ptbr.setLingo("_LOGINPASSWORDREPEAT_", "Senha (Repetir)");
+ptbr.setLingo("_CREATEACCOUNTNICKNAMEERROR_", "O apelido deve conter entre 3 e 12 caracteres e apenas letras e números são aceitos, sem espaços.");
+ptbr.setLingo("_CREATEACCOUNTEMAILERROR_", "O e-mail deve ser válido.");
+ptbr.setLingo("_CREATEACCOUNTPASSWORDMATCHING_", "As senhas devem ser a mesma.");
+ptbr.setLingo("_ACCCREATIONSUBMIT_", "Criar Conta");
+ptbr.setLingo("_ACCCREATIONRETURN_", "Cancelar");
+ptbr.setLingo("_CREATEACCOUNTGENERALERROR_", "Houve um erro no processamento. Tente novamente.");
+ptbr.setLingo("_CREATEACCOUNTSTUPIDERROR_", "Alguma informação enviada foi inválida. Corrija e tente novamente.");
+ptbr.setLingo("_CREATEACCOUNTPASSWORDINVALID_", "3 a 12 caracteres, apenas letras e números.");
+ptbr.setLingo("_CREATEACCOUNTALREADYEXISTS_", "E-mail já está registrado.");
 
 // Changelog
 ptbr.setLingo("_CHANGELOGTITLE_", "Histórico de mudanças");

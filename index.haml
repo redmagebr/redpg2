@@ -11,13 +11,36 @@
   %body
     #loadingWindow.flexCentering
       %a.loadingCircleWhite#loadingScreenLoadingIcon
+    #createAccountWindow.window.flexCentering
+      #accountBox
+        .accountCreationError#accCreationError.language="_CREATEACCOUNTGENERALERROR_"
+        .accountCreationError#accCreationError401.language="_CREATEACCOUNTSTUPIDERROR_"
+        .accountCreationError#accCreationError409.language="_CREATEACCOUNTALREADYEXISTS_"
+        %form#accountCreationForm.centeredContents
+          %input#accName.accCreationInput.language{:data => {:placeholderlingo => "_CREATEACCOUNTNAME_"}}
+          .accError.language="_CREATEACCOUNTNAMEERROR_"
+          %input#accNickname.accCreationInput.language{:data => {:placeholderlingo => "_CREATEACCOUNTNICKNAME_"}}
+          .accError.language="_CREATEACCOUNTNICKNAMEERROR_"
+          %input#accEmail.accCreationInput.language{:data => {:placeholderlingo => "_LOGINEMAIL_"}}
+          .accError.language="_CREATEACCOUNTEMAILERROR_"
+          %input#accPassword.accCreationInput.language{:type => "password", :data => {:placeholderlingo => "_LOGINPASSWORD_"}}
+          .accError.language="_CREATEACCOUNTPASSWORDINVALID_"
+          %input#accPassword2.accCreationInput.language{:type => "password", :data => {:placeholderlingo => "_LOGINPASSWORDREPEAT_"}}
+          .accError.language="_CREATEACCOUNTPASSWORDMATCHING_"
+          %input.simpleButton.language#accCreationReturnButton{:type => "reset", :data => {:valuelingo => "_ACCCREATIONRETURN_"}}
+          %input.simpleButton.language#accCreationSubmitButton{:type => "submit", :data => {:valuelingo => "_ACCCREATIONSUBMIT_"}}
     #loginWindow.window.flexCentering
       #loginBox
+        #loginError404.language="_LOGINERROR404_"
+        #loginError.language="_LOGINERROR_"
         #loginFlagContainer
         %form#loginForm.centeredContents
           %input#loginEmailInput.loginInput.language{:data => {:placeholderlingo => "_LOGINEMAIL_"}}
           %input#loginPasswordInput.loginInput.language{:type => "password", :data => {:placeholderlingo => "_LOGINPASSWORD_"}}
           %input.simpleButton.language#loginSubmitButton{:type => "submit", :data => {:valuelingo => "_LOGINSUBMIT_"}}
+        #loginExtraButtons
+          #loginForgotPassword.language="_LOGINFORGOTPASSWORD_"
+          #loginNewAccount.language="_LOGINCREATEACCOUNT_"
     -# Main Window Begins here
     #mainWindow.window
       -# Music Player

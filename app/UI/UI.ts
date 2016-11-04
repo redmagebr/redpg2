@@ -2,6 +2,9 @@ module UI {
     /**
      * Window IDs for Page Calling
      */
+    export var idMainWindow = "mainWindow";
+    export var idLoginWindow = "loginWindow";
+    export var idAccountCreationWindow = "createAccountWindow";
 
     // Left side windows
     export var idChangelog = "changelogSideWindow";

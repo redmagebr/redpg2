@@ -12,14 +12,41 @@
     <div class='flexCentering' id='loadingWindow'>
       <a class='loadingCircleWhite' id='loadingScreenLoadingIcon'></a>
     </div>
+    <div class='window flexCentering' id='createAccountWindow'>
+      <div id='accountBox'>
+        <div class='accountCreationError language' id='accCreationError'>_CREATEACCOUNTGENERALERROR_</div>
+        <div class='accountCreationError language' id='accCreationError401'>_CREATEACCOUNTSTUPIDERROR_</div>
+        <div class='accountCreationError language' id='accCreationError409'>_CREATEACCOUNTALREADYEXISTS_</div>
+        <form class='centeredContents' id='accountCreationForm'>
+          <input class='accCreationInput language' data-placeholderlingo='_CREATEACCOUNTNAME_' id='accName'>
+          <div class='accError language'>_CREATEACCOUNTNAMEERROR_</div>
+          <input class='accCreationInput language' data-placeholderlingo='_CREATEACCOUNTNICKNAME_' id='accNickname'>
+          <div class='accError language'>_CREATEACCOUNTNICKNAMEERROR_</div>
+          <input class='accCreationInput language' data-placeholderlingo='_LOGINEMAIL_' id='accEmail'>
+          <div class='accError language'>_CREATEACCOUNTEMAILERROR_</div>
+          <input class='accCreationInput language' data-placeholderlingo='_LOGINPASSWORD_' id='accPassword' type='password'>
+          <div class='accError language'>_CREATEACCOUNTPASSWORDINVALID_</div>
+          <input class='accCreationInput language' data-placeholderlingo='_LOGINPASSWORDREPEAT_' id='accPassword2' type='password'>
+          <div class='accError language'>_CREATEACCOUNTPASSWORDMATCHING_</div>
+          <input class='simpleButton language' data-valuelingo='_ACCCREATIONRETURN_' id='accCreationReturnButton' type='reset'>
+          <input class='simpleButton language' data-valuelingo='_ACCCREATIONSUBMIT_' id='accCreationSubmitButton' type='submit'>
+        </form>
+      </div>
+    </div>
     <div class='window flexCentering' id='loginWindow'>
       <div id='loginBox'>
+        <div class='language' id='loginError404'>_LOGINERROR404_</div>
+        <div class='language' id='loginError'>_LOGINERROR_</div>
         <div id='loginFlagContainer'></div>
         <form class='centeredContents' id='loginForm'>
           <input class='loginInput language' data-placeholderlingo='_LOGINEMAIL_' id='loginEmailInput'>
           <input class='loginInput language' data-placeholderlingo='_LOGINPASSWORD_' id='loginPasswordInput' type='password'>
           <input class='simpleButton language' data-valuelingo='_LOGINSUBMIT_' id='loginSubmitButton' type='submit'>
         </form>
+        <div id='loginExtraButtons'>
+          <div class='language' id='loginForgotPassword'>_LOGINFORGOTPASSWORD_</div>
+          <div class='language' id='loginNewAccount'>_LOGINCREATEACCOUNT_</div>
+        </div>
       </div>
     </div>
     <div class='window' id='mainWindow'>

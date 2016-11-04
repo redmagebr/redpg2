@@ -1399,6 +1399,7 @@ declare module Server.Login {
     function requestSession(silent: boolean, cbs?: Listener, cbe?: Listener): void;
     function doLogin(email: string, password: string, cbs?: Listener, cbe?: Listener): void;
     function doLogout(cbs?: Listener, cbe?: Listener): void;
+    function createAccount(name: string, pass: string, email: string, nick: string, cbs?: Listener | EventListenerObject | Function, cbe?: Listener | EventListenerObject | Function): void;
 }
 declare module Server.Images {
     function getImages(cbs?: Listener, cbe?: Listener): void;
@@ -1503,6 +1504,9 @@ declare module LingoList {
 }
 declare var ptbr: Lingo;
 declare module UI {
+    var idMainWindow: string;
+    var idLoginWindow: string;
+    var idAccountCreationWindow: string;
     var idChangelog: string;
     var idGames: string;
     var idChat: string;
@@ -1590,11 +1594,19 @@ declare module UI.Loading {
     function unblockRight(): void;
 }
 declare module UI.Login {
+    function callSelf(): void;
+    function hideErrors(): void;
+    function showError(code: any): void;
     function resetState(): void;
     function resetFocus(): void;
     function assumeEmail(email: string): void;
     function submitLogin(e: Event): void;
-    function exposeLoginFailure(e: Event, statusCode: number): void;
+}
+declare module UI.Login.NewAccount {
+    function callSelf(): void;
+    function hideErrors(): void;
+    function showError(code: any): void;
+    function submit(): void;
 }
 declare module UI.Handles {
     function isAlwaysUp(): boolean;

@@ -5694,7 +5694,7 @@ body {
 }
 
 /* line 29, ../sass/generalView.scss */
-#loginWindow {
+#loginWindow, #createAccountWindow {
   background-color: #b2b9cf;
 }
 
@@ -5846,7 +5846,7 @@ body {
 
 /* UNselectable */
 /* line 167, ../sass/generalView.scss */
-.unselectable, .buttonBehavior, .simpleButton, .textLink, .sheetNameLink, .mainWindowParagraphSubmit, .picaTool, .picaToolButton, .leftPicaToolButton, .rightPicaToolButton, .leftPicaTool, .rightPicaTool, .handleButton, .leftHandleButton, .rightHandleButton, .imagesLeftButton, .imagesRightButton, .imagesFolderTitle, #dropboxImagesButton, .musicPlayerButton, #dropboxBGMInput, #dropboxSoundsButton, .sheetListGameName, .sheetListFolderName, .sheetPermLabel, .styleLabel, #avatarUpButton, #avatarDownButton, #chatScrollDown, .chatRightButton, #chatMessageSendButton, #personaAddButton, .personaButton, .diceButton, #chatDiceTower, #chatDiceSubmit, .chatAvatarChoiceBoxUse, .chatAvatarChoiceBoxDelete, .chatWhisperLink, .chatMessageVoteAmount, .xButton, .sheetTool, .sheetTab {
+.unselectable, .buttonBehavior, .simpleButton, .textLink, .sheetNameLink, .mainWindowParagraphSubmit, .picaTool, .picaToolButton, .leftPicaToolButton, .rightPicaToolButton, .leftPicaTool, .rightPicaTool, .handleButton, .leftHandleButton, .rightHandleButton, .imagesLeftButton, .imagesRightButton, .imagesFolderTitle, #dropboxImagesButton, .musicPlayerButton, #dropboxBGMInput, #dropboxSoundsButton, .sheetListGameName, .sheetListFolderName, .sheetPermLabel, .styleLabel, #avatarUpButton, #avatarDownButton, #chatScrollDown, .chatRightButton, #chatMessageSendButton, #personaAddButton, .personaButton, .diceButton, #chatDiceTower, #chatDiceSubmit, .chatAvatarChoiceBoxUse, .chatAvatarChoiceBoxDelete, .chatWhisperLink, .chatMessageVoteAmount, .xButton, .sheetTool, .sheetTab, #loginNewAccount, #loginForgotPassword {
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select: none;
@@ -5854,21 +5854,104 @@ body {
   user-select: none;
 }
 
-/* line 1, ../sass/login.scss */
+/* line 2, ../sass/login.scss */
+#accCreationReturnButton {
+  float: left;
+}
+
+/* line 6, ../sass/login.scss */
+#accCreationSubmitButton {
+  float: right;
+}
+
+/* line 10, ../sass/login.scss */
+.accError {
+  display: none;
+}
+
+/* line 14, ../sass/login.scss */
+.error + .accError {
+  display: block;
+}
+
+/* line 18, ../sass/login.scss */
+.accountCreationError {
+  color: #7b0600;
+  font-weight: bold;
+  line-height: 30px;
+  text-align: center;
+  display: block;
+  margin-bottom: -30px;
+}
+
+/* line 27, ../sass/login.scss */
+#accountCreationForm {
+  margin-top: 30px;
+}
+
+/* line 31, ../sass/login.scss */
+#accountBox {
+  width: 450px;
+  position: relative;
+  margin: auto;
+}
+
+/* line 37, ../sass/login.scss */
+.accCreationInput {
+  display: block;
+  margin: auto;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  width: 300px;
+  height: 30px;
+  border: solid 2px #000;
+  font-size: 18px;
+  text-align: center;
+  background-color: #d4d4d4;
+  font-family: alegreya;
+}
+/* line 50, ../sass/login.scss */
+.accCreationInput:hover {
+  border-color: #7e83ff;
+  outline: 0;
+}
+/* line 55, ../sass/login.scss */
+.accCreationInput:focus {
+  outline: 0;
+  border-color: #0b27a9;
+  background-color: #fff;
+}
+/* line 61, ../sass/login.scss */
+.accCreationInput.error {
+  background-color: #ffc5c5;
+  border-color: #a90b0b;
+}
+/* line 64, ../sass/login.scss */
+.accCreationInput.error:hover {
+  border-color: #e70d0d;
+}
+/* line 67, ../sass/login.scss */
+.accCreationInput.error:focus {
+  border-color: #e78489;
+  background-color: #fff;
+}
+
+/* line 75, ../sass/login.scss */
 #loginBox {
   position: relative;
   width: 500px;
   margin: auto;
 }
 
-/* line 7, ../sass/login.scss */
+/* line 81, ../sass/login.scss */
 #loginFlagContainer {
   display: block;
   text-align: center;
   margin-bottom: 10px;
+  margin-top: 30px;
 }
 
-/* line 13, ../sass/login.scss */
+/* line 88, ../sass/login.scss */
 .loginInput {
   display: block;
   margin: auto;
@@ -5884,24 +5967,59 @@ body {
   font-family: alegreya;
   box-shadow: -1px 1px 2px 0px rgba(0, 0, 0, 0.5);
 }
-/* line 28, ../sass/login.scss */
+/* line 103, ../sass/login.scss */
 .loginInput:hover {
   border-color: #a90b0b;
   outline: 0;
 }
-/* line 33, ../sass/login.scss */
+/* line 108, ../sass/login.scss */
 .loginInput:focus {
   outline: 0;
   border-color: #0b27a9;
   background-color: #fff;
 }
 
-/* line 40, ../sass/login.scss */
-#loginSubmitButton {
+/* line 115, ../sass/login.scss */
+#loginSubmitButton, #accCreationSubmitButton, #accCreationReturnButton {
   font-size: 20px;
   padding: 3px;
   padding-left: 6px;
   padding-right: 6px;
+}
+
+/* line 122, ../sass/login.scss */
+#loginError404, #loginError {
+  display: block;
+  color: #850015;
+  font-weight: bold;
+  position: absolute;
+  line-height: 30px;
+}
+
+/* line 131, ../sass/login.scss */
+#loginNewAccount, #loginForgotPassword {
+  padding: 10px;
+  font-weight: bold;
+  color: #001fba;
+}
+/* line 137, ../sass/login.scss */
+#loginNewAccount:hover, #loginForgotPassword:hover {
+  cursor: pointer;
+  color: #4d52ff;
+}
+/* line 142, ../sass/login.scss */
+#loginNewAccount:active, #loginForgotPassword:active {
+  color: #00198a;
+}
+
+/* line 147, ../sass/login.scss */
+#loginNewAccount {
+  float: right;
+}
+
+/* line 151, ../sass/login.scss */
+#loginForgotPassword {
+  float: left;
 }
 
 /* line 1, ../sass/windows.scss */

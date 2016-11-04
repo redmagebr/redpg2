@@ -4,6 +4,32 @@ module UI.Login {
     var inputEmail : HTMLInputElement = <HTMLInputElement> document.getElementById("loginEmailInput");
     var inputPassword : HTMLInputElement = <HTMLInputElement> document.getElementById("loginPasswordInput");
 
+    var $error404 = $("#loginError404").hide();
+    var $error = $("#loginError").hide();
+
+
+    var forgotPasswordButton = document.getElementById("loginForgotPassword");
+    forgotPasswordButton.style.display = "none";
+
+    export function callSelf () {
+        UI.WindowManager.callWindow(UI.idLoginWindow);
+        hideErrors();
+    }
+
+    export function hideErrors () {
+        $error404.stop(true, true).hide();
+        $error.stop(true, true).hide();
+    }
+
+    export function showError (code) {
+        hideErrors();
+        if (code === 404) {
+            $error404.fadeIn(Application.Config.getConfig("animTime").getValue() / 2);
+        } else {
+            $error.fadeIn(Application.Config.getConfig("animTime").getValue() / 2);
+        }
+    }
+
     export function resetState () {
         if (Application.Login.hasLastEmail()) {
             inputEmail.value = Application.Login.getLastEmail();
@@ -27,6 +53,7 @@ module UI.Login {
 
     export function submitLogin (e : Event) {
         e.preventDefault();
+        hideErrors();
 
         var cbs : Listener = {
             handleEvent : function () {
@@ -40,15 +67,11 @@ module UI.Login {
         };
 
         var cbe : Listener = {
-            handleEvent : function () {
-                alert("Failed login attempt");
+            handleEvent : function (response, xhr) {
+                UI.Login.showError(xhr.status);
             }
         };
 
         Application.Login.attemptLogin(<string> inputEmail.value, <string> inputPassword.value, cbs, cbe);
-    }
-
-    export function exposeLoginFailure (e : Event, statusCode : number) {
-        alert("Invalid Login or Error, status: " + statusCode);
     }
 }

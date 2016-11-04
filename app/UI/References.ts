@@ -11,6 +11,7 @@
 /// <reference path='Modules/Images.ts' />
 /// <reference path='Modules/Loading.ts' />
 /// <reference path='Modules/Login.ts' />
+/// <reference path='Modules/Login/NewAccount.ts' />
 /// <reference path='Modules/Handles.ts' />
 /// <reference path='Modules/Language.ts' />
 /// <reference path='Modules/Sheets.ts' />

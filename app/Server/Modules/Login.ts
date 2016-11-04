@@ -1,6 +1,9 @@
 module Server.Login {
     var ACCOUNT_URL = "Account";
 
+    var emptyCallback = <Listener> {handleEvent:function(){}};
+    var emptyCallbackFunction = function () {};
+
     /**
      * Requests session information from the server. Renews login information on success, logs out on error.
      * @param silent
@@ -128,5 +131,23 @@ module Server.Login {
         ajax.setTargetGlobal();
 
         Server.AJAX.requestPage(ajax, success, error);
+    }
+
+    export function createAccount (name : string, pass : string, email : string, nick : string, cbs? : Listener | EventListenerObject | Function, cbe? : Listener | EventListenerObject | Function) {
+        cbs = cbs === undefined ? emptyCallback : cbs;
+        cbe = cbe === undefined ? emptyCallback : cbe;
+
+        var ajax = new AJAXConfig(ACCOUNT_URL);
+
+        ajax.setResponseTypeText();
+        ajax.setTargetGlobal();
+
+        ajax.setData("action", "newAccount");
+        ajax.setData("name", name);
+        ajax.setData("nickname", nick);
+        ajax.setData("email", email);
+        ajax.setData("password", pass);
+
+        Server.AJAX.requestPage(ajax, cbs, cbe);
     }
 }
