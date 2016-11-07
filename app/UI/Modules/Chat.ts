@@ -122,7 +122,7 @@ module UI.Chat {
             updateScrollPosition();
         }
 
-        var maxMessages = $.browser.mobile ? Application.Config.getConfig("chatMaxMessages").getDefault() : Application.Config.getConfig("chatMaxMessages").getValue();
+        var maxMessages = $.browser.mobile && false ? Application.Config.getConfig("chatMaxMessages").getDefault() : Application.Config.getConfig("chatMaxMessages").getValue();
         if (messageCounter > maxMessages) {
             messageCounter = chatTarget.children.length;
             while (messageCounter > (maxMessages / 2)) {
@@ -169,7 +169,7 @@ module UI.Chat {
 
         // Maximum amount of messages allowed Config
         var maxMessages =
-                    $.browser.mobile ?
+                    $.browser.mobile && false ?
                     Application.Config.getConfig("chatMaxMessages").getDefault()
                     :
                     Application.Config.getConfig("chatMaxMessages").getValue();

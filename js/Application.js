@@ -1633,7 +1633,7 @@ var NumberConfiguration = (function (_super) {
         this.max = 100;
         this.setFunction = function (value) {
             if (!isNaN(value)) {
-                value = Math.floor(value);
+                value = Number(value);
                 if (value < this.min) {
                     value = this.min;
                 }
@@ -1644,9 +1644,6 @@ var NumberConfiguration = (function (_super) {
             }
         };
         this.getFunction = function () {
-            if ($.browser.mobile) {
-                return 0;
-            }
             return this.value;
         };
         this.min = min;
@@ -11824,7 +11821,7 @@ var UI;
             if (doScroll === undefined || doScroll) {
                 updateScrollPosition();
             }
-            var maxMessages = $.browser.mobile ? Application.Config.getConfig("chatMaxMessages").getDefault() : Application.Config.getConfig("chatMaxMessages").getValue();
+            var maxMessages = $.browser.mobile && false ? Application.Config.getConfig("chatMaxMessages").getDefault() : Application.Config.getConfig("chatMaxMessages").getValue();
             if (Chat.messageCounter > maxMessages) {
                 Chat.messageCounter = chatTarget.children.length;
                 while (Chat.messageCounter > (maxMessages / 2)) {
@@ -11863,7 +11860,7 @@ var UI;
         Chat.printMessage = printMessage;
         function printMessages(messages, ignoreLowIds) {
             printingMany = true;
-            var maxMessages = $.browser.mobile ?
+            var maxMessages = $.browser.mobile && false ?
                 Application.Config.getConfig("chatMaxMessages").getDefault()
                 :
                     Application.Config.getConfig("chatMaxMessages").getValue();

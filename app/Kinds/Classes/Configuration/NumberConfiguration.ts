@@ -9,22 +9,24 @@ class NumberConfiguration extends Configuration {
     }
 
     public setFunction = function (value : number) {
-        if (!isNaN(value)) {
-            value = Math.floor(value);
+        if (!isNaN(<number> value)) {
+            value = Number(value);
             if (value < this.min) {
                 value = this.min;
             }
             if (value > this.max) {
                 value = this.max;
             }
+
             this.value = value;
         }
     };
 
     public getFunction = function () {
-        if ($.browser.mobile) {
-            return 0;
-        }
+        // if ($.browser.mobile) {
+        //     return 0;
+        // }
+        //WTF!?!?!?
         return this.value;
     }
 }
