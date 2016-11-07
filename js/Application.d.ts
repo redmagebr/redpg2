@@ -73,7 +73,7 @@ declare class Changelog {
     static finished(): void;
     static getLocalVersion(): number[];
     static getExternalVersion(): number[];
-    constructor(release: number, minor: number, major: number);
+    constructor(major: number, minor: number, release: number);
     getVersion(): number[];
     addMessage(msg: string, lingo: string): void;
     getMessages(): Array<string>;

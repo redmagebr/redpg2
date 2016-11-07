@@ -80,7 +80,7 @@ var Trigger = (function () {
     return Trigger;
 }());
 var Changelog = (function () {
-    function Changelog(release, minor, major) {
+    function Changelog(major, minor, release) {
         this.messages = {};
         this.release = release;
         this.minor = minor;
@@ -9156,15 +9156,7 @@ var UI;
     Application.Config.registerConfiguration("chatMaxMessages", new NumberConfiguration(120, 60, 10000));
     Application.Config.registerConfiguration("chatshowhelp", new BooleanConfiguration(true));
     Application.Config.registerConfiguration("chatfontsize", new NumberConfiguration(16, 12, 32));
-    Application.Config.registerConfiguration("chatfontfamily", new Configuration("caudex"));
-    Application.Config.getConfig("chatfontfamily").getFunction = function () {
-        if ($.browser.mobile) {
-            return "alegreya";
-        }
-        else {
-            return this.value;
-        }
-    };
+    Application.Config.registerConfiguration("chatfontfamily", new Configuration("alegreya"));
     Application.Config.registerConfiguration("animTime", new NumberConfiguration(150, 0, 300));
     Application.Config.registerConfiguration("language", new LanguageConfiguration());
     Application.Config.registerConfiguration("fsmode", new BooleanConfiguration(false));
@@ -13434,6 +13426,9 @@ change.addMessage("Language Tracker implemented.", "en");
 change.addMessage("Multiple Languages added.", "en");
 change.addMessage("Gerenciador de Línguas implementado.", "pt");
 change.addMessage("Múltiplas línguas adicionadas.", "pt");
+change = new Changelog(0, 16, 1);
+change.addMessage("Default chat font changed to Alegreya. Caudex still available in options.", "en");
+change.addMessage("Fonte padrão do chat alterada para Alegreya. Caudex ainda disponível em opções.", "pt");
 delete (change);
 Changelog.finished();
 UI.Language.searchLanguage();

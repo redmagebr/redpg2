@@ -79,7 +79,7 @@ class Changelog {
         return Changelog.updatesExternal[Changelog.updatesExternal.length - 1].getVersion();
     }
 
-    constructor (release : number, minor : number, major : number) {
+    constructor (major : number, minor : number, release : number) {
         this.release = release;
         this.minor = minor;
         this.major = major;
