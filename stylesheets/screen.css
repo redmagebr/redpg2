@@ -5667,7 +5667,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
   display: block;
 }
 
-/* line 21, ../sass/screen.scss */
+/* line 22, ../sass/screen.scss */
 b {
   font-weight: bold;
 }
@@ -7225,7 +7225,7 @@ body {
   background-color: white;
   border: solid 1px #000;
   overflow-y: scroll;
-  font-family: caudex;
+  font-family: alegreya;
   font-size: 16px;
   line-height: 20px;
 }
