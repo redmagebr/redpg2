@@ -60,6 +60,10 @@ change = new Changelog(0, 16, 1);
 change.addMessage("Default chat font changed to Alegreya. Caudex still available in options.", "en");
 change.addMessage("Fonte padrão do chat alterada para Alegreya. Caudex ainda disponível em opções.", "pt");
 
+change = new Changelog(0, 17, 0);
+change.addMessage("It is now possible to force sounds into a folder.", "en");
+change.addMessage("Opção para forçar sons a uma determinada pasta criada.", "pt");
+
 
 delete (change);
 

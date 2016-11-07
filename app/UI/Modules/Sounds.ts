@@ -3,6 +3,7 @@ module UI.Sounds {
     document.getElementById("dropboxSoundsButton").addEventListener("click", function () { UI.Sounds.callDropbox(); });
 
     var bgmInput : HTMLInputElement = <HTMLInputElement> document.getElementById("dropboxSoundsIsBGM");
+    var folderInput : HTMLInputElement = <HTMLInputElement> document.getElementById("dropboxFolderName");
 
     var target = document.getElementById("soundsTarget");
     var loadError = document.getElementById("soundsLoadError");
@@ -76,6 +77,8 @@ module UI.Sounds {
     }
 
     export function addDropbox (files) {
+        var intendedFolder = folderInput.value.trim();
+        folderInput.value = "";
         var folders : Array<string> = [];
 
         var links : Array<SoundLink> = [];
@@ -86,7 +89,10 @@ module UI.Sounds {
             var name;
             var folderName;
             var hiphenPos = originalName.indexOf("-");
-            if (hiphenPos === -1) {
+            if (intendedFolder !== "") {
+                folderName = intendedFolder;
+                name = originalName.trim();
+            } else if (hiphenPos === -1) {
                 folderName = "";
                 name = originalName.trim();
             } else {

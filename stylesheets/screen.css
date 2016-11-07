@@ -6486,18 +6486,30 @@ body {
 }
 
 /* line 18, ../sass/mainWindowSoundList.scss */
+#dropboxFolderName {
+  display: block;
+  margin: auto;
+  margin-top: 6px;
+  margin-bottom: 6px;
+  text-align: center;
+  font-family: alegreya;
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+/* line 29, ../sass/mainWindowSoundList.scss */
 #soundsUpload {
   display: flex;
   margin-top: 25px;
   margin-bottom: 25px;
 }
 
-/* line 24, ../sass/mainWindowSoundList.scss */
+/* line 35, ../sass/mainWindowSoundList.scss */
 #soundsUploadLeft, #soundsUploadRight {
   flex: 1 0 auto;
 }
 
-/* line 28, ../sass/mainWindowSoundList.scss */
+/* line 39, ../sass/mainWindowSoundList.scss */
 #dropboxSoundsLogo {
   display: block;
   margin: auto;
@@ -6506,14 +6518,14 @@ body {
   margin-bottom: 8px;
 }
 
-/* line 36, ../sass/mainWindowSoundList.scss */
+/* line 47, ../sass/mainWindowSoundList.scss */
 #linkSoundsTitle {
   display: block;
   height: 35px;
   text-align: center;
 }
 
-/* line 42, ../sass/mainWindowSoundList.scss */
+/* line 53, ../sass/mainWindowSoundList.scss */
 #linkSoundsTitleText {
   display: inline-block;
   font-size: 25px;
@@ -6521,7 +6533,7 @@ body {
   line-height: 38px;
 }
 
-/* line 49, ../sass/mainWindowSoundList.scss */
+/* line 60, ../sass/mainWindowSoundList.scss */
 #linkSoundsIcon {
   display: inline-block;
   height: 35px;
@@ -6529,7 +6541,7 @@ body {
   vertical-align: top;
 }
 
-/* line 56, ../sass/mainWindowSoundList.scss */
+/* line 67, ../sass/mainWindowSoundList.scss */
 #dropboxSoundsButton {
   display: block;
   width: 170px;
@@ -6543,13 +6555,13 @@ body {
   color: #007ee5;
   font-weight: bold;
 }
-/* line 70, ../sass/mainWindowSoundList.scss */
+/* line 81, ../sass/mainWindowSoundList.scss */
 #dropboxSoundsButton:hover {
   border: solid 1px #0065b7;
   background-color: #eaeff8;
   color: #008dfa;
 }
-/* line 76, ../sass/mainWindowSoundList.scss */
+/* line 87, ../sass/mainWindowSoundList.scss */
 #dropboxSoundsButton:active {
   border: solid 1px #003468;
   background-color: #d4d9e1;

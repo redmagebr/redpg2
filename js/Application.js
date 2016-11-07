@@ -8871,6 +8871,7 @@ ptbr.setLingo("_STYLEEDITORSAVE_", "Salvar");
 ptbr.setLingo("_SOUNDSTITLE_", "Sons");
 ptbr.setLingo("_SOUNDSLINKTITLE_", "Link Direto");
 ptbr.setLingo("_SOUNDSDROPBOXCHOOSER_", "Escolher do Dropbox");
+ptbr.setLingo("_SOUNDSDROPBOXFOLDER_", "Forçar Pasta (Opcional)");
 ptbr.setLingo("_SOUNDSEXP01_", "Aqui você pode adicionar músicas e efeitos sonoros para compartilhar em Salas ou utilizar em Fichas.");
 ptbr.setLingo("_SOUNDSEXP02_", "Quando adicionando arquivos, veja a opção \"Adicionar como BGM\". Sons adicionados como BGM irão tocar no primeiro canal, que por padrão se repete automaticamente. Sons que forem adicionados sem serem BGM serão considerados SE, tocarão no segundo canal e não se repetirão. Existem opções separadas de volume para os dois tipos de sons, essas opções podem ser encontradas na seção \"Opções\", do lado esquerdo.");
 ptbr.setLingo("_SOUNDSISBGM_", "Adicionar como BGM");
@@ -13080,6 +13081,7 @@ var UI;
         document.getElementById("soundsButton").addEventListener("click", function () { UI.Sounds.callSelf(); });
         document.getElementById("dropboxSoundsButton").addEventListener("click", function () { UI.Sounds.callDropbox(); });
         var bgmInput = document.getElementById("dropboxSoundsIsBGM");
+        var folderInput = document.getElementById("dropboxFolderName");
         var target = document.getElementById("soundsTarget");
         var loadError = document.getElementById("soundsLoadError");
         var saveError = document.getElementById("soundsSaveError");
@@ -13142,6 +13144,8 @@ var UI;
         }
         Sounds.callDropbox = callDropbox;
         function addDropbox(files) {
+            var intendedFolder = folderInput.value.trim();
+            folderInput.value = "";
             var folders = [];
             var links = [];
             for (var i = 0; i < files.length; i++) {
@@ -13151,7 +13155,11 @@ var UI;
                 var name;
                 var folderName;
                 var hiphenPos = originalName.indexOf("-");
-                if (hiphenPos === -1) {
+                if (intendedFolder !== "") {
+                    folderName = intendedFolder;
+                    name = originalName.trim();
+                }
+                else if (hiphenPos === -1) {
                     folderName = "";
                     name = originalName.trim();
                 }
@@ -13426,6 +13434,9 @@ change.addMessage("Múltiplas línguas adicionadas.", "pt");
 change = new Changelog(0, 16, 1);
 change.addMessage("Default chat font changed to Alegreya. Caudex still available in options.", "en");
 change.addMessage("Fonte padrão do chat alterada para Alegreya. Caudex ainda disponível em opções.", "pt");
+change = new Changelog(0, 17, 0);
+change.addMessage("It is now possible to force sounds into a folder.", "en");
+change.addMessage("Opção para forçar sons a uma determinada pasta criada.", "pt");
 delete (change);
 Changelog.finished();
 UI.Language.searchLanguage();
