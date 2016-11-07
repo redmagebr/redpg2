@@ -22,9 +22,10 @@ Application.Login.addListener({
 
             // Set up initial pages of main window
             UI.PageManager.callPage(UI.idChangelog);
+            // UI.PageManager.callPage(UI.idChat);
             UI.PageManager.callPage(UI.idHome);
         } else {
-            UI.WindowManager.callWindow("loginWindow");
+            UI.Login.callSelf();
             UI.Login.resetState();
             UI.Login.resetFocus();
         }

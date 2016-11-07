@@ -50,6 +50,12 @@ change.addMessage("Login error messages.", "en");
 change.addMessage("Criação de contas.", "pt");
 change.addMessage("Mensagens de erro para login.", "pt");
 
+change = new Changelog(0, 16, 0);
+change.addMessage("Language Tracker implemented.", "en");
+change.addMessage("Multiple Languages added.", "en");
+change.addMessage("Gerenciador de Línguas implementado.", "pt");
+change.addMessage("Múltiplas línguas adicionadas.", "pt");
+
 
 delete (change);
 

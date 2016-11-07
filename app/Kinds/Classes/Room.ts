@@ -79,6 +79,25 @@ class Room {
         return list;
     }
 
+    public getOrderedUserContexts () : Array<UserRoomContext> {
+        var list = [];
+        for (var id in this.users) {
+            list.push(this.users[id].getRoomContext(this.id));
+        }
+        list.sort(function (a : UserRoomContext, b : UserRoomContext) {
+            var na = a.getUser().getShortNickname().toLowerCase();
+            var nb = b.getUser().getShortNickname().toLowerCase();
+            if (na < nb) return -1;
+            if (nb < na) return 1;
+            na = a.getUser().getFullNickname().toLowerCase();
+            nb = b.getUser().getFullNickname().toLowerCase();
+            if (na < nb) return -1;
+            if (nb < na) return 1;
+            return 0;
+        });
+        return list;
+    }
+
     public getStorytellers () : Array<UserRoomContext> {
         var storytellers = [];
         for (var id in this.users) {

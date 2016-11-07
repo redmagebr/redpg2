@@ -3,7 +3,6 @@ $secondaryFont: caudex;
 $chatFont: caudex;
 $blueBG : #b2b9cf;
 
-
 /*
 ** Individual font licenses can be found in /stylesheets/fontface
 ** and /stylesheets/fontface/Lingo.
@@ -24,6 +23,7 @@ b { font-weight: bold; }
 @import "login";
 @import "windows";
 @import "mainWindow";
+@import "mainChatLanguages";
 @import "mainWindowImages";
 @import "mainWindowInviteDesigner";
 @import "mainWindowGameDesigner";

@@ -1,0 +1,13 @@
+(new PseudoLanguage("Abyssal"))
+    .addLetters(['x', 'y', 'e', 'a', 'g', 'o'])
+    .addSyllabi(['x', 'y', 'e', 'a', 'g', 'o', 'za', 'xy', 'go', 'ua', 'ka', 're', 'te', 'la', 'az', 'rruk', 'kar', 'mra', 'gak', 'zar', 'tra', 'maz', 'okra', 'zzar', 'kada', 'zaxy', 'drab', 'rikk', 'belam', 'rraka', 'ashaj', 'zannk', 'xalah', 'rruk', 'kar', 'mra', 'gak', 'zar', 'tra', 'maz', 'za', 'xy', 'go', 'ua', 'ka', 're', 'te', 'la', 'az', 'x', 'y', 'e', 'a', 'g', 'o'])
+    .addNumbers(['ia', 'ori', 'eri', 'dara', 'iru', 'taro', 'cace', 'zori', 'xash', 'rura'])
+    .setRandomizeNumbers(false)
+    .setAllowPoints(true)
+    .setLowerCase(false)
+    .addStaticWord(["anjo", "yuqun", "angel"], "soran")
+    .addStaticWord(["sacrificio", "sacrifice"], "gakzakada")
+    .addStaticWord(['calor', 'quente', 'fogo', 'chama', 'flamejante', 'chamas', 'fogos'], "burah")
+    .addStaticWord(["humano", "humano", "human"], "aman")
+    .addStaticWord(["inferno", "infernal", "hell", 'hellish'], "zennshinagas")
+    .addStaticWord(["demonio", "capeta", "diabo", 'devil', 'demon'], "zennshi");

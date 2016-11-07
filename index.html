@@ -396,6 +396,30 @@
         </div>
       </div>
       <div class='leftSideWindow' id='chatSideWindow'>
+        <div id='lingoFloater'>
+          <div class='language' id='lingoHandle'>
+            <div id='lingoMinus'>-</div>
+            _LINGOMANAGER_
+          </div>
+          <div id='lingoContent'>
+            <div class='lingoRow'>
+              <b class='lingoName'>Reddo#0001:</b>
+              <a class='lingoButton'>Elvish</a>
+              <a class='lingoButton'>
+                <span class='textLink'>(X)</span>
+                Elagon
+              </a>
+              <a class='lingoButton clickable'>Draconic</a>
+              <div class='lingoAdder'>
+                <select>
+                  <option>Elvish</option>
+                  <option>Orcish</option>
+                </select>
+                <a class='textLink language'>_LINGOADD_</a>
+              </div>
+            </div>
+          </div>
+        </div>
         <div id='avatarBox'></div>
         <div class='icons-chatUp' id='avatarUpButton'></div>
         <div class='icons-chatDown' id='avatarDownButton'></div>
@@ -420,6 +444,7 @@
           <a class='chatRightButton icons-chatFontPlus language' data-titlelingo='_CHATBUTTONFONTPLUS_' onclick="Application.Config.getConfig('chatfontsize').storeValue(Application.Config.getConfig('chatfontsize').getValue() + 1);"></a>
           <a class='chatRightButton icons-chatFontMinus language' data-titlelingo='_CHATBUTTONFONTMINUS_' onclick="Application.Config.getConfig('chatfontsize').storeValue(Application.Config.getConfig('chatfontsize').getValue() - 1);"></a>
           <a class='chatRightButton icons-chatHollywood language' data-titlelingo='_CHATBUTTONHOLLYWOOD_' id='chatHollywood'></a>
+          <a class='chatRightButton icons-chatLingo language' data-titlelingo='_CHATBUTTONLINGO_' id='chatLingoButton'></a>
         </div>
         <div id='chatMessageStateIcon'></div>
         <div id='chatMessageBox'>

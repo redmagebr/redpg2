@@ -234,6 +234,10 @@ module UI.Chat.Forms {
         }
     }
 
+    export function prependChatInput (what : string) {
+        formInput.value = what + formInput.value;
+    }
+
     export function sendMessage () {
         var trimmed = formInput.value.trim();
         if (trimmed === "") {

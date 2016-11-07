@@ -1,0 +1,87 @@
+#lingoFloater {
+  @extend .unselectable;
+  position: absolute;
+  width: 400px;
+  z-index: 10;
+}
+
+#lingoHandle {
+  background-color: #333745;
+  line-height: 30px;
+  font-size: 26px;
+  font-weight: bold;
+  color: #fff;
+  text-align: center;
+
+  &:hover {
+    cursor: move;
+  }
+}
+
+#lingoMinus {
+  float: left;
+  display: block;
+  line-height: 30px;
+  height: 30px;
+  width: 30px;
+
+  &:hover {
+    cursor: pointer;
+    background-color: rgba(255,255,255,.4);
+  }
+  &:active {
+    background-color: rgba(255,255,255,.15);
+  }
+}
+
+#lingoContent {
+  background-color: #fff;
+  max-height: 350px;
+  @extend .scrollable;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.lingoRow {
+  padding: 6px;
+
+  &:hover {
+    background-color: rgba(0,0,0,.05);
+  }
+}
+
+.lingoRow {
+  line-height: 30px;
+}
+
+.lingoName {
+  margin-right: 6px;
+}
+
+.lingoButton {
+  display: inline-block;
+  padding: 2px;
+  padding-left: 6px;
+  padding-right: 6px;
+  margin-right: 10px;
+  line-height: 20px;
+  vertical-align: middle;
+
+  &:hover {
+    background-color: rgba(0,0,0,.2);
+  }
+
+  &.clickable {
+    @extend .buttonBehavior;
+    border: solid 1px #000;
+
+    &:hover {
+      border-color: #9c9c9c;
+    }
+
+    &:active {
+      background-color: rgba(0,0,0,.5);
+      border-color: #484848;
+    }
+  }
+}

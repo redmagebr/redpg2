@@ -31,6 +31,7 @@
 /// <reference path='Modules/Chat/Avatar.ts' />
 /// <reference path='Modules/Chat/Forms.ts' />
 /// <reference path='Modules/Chat/Notification.ts' />
+/// <reference path='Modules/Chat/Lingo.ts' />
 /// <reference path='Modules/Chat/PersonaManager.ts' />
 /// <reference path='Modules/Chat/PersonaDesigner.ts' />
 /// <reference path='Modules/Pica.ts' />

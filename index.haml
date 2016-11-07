@@ -326,6 +326,23 @@
       -############## CHAT
       -############################################
       #chatSideWindow.leftSideWindow
+        #lingoFloater
+          #lingoHandle.language
+            #lingoMinus="-"
+            _LINGOMANAGER_
+          #lingoContent
+            .lingoRow
+              %b.lingoName="Reddo#0001:"
+              %a.lingoButton="Elvish"
+              %a.lingoButton
+                %span.textLink="(X)"
+                Elagon
+              %a.lingoButton.clickable="Draconic"
+              .lingoAdder
+                %select
+                  %option="Elvish"
+                  %option="Orcish"
+                %a.textLink.language="_LINGOADD_"
         #avatarBox
         .icons-chatUp#avatarUpButton
         .icons-chatDown#avatarDownButton
@@ -349,6 +366,7 @@
           %a.chatRightButton.icons-chatFontPlus.language{:data => {:titlelingo => "_CHATBUTTONFONTPLUS_"}, :onclick => "Application.Config.getConfig('chatfontsize').storeValue(Application.Config.getConfig('chatfontsize').getValue() + 1);"}
           %a.chatRightButton.icons-chatFontMinus.language{:data => {:titlelingo => "_CHATBUTTONFONTMINUS_"}, :onclick => "Application.Config.getConfig('chatfontsize').storeValue(Application.Config.getConfig('chatfontsize').getValue() - 1);"}
           %a.chatRightButton.icons-chatHollywood.language#chatHollywood{:data => {:titlelingo => "_CHATBUTTONHOLLYWOOD_"}}
+          %a.chatRightButton.icons-chatLingo.language#chatLingoButton{:data => {:titlelingo => "_CHATBUTTONLINGO_"}}
         #chatMessageStateIcon
         #chatMessageBox
           %input.chatInput#chatMessageInput{:autocomplete => "off"}

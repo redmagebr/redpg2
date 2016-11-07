@@ -14,12 +14,16 @@ module Server.Chat.Memory {
         return configList[id];
     }
 
-    export function registerChangeListener (id : string, listener : Listener) {
-        if (configList[id] === undefined) {
+    export function registerChangeListener (id : string, listener : Listener | Function) {
+        if (configList[id] === undefined && readableConfigList[id] === undefined) {
             console.warn("[RoomMemory] Attempt to register a listener to unregistered configuration at " + id + ". Offending listener:", listener);
             return;
         }
-        configList[id].addChangeListener(listener);
+        if (configList[id] !== undefined) {
+            configList[id].addChangeListener(listener);
+        } else {
+            readableConfigList[id].addChangeListener(listener);
+        }
     }
 
     export function getConfiguration (name : string) {
@@ -105,3 +109,4 @@ Server.Chat.Memory.registerConfiguration("c", "Combat", new MemoryCombat());
 Server.Chat.Memory.registerConfiguration("v", "Version", new MemoryVersion());
 Server.Chat.Memory.registerConfiguration("p", "Pica", new MemoryPica());
 Server.Chat.Memory.registerConfiguration("m", "Cutscene", new MemoryCutscene());
+Server.Chat.Memory.registerConfiguration("l", "Lingo", new MemoryLingo());

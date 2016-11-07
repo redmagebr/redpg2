@@ -316,12 +316,18 @@ ptbr.setLingo("_CHATBUTTONFONTPLUS_", "Aumentar tamanho da fonte");
 ptbr.setLingo("_CHATBUTTONFONTMINUS_", "Diminuir tamanho da fonte");
 ptbr.setLingo("_CHATBUTTONLEAVE_", "Sair da sala");
 ptbr.setLingo("_CHATBUTTONHOLLYWOOD_", "Ativar/Desativar modo Cutscene");
+ptbr.setLingo("_CHATBUTTONLINGO_", "Abrir gerenciador de línguas");
 ptbr.setLingo("_CHATBUTTONSEND_", "Enviar");
 ptbr.setLingo("_CHATPERSONAMANAGERBUTTON_", "Abrir administrador de personas");
 ptbr.setLingo("_CHATDICETOWER_", "Ativar/Desativar rolagem secreta");
 ptbr.setLingo("_CHATSHHHHHWEHOLLYWOODACTIVE_", "Modo Cutscene ativado. Apenas narradores podem enviar mensagens.");
 ptbr.setLingo("_CHATSHHHHHWEHOLLYWOODINACTIVE_", "Modo Cutscene desativado. Todos os jogadores podem enviar mensagens.");
-ptbr.setLingo("", "");
+ptbr.setLingo("_LINGOMANAGER_", "Gerenciador de Línguas");
+ptbr.setLingo("_LINGOADD_", "+ Adicionar");
+ptbr.setLingo("_CHATLINGONOLINGO_", "Não fala linguas especiais");
+ptbr.setLingo("_SLASHLINGOINVALIDONLYGM_", "Apenas narradores podem enviar mensagens de história.");
+ptbr.setLingo("_SLASHLINGOINVALIDNOSUCHLINGO_", "Essa lingua não existe.");
+ptbr.setLingo("_SLASHLINGOINVALIDYOUKNOWNOTHINGINNOCENT_", "Você não tem permissão para falar essa língua.");
 
 // Chat Persona Designer
 ptbr.setLingo("_PERSONADESIGNERTITLE_", "Administrador de Personas");

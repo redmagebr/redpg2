@@ -22,6 +22,7 @@
 /// <reference path='Classes/SheetInstance.ts' />
 /// <reference path='Classes/StyleInstance.ts' />
 /// <reference path='Classes/SoundLink.ts' />
+/// <reference path='Classes/PseudoLanguage.ts' />
 
 /// <reference path='Classes/AJAXConfig.ts' />
 /// <reference path='Classes/WebsocketController.ts' />
@@ -37,6 +38,7 @@
 /// <reference path='Classes/TrackerMemory.ts' />
 /// <reference path='Classes/Memory/MemoryCombat.ts' />
 /// <reference path='Classes/Memory/MemoryPica.ts' />
+/// <reference path='Classes/Memory/MemoryLingo.ts' />
 /// <reference path='Classes/Memory/MemoryVersion.ts' />
 /// <reference path='Classes/Memory/MemoryCutscene.ts' />
 /// <reference path='Classes/Memory/Combat/CombatEffect.ts' />
@@ -62,5 +64,7 @@
 /// <reference path='Elements/SoundsFolder.ts' />
 /// <reference path='Elements/Sheet/SheetTab.ts' />
 
+
+/// <reference path='Classes/PseudoLanguage/References.ts' />
 
 /// <reference path='Classes/Sheets/References.ts' />

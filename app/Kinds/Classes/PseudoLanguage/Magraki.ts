@@ -1,0 +1,18 @@
+// Magraki
+(new PseudoLanguage("Magraki"))
+    .addLetters(['a', 'u', 'k', 'c', 'e'])
+    .addSyllabi(['a', 'u', 'k', 'c', 'e', 'ek', 'uk', 'tu', 'ob', 'zug', 'va', 'ruk', 'gra', 'mog', 'zuk', 'xar', 'zaga', 'garo', 'xhok', 'teba', 'nogu', 'uruk', 'ruk', 'gra', 'mog', 'zuk', 'xar', 'ek', 'uk', 'tu', 'ob', 'zug', 'va', 'a', 'u', 'k', 'c', 'e'])
+    .addNumbers(['a', 'u', 'k', 'c', 'e'])
+    .setRandomizeNumbers(true)
+    .setAllowPoints(true)
+    .setLowerCase(false)
+    .addStaticWord(["matar","mate","massacre","death"], "khazzog")
+    .addStaticWord(["amigo","compadre","camarada"], "mogtuban")
+    .addStaticWord(["oi","olá","ola","hello"], "loktorok")
+    .addStaticWord(["atacar","ataque","destruir", "destrua","attack"], "maguna")
+    .addStaticWord(["heroi","herói","salvador","hero"], "grom")
+    .addStaticWord(["hehe","he","heh","ha","haha","hah","lol","lmao","rofl","roflmao"], "kek")
+    .addStaticWord(["hehehe","hahaha","hahah","heheh","hahahah","heheheh"], "kekek")
+    .addStaticWord(["orc","ork"], "bubu")
+    .addStaticWord(["orcs","orks"], "bubus")
+    .addStaticWord(["orcish","orkish","orqish","orques","orques","orkes","orkes"], "bubugo");

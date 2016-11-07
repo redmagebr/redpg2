@@ -186,6 +186,7 @@ declare class Room {
     getMessages(): Array<Message>;
     getOrderedMessages(): Array<Message>;
     getOrderedUsers(): Array<User>;
+    getOrderedUserContexts(): Array<UserRoomContext>;
     getStorytellers(): Array<UserRoomContext>;
     getMe(): UserRoomContext;
     getUser(id: number): UserRoomContext;
@@ -316,6 +317,60 @@ declare class SoundLink {
         folder: string;
         bgm: boolean;
     };
+}
+declare class PseudoWord {
+    private originalWord;
+    private translatedWord;
+    constructor(word: string);
+    addTranslation(word: string): void;
+    getOriginal(): string;
+    getTranslation(): String;
+}
+declare class PseudoLanguage {
+    singleLetters: Array<string>;
+    shortWords: Array<string>;
+    syllabi: Array<string>;
+    numbers: Array<string>;
+    staticWords: {
+        [word: string]: string;
+    };
+    words: Array<PseudoWord>;
+    index: number;
+    randomizeNumbers: boolean;
+    lowerCaseOnly: boolean;
+    allowPoints: boolean;
+    maxLengthDifference: number;
+    rng: Function;
+    protected static languages: {
+        [id: string]: PseudoLanguage;
+    };
+    currentWord: string;
+    currentTranslation: string;
+    static getLanguageNames(): Array<string>;
+    static getLanguage(id: string): PseudoLanguage;
+    constructor(id: string);
+    addStaticWord(words: Array<string>, translation: string): this;
+    addLetters(as: Array<string>): this;
+    addShortWords(as: Array<string>): this;
+    addNumbers(as: Array<string>): this;
+    setRandomizeNumbers(rn: boolean): this;
+    setLowerCase(lc: boolean): this;
+    setAllowPoints(ap: boolean): this;
+    addSyllabi(syllabi: Array<string>): this;
+    getLastWord(): PseudoWord;
+    getCurrentWord(): PseudoWord;
+    getNextWord(): PseudoWord;
+    lastSyllable: string;
+    usedSyllable: any[];
+    getSyllableCustom(): string;
+    getSyllable(): string;
+    chance(chance: number): boolean;
+    increaseCurrentTranslation(): void;
+    isAcceptable(): boolean;
+    getSingleLetter(): string;
+    getShortWord(): string;
+    translateWord(pseudo: PseudoWord): void;
+    translate(phrase: string): string;
 }
 declare class AJAXConfig {
     private _target;
@@ -451,6 +506,24 @@ declare class MemoryPica extends TrackerMemory {
     reset(): void;
     getValue(): this;
     picaAllowedStore(isIt: boolean): void;
+    storeValue(values: Array<any>): void;
+    exportAsObject(): Array<any>;
+}
+declare class MemoryLingo extends TrackerMemory {
+    private userLingos;
+    private busy;
+    getUser(id: number): string[];
+    clean(): void;
+    getUsers(): {
+        [id: number]: string[];
+    };
+    reset(): void;
+    getValue(): this;
+    addUserLingo(id: number, lingo: string): void;
+    removeUserLingo(id: number, lingo: string): void;
+    isSpeaker(id: number, lingo: string): boolean;
+    getSpeakers(lingo: string): Array<UserRoomContext>;
+    getSpeakerArray(lingo: string): Array<number>;
     storeValue(values: Array<any>): void;
     exportAsObject(): Array<any>;
 }
@@ -1034,6 +1107,10 @@ declare class SlashImages extends SlashCommand {
 declare class SlashLog extends SlashCommand {
     receiveCommand(slashCommand: string, message: string): boolean;
 }
+declare class SlashLingo extends SlashCommand {
+    receiveCommand(slashCommand: string, message: string): boolean;
+    getInvalidHTML(slashCommand: string, message: string): HTMLElement;
+}
 declare class Message extends SlashCommand {
     id: number;
     localid: number;
@@ -1059,6 +1136,7 @@ declare class Message extends SlashCommand {
     getUser(): UserRoomContext;
     addDestinationStorytellers(room: Room): void;
     addDestination(user: User): void;
+    getDestinationArray(): Array<number>;
     getDestinations(): Array<UserRoomContext>;
     hasDestination(): boolean;
     makeMockUp(): Array<Message>;
@@ -1451,7 +1529,7 @@ declare module Server.Chat.Memory {
     var version: number;
     function addChangeListener(f: Function | Listener): void;
     function getConfig(id: string): TrackerMemory;
-    function registerChangeListener(id: string, listener: Listener): void;
+    function registerChangeListener(id: string, listener: Listener | Function): void;
     function getConfiguration(name: string): TrackerMemory;
     function registerConfiguration(id: string, name: string, config: TrackerMemory): void;
     function exportAsObject(): {
@@ -1750,6 +1828,7 @@ declare module UI.Chat.Forms {
     function updateFormState(hasPersona: any): void;
     function handleInputKeyboard(e: KeyboardEvent): void;
     function handleInputKeypress(e: KeyboardEvent): void;
+    function prependChatInput(what: string): void;
     function sendMessage(): void;
     function isTyping(): boolean;
     function isFocused(): boolean;
@@ -1768,6 +1847,12 @@ declare module UI.Chat.Notification {
     function hideReconnecting(): void;
     function hideDisconnected(): void;
     function showDisconnected(): void;
+}
+declare module UI.Chat.Lingo {
+    function hide(): void;
+    function open(): void;
+    function update(): void;
+    function speakInTongues(language: string): void;
 }
 declare module UI.Chat.PersonaManager {
     function setRoom(room: Room): void;

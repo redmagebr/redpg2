@@ -92,6 +92,18 @@ class Message extends SlashCommand {
         }
     }
 
+    public getDestinationArray () : Array<number> {
+        if (!Array.isArray(this.destination)) {
+            if (this.destination !== undefined && this.destination !== null) {
+                return [<number> this.destination];
+            } else {
+                return [];
+            }
+        } else {
+            return this.destination;
+        }
+    }
+
     public getDestinations () : Array<UserRoomContext> {
         if (Array.isArray(this.destination)) {
             var users = [];
@@ -283,6 +295,15 @@ class Message extends SlashCommand {
         for (var i = 0; i < attributes.length; i++) {
             if (this[attributes[i]] !== undefined) {
                 result[attributes[i]] = this[attributes[i]];
+            }
+        }
+
+        if (Array.isArray(this.destination)) {
+            delete result['destination'];
+            if (this.destination.length === 1) {
+                result['destination'] = this.destination[0];
+            } else {
+                result['destination'] = this.destination;
             }
         }
 

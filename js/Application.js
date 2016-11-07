@@ -484,6 +484,28 @@ var Room = (function () {
         });
         return list;
     };
+    Room.prototype.getOrderedUserContexts = function () {
+        var list = [];
+        for (var id in this.users) {
+            list.push(this.users[id].getRoomContext(this.id));
+        }
+        list.sort(function (a, b) {
+            var na = a.getUser().getShortNickname().toLowerCase();
+            var nb = b.getUser().getShortNickname().toLowerCase();
+            if (na < nb)
+                return -1;
+            if (nb < na)
+                return 1;
+            na = a.getUser().getFullNickname().toLowerCase();
+            nb = b.getUser().getFullNickname().toLowerCase();
+            if (na < nb)
+                return -1;
+            if (nb < na)
+                return 1;
+            return 0;
+        });
+        return list;
+    };
     Room.prototype.getStorytellers = function () {
         var storytellers = [];
         for (var id in this.users) {
@@ -1005,6 +1027,242 @@ var SoundLink = (function () {
         };
     };
     return SoundLink;
+}());
+var PseudoWord = (function () {
+    function PseudoWord(word) {
+        this.translatedWord = null;
+        this.originalWord = word;
+    }
+    PseudoWord.prototype.addTranslation = function (word) {
+        this.translatedWord = word;
+    };
+    PseudoWord.prototype.getOriginal = function () {
+        return this.originalWord;
+    };
+    PseudoWord.prototype.getTranslation = function () {
+        return this.translatedWord === null ? this.originalWord : this.translatedWord;
+    };
+    return PseudoWord;
+}());
+var PseudoLanguage = (function () {
+    function PseudoLanguage(id) {
+        this.singleLetters = [];
+        this.shortWords = [];
+        this.syllabi = [];
+        this.numbers = [];
+        this.staticWords = {};
+        this.words = [];
+        this.randomizeNumbers = false;
+        this.lowerCaseOnly = false;
+        this.allowPoints = true;
+        this.maxLengthDifference = 1;
+        this.lastSyllable = "";
+        this.usedSyllable = [];
+        PseudoLanguage.languages[id] = this;
+    }
+    PseudoLanguage.getLanguageNames = function () {
+        var names = [];
+        for (var id in PseudoLanguage.languages) {
+            names.push(id);
+        }
+        names.sort();
+        return names;
+    };
+    PseudoLanguage.getLanguage = function (id) {
+        if (PseudoLanguage.languages[id] !== undefined) {
+            return PseudoLanguage.languages[id];
+        }
+        return null;
+    };
+    PseudoLanguage.prototype.addStaticWord = function (words, translation) {
+        for (var i = 0; i < words.length; i++) {
+            this.staticWords[words[i]] = translation;
+        }
+        return this;
+    };
+    PseudoLanguage.prototype.addLetters = function (as) {
+        this.singleLetters = as;
+        return this;
+    };
+    PseudoLanguage.prototype.addShortWords = function (as) {
+        this.shortWords = as;
+        return this;
+    };
+    PseudoLanguage.prototype.addNumbers = function (as) {
+        this.numbers = as;
+        return this;
+    };
+    PseudoLanguage.prototype.setRandomizeNumbers = function (rn) {
+        this.randomizeNumbers = rn;
+        return this;
+    };
+    PseudoLanguage.prototype.setLowerCase = function (lc) {
+        this.lowerCaseOnly = lc;
+        return this;
+    };
+    PseudoLanguage.prototype.setAllowPoints = function (ap) {
+        this.allowPoints = ap;
+        return this;
+    };
+    PseudoLanguage.prototype.addSyllabi = function (syllabi) {
+        this.syllabi = syllabi;
+        return this;
+    };
+    PseudoLanguage.prototype.getLastWord = function () {
+        return this.words[this.index - 1];
+    };
+    PseudoLanguage.prototype.getCurrentWord = function () {
+        return this.words[this.index];
+    };
+    PseudoLanguage.prototype.getNextWord = function () {
+        return this.words[this.index + 1];
+    };
+    PseudoLanguage.prototype.getSyllableCustom = function () {
+        return null;
+    };
+    PseudoLanguage.prototype.getSyllable = function () {
+        var syllable = this.getSyllableCustom();
+        if (syllable !== null) {
+            this.lastSyllable = syllable;
+            this.usedSyllable.push(syllable);
+            return syllable;
+        }
+        syllable = this.syllabi[Math.floor(this.rng() * this.syllabi.length)];
+        while (((this.lastSyllable === syllable && this.syllabi.length > 1 && (this.rng() * 100) > 10))
+            ||
+                ((this.usedSyllable.indexOf(syllable) !== -1 && (this.rng() * 100) > 50))) {
+            syllable = this.syllabi[Math.floor(this.rng() * this.syllabi.length)];
+        }
+        this.lastSyllable = syllable;
+        if (this.usedSyllable.indexOf(syllable) === -1) {
+            this.usedSyllable.push(syllable);
+        }
+        return syllable;
+    };
+    PseudoLanguage.prototype.chance = function (chance) {
+        return (this.rng() * 100) > (100 - chance);
+    };
+    PseudoLanguage.prototype.increaseCurrentTranslation = function () {
+        this.currentTranslation += this.getSyllable();
+    };
+    PseudoLanguage.prototype.isAcceptable = function () {
+        if (this.currentTranslation.length === this.currentWord.length && (this.rng() * 100) > 10) {
+            return true;
+        }
+        if (Math.abs(this.currentTranslation.length - this.currentWord.length) > this.maxLengthDifference) {
+            return false;
+        }
+        if (this.currentTranslation.length < this.currentWord.length && (this.rng() * 100) > 10) {
+            return false;
+        }
+        return true;
+    };
+    PseudoLanguage.prototype.getSingleLetter = function () {
+        return this.singleLetters[Math.floor(this.rng() * this.singleLetters.length)];
+    };
+    PseudoLanguage.prototype.getShortWord = function () {
+        return this.shortWords[Math.floor(this.rng() * this.shortWords.length)];
+    };
+    PseudoLanguage.prototype.translateWord = function (pseudo) {
+        this.currentTranslation = "";
+        var word = pseudo.getOriginal();
+        if (word === "") {
+            pseudo.addTranslation(this.currentTranslation);
+            return;
+        }
+        var exclamation = word.indexOf('!') !== -1;
+        var interrobang = word.indexOf('?') !== -1;
+        var finish = word.indexOf('.') !== -1;
+        var trespontos = word.indexOf('...') !== -1;
+        var doispontos = word.indexOf(':') !== -1;
+        var virgula = word.indexOf(',') !== -1;
+        word = word.replace(/\!/g, '');
+        word = word.replace(/\?/g, '');
+        word = word.replace(/\./g, '');
+        word = word.replace(/\:/g, '');
+        word = word.replace(/\,/g, '');
+        this.currentWord = word;
+        this.lastSyllable = "";
+        this.usedSyllable = [];
+        if (!isNaN(parseInt(this.currentWord)) && this.numbers.length > 0) {
+            for (var i = 0; i < this.currentWord.length; i++) {
+                if (!this.randomizeNumbers) {
+                    this.currentTranslation += this.numbers[parseInt(this.currentWord.charAt(i))];
+                }
+                else {
+                    this.currentTranslation += this.numbers[Math.floor(this.rng() * this.numbers.length)];
+                }
+            }
+        }
+        else {
+            var lowerWord = this.currentWord.latinise().toLowerCase();
+            this.rng = new Math['seedrandom'](lowerWord);
+            if (this.staticWords[lowerWord] !== undefined) {
+                this.currentTranslation = this.staticWords[lowerWord];
+            }
+            else if (this.currentWord.length === 1 && this.singleLetters.length > 0) {
+                this.currentTranslation = this.getSingleLetter();
+            }
+            else if (this.currentWord.length <= 3 && this.shortWords.length > 0) {
+                this.currentTranslation = this.getShortWord();
+            }
+            else {
+                while (!this.isAcceptable()) {
+                    if (this.currentTranslation.length > this.currentWord.length) {
+                        this.currentTranslation = "";
+                    }
+                    this.increaseCurrentTranslation();
+                }
+            }
+        }
+        if (this.allowPoints) {
+            this.currentTranslation +=
+                (virgula ? ',' : '') +
+                    (doispontos ? ':' : '') +
+                    (exclamation ? '!' : '') +
+                    (interrobang ? '?' : '') +
+                    (finish ? '.' : '') +
+                    (trespontos ? '..' : '');
+        }
+        if (!this.lowerCaseOnly) {
+            var corrected = "";
+            for (var i = 0; i < this.currentTranslation.length; i++) {
+                var character;
+                if (i > this.currentWord.length - 1) {
+                    character = this.currentWord[this.currentWord.length - 1];
+                }
+                else {
+                    character = this.currentWord[i];
+                }
+                if (character !== character.toLowerCase()) {
+                    corrected += this.currentTranslation[i].toUpperCase();
+                }
+                else {
+                    corrected += this.currentTranslation[i];
+                }
+            }
+            this.currentTranslation = corrected;
+        }
+        pseudo.addTranslation(this.currentTranslation);
+    };
+    PseudoLanguage.prototype.translate = function (phrase) {
+        var words = phrase.split(" ");
+        this.words = [];
+        for (var i = 0; i < words.length; i++) {
+            this.words.push(new PseudoWord(words[i]));
+        }
+        for (var i = 0; i < this.words.length; i++) {
+            this.index = i;
+            this.translateWord(this.words[i]);
+        }
+        var translatedWords = [];
+        for (var i = 0; i < this.words.length; i++) {
+            translatedWords.push(this.words[i].getTranslation());
+        }
+        return translatedWords.join(" ");
+    };
+    PseudoLanguage.languages = {};
+    return PseudoLanguage;
 }());
 var AJAXConfig = (function () {
     function AJAXConfig(url) {
@@ -1529,6 +1787,129 @@ var MemoryPica = (function (_super) {
     };
     MemoryPica.fieldOrder = ["picaAllowed"];
     return MemoryPica;
+}(TrackerMemory));
+var MemoryLingo = (function (_super) {
+    __extends(MemoryLingo, _super);
+    function MemoryLingo() {
+        _super.apply(this, arguments);
+        this.userLingos = {};
+        this.busy = false;
+    }
+    MemoryLingo.prototype.getUser = function (id) {
+        if (this.userLingos[id] !== undefined) {
+            return this.userLingos[id];
+        }
+        return [];
+    };
+    MemoryLingo.prototype.clean = function () {
+        for (var id in this.userLingos) {
+            var user = Server.Chat.getRoom().getUser(parseInt(id));
+            if (user === null || user.isStoryteller() || this.userLingos[id].length < 1) {
+                delete (this.userLingos[id]);
+            }
+        }
+    };
+    MemoryLingo.prototype.getUsers = function () {
+        return this.userLingos;
+    };
+    MemoryLingo.prototype.reset = function () {
+        this.userLingos = {};
+    };
+    MemoryLingo.prototype.getValue = function () {
+        return this;
+    };
+    MemoryLingo.prototype.addUserLingo = function (id, lingo) {
+        if (this.userLingos[id] === undefined) {
+            this.userLingos[id] = [lingo];
+            if (!this.busy) {
+                this.triggerChange();
+            }
+        }
+        else {
+            if (this.userLingos[id].indexOf(lingo) === -1) {
+                this.userLingos[id].push(lingo);
+                this.userLingos[id].sort();
+                if (!this.busy) {
+                    this.triggerChange();
+                }
+            }
+        }
+    };
+    MemoryLingo.prototype.removeUserLingo = function (id, lingo) {
+        if (this.userLingos[id] !== undefined) {
+            var idx = this.userLingos[id].indexOf(lingo);
+            if (idx !== -1) {
+                this.userLingos[id].splice(idx, 1);
+                this.clean();
+                if (!this.busy) {
+                    this.triggerChange();
+                }
+            }
+        }
+    };
+    MemoryLingo.prototype.isSpeaker = function (id, lingo) {
+        var user = this.getUser(id);
+        if (user === null) {
+            return false;
+        }
+        return user.indexOf(lingo) !== -1;
+    };
+    MemoryLingo.prototype.getSpeakers = function (lingo) {
+        var speakers = [];
+        if (Server.Chat.getRoom() === null) {
+            return speakers;
+        }
+        for (var id in this.userLingos) {
+            if (this.userLingos[id].indexOf(lingo) !== -1) {
+                speakers.push(Server.Chat.getRoom().getUser(parseInt(id)));
+            }
+        }
+        return speakers;
+    };
+    MemoryLingo.prototype.getSpeakerArray = function (lingo) {
+        var speakers = [];
+        if (Server.Chat.getRoom() === null) {
+            return speakers;
+        }
+        for (var id in this.userLingos) {
+            if (this.userLingos[id].indexOf(lingo) !== -1) {
+                speakers.push(parseInt(id));
+            }
+        }
+        return speakers;
+    };
+    MemoryLingo.prototype.storeValue = function (values) {
+        if (!Array.isArray(values)) {
+            console.warn("[ROOMMEMMORY] [MemoryLingo] Invalid store operation requested. Ignoring.");
+            return;
+        }
+        var oldJson = JSON.stringify(this.userLingos);
+        this.busy = true;
+        this.userLingos = {};
+        for (var i = 0; i < values.length - 1; i += 2) {
+            var userid = values[i];
+            var userlingos = values[i + 1].split(";");
+            for (var k = 0; k < userlingos.length; k++) {
+                this.addUserLingo(userid, userlingos[k]);
+            }
+            this.userLingos[values[i]] = values[i + 1].split(";");
+        }
+        this.clean();
+        this.busy = false;
+        var newJson = JSON.stringify(this.userLingos);
+        if (oldJson !== newJson) {
+            this.triggerChange();
+        }
+    };
+    MemoryLingo.prototype.exportAsObject = function () {
+        var values = [];
+        for (var id in this.userLingos) {
+            values.push(parseInt(id));
+            values.push(this.userLingos[id].join(";"));
+        }
+        return values;
+    };
+    return MemoryLingo;
 }(TrackerMemory));
 var MemoryVersion = (function (_super) {
     __extends(MemoryVersion, _super);
@@ -2716,6 +3097,208 @@ var SheetTab = (function () {
     };
     return SheetTab;
 }());
+(new PseudoLanguage("Ancient"))
+    .addSyllabi(["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"])
+    .addNumbers(['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'])
+    .setAllowPoints(false)
+    .setLowerCase(true);
+(new PseudoLanguage("Animal"))
+    .addLetters(['u', 'r', 'a', 'n', 'm', 'g'])
+    .addSyllabi(['u', 'r', 'a', 'n', 'w', ' grr! ', ' rarr! ', 'rawr ', 'mmf', 'pamf', 'pant', 'rrrr', 'rrrrrrr', 'eeep', 'uk', 'karr!', 'uff', 'off', 'aff', 'snif', 'puff', 'roar!', 'raar', 'mmmm', 'ghhh', 'kak', 'kok', 'grr ', 'year', 'yor', 'caaaar', 'urr', 'uru! ', 'muu', 'up', 'uup', 'oap', ' rrrraawr ', 'mip', 'iap', 'ap'])
+    .setRandomizeNumbers(false)
+    .setAllowPoints(false)
+    .setLowerCase(true);
+(new PseudoLanguage("Abyssal"))
+    .addLetters(['x', 'y', 'e', 'a', 'g', 'o'])
+    .addSyllabi(['x', 'y', 'e', 'a', 'g', 'o', 'za', 'xy', 'go', 'ua', 'ka', 're', 'te', 'la', 'az', 'rruk', 'kar', 'mra', 'gak', 'zar', 'tra', 'maz', 'okra', 'zzar', 'kada', 'zaxy', 'drab', 'rikk', 'belam', 'rraka', 'ashaj', 'zannk', 'xalah', 'rruk', 'kar', 'mra', 'gak', 'zar', 'tra', 'maz', 'za', 'xy', 'go', 'ua', 'ka', 're', 'te', 'la', 'az', 'x', 'y', 'e', 'a', 'g', 'o'])
+    .addNumbers(['ia', 'ori', 'eri', 'dara', 'iru', 'taro', 'cace', 'zori', 'xash', 'rura'])
+    .setRandomizeNumbers(false)
+    .setAllowPoints(true)
+    .setLowerCase(false)
+    .addStaticWord(["anjo", "yuqun", "angel"], "soran")
+    .addStaticWord(["sacrificio", "sacrifice"], "gakzakada")
+    .addStaticWord(['calor', 'quente', 'fogo', 'chama', 'flamejante', 'chamas', 'fogos'], "burah")
+    .addStaticWord(["humano", "humano", "human"], "aman")
+    .addStaticWord(["inferno", "infernal", "hell", 'hellish'], "zennshinagas")
+    .addStaticWord(["demonio", "capeta", "diabo", 'devil', 'demon'], "zennshi");
+(new PseudoLanguage("Aquon"))
+    .addLetters(['a', 'e', 'i'])
+    .addSyllabi(['laren', 'sare', 'elane', 'alena', 'leair', 'le', 'li', 'la', 'a', 'e', 'i', 'lessa', 'saril ', 'quissa', 'sarte', 'tassi', 'selasse', 'atoloran', 'tiran', 'quilara', 'assiassi', 'lessa', 'saril ', 'quissa', 'sarte', 'tassi', 'selasse', 'laren', 'sare', 'elane', 'alena', 'leair', 'le', 'li', 'la', 'a', 'e', 'i'])
+    .addNumbers(['on', 'liss', 'diss', 'tiss', 'quass', 'ciss', 'siss', 'sess', 'oiss', 'niss'])
+    .setRandomizeNumbers(false)
+    .setAllowPoints(true)
+    .setLowerCase(false)
+    .addStaticWord(["terra", "piso", "chao", "superficie", "ground", "floor"], "tassela")
+    .addStaticWord(["terrestre", "inimigo", "adversario", "inimigos", "adversarios", "oponente", "oponentes", "enemy", "enemies", "opponent", "opponents"], "tasselarane")
+    .addStaticWord(["mar", "oceano", "rio", "ocean", "river"], "quill")
+    .addStaticWord(["aquatico", "aquatic", "amigo", "friend", "amigos", "friend"], "quillarine")
+    .addStaticWord(["agua", "sagrado", "sacred", "water"], "quell")
+    .addStaticWord(["amante", "adorador", "lover", "admirer"], "sir")
+    .addStaticWord(["gloria", "honra", "virtude", "glory", "honor", "virtue"], "salara")
+    .addStaticWord(["rei", "soberano", "monarca", "king", "sovereign", "monarch"], "quellsalara")
+    .addStaticWord(["el'zel", "elzel", "el'zels", 'elzels'], "selarane")
+    .addStaticWord(["elfo", "elfos", 'elf', 'elves', 'elfes'], "setarane")
+    .addStaticWord(["humano", "human"], "talarane");
+(new PseudoLanguage("Arcana"))
+    .addLetters(['a', 'o', 'z', 'c'])
+    .addSyllabi(['a', 'o', 'z', 'c', 'xa', 'nu', 'da', 'xi', 'li', 'xie', 'uru', 'ara', ' naa', 'ean', ' zha', 'zhi', 'xin', 'xan', 'chu', 'ran', 'nan', 'zan', 'ron', 'wanv', 'haov', 'chan', 'chun', 'chen', 'zhen', 'zhan', 'shie', 'yong', 'xing', 'kafe', 'zazado', 'kafel', 'xinzhao', 'mengtah', 'mengzha', 'len shi', 'qibong', 'qubhan', 'quzhan', 'qizhao', 'wanv', 'haov', 'chan', 'chun', 'chen', 'zhen', 'zhan', 'shie', 'yong', 'xing', 'kafe', 'xa', 'nu', 'da', 'xi', 'li', 'xie', 'uru', 'ara', 'naa', 'ean', 'zha', 'zhi', 'xin', 'xan', 'chu', 'ran', 'nan', 'zan', 'ron', 'a', 'o', 'z', 'c'])
+    .addNumbers(['lin', 'i', 'e', 'sa', 'si', 'wu', 'liu', 'qi', 'ba', 'ju'])
+    .setRandomizeNumbers(false)
+    .setAllowPoints(true)
+    .setLowerCase(false)
+    .addStaticWord(["coisa", "coisas", "treco", "trecos", "bad", "terrible"], "yu mo")
+    .addStaticWord(["thing", "things", "ruim", "ruins", "maligno", "malignos"], "gui gwai")
+    .addStaticWord(["vai", "cai", "va", "go", "get"], "fai")
+    .addStaticWord(["away", "far", "embora", "fora"], "di zao")
+    .addStaticWord(["agua", "water", "traga", "bring"], "lai")
+    .addStaticWord(["aconteca", "occur", "venha", "come", "happen", "flood"], "shui zai");
+(new PseudoLanguage("Arkadium"))
+    .addLetters(['h', 'a', 'n', 'i', 'e'])
+    .addSyllabi(['h', 'a', 'n', 'i', 'e', 'no', 'ko', 'ta', 'ain', 'nah', 'roi', 'shu', 'kon', 'ishi', 'temi', 'poto', 'taan', 'kain', 'treja', 'nizui', 'boron', 'hazoi', 'lamaf', 'ishi', 'temi', 'poto', 'taan', 'kain', 'no', 'ko', 'ta', 'ain', 'nah', 'roi', 'shu', 'kon', 'h', 'a', 'n', 'i', 'e'])
+    .setRandomizeNumbers(false)
+    .setAllowPoints(true)
+    .setLowerCase(false);
+(new PseudoLanguage("Auran"))
+    .addLetters(['o', 'k', 's', 'i', 'a', 'm'])
+    .addSyllabi(['o', 'k', 's', 'i', 'a', 'm', 'me', 'ra', 'lo', 'fu', 'je', 'kin', 'zoh', 'jao', 'nen', 'has', 'mewa', 'waon', 'kerl', 'nomu', 'qolt', 'kin', 'zoh', 'jao', 'nen', 'has', 'me', 'ra', 'lo', 'fu', 'je', 'o', 'k', 's', 'i', 'a', 'm'])
+    .setRandomizeNumbers(false)
+    .setAllowPoints(true)
+    .setLowerCase(false);
+(new PseudoLanguage("Binary"))
+    .addSyllabi(['.', '-', '!', "+", "#", "|", "\\", "/", "<", ">", "$", "%", ".", "-", ".", "-", ".", "-", ".", "-", "¢", "%", "@", "?", ":", ";"])
+    .addNumbers(["0", "1", "00", "01", "10", "11", "000", "001", "010", "011", "100", "101", "110", "111"])
+    .setAllowPoints(false)
+    .setRandomizeNumbers(true)
+    .setLowerCase(true);
+(new PseudoLanguage("Celestan"))
+    .addLetters(['z', 'i', 'h', 'k', 'u'])
+    .addSyllabi(['z', 'i', 'h', 'k', 'u', 'ul', 'ha', 'ko', 'ia', 'ez', 'oh', 'moh', 'lea', 'sha', 'lok', 'tae', 'zaha', 'ohta', 'baos', 'naia', 'ezoh', 'zaha', 'ohta', 'baos', 'naia', 'ezoh', 'moh', 'lea', 'sha', 'lok', 'tae', 'ul', 'ha', 'ko', 'ia', 'ez', 'oh', 'z', 'i', 'h', 'k', 'u'])
+    .setRandomizeNumbers(false)
+    .setAllowPoints(true)
+    .setLowerCase(false);
+(new PseudoLanguage("Davek"))
+    .addLetters(['d', 'k', 'e', 'a', 'u'])
+    .addSyllabi(['d', 'k', 'e', 'a', 'u', 'bu', 'ka', 'ce', 'ke', 'ko', 'za', 'ik', 'ep', 'pa', 'na', 'ma', 'pe', 'kok', 'kek', 'iek', 'cea', 'sok', 'ask', 'pok', 'pak', 'rak', 'rok', 'ruh', 'ruk', 'ram', 'ran', 'rae', 'era', 'ero', 'erp', 'doko', 'pika', 'paek', 'caeo', 'peao', 'pako', 'poka', 'mako', 'zako', 'zado', 'edo', 'akad', 'miko', 'adek', 'edao', 'emaop', 'edaki', 'pedak', 'pokad', 'emako', 'pokad', 'rakza', 'edoru', 'akara', 'iekpa', 'dokok', 'ceape', 'mikora', 'erada', 'erpad', 'jukoa', 'kodoko', 'pikace', 'peaika', 'pakpoka', 'rokzado', 'maedoru', 'akarape', 'epask', 'dokoran', 'doko', 'pika', 'paek', 'caeo', 'peao', 'pako', 'poka', 'mako', 'zako', 'zado', 'edo', 'akad', 'miko', 'adek', 'edao', 'kok', 'kek', 'iek', 'cea', 'sok', 'ask', 'pok', 'pak', 'rak', 'rok', 'ruh', 'ruk', 'ram', 'ran', 'rae', 'era', 'ero', 'erp', 'bu', 'ka', 'ce', 'ke', 'ko', 'za', 'ik', 'ep', 'pa', 'na', 'ma', 'pe'])
+    .addNumbers(['o', 'u', 'uti', 'tia', 'sa', 'mi', 'ota', 'su', 'kaata', 'lhus'])
+    .setRandomizeNumbers(false)
+    .setAllowPoints(true)
+    .setLowerCase(false);
+(new PseudoLanguage("Draconic"))
+    .addLetters(['i', 'e', 'u', 'a'])
+    .addSyllabi(['vi', 'si', 'fe', 'sh', 'ix', 'ur', 'wux ', 'vah', 'veh', 'vee', 'ios', 'irsa', 'rerk', 'xsio ', 'axun', 'yrev', 'ithil', 'creic', "ecer", 'direx', 'dout', 'yrev', 'ibleuailt', 'virax', 'mrrandiina', 'whedab', 'bekisnhlekil', 'rerk', 'xsio ', 'axun', 'yrev', 'ithil', 'creic', 'wux ', 'vah', 'veh', 'vee', 'ios', 'irsa', 'vi', 'si', 'fe', 'sh', 'ix', 'ur'])
+    .addNumbers(['zerr ', 'ir ', 'jiil ', 'fogah ', 'vrrar ', 'jlatak ', 'jiko ', 'vakil ', 'supri ', 'wlekjr '])
+    .setRandomizeNumbers(false)
+    .setAllowPoints(true)
+    .setLowerCase(false)
+    .addStaticWord(["dragao", 'dragon', 'dragoes', 'dragons'], "darastrix")
+    .addStaticWord(["companheiro", 'companheiros', 'amigo', 'amigos', 'aliado', 'aliados', 'friend', 'friends', 'partner'], "thurirl")
+    .addStaticWord(['escamas', 'escama', 'scale', 'scales'], "ternocki")
+    .addStaticWord(["pele", 'skin'], "molicki")
+    .addStaticWord(["medo", "pavor", "temor", "horror", "fear"], "l'gra")
+    .addStaticWord(["humano", "humanos", "human", "humans"], "munthrek")
+    .addStaticWord(["humanidade", "humanity"], "munthrak");
+(new PseudoLanguage("Elvish"))
+    .addStaticWord(["elfos", "elfas", "elves"], "el'ar")
+    .addStaticWord(["passaro", "ave", "passarinho", "bird"], "simuh")
+    .addStaticWord(["ha", "hah", "he", "heh", "hehe", "haha", "heheh", "hahah", "hehehe", "hahaha"], "hehe")
+    .addStaticWord(["alegria", "felicidade", "joy", "happiness"], "luria")
+    .addStaticWord(["rapido", "veloz", "velocidade", "fast", "speedy", "speed"], "lerast")
+    .addStaticWord(["lama", "barro", "mud", "clay"], "vehal")
+    .addStaticWord(["curar", "sarar", "heal"], "fahin")
+    .addStaticWord(["bruxa", "feiticeira", "maga", "witch", "wizard", "mage"], "amuhn")
+    .addStaticWord(["esperanca", "hope"], "elain")
+    .addStaticWord(["falso", "fake", "falsos", "fakes"], "el'zel")
+    .addStaticWord(["elf", "elfo", "elfa"], "el'um")
+    .addStaticWord(["azul", "azulado"], "luin")
+    .addStaticWord(["inimigo", "inimigos", "adversário", "adversários", "adversario", "adversarios"], "zallon")
+    .addStaticWord(["amigo", "compadre", "camarada", "amigos", "camaradas", "compadres", "aliado", "aliados"], "mellon")
+    .addStaticWord(['alto', 'grande'], 'tar')
+    .addStaticWord(["verao", "summer"], "laer")
+    .addStaticWord(["coragem", "confianca", "bravery"], "thalias")
+    .addStaticWord(["letra", "letras", "letter", "letters"], "tenwar")
+    .addStaticWord(["calor", "quente", "fogo", "chama", "flamejante", "chamas", "fogos"], "uloloki")
+    .addNumbers(['o', 'u', 'uli', 'lia', 'sa', 'mi', 'ola', 'su', 'kaala', 'thus'])
+    .addLetters(['a', 'i', 'e'])
+    .addShortWords(['ae', 'ea', 'lae', 'lea', 'mia', 'thal', 'maae', 'leah', 'tea', 'ma', 'da', 'le', 'li', 'ta', 'te', 'ia', 'io'])
+    .addSyllabi(['el', 'shal', 'shel', 'ae', 'ea', 'lae', 'lea', 'mia', 'thal', 'maae', 'leah', 'tea', 'ma', 'da', 'le', 'li', 'ta', 'te', 'ia', 'io', 'a', 'i', 'e'])
+    .addStaticWord(['calor', 'quente', 'fogo', 'chama', 'flamejante', 'chamas', 'fogos'], "uloloki")
+    .getSyllableCustom = function () {
+    if (this.currentTranslation.length < 1 || this.currentWord.length < 4 || (this.currentWord.length - this.currentTranslation.length) < 3) {
+        return null;
+    }
+    if ((this.currentTranslation.charAt(this.currentTranslation.length - 1) === "l"
+        || this.currentTranslation.charAt(this.currentTranslation.length - 1) === "h")
+        && ((this.usedSyllable.indexOf("'") === -1 && this.chance(95)) || this.chance(5))) {
+        return "'";
+    }
+    if ((this.currentTranslation.charAt(this.currentTranslation.length - 1) === "e"
+        || this.currentTranslation.charAt(this.currentTranslation.length - 1) === "a")
+        && ((this.usedSyllable.indexOf("'") === -1 && this.chance(40)) || this.chance(20))) {
+        return "'";
+    }
+    if (this.usedSyllable.indexOf("'") === -1 && this.chance(15)) {
+        return "'";
+    }
+    return null;
+};
+(new PseudoLanguage("Ellum"))
+    .addLetters(['a', 'i', 'e'])
+    .addSyllabi(['a', 'i', 'e', 'ae', 'ea', 'tae', 'cea', 'mia', 'lhat', 'maae', 'teah', 'lea', 'ma', 'da', 'te', 'ti', 'la', 'le', 'ia', 'io', "a'ta", 'eu', 'maari', 'eaal', 'lentar', 'umit', 'matas', 'nitas', 'vaata', 'miu', 'lhea', 'lhao', 'bae', 'dia', "e'tud", "mi'laet", 'tussia', 'lamita', 'tavia', 'mera', 'tiaah', 'paatvas', 'mata', 'lhata', 'looa', 'lheia', "tu'lhanis", "lo'meera", "lha'vatsar", 'lotetslraz', 'awynn', 'tissanas', 'otaamiss', 'lovatsar', 'mataasa', 'lhotad', "lhatiassu", "teeramas", "su'diet", "mi'dhanas", "lhashama", "tiriana", "tuinassa", "tae'missa", "lhot'vana", "sahmita", "milrusata", "toriema", "lotisava", "e'tud", "mi'laet", 'tussia', 'lamita', 'tavia', 'mera', 'tiaah', 'paatvas', 'mata', 'lhata', 'looa', 'lheia', "a'ta", 'eu', 'maari', 'eaal', 'lentar', 'umit', 'matas', 'nitas', 'vaata', 'miu', 'lhea', 'lhao', 'bae', 'dia', 'ae', 'ea', 'tae', 'cea', 'mia', 'lhat', 'maae', 'teah', 'lea', 'ma', 'da', 'te', 'ti', 'la', 'le', 'ia', 'io', 'a', 'i', 'e'])
+    .addNumbers(['o', 'u', 'uti', 'tia', 'sa', 'mi', 'ota', 'su', 'kaata', 'lhus'])
+    .setRandomizeNumbers(false)
+    .setAllowPoints(true)
+    .setLowerCase(false);
+(new PseudoLanguage("Mankiki"))
+    .addNumbers(["ba", "na", "na", "ba", "na", "na", "ba", "na", "na", "ba"])
+    .addLetters(["a"])
+    .addShortWords(["ba", "na"])
+    .addSyllabi(["ba", "na"])
+    .addStaticWord(["banana"], "pneumoultramicroscopicossilicovulcanoconiotico")
+    .getSyllableCustom = function () {
+    if (this.currentTranslation === "" && this.chance(80)) {
+        return "ba";
+    }
+    else if (this.currentTranslation === "ba" && this.chance(80)) {
+        return "na";
+    }
+    else if (this.currentTranslation === "bana" && this.chance(80)) {
+        return "na";
+    }
+    else if (this.currentTranslation === "banana" && this.chance(80)) {
+        return " ";
+    }
+    return null;
+};
+(new PseudoLanguage("Magraki"))
+    .addLetters(['a', 'u', 'k', 'c', 'e'])
+    .addSyllabi(['a', 'u', 'k', 'c', 'e', 'ek', 'uk', 'tu', 'ob', 'zug', 'va', 'ruk', 'gra', 'mog', 'zuk', 'xar', 'zaga', 'garo', 'xhok', 'teba', 'nogu', 'uruk', 'ruk', 'gra', 'mog', 'zuk', 'xar', 'ek', 'uk', 'tu', 'ob', 'zug', 'va', 'a', 'u', 'k', 'c', 'e'])
+    .addNumbers(['a', 'u', 'k', 'c', 'e'])
+    .setRandomizeNumbers(true)
+    .setAllowPoints(true)
+    .setLowerCase(false)
+    .addStaticWord(["matar", "mate", "massacre", "death"], "khazzog")
+    .addStaticWord(["amigo", "compadre", "camarada"], "mogtuban")
+    .addStaticWord(["oi", "olá", "ola", "hello"], "loktorok")
+    .addStaticWord(["atacar", "ataque", "destruir", "destrua", "attack"], "maguna")
+    .addStaticWord(["heroi", "herói", "salvador", "hero"], "grom")
+    .addStaticWord(["hehe", "he", "heh", "ha", "haha", "hah", "lol", "lmao", "rofl", "roflmao"], "kek")
+    .addStaticWord(["hehehe", "hahaha", "hahah", "heheh", "hahahah", "heheheh"], "kekek")
+    .addStaticWord(["orc", "ork"], "bubu")
+    .addStaticWord(["orcs", "orks"], "bubus")
+    .addStaticWord(["orcish", "orkish", "orqish", "orques", "orques", "orkes", "orkes"], "bubugo");
+(new PseudoLanguage("Natrum"))
+    .addLetters(['i', 'j', 'a', 'o', 'u', 'y'])
+    .addSyllabi(['i', 'j', 'a', 'o', 'u', 'y', '-', 'en', 'er', 'i', 'ir', 'j', 'na', 'ma', 'ur', 'yl', 'aiga', 'draum', 'gaf', 'gorak', 'hennar', 'ormar', 'saman', 'warin', 'barmjor', 'eltzi', 'gunronir', 'thalandor', 'yirindir', 'iemnarar', 'normnundor', 'melgandark', 'sunnarsta', 'villnorer', 'znorud', 'barmjor', 'eltzi', 'gunronir', 'thalandor', 'yirindir', 'aiga', 'draum', 'gaf', 'gorak', 'hennar', 'ormar', 'saman', 'warin', 'en', 'er', 'i', 'ir', 'j', 'na', 'ma', 'ur', 'yl'])
+    .addNumbers(['ein', 'tvein', 'trir', 'fjor', 'fimm', 'seks', 'syv', 'otte', 'niu', 'tiu'])
+    .setRandomizeNumbers(false)
+    .setAllowPoints(true)
+    .setLowerCase(false);
+(new PseudoLanguage("Technum"))
+    .addLetters(['n', 'e', 'i', 'k', 'a'])
+    .addSyllabi(['n', 'e', 'i', 'k', 'a', 'ok', 'un', 'ac', 'hal', 'sub', 'fyi', 'hym', 'cmp', 'vaal', 'hyss', 'lrok', 'gfun', 'jyin', 'netak', 'urmin', 'kvyan', 'trekt', 'pvnum', 'tkmkrok', 'ncallat', 'khstrat', 'meknym', 'snwyhok'])
+    .setRandomizeNumbers(false)
+    .setAllowPoints(true)
+    .setLowerCase(false);
 var SheetStyle = (function () {
     function SheetStyle(style) {
         this.css = document.createElement("style");
@@ -4403,6 +4986,109 @@ var SlashLog = (function (_super) {
     return SlashLog;
 }(SlashCommand));
 MessageFactory.registerSlashCommand(SlashLog, ["/log", "/logger"]);
+var SlashLingo = (function (_super) {
+    __extends(SlashLingo, _super);
+    function SlashLingo() {
+        _super.apply(this, arguments);
+    }
+    SlashLingo.prototype.receiveCommand = function (slashCommand, message) {
+        var storyMode = slashCommand.toLowerCase().indexOf("sto") !== -1;
+        if (storyMode && !Server.Chat.getRoom().getMe().isStoryteller()) {
+            return false;
+        }
+        var wantedLingo = message.substring(0, message.indexOf(','));
+        var lingo = PseudoLanguage.getLanguage(wantedLingo);
+        if (lingo === null) {
+            return false;
+        }
+        var mem = Server.Chat.Memory.getConfiguration("Lingo");
+        if (!Server.Chat.getRoom().getMe().isStoryteller() && !mem.isSpeaker(Server.Chat.getRoom().getMe().getUser().id, wantedLingo)) {
+            return false;
+        }
+        var sentence = message.substring(message.indexOf(',') + 1, message.length).trim();
+        var beginners = ['*', '[', '{', '('];
+        var enders = ['*', ']', '}', ')'];
+        var endResult = "";
+        var currentSentence = "";
+        var waitingFor = null;
+        for (var i = 0; i < sentence.length; i++) {
+            var character = sentence.charAt(i);
+            if (waitingFor !== null) {
+                currentSentence += character;
+                if (character === waitingFor) {
+                    endResult += currentSentence;
+                    currentSentence = "";
+                    waitingFor = null;
+                }
+            }
+            else {
+                var idx = beginners.indexOf(character);
+                if (idx === -1) {
+                    currentSentence += character;
+                }
+                else {
+                    waitingFor = enders[idx];
+                    if (currentSentence.length > 0) {
+                        endResult += lingo.translate(currentSentence);
+                    }
+                    currentSentence = character;
+                }
+            }
+        }
+        if (currentSentence.length > 0) {
+            endResult += lingo.translate(currentSentence);
+        }
+        var translatedMsg;
+        var pseudoMsg;
+        if (storyMode) {
+            translatedMsg = new MessageStory();
+            pseudoMsg = new MessageStory();
+        }
+        else {
+            translatedMsg = new MessageRoleplay();
+            pseudoMsg = new MessageRoleplay();
+        }
+        translatedMsg.setMsg(endResult);
+        translatedMsg.findPersona();
+        translatedMsg.setSpecial("translation", sentence);
+        translatedMsg.setSpecial("language", wantedLingo);
+        pseudoMsg.setMsg(endResult);
+        pseudoMsg.setSpecial("language", wantedLingo);
+        pseudoMsg.findPersona();
+        var speakers = mem.getSpeakers(wantedLingo);
+        translatedMsg.addDestinationStorytellers(Server.Chat.getRoom());
+        for (var i = 0; i < speakers.length; i++) {
+            translatedMsg.addDestination(speakers[i].getUser());
+        }
+        pseudoMsg.setSpecial("ignoreFor", translatedMsg.getDestinationArray());
+        UI.Chat.sendMessage(translatedMsg);
+        UI.Chat.sendMessage(pseudoMsg);
+        return true;
+    };
+    SlashLingo.prototype.getInvalidHTML = function (slashCommand, message) {
+        var smsg = new ChatSystemMessage(true);
+        if (slashCommand.toLowerCase().indexOf("sto") !== -1 && !Server.Chat.getRoom().getMe().isStoryteller()) {
+            smsg.addText("_SLASHLINGOINVALIDONLYGM_");
+        }
+        else {
+            var wantedLingo = message.substring(0, message.indexOf(','));
+            var lingo = PseudoLanguage.getLanguage(wantedLingo);
+            var mem = Server.Chat.Memory.getConfiguration("Lingo");
+            if (lingo === null) {
+                smsg.addText("_SLASHLINGOINVALIDNOSUCHLINGO_");
+            }
+            else if (!Server.Chat.getRoom().getMe().isStoryteller() && !mem.isSpeaker(Server.Chat.getRoom().getMe().getUser().id, wantedLingo)) {
+                smsg.addText("_SLASHLINGOINVALIDYOUKNOWNOTHINGINNOCENT_");
+            }
+            else {
+                smsg.addText("_SLASHLINGOINVALID_");
+            }
+        }
+        return smsg.getElement();
+    };
+    return SlashLingo;
+}(SlashCommand));
+MessageFactory.registerSlashCommand(SlashLingo, ["/lang", "/ling", "/lingo", "/language", "/lingua"]);
 var Message = (function (_super) {
     __extends(Message, _super);
     function Message() {
@@ -4473,6 +5159,19 @@ var Message = (function (_super) {
         }
         else {
             console.warn("[MESSAGE] Attempt to add user to unknown destination type? What gives? Offending user and message:", user, this);
+        }
+    };
+    Message.prototype.getDestinationArray = function () {
+        if (!Array.isArray(this.destination)) {
+            if (this.destination !== undefined && this.destination !== null) {
+                return [this.destination];
+            }
+            else {
+                return [];
+            }
+        }
+        else {
+            return this.destination;
         }
     };
     Message.prototype.getDestinations = function () {
@@ -4605,6 +5304,15 @@ var Message = (function (_super) {
         for (var i = 0; i < attributes.length; i++) {
             if (this[attributes[i]] !== undefined) {
                 result[attributes[i]] = this[attributes[i]];
+            }
+        }
+        if (Array.isArray(this.destination)) {
+            delete result['destination'];
+            if (this.destination.length === 1) {
+                result['destination'] = this.destination[0];
+            }
+            else {
+                result['destination'] = this.destination;
             }
         }
         result["message"] = this.msg;
@@ -7615,11 +8323,16 @@ var Server;
             }
             Memory.getConfig = getConfig;
             function registerChangeListener(id, listener) {
-                if (configList[id] === undefined) {
+                if (configList[id] === undefined && readableConfigList[id] === undefined) {
                     console.warn("[RoomMemory] Attempt to register a listener to unregistered configuration at " + id + ". Offending listener:", listener);
                     return;
                 }
-                configList[id].addChangeListener(listener);
+                if (configList[id] !== undefined) {
+                    configList[id].addChangeListener(listener);
+                }
+                else {
+                    readableConfigList[id].addChangeListener(listener);
+                }
             }
             Memory.registerChangeListener = registerChangeListener;
             function getConfiguration(name) {
@@ -7700,6 +8413,7 @@ Server.Chat.Memory.registerConfiguration("c", "Combat", new MemoryCombat());
 Server.Chat.Memory.registerConfiguration("v", "Version", new MemoryVersion());
 Server.Chat.Memory.registerConfiguration("p", "Pica", new MemoryPica());
 Server.Chat.Memory.registerConfiguration("m", "Cutscene", new MemoryCutscene());
+Server.Chat.Memory.registerConfiguration("l", "Lingo", new MemoryLingo());
 var Server;
 (function (Server) {
     var Storage;
@@ -8354,12 +9068,18 @@ ptbr.setLingo("_CHATBUTTONFONTPLUS_", "Aumentar tamanho da fonte");
 ptbr.setLingo("_CHATBUTTONFONTMINUS_", "Diminuir tamanho da fonte");
 ptbr.setLingo("_CHATBUTTONLEAVE_", "Sair da sala");
 ptbr.setLingo("_CHATBUTTONHOLLYWOOD_", "Ativar/Desativar modo Cutscene");
+ptbr.setLingo("_CHATBUTTONLINGO_", "Abrir gerenciador de línguas");
 ptbr.setLingo("_CHATBUTTONSEND_", "Enviar");
 ptbr.setLingo("_CHATPERSONAMANAGERBUTTON_", "Abrir administrador de personas");
 ptbr.setLingo("_CHATDICETOWER_", "Ativar/Desativar rolagem secreta");
 ptbr.setLingo("_CHATSHHHHHWEHOLLYWOODACTIVE_", "Modo Cutscene ativado. Apenas narradores podem enviar mensagens.");
 ptbr.setLingo("_CHATSHHHHHWEHOLLYWOODINACTIVE_", "Modo Cutscene desativado. Todos os jogadores podem enviar mensagens.");
-ptbr.setLingo("", "");
+ptbr.setLingo("_LINGOMANAGER_", "Gerenciador de Línguas");
+ptbr.setLingo("_LINGOADD_", "+ Adicionar");
+ptbr.setLingo("_CHATLINGONOLINGO_", "Não fala linguas especiais");
+ptbr.setLingo("_SLASHLINGOINVALIDONLYGM_", "Apenas narradores podem enviar mensagens de história.");
+ptbr.setLingo("_SLASHLINGOINVALIDNOSUCHLINGO_", "Essa lingua não existe.");
+ptbr.setLingo("_SLASHLINGOINVALIDYOUKNOWNOTHINGINNOCENT_", "Você não tem permissão para falar essa língua.");
 ptbr.setLingo("_PERSONADESIGNERTITLE_", "Administrador de Personas");
 ptbr.setLingo("_PERSONADESIGNERNAME_", "Nome do Personagem");
 ptbr.setLingo("_PERSONADESIGNERAVATAR_", "Link para Imagem (Opcional)");
@@ -11663,6 +12383,10 @@ var UI;
                 }
             }
             Forms.handleInputKeypress = handleInputKeypress;
+            function prependChatInput(what) {
+                formInput.value = what + formInput.value;
+            }
+            Forms.prependChatInput = prependChatInput;
             function sendMessage() {
                 var trimmed = formInput.value.trim();
                 if (trimmed === "") {
@@ -11884,6 +12608,165 @@ var UI;
                 }
             }
         })(Notification = Chat.Notification || (Chat.Notification = {}));
+    })(Chat = UI.Chat || (UI.Chat = {}));
+})(UI || (UI = {}));
+var UI;
+(function (UI) {
+    var Chat;
+    (function (Chat) {
+        var Lingo;
+        (function (Lingo) {
+            var floater = document.getElementById("lingoFloater");
+            var $floater = $(floater).draggable({
+                containment: '#chatSideWindow',
+                handle: '#lingoHandle'
+            }).hide();
+            document.getElementById("lingoMinus").addEventListener("click", function () { UI.Chat.Lingo.hide(); });
+            document.getElementById("chatLingoButton").addEventListener("click", function () { UI.Chat.Lingo.open(); });
+            var content = document.getElementById("lingoContent");
+            function hide() {
+                $floater.stop(true).fadeOut(Application.Config.getConfig("animTime").getValue());
+            }
+            Lingo.hide = hide;
+            Server.Chat.Memory.registerChangeListener("Lingo", function () {
+                UI.Chat.Lingo.update();
+            });
+            function open() {
+                if (floater.style.display !== "none") {
+                    update();
+                    return;
+                }
+                floater.style.left = "0px";
+                floater.style.top = "0px";
+                $floater.stop(true).fadeIn(Application.Config.getConfig("animTime").getValue());
+                update();
+            }
+            Lingo.open = open;
+            function empty() {
+                while (content.firstChild !== null)
+                    content.removeChild(content.firstChild);
+            }
+            function update() {
+                if (floater.style.display === "none") {
+                    return;
+                }
+                empty();
+                if (Server.Chat.getRoom() === null) {
+                    return;
+                }
+                var mem = Server.Chat.Memory.getConfiguration("Lingo");
+                var users = mem.getUsers();
+                var usersOrdered = Server.Chat.getRoom().getOrderedUserContexts();
+                var languageNames = PseudoLanguage.getLanguageNames();
+                for (var i = 0; i < usersOrdered.length; i++) {
+                    if (usersOrdered[i].isStoryteller()) {
+                        continue;
+                    }
+                    var row = document.createElement("div");
+                    row.classList.add("lingoRow");
+                    var b = document.createElement("b");
+                    b.classList.add("lingoName");
+                    row.appendChild(b);
+                    b.appendChild(document.createTextNode(usersOrdered[i].getUniqueNickname() + ":"));
+                    var lingos = users[usersOrdered[i].getUser().id];
+                    if (lingos !== undefined) {
+                        for (var k = 0; k < lingos.length; k++) {
+                            var a = document.createElement("a");
+                            a.classList.add("lingoButton");
+                            if (Server.Chat.getRoom().getMe().isStoryteller()) {
+                                var span = document.createElement("span");
+                                span.classList.add("textLink");
+                                span.appendChild(document.createTextNode("(X)"));
+                                span.addEventListener("click", {
+                                    user: usersOrdered[i].getUser().id,
+                                    lingo: lingos[k],
+                                    handleEvent: function (e) {
+                                        var mem = Server.Chat.Memory.getConfiguration("Lingo");
+                                        mem.removeUserLingo(this.user, this.lingo);
+                                    }
+                                });
+                                a.appendChild(span);
+                            }
+                            else if (Server.Chat.getRoom().getMe() === usersOrdered[i]) {
+                                a.classList.add("clickable");
+                                a.addEventListener("click", {
+                                    lingo: lingos[k],
+                                    handleEvent: function (e) {
+                                        e.preventDefault();
+                                        UI.Chat.Lingo.speakInTongues(this.lingo);
+                                    }
+                                });
+                            }
+                            a.appendChild(document.createTextNode(lingos[k]));
+                            row.appendChild(a);
+                        }
+                        usersOrdered[i].getUser().isMe();
+                    }
+                    else {
+                        row.appendChild(document.createTextNode("_CHATLINGONOLINGO_"));
+                        row.classList.add("language");
+                        UI.Language.updateElement(row);
+                    }
+                    if (Server.Chat.getRoom().getMe().isStoryteller()) {
+                        var adder = document.createElement("div");
+                        adder.classList.add("lingoAdder");
+                        var select = document.createElement("select");
+                        var lingoNames = PseudoLanguage.getLanguageNames();
+                        for (var k = 0; k < lingoNames.length; k++) {
+                            var option = document.createElement("option");
+                            option.value = lingoNames[k];
+                            option.appendChild(document.createTextNode(lingoNames[k]));
+                            select.appendChild(option);
+                        }
+                        var a = document.createElement("a");
+                        a.classList.add("textLink", "language");
+                        a.appendChild(document.createTextNode("_LINGOADD_"));
+                        UI.Language.updateElement(a);
+                        adder.appendChild(select);
+                        adder.appendChild(a);
+                        row.appendChild(adder);
+                        a.addEventListener("click", {
+                            select: select,
+                            user: usersOrdered[i].getUser().id,
+                            handleEvent: function () {
+                                var mem = Server.Chat.Memory.getConfiguration("Lingo");
+                                mem.addUserLingo(this.user, this.select.value);
+                            }
+                        });
+                    }
+                    content.appendChild(row);
+                }
+                if (Server.Chat.getRoom().getMe().isStoryteller()) {
+                    var lingos = PseudoLanguage.getLanguageNames();
+                    var row = document.createElement("div");
+                    row.classList.add("lingoRow");
+                    var b = document.createElement("b");
+                    b.classList.add("lingoName");
+                    row.appendChild(b);
+                    b.appendChild(document.createTextNode(Server.Chat.getRoom().getMe().getUniqueNickname() + ":"));
+                    for (var k = 0; k < lingos.length; k++) {
+                        var a = document.createElement("a");
+                        a.classList.add("lingoButton");
+                        a.classList.add("clickable");
+                        a.appendChild(document.createTextNode(lingos[k]));
+                        a.addEventListener("click", {
+                            lingo: lingos[k],
+                            handleEvent: function (e) {
+                                e.preventDefault();
+                                UI.Chat.Lingo.speakInTongues(this.lingo);
+                            }
+                        });
+                        row.appendChild(a);
+                    }
+                    content.appendChild(row);
+                }
+            }
+            Lingo.update = update;
+            function speakInTongues(language) {
+                UI.Chat.Forms.prependChatInput("/lingo " + language + ", ");
+            }
+            Lingo.speakInTongues = speakInTongues;
+        })(Lingo = Chat.Lingo || (Chat.Lingo = {}));
     })(Chat = UI.Chat || (UI.Chat = {}));
 })(UI || (UI = {}));
 var UI;
@@ -12546,6 +13429,11 @@ change.addMessage("Create Account.", "en");
 change.addMessage("Login error messages.", "en");
 change.addMessage("Criação de contas.", "pt");
 change.addMessage("Mensagens de erro para login.", "pt");
+change = new Changelog(0, 16, 0);
+change.addMessage("Language Tracker implemented.", "en");
+change.addMessage("Multiple Languages added.", "en");
+change.addMessage("Gerenciador de Línguas implementado.", "pt");
+change.addMessage("Múltiplas línguas adicionadas.", "pt");
 delete (change);
 Changelog.finished();
 UI.Language.searchLanguage();
@@ -12559,7 +13447,7 @@ Application.Login.addListener({
             UI.PageManager.callPage(UI.idHome);
         }
         else {
-            UI.WindowManager.callWindow("loginWindow");
+            UI.Login.callSelf();
             UI.Login.resetState();
             UI.Login.resetFocus();
         }
