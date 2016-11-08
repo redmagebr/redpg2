@@ -494,8 +494,11 @@ declare class MemoryCombat extends TrackerMemory {
     private round;
     private turn;
     reset(): void;
-    exportAsObject(): any;
-    storeValue(obj: Object): void;
+    addParticipant(sheet: SheetInstance, owner?: User): void;
+    incrementRound(): void;
+    incrementTurn(): void;
+    exportAsObject(): number[];
+    storeValue(obj: any): void;
     getValue(): any;
 }
 declare class MemoryPica extends TrackerMemory {
@@ -547,19 +550,30 @@ declare class MemoryCutscene extends TrackerMemory {
 declare class CombatEffect {
     name: string;
     origin: number;
+    target: number;
+    roundEnd: number;
+    turnEnd: number;
+    endOnStart: boolean;
+    endOnEnd: boolean;
     customString: String;
-    reset(): void;
+    private combat;
     exportAsObject(): (string | number)[];
-    storeValue(array: Array<any>): void;
+    constructor(combat: MemoryCombat);
+    considerEnding(): void;
+    reset(): void;
+    updateFromObject(array: Array<any>): void;
 }
 declare class CombatParticipant {
     id: number;
     name: string;
     initiative: number;
-    effects: Array<CombatEffect>;
-    private combatMemory;
-    constructor(memo: MemoryCombat);
+    owner: number;
     setSheet(sheet: SheetInstance): void;
+    setSheetId(id: number): void;
+    setName(name: string): void;
+    setInitiative(init: number): void;
+    setOwner(id: number): void;
+    updateFromObject(obj: Array<any>): void;
     exportAsObject(): any[];
 }
 declare class ChatInfo {
@@ -1822,6 +1836,17 @@ declare module UI.Chat.Avatar {
     function updatePosition(): void;
     function updateFromObject(obj: Array<Object>, cleanup: boolean): void;
 }
+declare module UI.Chat.PersonaManager {
+    function setRoom(room: Room): void;
+    function clearPersona(name: String, avatar: String): void;
+    function getRoom(): Room;
+    function createAndUsePersona(name: string, avatar: String): void;
+    function addListener(listener: Listener): void;
+    function setPersona(name: String, avatar: String, element: HTMLElement): void;
+    function getPersonaName(): String;
+    function getPersonaAvatar(): String;
+    function unsetPersona(): void;
+}
 declare module UI.Chat.Forms {
     function addOlderText(): void;
     function moveOlderText(direction: number): void;
@@ -1853,17 +1878,6 @@ declare module UI.Chat.Lingo {
     function open(): void;
     function update(): void;
     function speakInTongues(language: string): void;
-}
-declare module UI.Chat.PersonaManager {
-    function setRoom(room: Room): void;
-    function clearPersona(name: String, avatar: String): void;
-    function getRoom(): Room;
-    function createAndUsePersona(name: string, avatar: String): void;
-    function addListener(listener: Listener): void;
-    function setPersona(name: String, avatar: String, element: HTMLElement): void;
-    function getPersonaName(): String;
-    function getPersonaAvatar(): String;
-    function unsetPersona(): void;
 }
 declare module UI.Chat.PersonaDesigner {
     function callSelf(): void;

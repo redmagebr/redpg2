@@ -1724,10 +1724,56 @@ var MemoryCombat = (function (_super) {
         this.turn = 0;
         this.triggerChange();
     };
+    MemoryCombat.prototype.addParticipant = function (sheet, owner) {
+        var combatant = new CombatParticipant();
+        combatant.setSheet(sheet);
+        if (owner !== undefined) {
+            combatant.setOwner(owner.id);
+        }
+        this.combatants.push(combatant);
+    };
+    MemoryCombat.prototype.incrementRound = function () {
+        this.round++;
+        this.turn = 0;
+    };
+    MemoryCombat.prototype.incrementTurn = function () {
+        this.turn++;
+        if ((this.turn + 1) > this.combatants.length) {
+            this.turn = 0;
+            this.round++;
+        }
+    };
     MemoryCombat.prototype.exportAsObject = function () {
-        return null;
+        var arr = [this.round, this.turn];
+        var combatants = [];
+        for (var i = 0; i < this.combatants.length; i++) {
+            combatants.push(this.combatants[i].exportAsObject());
+        }
+        return arr;
     };
     MemoryCombat.prototype.storeValue = function (obj) {
+        if (!Array.isArray(obj) || obj.length !== 3) {
+            this.reset();
+        }
+        else {
+            var oldJson = JSON.stringify(this.exportAsObject());
+            this.round = obj[0];
+            this.turn = obj[1];
+            this.combatants = [];
+            if (Array.isArray(obj[2]) && obj[2].length > 0) {
+                for (var i = 0; i < obj[2].length; i++) {
+                    var combatant = new CombatParticipant();
+                    combatant.updateFromObject(obj[2][i]);
+                    if (combatant.id !== 0) {
+                        this.combatants.push(combatant);
+                    }
+                }
+            }
+            var newJson = JSON.stringify(this.exportAsObject());
+            if (newJson !== oldJson) {
+                this.triggerChange();
+            }
+        }
     };
     MemoryCombat.prototype.getValue = function () {
         return null;
@@ -1984,14 +2030,17 @@ var MemoryCutscene = (function (_super) {
     return MemoryCutscene;
 }(TrackerMemory));
 var CombatEffect = (function () {
-    function CombatEffect() {
+    function CombatEffect(combat) {
         this.name = "";
         this.origin = 0;
+        this.target = 0;
+        this.roundEnd = 0;
+        this.turnEnd = 0;
+        this.endOnStart = false;
+        this.endOnEnd = false;
         this.customString = null;
+        this.combat = combat;
     }
-    CombatEffect.prototype.reset = function () {
-        this.name = UI.Language.getLanguage().getLingo("_TRACKERUNKNOWNEFFECT_");
-    };
     CombatEffect.prototype.exportAsObject = function () {
         var arr = [this.name, this.origin];
         if (this.customString !== null) {
@@ -1999,8 +2048,13 @@ var CombatEffect = (function () {
         }
         return arr;
     };
-    CombatEffect.prototype.storeValue = function (array) {
-        if (!Array.isArray(array) || typeof array[0] !== "string" || typeof array[1] !== "number") {
+    CombatEffect.prototype.considerEnding = function () {
+    };
+    CombatEffect.prototype.reset = function () {
+        this.name = UI.Language.getLanguage().getLingo("_TRACKERUNKNOWNEFFECT_");
+    };
+    CombatEffect.prototype.updateFromObject = function (array) {
+        if (!Array.isArray(array)) {
             this.reset();
         }
         else {
@@ -2014,24 +2068,38 @@ var CombatEffect = (function () {
     return CombatEffect;
 }());
 var CombatParticipant = (function () {
-    function CombatParticipant(memo) {
+    function CombatParticipant() {
         this.id = 0;
         this.name = "";
         this.initiative = 0;
-        this.effects = [];
-        this.combatMemory = memo;
+        this.owner = 0;
     }
     CombatParticipant.prototype.setSheet = function (sheet) {
         this.id = sheet.getId();
         this.name = sheet.getName();
     };
-    CombatParticipant.prototype.exportAsObject = function () {
-        var participant = [this.id, this.name, this.initiative];
-        var effects = [];
-        for (var i = 0; i < this.effects.length; i++) {
-            effects.push(this.effects[i].exportAsObject());
+    CombatParticipant.prototype.setSheetId = function (id) {
+        this.id = id;
+    };
+    CombatParticipant.prototype.setName = function (name) {
+        this.name = name;
+    };
+    CombatParticipant.prototype.setInitiative = function (init) {
+        this.initiative = init;
+    };
+    CombatParticipant.prototype.setOwner = function (id) {
+        this.owner = id;
+    };
+    CombatParticipant.prototype.updateFromObject = function (obj) {
+        if (Array.isArray(obj) && obj.length === 4) {
+            this.id = obj[0];
+            this.name = obj[1];
+            this.initiative = obj[2];
+            this.owner = obj[3];
         }
-        participant.push(effects);
+    };
+    CombatParticipant.prototype.exportAsObject = function () {
+        var participant = [this.id, this.name, this.initiative, this.owner];
         return participant;
     };
     return CombatParticipant;
@@ -8382,7 +8450,10 @@ var Server;
                 console.debug("[RoomMemory] Updated values from:", obj);
             }
             Memory.updateFromObject = updateFromObject;
+            var updateTimeout = null;
+            var updateTimeoutTime = 1500;
             function saveMemory() {
+                updateTimeout = null;
                 var room = Server.Chat.getRoom();
                 if (room !== null) {
                     var user = room.getMe();
@@ -8396,7 +8467,10 @@ var Server;
             Memory.saveMemory = saveMemory;
             function considerSaving() {
                 if (!updating) {
-                    saveMemory();
+                    if (updateTimeout !== null) {
+                        clearTimeout(updateTimeout);
+                    }
+                    updateTimeout = setTimeout(function () { Server.Chat.Memory.saveMemory(); }, updateTimeoutTime);
                 }
             }
             Memory.considerSaving = considerSaving;
@@ -12153,6 +12227,150 @@ var UI;
 (function (UI) {
     var Chat;
     (function (Chat) {
+        var PersonaManager;
+        (function (PersonaManager) {
+            var personaBox = document.getElementById("personaContainer");
+            while (personaBox.firstChild !== null)
+                personaBox.removeChild(personaBox.lastChild);
+            var currentElement = null;
+            var currentPersonaName = null;
+            var currentPersonaAvatar = null;
+            var changeTrigger = new Trigger();
+            var personaShortcuts = {};
+            var personaShortcutLastUsage = [];
+            var currentRoom = null;
+            UI.Chat.addRoomChangedListener({
+                handleEvent: function (e) {
+                    UI.Chat.PersonaManager.setRoom(e);
+                }
+            });
+            function setRoom(room) {
+                currentRoom = room;
+                clearPersonas();
+            }
+            PersonaManager.setRoom = setRoom;
+            function clearPersonas() {
+                while (personaBox.firstChild !== null)
+                    personaBox.removeChild(personaBox.firstChild);
+                currentPersonaAvatar = null;
+                currentPersonaName = null;
+                currentElement = null;
+                personaShortcutLastUsage = [];
+                personaShortcuts = {};
+            }
+            function clearPersona(name, avatar) {
+                if (personaShortcuts[name + ";" + avatar] !== undefined) {
+                    personaShortcutLastUsage.splice(personaShortcutLastUsage.indexOf(personaShortcuts[name + ";" + avatar]), 1);
+                    personaBox.removeChild(personaShortcuts[name + ";" + avatar]);
+                    if (currentElement === personaShortcuts[name + ";" + avatar]) {
+                        unsetPersona();
+                    }
+                    delete (personaShortcuts[name + ";" + avatar]);
+                }
+                else {
+                    console.debug("[PERSONAMANAGER] Attempt to remove unknown persona: " + name + ";" + avatar);
+                }
+            }
+            PersonaManager.clearPersona = clearPersona;
+            function getRoom() {
+                return currentRoom;
+            }
+            PersonaManager.getRoom = getRoom;
+            function createPersonaButton(name, avatar) {
+                var ele = document.createElement("div");
+                ele.classList.add("personaButton");
+                name = name.trim();
+                avatar = avatar === null ? null : avatar.trim();
+                var handler = {
+                    name: name,
+                    avatar: avatar,
+                    element: ele,
+                    handleEvent: function (e) {
+                        UI.Chat.PersonaManager.setPersona(this.name, this.avatar, this.element);
+                    }
+                };
+                ele.addEventListener("click", handler);
+                var shortName = name.split(" ");
+                var finalName = "";
+                var i = 0;
+                while (finalName.length <= 6 && i < shortName.length) {
+                    finalName += " " + shortName[i];
+                    i++;
+                }
+                ele.appendChild(document.createTextNode(finalName.trim()));
+                return ele;
+            }
+            function createAndUsePersona(name, avatar) {
+                if (personaShortcuts[name + ";" + avatar] === undefined) {
+                    personaShortcuts[name + ";" + avatar] = createPersonaButton(name, avatar);
+                }
+                if (personaShortcuts[name + ";" + avatar].parentElement === null) {
+                    personaBox.appendChild(personaShortcuts[name + ";" + avatar]);
+                }
+                setPersona(name, avatar, personaShortcuts[name + ";" + avatar]);
+                while (personaBox.scrollHeight > personaBox.clientHeight) {
+                    personaBox.removeChild(personaShortcutLastUsage.shift());
+                }
+            }
+            PersonaManager.createAndUsePersona = createAndUsePersona;
+            function addListener(listener) {
+                changeTrigger.addListener(listener);
+            }
+            PersonaManager.addListener = addListener;
+            function triggerListeners() {
+                changeTrigger.trigger(currentPersonaName, currentPersonaAvatar);
+                if (Server.Chat.isConnected()) {
+                    Server.Chat.sendPersona({
+                        persona: currentPersonaName,
+                        avatar: currentPersonaAvatar
+                    });
+                }
+            }
+            function setPersona(name, avatar, element) {
+                if (currentElement !== null)
+                    currentElement.classList.remove("active");
+                var oldName = currentPersonaName;
+                var oldAvatar = currentPersonaAvatar;
+                if (currentElement === element) {
+                    currentElement = null;
+                    currentPersonaAvatar = null;
+                    currentPersonaName = null;
+                }
+                else {
+                    currentElement = element;
+                    currentPersonaAvatar = avatar;
+                    currentPersonaName = name;
+                    currentElement.classList.add("active");
+                    var index = personaShortcutLastUsage.indexOf(currentElement);
+                    if (index !== -1) {
+                        personaShortcutLastUsage.splice(index, 1);
+                    }
+                    personaShortcutLastUsage.push(currentElement);
+                }
+                if (oldName !== currentPersonaName || oldAvatar !== currentPersonaAvatar) {
+                    triggerListeners();
+                }
+            }
+            PersonaManager.setPersona = setPersona;
+            function getPersonaName() {
+                return currentPersonaName;
+            }
+            PersonaManager.getPersonaName = getPersonaName;
+            function getPersonaAvatar() {
+                return currentPersonaAvatar;
+            }
+            PersonaManager.getPersonaAvatar = getPersonaAvatar;
+            function unsetPersona() {
+                setPersona(null, null, currentElement);
+            }
+            PersonaManager.unsetPersona = unsetPersona;
+        })(PersonaManager = Chat.PersonaManager || (Chat.PersonaManager = {}));
+    })(Chat = UI.Chat || (UI.Chat = {}));
+})(UI || (UI = {}));
+var UI;
+(function (UI) {
+    var Chat;
+    (function (Chat) {
         var Forms;
         (function (Forms) {
             var formState = new ChatFormState(document.getElementById("chatMessageStateIcon"));
@@ -12190,13 +12408,9 @@ var UI;
             formInput.addEventListener("keydown", function (e) { UI.Chat.Forms.handleInputKeypress(e); });
             delete (inputKeyHandler);
             var lastWhisperFrom = null;
-            addOnReady("ChatForms", "Dependency to same-level Module (UI.Chat.PersonaManager)", {
-                handleEvent: function () {
-                    UI.Chat.PersonaManager.addListener({
-                        handleEvent: function (name, avatar) {
-                            UI.Chat.Forms.updateFormState(name !== null);
-                        }
-                    });
+            UI.Chat.PersonaManager.addListener({
+                handleEvent: function (name, avatar) {
+                    UI.Chat.Forms.updateFormState(name !== null);
                 }
             });
             var olderTexts = [];
@@ -12764,150 +12978,6 @@ var UI;
             }
             Lingo.speakInTongues = speakInTongues;
         })(Lingo = Chat.Lingo || (Chat.Lingo = {}));
-    })(Chat = UI.Chat || (UI.Chat = {}));
-})(UI || (UI = {}));
-var UI;
-(function (UI) {
-    var Chat;
-    (function (Chat) {
-        var PersonaManager;
-        (function (PersonaManager) {
-            var personaBox = document.getElementById("personaContainer");
-            while (personaBox.firstChild !== null)
-                personaBox.removeChild(personaBox.lastChild);
-            var currentElement = null;
-            var currentPersonaName = null;
-            var currentPersonaAvatar = null;
-            var changeTrigger = new Trigger();
-            var personaShortcuts = {};
-            var personaShortcutLastUsage = [];
-            var currentRoom = null;
-            UI.Chat.addRoomChangedListener({
-                handleEvent: function (e) {
-                    UI.Chat.PersonaManager.setRoom(e);
-                }
-            });
-            function setRoom(room) {
-                currentRoom = room;
-                clearPersonas();
-            }
-            PersonaManager.setRoom = setRoom;
-            function clearPersonas() {
-                while (personaBox.firstChild !== null)
-                    personaBox.removeChild(personaBox.firstChild);
-                currentPersonaAvatar = null;
-                currentPersonaName = null;
-                currentElement = null;
-                personaShortcutLastUsage = [];
-                personaShortcuts = {};
-            }
-            function clearPersona(name, avatar) {
-                if (personaShortcuts[name + ";" + avatar] !== undefined) {
-                    personaShortcutLastUsage.splice(personaShortcutLastUsage.indexOf(personaShortcuts[name + ";" + avatar]), 1);
-                    personaBox.removeChild(personaShortcuts[name + ";" + avatar]);
-                    if (currentElement === personaShortcuts[name + ";" + avatar]) {
-                        unsetPersona();
-                    }
-                    delete (personaShortcuts[name + ";" + avatar]);
-                }
-                else {
-                    console.debug("[PERSONAMANAGER] Attempt to remove unknown persona: " + name + ";" + avatar);
-                }
-            }
-            PersonaManager.clearPersona = clearPersona;
-            function getRoom() {
-                return currentRoom;
-            }
-            PersonaManager.getRoom = getRoom;
-            function createPersonaButton(name, avatar) {
-                var ele = document.createElement("div");
-                ele.classList.add("personaButton");
-                name = name.trim();
-                avatar = avatar === null ? null : avatar.trim();
-                var handler = {
-                    name: name,
-                    avatar: avatar,
-                    element: ele,
-                    handleEvent: function (e) {
-                        UI.Chat.PersonaManager.setPersona(this.name, this.avatar, this.element);
-                    }
-                };
-                ele.addEventListener("click", handler);
-                var shortName = name.split(" ");
-                var finalName = "";
-                var i = 0;
-                while (finalName.length <= 6 && i < shortName.length) {
-                    finalName += " " + shortName[i];
-                    i++;
-                }
-                ele.appendChild(document.createTextNode(finalName.trim()));
-                return ele;
-            }
-            function createAndUsePersona(name, avatar) {
-                if (personaShortcuts[name + ";" + avatar] === undefined) {
-                    personaShortcuts[name + ";" + avatar] = createPersonaButton(name, avatar);
-                }
-                if (personaShortcuts[name + ";" + avatar].parentElement === null) {
-                    personaBox.appendChild(personaShortcuts[name + ";" + avatar]);
-                }
-                setPersona(name, avatar, personaShortcuts[name + ";" + avatar]);
-                while (personaBox.scrollHeight > personaBox.clientHeight) {
-                    personaBox.removeChild(personaShortcutLastUsage.shift());
-                }
-            }
-            PersonaManager.createAndUsePersona = createAndUsePersona;
-            function addListener(listener) {
-                changeTrigger.addListener(listener);
-            }
-            PersonaManager.addListener = addListener;
-            function triggerListeners() {
-                changeTrigger.trigger(currentPersonaName, currentPersonaAvatar);
-                if (Server.Chat.isConnected()) {
-                    Server.Chat.sendPersona({
-                        persona: currentPersonaName,
-                        avatar: currentPersonaAvatar
-                    });
-                }
-            }
-            function setPersona(name, avatar, element) {
-                if (currentElement !== null)
-                    currentElement.classList.remove("active");
-                var oldName = currentPersonaName;
-                var oldAvatar = currentPersonaAvatar;
-                if (currentElement === element) {
-                    currentElement = null;
-                    currentPersonaAvatar = null;
-                    currentPersonaName = null;
-                }
-                else {
-                    currentElement = element;
-                    currentPersonaAvatar = avatar;
-                    currentPersonaName = name;
-                    currentElement.classList.add("active");
-                    var index = personaShortcutLastUsage.indexOf(currentElement);
-                    if (index !== -1) {
-                        personaShortcutLastUsage.splice(index, 1);
-                    }
-                    personaShortcutLastUsage.push(currentElement);
-                }
-                if (oldName !== currentPersonaName || oldAvatar !== currentPersonaAvatar) {
-                    triggerListeners();
-                }
-            }
-            PersonaManager.setPersona = setPersona;
-            function getPersonaName() {
-                return currentPersonaName;
-            }
-            PersonaManager.getPersonaName = getPersonaName;
-            function getPersonaAvatar() {
-                return currentPersonaAvatar;
-            }
-            PersonaManager.getPersonaAvatar = getPersonaAvatar;
-            function unsetPersona() {
-                setPersona(null, null, currentElement);
-            }
-            PersonaManager.unsetPersona = unsetPersona;
-        })(PersonaManager = Chat.PersonaManager || (Chat.PersonaManager = {}));
     })(Chat = UI.Chat || (UI.Chat = {}));
 })(UI || (UI = {}));
 var UI;

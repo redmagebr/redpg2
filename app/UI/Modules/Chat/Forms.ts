@@ -1,3 +1,4 @@
+/// <reference path='PersonaManager.ts' />
 module UI.Chat.Forms {
     var formState = new ChatFormState(document.getElementById("chatMessageStateIcon"));
     var formInput : HTMLInputElement = <HTMLInputElement> document.getElementById("chatMessageInput");
@@ -41,13 +42,9 @@ module UI.Chat.Forms {
 
     var lastWhisperFrom : UserRoomContext = null;
 
-    addOnReady("ChatForms", "Dependency to same-level Module (UI.Chat.PersonaManager)", <Listener> {
-        handleEvent : function () {
-            UI.Chat.PersonaManager.addListener(<Listener> {
-                handleEvent : function (name : String, avatar : String) {
-                    UI.Chat.Forms.updateFormState(name !== null);
-                }
-            })
+    UI.Chat.PersonaManager.addListener(<Listener> {
+        handleEvent : function (name : String, avatar : String) {
+            UI.Chat.Forms.updateFormState(name !== null);
         }
     });
 

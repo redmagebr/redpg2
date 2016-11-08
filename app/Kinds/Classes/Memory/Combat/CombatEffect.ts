@@ -1,11 +1,14 @@
+/// <reference path='../MemoryCombat.ts' />
 class CombatEffect {
     public name : string = "";
     public origin : number = 0;
+    public target : number = 0;
+    public roundEnd : number = 0;
+    public turnEnd : number = 0;
+    public endOnStart : boolean = false;
+    public endOnEnd : boolean = false;
     public customString : String = null;
-
-    public reset () {
-        this.name = UI.Language.getLanguage().getLingo("_TRACKERUNKNOWNEFFECT_");
-    }
+    private combat : MemoryCombat;
 
     public exportAsObject () {
         var arr = [this.name, this.origin];
@@ -15,8 +18,20 @@ class CombatEffect {
         return arr;
     }
 
-    public storeValue (array : Array<any>) {
-        if (!Array.isArray(array) || typeof array[0] !== "string" || typeof array[1] !== "number") {
+    constructor (combat : MemoryCombat) {
+        this.combat = combat;
+    }
+
+    public considerEnding () {
+
+    }
+
+    public reset () {
+        this.name = UI.Language.getLanguage().getLingo("_TRACKERUNKNOWNEFFECT_");
+    }
+
+    public updateFromObject (array : Array<any>) {
+        if (!Array.isArray(array)) {
             this.reset();
         } else {
             this.name = array[0];

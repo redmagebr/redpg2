@@ -80,8 +80,12 @@ module Server.Chat.Memory {
         console.debug("[RoomMemory] Updated values from:", obj);
     }
 
+    var updateTimeout : number = null;
+    var updateTimeoutTime = 1500;
+
     // TODO: Don't save the same thing multiple times
     export function saveMemory () {
+        updateTimeout = null;
         var room = Server.Chat.getRoom();
         if (room !== null) {
             var user = room.getMe();
@@ -96,7 +100,10 @@ module Server.Chat.Memory {
 
     export function considerSaving () {
         if (!updating) {
-            saveMemory();
+            if (updateTimeout !== null) {
+                clearTimeout(updateTimeout);
+            }
+            updateTimeout = setTimeout(function () { Server.Chat.Memory.saveMemory(); }, updateTimeoutTime);
         }
     }
 
