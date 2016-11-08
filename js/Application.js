@@ -9154,7 +9154,7 @@ var UI;
     Application.Config.registerConfiguration("chatMaxMessages", new NumberConfiguration(120, 60, 10000));
     Application.Config.registerConfiguration("chatshowhelp", new BooleanConfiguration(true));
     Application.Config.registerConfiguration("chatfontsize", new NumberConfiguration(16, 12, 32));
-    Application.Config.registerConfiguration("chatfontfamily", new Configuration("alegreya"));
+    Application.Config.registerConfiguration("chatfontfamily", new Configuration("caudex"));
     Application.Config.registerConfiguration("animTime", new NumberConfiguration(150, 0, 300));
     Application.Config.registerConfiguration("language", new LanguageConfiguration());
     Application.Config.registerConfiguration("fsmode", new BooleanConfiguration(false));
@@ -9775,6 +9775,7 @@ var UI;
     (function (Images) {
         document.getElementById("imagesButton").addEventListener("click", function () { UI.Images.callSelf(); });
         document.getElementById("dropboxImagesButton").addEventListener("click", function () { UI.Images.callDropbox(); });
+        var folderInput = document.getElementById("dropboxImagesFolderName");
         var target = document.getElementById("imagesTarget");
         var loadError = document.getElementById("imagesLoadError");
         var saveError = document.getElementById("imagesSaveError");
@@ -9837,6 +9838,8 @@ var UI;
         }
         Images.callDropbox = callDropbox;
         function addDropbox(files) {
+            var intendedFolder = folderInput.value.trim();
+            folderInput.value = "";
             var folders = [];
             var links = [];
             for (var i = 0; i < files.length; i++) {
@@ -9846,7 +9849,11 @@ var UI;
                 var name;
                 var folderName;
                 var hiphenPos = originalName.indexOf("-");
-                if (hiphenPos === -1) {
+                if (intendedFolder !== "") {
+                    folderName = intendedFolder;
+                    name = originalName.trim();
+                }
+                else if (hiphenPos === -1) {
                     folderName = "";
                     name = originalName.trim();
                 }
@@ -13437,6 +13444,11 @@ change.addMessage("Fonte padrão do chat alterada para Alegreya. Caudex ainda di
 change = new Changelog(0, 17, 0);
 change.addMessage("It is now possible to force sounds into a folder.", "en");
 change.addMessage("Opção para forçar sons a uma determinada pasta criada.", "pt");
+change = new Changelog(0, 18, 0);
+change.addMessage("Chat font defaults to Caudex again, it was chosen for a reason.", "en");
+change.addMessage("Fonte do chat padrão retornada para Caudex. Alegreya ainda pode ser utilizada em opções.", "pt");
+change.addMessage("It is now possible to force images into a folder.", "en");
+change.addMessage("Opção para forçar imagens a uma determinada pasta criada.", "pt");
 delete (change);
 Changelog.finished();
 UI.Language.searchLanguage();

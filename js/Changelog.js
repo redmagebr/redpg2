@@ -64,6 +64,11 @@ change = new Changelog(0, 17, 0);
 change.addMessage("It is now possible to force sounds into a folder.", "en");
 change.addMessage("Opção para forçar sons a uma determinada pasta criada.", "pt");
 
+change = new Changelog(0, 18, 0);
+change.addMessage("Chat font defaults to Caudex again, it was chosen for a reason.", "en");
+change.addMessage("Fonte do chat padrão retornada para Caudex. Alegreya ainda pode ser utilizada em opções.", "pt");
+change.addMessage("It is now possible to force images into a folder.", "en");
+change.addMessage("Opção para forçar imagens a uma determinada pasta criada.", "pt");
 
 delete (change);
 

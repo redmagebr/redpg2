@@ -33,7 +33,7 @@ module UI {
     Application.Config.registerConfiguration("chatMaxMessages", new NumberConfiguration(120, 60, 10000)); // Chat Font Size
     Application.Config.registerConfiguration("chatshowhelp", new BooleanConfiguration(true)); // Show help messages on top of chat
     Application.Config.registerConfiguration("chatfontsize", new NumberConfiguration(16, 12, 32)); // Chat Font Size
-    Application.Config.registerConfiguration("chatfontfamily", new Configuration("alegreya")); // Chat Font Family
+    Application.Config.registerConfiguration("chatfontfamily", new Configuration("caudex")); // Chat Font Family
 
     Application.Config.registerConfiguration("animTime", new NumberConfiguration(150, 0, 300)); // Animation Time
     Application.Config.registerConfiguration("language", new LanguageConfiguration()); // Current Language

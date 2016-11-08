@@ -2,6 +2,8 @@ module UI.Images {
     document.getElementById("imagesButton").addEventListener("click", function () { UI.Images.callSelf(); });
     document.getElementById("dropboxImagesButton").addEventListener("click", function () { UI.Images.callDropbox(); });
 
+    var folderInput : HTMLInputElement = <HTMLInputElement> document.getElementById("dropboxImagesFolderName");
+
     var target = document.getElementById("imagesTarget");
     var loadError = document.getElementById("imagesLoadError");
     var saveError = document.getElementById("imagesSaveError");
@@ -74,6 +76,8 @@ module UI.Images {
     }
 
     export function addDropbox (files) {
+        var intendedFolder = folderInput.value.trim();
+        folderInput.value = "";
         var folders : Array<string> = [];
 
         var links : Array<ImageLink> = [];
@@ -84,7 +88,10 @@ module UI.Images {
             var name;
             var folderName;
             var hiphenPos = originalName.indexOf("-");
-            if (hiphenPos === -1) {
+            if (intendedFolder !== "") {
+                folderName = intendedFolder;
+                name = originalName.trim();
+            } else if (hiphenPos === -1) {
                 folderName = "";
                 name = originalName.trim();
             } else {

@@ -6313,7 +6313,7 @@ body {
   margin: auto;
   width: 150px;
   height: 35px;
-  margin-bottom: 15px;
+  margin-bottom: 8px;
 }
 
 /* line 92, ../sass/mainWindowImages.scss */
@@ -6340,6 +6340,18 @@ body {
 }
 
 /* line 112, ../sass/mainWindowImages.scss */
+#dropboxImagesFolderName {
+  display: block;
+  margin: auto;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  text-align: center;
+  font-family: alegreya;
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+/* line 123, ../sass/mainWindowImages.scss */
 #dropboxImagesButton {
   display: block;
   width: 170px;
@@ -6353,13 +6365,13 @@ body {
   color: #007ee5;
   font-weight: bold;
 }
-/* line 126, ../sass/mainWindowImages.scss */
+/* line 137, ../sass/mainWindowImages.scss */
 #dropboxImagesButton:hover {
   border: solid 1px #0065b7;
   background-color: #eaeff8;
   color: #008dfa;
 }
-/* line 132, ../sass/mainWindowImages.scss */
+/* line 143, ../sass/mainWindowImages.scss */
 #dropboxImagesButton:active {
   border: solid 1px #003468;
   background-color: #d4d9e1;

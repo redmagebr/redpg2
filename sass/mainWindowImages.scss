@@ -86,7 +86,7 @@
   margin: auto;
   width: 150px;
   height: 35px;
-  margin-bottom: 15px;
+  margin-bottom: 8px;
 }
 
 #linkImagesTitle {
@@ -107,6 +107,17 @@
   height: 35px;
   width: 35px;
   vertical-align: top;
+}
+
+#dropboxImagesFolderName {
+  display: block;
+  margin: auto;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  text-align: center;
+  font-family: alegreya;
+  padding-left: 6px;
+  padding-right: 6px;
 }
 
 #dropboxImagesButton {
