@@ -150,6 +150,7 @@ module UI.Chat.Combat {
         var msg = new MessageSheetturn();
         msg.setSheetName(turner.name);
         msg.setOwnerId(turner.owner);
+        msg.setSheetId(turner.id);
         UI.Chat.sendMessage(msg);
     }
 

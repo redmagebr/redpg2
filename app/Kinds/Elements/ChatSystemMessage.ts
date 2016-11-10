@@ -31,6 +31,10 @@ class ChatSystemMessage {
         this.element.appendChild(document.createTextNode(text));
     }
 
+    public addLingoVariable (id : string, value : string) {
+        UI.Language.addLanguageVariable(this.element, id, value);
+    }
+
     public addElement (ele : HTMLElement) {
         this.element.appendChild(ele);
     }

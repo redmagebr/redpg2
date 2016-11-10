@@ -340,7 +340,9 @@ ptbr.setLingo("_COMBATTRACKERNEWROUND_", "Começar nova rodada");
 ptbr.setLingo("_COMBATTRACKERNEXTTURN_", "Passar turno");
 ptbr.setLingo("_COMBATTRACKEENDCOMBAT_", "Finalizar combate");
 ptbr.setLingo("_COMBATTRACKERNOCOMBATANTS_", "Sem participantes em combate.");
-ptbr.setLingo("_CHATCOMBATENDEDCOMBAT_", "Combate finalizado. Todos os npcs foram removidos do combate.");
+ptbr.setLingo("_CHATCOMBATENDEDCOMBAT_", "Combate finalizado. Todos os NPCs foram removidos do combate e efeitos foram limpos.");
+ptbr.setLingo("_CHATCOMBATEFFECTENDED_", "Efeito \"%a\" terminou em \"%b\".");
+ptbr.setLingo("_CHATCOMBATEFFECTINPROGRESS_", "Efeitos em %a: %b.");
 
 // Chat Persona Designer
 ptbr.setLingo("_PERSONADESIGNERTITLE_", "Administrador de Personas");

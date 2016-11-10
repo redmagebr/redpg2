@@ -491,6 +491,8 @@ declare abstract class TrackerMemory {
 }
 declare class MemoryCombat extends TrackerMemory {
     private combatants;
+    private effects;
+    private storedEffects;
     private round;
     private turn;
     private targets;
@@ -499,6 +501,13 @@ declare class MemoryCombat extends TrackerMemory {
     removeTargetListener(f: Function | Listener): void;
     triggerTarget(): void;
     getCurrentTurnOwner(): CombatParticipant;
+    getEffects(): {
+        [id: number]: CombatEffect[];
+    };
+    getEffectsOn(id: number): Array<CombatEffect>;
+    removeEffect(ce: CombatEffect): void;
+    addCombatEffect(effect: CombatEffect): void;
+    addEffect(ce: CombatEffectInfo): void;
     cleanTargets(): void;
     getTargets(): number[];
     isTarget(id: number): boolean;
@@ -507,14 +516,18 @@ declare class MemoryCombat extends TrackerMemory {
     getRound(): number;
     getTurn(): number;
     getCombatants(): CombatParticipant[];
+    getMyCombatants(): any[];
     reset(): void;
     removeParticipant(c: CombatParticipant): void;
     reorderCombatants(): void;
     addParticipant(sheet: SheetInstance, owner?: User): void;
     incrementRound(): void;
+    considerEndingEffects(): void;
     setTurn(combatant: CombatParticipant): void;
     incrementTurn(): void;
     exportAsObject(): any[];
+    storeEffectNames(): void;
+    announceEffectEnding(): void;
     storeValue(obj: any): void;
     setInitiative(combatant: CombatParticipant, initiative: number): void;
     getValue(): any;
@@ -566,20 +579,27 @@ declare class MemoryCutscene extends TrackerMemory {
     getValue(): boolean;
     exportAsObject(): number;
 }
-declare class CombatEffect {
+interface CombatEffectInfo {
     name: string;
-    origin: number;
     target: number;
     roundEnd: number;
     turnEnd: number;
     endOnStart: boolean;
-    endOnEnd: boolean;
+    customString: String;
+}
+declare class CombatEffect {
+    name: string;
+    target: number;
+    roundEnd: number;
+    turnEnd: number;
+    endOnStart: boolean;
     customString: String;
     private combat;
-    exportAsObject(): (string | number)[];
     constructor(combat: MemoryCombat);
+    getTargetName(): string;
     considerEnding(): void;
     reset(): void;
+    exportAsObject(): (string | number)[];
     updateFromObject(array: Array<any>): void;
 }
 declare class CombatParticipant {
@@ -685,6 +705,7 @@ declare class ChatSystemMessage {
     addLangVar(id: string, value: string): void;
     addTextLink(text: string, hasLanguage: boolean, click: Listener | Function): void;
     addText(text: string): void;
+    addLingoVariable(id: string, value: string): void;
     addElement(ele: HTMLElement): void;
     getElement(): HTMLElement;
 }
@@ -1320,6 +1341,8 @@ declare class MessageSheetturn extends Message {
     module: string;
     private playedBefore;
     createHTML(): HTMLParagraphElement;
+    setSheetId(id: number): void;
+    getSheetId(): number;
     setSheetName(name: string): void;
     getSheetName(): string;
     setOwnerId(id: number): void;

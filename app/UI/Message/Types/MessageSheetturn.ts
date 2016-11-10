@@ -16,6 +16,14 @@ class MessageSheetturn extends Message {
         return p;
     }
 
+    public setSheetId (id : number) {
+        this.setSpecial("sheetid", id);
+    }
+
+    public getSheetId () : number {
+        return this.getSpecial("sheetid", 0);
+    }
+
     public setSheetName (name : string) {
         this.msg = name;
     }
@@ -50,10 +58,28 @@ class MessageSheetturn extends Message {
         if (this.playedBefore) {
             return; // don't play yourself twice!
         }
+
+        if (UI.Chat.doAutomation()) {
+            var memory = <MemoryCombat> Server.Chat.Memory.getConfiguration("Combat");
+            var effects = memory.getEffectsOn(this.getSheetId());
+            if (effects.length > 0) {
+                var msg = new ChatSystemMessage(true);
+                msg.addText("_CHATCOMBATEFFECTINPROGRESS_");
+                msg.addLangVar("a", this.getSheetName());
+                var names = [];
+                for (var i = 0; i < effects.length; i++) {
+                    names.push(effects[i].name);
+                }
+                msg.addLangVar("b", names.join(", "));
+                UI.Chat.printElement(msg.getElement());
+            }
+        }
+
         if (Application.isMe(this.getOwnerId()) && UI.Chat.doAutomation()) {
             UI.SoundController.playAlert();
-            this.playedBefore = true;
         }
+
+        this.playedBefore = true;
     }
 }
 
