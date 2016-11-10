@@ -8089,14 +8089,15 @@ body {
 }
 /* line 13, ../sass/mainChatCombat.scss */
 .combatRow.currentTarget {
-  border: solid 2px #ff0000;
+  border-right: solid 8px #ff0000;
+  box-sizing: border-box;
 }
-/* line 17, ../sass/mainChatCombat.scss */
+/* line 18, ../sass/mainChatCombat.scss */
 .combatRow.currentTurn {
   border-left: 8px solid #000;
 }
 
-/* line 22, ../sass/mainChatCombat.scss */
+/* line 23, ../sass/mainChatCombat.scss */
 .combatName {
   flex: 1 0 auto;
   font-weight: bold;
@@ -8106,7 +8107,7 @@ body {
   vertical-align: top;
 }
 
-/* line 31, ../sass/mainChatCombat.scss */
+/* line 32, ../sass/mainChatCombat.scss */
 .combatButton, .combatRemove, .combatSetTurn, .combatTarget, .combatSheet {
   flex: 0 0 auto;
   width: 24px;
@@ -8114,12 +8115,12 @@ body {
   margin: 4px;
 }
 
-/* line 43, ../sass/mainChatCombat.scss */
+/* line 44, ../sass/mainChatCombat.scss */
 .combatSetTurn, .combatTarget, .combatSheet {
   margin-left: 0px;
 }
 
-/* line 63, ../sass/mainChatCombat.scss */
+/* line 64, ../sass/mainChatCombat.scss */
 .combatRowInitiative {
   flex: 0 0 auto;
   float: right;
@@ -8130,7 +8131,7 @@ body {
   font-family: alegreya;
 }
 
-/* line 73, ../sass/mainChatCombat.scss */
+/* line 74, ../sass/mainChatCombat.scss */
 #combatStoryButtons {
   height: auto;
   overflow: visible;
@@ -8139,12 +8140,12 @@ body {
   padding-left: 4px;
 }
 
-/* line 81, ../sass/mainChatCombat.scss */
+/* line 82, ../sass/mainChatCombat.scss */
 #combatSelectSheet, #combatSelectUser {
   font-family: alegreya;
 }
 
-/* line 85, ../sass/mainChatCombat.scss */
+/* line 86, ../sass/mainChatCombat.scss */
 .combatAdd, .combatNewRound, .combatNextTurn, .combatEndCombat {
   display: inline-block;
   height: 24px;
@@ -8152,7 +8153,7 @@ body {
   vertical-align: middle;
 }
 
-/* line 94, ../sass/mainChatCombat.scss */
+/* line 95, ../sass/mainChatCombat.scss */
 .combatNewRound, .combatNextTurn, .combatEndCombat {
   float: right;
   margin-right: 4px;

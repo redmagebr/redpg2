@@ -27,18 +27,17 @@ class ChatCombatRow {
         span.appendChild(document.createTextNode(combatant.name));
         this.visible.appendChild(span);
 
+        var input = document.createElement("input");
+        input.classList.add("combatRowInitiative");
+        input.value = combatant.initiative.toString();
+        this.input = input;
+        this.visible.appendChild(input);
+        this.input.disabled = !isStoryteller;
+
         if (isStoryteller) {
-            // INPUT!!!!!!!!!!!!!
-            var input = document.createElement("input");
-            input.classList.add("combatRowInitiative");
             input.addEventListener("change", (function () {
                 this.change();
             }).bind(this));
-
-            input.value = combatant.initiative.toString();
-
-            this.input = input;
-            this.visible.appendChild(input);
 
             // TURN!!!!!!!!!!!!!!
             var turn = document.createElement("a");

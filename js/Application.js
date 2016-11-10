@@ -2376,15 +2376,16 @@ var ChatCombatRow = (function () {
         span.classList.add("combatName");
         span.appendChild(document.createTextNode(combatant.name));
         this.visible.appendChild(span);
+        var input = document.createElement("input");
+        input.classList.add("combatRowInitiative");
+        input.value = combatant.initiative.toString();
+        this.input = input;
+        this.visible.appendChild(input);
+        this.input.disabled = !isStoryteller;
         if (isStoryteller) {
-            var input = document.createElement("input");
-            input.classList.add("combatRowInitiative");
             input.addEventListener("change", (function () {
                 this.change();
             }).bind(this));
-            input.value = combatant.initiative.toString();
-            this.input = input;
-            this.visible.appendChild(input);
             var turn = document.createElement("a");
             turn.classList.add("combatSetTurn", "language");
             UI.Language.addLanguageTitle(turn, "_COMBATTRACKERSETTURN_");
@@ -13308,7 +13309,7 @@ var UI;
         (function (Lingo) {
             var floater = document.getElementById("lingoFloater");
             var $floater = $(floater).draggable({
-                containment: '#chatSideWindow',
+                containment: '#mainWindow',
                 handle: '#lingoHandle'
             }).hide();
             document.getElementById("lingoMinus").addEventListener("click", function () { UI.Chat.Lingo.hide(); });
@@ -13326,8 +13327,8 @@ var UI;
                     hide();
                     return;
                 }
-                floater.style.left = "0px";
-                floater.style.top = "0px";
+                floater.style.left = "10px";
+                floater.style.top = "10px";
                 $floater.stop(true).fadeIn(Application.Config.getConfig("animTime").getValue());
                 update();
             }
@@ -13467,7 +13468,7 @@ var UI;
         (function (Combat) {
             var floater = document.getElementById("combatFloater");
             var $floater = $(floater).draggable({
-                containment: '#chatSideWindow',
+                containment: '#mainWindow',
                 handle: '#combatHandle'
             }).hide();
             document.getElementById("combatMinus").addEventListener("click", function () { UI.Chat.Combat.hide(); });
@@ -13497,8 +13498,8 @@ var UI;
                     hide();
                     return;
                 }
-                floater.style.left = "0px";
-                floater.style.top = "0px";
+                floater.style.left = "10px";
+                floater.style.top = "10px";
                 $floater.stop(true).fadeIn(Application.Config.getConfig("animTime").getValue());
                 update();
             }
@@ -14161,6 +14162,9 @@ change.addMessage("Opção para forçar imagens a uma determinada pasta criada."
 change = new Changelog(0, 19, 0);
 change.addMessage("Initial combat tracker release. More planned for later.", "en");
 change.addMessage("Lançamento inicial do Combat Tracker. Atualizações planejadas para o futuro.", "pt");
+change = new Changelog(0, 20, 0);
+change.addMessage("Effect tracking added to Combat Tracker. Admin screen not implemented for it.", "en");
+change.addMessage("Efeitos adicionados ao Combat Tracker. Uma tela de administração para eles não foi implementada.", "pt");
 delete (change);
 Changelog.finished();
 UI.Language.searchLanguage();

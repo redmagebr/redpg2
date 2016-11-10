@@ -325,49 +325,49 @@
       -############################################
       -############## CHAT
       -############################################
+      #combatFloater.chatFloater
+        #combatHandle.language.chatFloaterHandle
+          #combatMinus.chatFloaterMinus="-"
+          _COMBATTRACKER_
+        #combatContent.chatFloaterContent
+          .combatRow.currentTurn.currentTarget
+            %a.combatRemove.language{:data => {:titlelingo => "_COMBATTRACKERREMOVE_"}}
+            %span.combatName="Nome do Sujeito"
+            %input.combatRowInitiative
+            %a.combatSetTurn.language{:data => {:titlelingo => "_COMBATTRACKERSETTURN_"}}
+            %a.combatTarget.language{:data => {:titlelingo => "_COMBATTRACKERSETTARGET_"}}
+            %a.combatSheet.language{:data => {:titlelingo => "_COMBATTRACKERSHEET_"}}
+          .combatRow
+            %span.combatName.language="_COMBATTRACKERNOCOMBATANTS_"
+        #combatStoryButtons.chatFloaterContent
+          %select#combatSelectUser
+            %option="NPC"
+            %option="Reddo"
+          \-
+          %select#combatSelectSheet
+            %option.language{:disabled=>"true"}="_COMBATTRACKERNOSHEETS_"
+          %a#combatAddSheet.combatAdd.language{:data => {:titlelingo => "_COMBATTRACKERADD_"}}
+          %a#combatNewRound.combatNewRound.language{:data => {:titlelingo => "_COMBATTRACKERNEWROUND_"}}
+          %a#combatNextTurn.combatNextTurn.language{:data => {:titlelingo => "_COMBATTRACKERNEXTTURN_"}}
+          %a#combatEndCombat.combatEndCombat.language{:data => {:titlelingo => "_COMBATTRACKEENDCOMBAT_"}}
+      #lingoFloater.chatFloater
+        #lingoHandle.language.chatFloaterHandle
+          #lingoMinus.chatFloaterMinus="-"
+          _LINGOMANAGER_
+        #lingoContent.chatFloaterContent
+          .lingoRow
+            %b.lingoName="Reddo#0001:"
+            %a.lingoButton="Elvish"
+            %a.lingoButton
+              %span.textLink="(X)"
+              Elagon
+            %a.lingoButton.clickable="Draconic"
+            .lingoAdder
+              %select
+                %option="Elvish"
+                %option="Orcish"
+              %a.textLink.language="_LINGOADD_"
       #chatSideWindow.leftSideWindow
-        #combatFloater.chatFloater
-          #combatHandle.language.chatFloaterHandle
-            #combatMinus.chatFloaterMinus="-"
-            _COMBATTRACKER_
-          #combatContent.chatFloaterContent
-            .combatRow.currentTurn.currentTarget
-              %a.combatRemove.language{:data => {:titlelingo => "_COMBATTRACKERREMOVE_"}}
-              %span.combatName="Nome do Sujeito"
-              %input.combatRowInitiative
-              %a.combatSetTurn.language{:data => {:titlelingo => "_COMBATTRACKERSETTURN_"}}
-              %a.combatTarget.language{:data => {:titlelingo => "_COMBATTRACKERSETTARGET_"}}
-              %a.combatSheet.language{:data => {:titlelingo => "_COMBATTRACKERSHEET_"}}
-            .combatRow
-              %span.combatName.language="_COMBATTRACKERNOCOMBATANTS_"
-          #combatStoryButtons.chatFloaterContent
-            %select#combatSelectUser
-              %option="NPC"
-              %option="Reddo"
-            \-
-            %select#combatSelectSheet
-              %option.language{:disabled=>"true"}="_COMBATTRACKERNOSHEETS_"
-            %a#combatAddSheet.combatAdd.language{:data => {:titlelingo => "_COMBATTRACKERADD_"}}
-            %a#combatNewRound.combatNewRound.language{:data => {:titlelingo => "_COMBATTRACKERNEWROUND_"}}
-            %a#combatNextTurn.combatNextTurn.language{:data => {:titlelingo => "_COMBATTRACKERNEXTTURN_"}}
-            %a#combatEndCombat.combatEndCombat.language{:data => {:titlelingo => "_COMBATTRACKEENDCOMBAT_"}}
-        #lingoFloater.chatFloater
-          #lingoHandle.language.chatFloaterHandle
-            #lingoMinus.chatFloaterMinus="-"
-            _LINGOMANAGER_
-          #lingoContent.chatFloaterContent
-            .lingoRow
-              %b.lingoName="Reddo#0001:"
-              %a.lingoButton="Elvish"
-              %a.lingoButton
-                %span.textLink="(X)"
-                Elagon
-              %a.lingoButton.clickable="Draconic"
-              .lingoAdder
-                %select
-                  %option="Elvish"
-                  %option="Orcish"
-                %a.textLink.language="_LINGOADD_"
         #avatarBox
         .icons-chatUp#avatarUpButton
         .icons-chatDown#avatarDownButton

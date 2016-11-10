@@ -11,7 +11,8 @@
   display: flex;
 
   &.currentTarget {
-    border: solid 2px #ff0000;
+    border-right: solid 8px #ff0000;
+    box-sizing: border-box;
   }
 
   &.currentTurn {

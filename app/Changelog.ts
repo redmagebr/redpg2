@@ -74,6 +74,10 @@ change = new Changelog(0, 19, 0);
 change.addMessage("Initial combat tracker release. More planned for later.", "en");
 change.addMessage("Lançamento inicial do Combat Tracker. Atualizações planejadas para o futuro.", "pt");
 
+change = new Changelog(0, 20, 0);
+change.addMessage("Effect tracking added to Combat Tracker. Admin screen not implemented for it.", "en");
+change.addMessage("Efeitos adicionados ao Combat Tracker. Uma tela de administração para eles não foi implementada.", "pt");
+
 delete (change);
 
 Changelog.finished();

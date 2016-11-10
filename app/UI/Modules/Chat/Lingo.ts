@@ -1,7 +1,7 @@
 module UI.Chat.Lingo {
     var floater = document.getElementById("lingoFloater");
     var $floater = $(floater).draggable({
-        containment : '#chatSideWindow',
+        containment : '#mainWindow',
         handle : '#lingoHandle'
     }).hide();
 
@@ -23,8 +23,8 @@ module UI.Chat.Lingo {
             hide();
             return;
         }
-        floater.style.left = "0px";
-        floater.style.top = "0px";
+        floater.style.left = "10px";
+        floater.style.top = "10px";
         $floater.stop(true).fadeIn(Application.Config.getConfig("animTime").getValue());
         update();
     }

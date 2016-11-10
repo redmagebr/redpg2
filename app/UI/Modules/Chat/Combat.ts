@@ -1,7 +1,7 @@
 module UI.Chat.Combat {
     var floater = document.getElementById("combatFloater");
     var $floater = $(floater).draggable({
-        containment : '#chatSideWindow',
+        containment : '#mainWindow',
         handle : '#combatHandle'
     }).hide();
 
@@ -40,8 +40,8 @@ module UI.Chat.Combat {
             hide();
             return;
         }
-        floater.style.left = "0px";
-        floater.style.top = "0px";
+        floater.style.left = "10px";
+        floater.style.top = "10px";
         $floater.stop(true).fadeIn(Application.Config.getConfig("animTime").getValue());
         update();
     }
