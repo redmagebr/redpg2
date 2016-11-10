@@ -95,6 +95,13 @@ class Sheet {
     public updateFromObject (obj : Object) {
         for (var id in this.values) {
             if (obj[id] === undefined) {
+                var aliases = this.values[id].getAliases();
+                for (var i = 0; i < aliases.length; i++) {
+                    if (obj[aliases[i]] !== undefined) {
+                        this.values[id].updateFromObject(obj[aliases[i]]);
+                        continue;
+                    }
+                }
                 this.values[id].reset();
             } else {
                 this.values[id].updateFromObject(obj[id]);
@@ -179,6 +186,12 @@ class Sheet {
         this.values[list.getId()] = list;
         this.valuesSimplified[Sheet.simplifyString(list.getId())] = list;
 
+        var aliases = list.getAliases();
+
+        for (var i = 0; i < aliases.length; i++) {
+            this.valuesSimplified[Sheet.simplifyString(aliases[i])] = list;
+        }
+
         if (list.isIndexed()) {
             this.indexedLists.push(list);
         }
@@ -206,6 +219,12 @@ class Sheet {
         variable = new constructor(this, this.style, element);
         this.values[variable.getId()] = variable;
         this.valuesSimplified[Sheet.simplifyString(variable.getId())] = variable;
+
+        var aliases = variable.getAliases();
+
+        for (var i = 0; i < aliases.length; i++) {
+            this.valuesSimplified[Sheet.simplifyString(aliases[i])] = variable;
+        }
 
         variable.addChangeListener(this.changeListener);
     }

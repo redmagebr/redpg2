@@ -15,6 +15,8 @@ class SheetList {
 
     protected busy : boolean = false;
 
+    protected aliases : Array<string> = [];
+
     protected sheetChangeListener = <Listener> {
         list : this,
         counter : -1,
@@ -25,6 +27,10 @@ class SheetList {
             }
         }
     };
+
+    public getAliases () {
+        return this.aliases;
+    }
 
     protected tableIndex : string; // This becomes the PRIMARY KEY for the sheets inside
     protected tableValue : string; // This becomes the VALUE for each row inside
@@ -59,6 +65,16 @@ class SheetList {
         } catch (e) {
             console.warn("[SheetList] Received invalid JSON as default value for " + this.getId() + " in " + this.style.getName() + ", reverting to empty object.");
             this.defaultValue = [];
+        }
+
+        if (this.visible.dataset['alias'] !== undefined) {
+            var aliases = this.visible.dataset['alias'].trim().split(";");
+            for (var i = 0; i < aliases.length; i++) {
+                var alias = aliases[i].trim();
+                if (alias !== "") {
+                    this.aliases.push(alias);
+                }
+            }
         }
     }
 

@@ -1717,12 +1717,93 @@ var MemoryCombat = (function (_super) {
         this.combatants = [];
         this.round = 0;
         this.turn = 0;
+        this.targets = [];
+        this.targetTrigger = new Trigger();
     }
+    MemoryCombat.prototype.addTargetListener = function (f) {
+        this.targetTrigger.addListener(f);
+    };
+    MemoryCombat.prototype.removeTargetListener = function (f) {
+        this.targetTrigger.removeListener(f);
+    };
+    MemoryCombat.prototype.triggerTarget = function () {
+        this.targetTrigger.trigger(this.targets);
+    };
+    MemoryCombat.prototype.getCurrentTurnOwner = function () {
+        if (this.combatants[this.turn] !== undefined) {
+            return this.combatants[this.turn];
+        }
+        return null;
+    };
+    MemoryCombat.prototype.cleanTargets = function () {
+        var goodTargets = [];
+        for (var i = 0; i < this.targets.length; i++) {
+            var target = this.targets[i];
+            for (var k = 0; k < this.combatants.length; k++) {
+                if (this.combatants[i].id === target) {
+                    goodTargets.push(target);
+                    break;
+                }
+            }
+        }
+        this.targets = goodTargets;
+    };
+    MemoryCombat.prototype.getTargets = function () {
+        return this.targets;
+    };
+    MemoryCombat.prototype.isTarget = function (id) {
+        return this.targets.indexOf(id) !== -1;
+    };
+    MemoryCombat.prototype.setTarget = function (id) {
+        var idx = this.targets.indexOf(id);
+        if (idx === -1) {
+            this.targets.push(id);
+        }
+        else {
+            this.targets.splice(idx, 1);
+        }
+        this.triggerTarget();
+    };
+    MemoryCombat.prototype.endCombat = function () {
+        this.round = 0;
+        this.turn = 0;
+        var remove = [];
+        for (var i = 0; i < this.combatants.length; i++) {
+            if (this.combatants[i].owner === 0) {
+                remove.push(this.combatants[i]);
+            }
+        }
+        for (var i = 0; i < remove.length; i++) {
+            this.removeParticipant(remove[i]);
+        }
+        this.triggerChange();
+    };
+    MemoryCombat.prototype.getRound = function () {
+        return this.round;
+    };
+    MemoryCombat.prototype.getTurn = function () {
+        return this.turn;
+    };
+    MemoryCombat.prototype.getCombatants = function () {
+        return this.combatants;
+    };
     MemoryCombat.prototype.reset = function () {
         this.combatants = [];
         this.round = 0;
         this.turn = 0;
         this.triggerChange();
+    };
+    MemoryCombat.prototype.removeParticipant = function (c) {
+        var idx = this.combatants.indexOf(c);
+        if (idx !== -1) {
+            this.combatants.splice(idx, 1);
+            this.triggerChange();
+        }
+    };
+    MemoryCombat.prototype.reorderCombatants = function () {
+        this.combatants.sort(function (a, b) {
+            return b.initiative - a.initiative;
+        });
     };
     MemoryCombat.prototype.addParticipant = function (sheet, owner) {
         var combatant = new CombatParticipant();
@@ -1731,10 +1812,20 @@ var MemoryCombat = (function (_super) {
             combatant.setOwner(owner.id);
         }
         this.combatants.push(combatant);
+        this.reorderCombatants();
+        this.triggerChange();
     };
     MemoryCombat.prototype.incrementRound = function () {
         this.round++;
         this.turn = 0;
+        this.triggerChange();
+    };
+    MemoryCombat.prototype.setTurn = function (combatant) {
+        var idx = this.combatants.indexOf(combatant);
+        if (idx !== -1 && idx !== this.turn) {
+            this.turn = idx;
+            this.triggerChange();
+        }
     };
     MemoryCombat.prototype.incrementTurn = function () {
         this.turn++;
@@ -1742,6 +1833,7 @@ var MemoryCombat = (function (_super) {
             this.turn = 0;
             this.round++;
         }
+        this.triggerChange();
     };
     MemoryCombat.prototype.exportAsObject = function () {
         var arr = [this.round, this.turn];
@@ -1749,6 +1841,7 @@ var MemoryCombat = (function (_super) {
         for (var i = 0; i < this.combatants.length; i++) {
             combatants.push(this.combatants[i].exportAsObject());
         }
+        arr.push(combatants);
         return arr;
     };
     MemoryCombat.prototype.storeValue = function (obj) {
@@ -1769,10 +1862,19 @@ var MemoryCombat = (function (_super) {
                     }
                 }
             }
+            this.reorderCombatants();
             var newJson = JSON.stringify(this.exportAsObject());
             if (newJson !== oldJson) {
                 this.triggerChange();
             }
+        }
+    };
+    MemoryCombat.prototype.setInitiative = function (combatant, initiative) {
+        var idx = this.combatants.indexOf(combatant);
+        if (idx !== -1) {
+            combatant.setInitiative(initiative);
+            this.reorderCombatants();
+            this.triggerChange();
         }
     };
     MemoryCombat.prototype.getValue = function () {
@@ -1794,8 +1896,11 @@ var MemoryPica = (function (_super) {
     MemoryPica.prototype.getValue = function () {
         return this;
     };
+    MemoryPica.prototype.picaAllowedExport = function () {
+        return this.picaAllowed ? 1 : 0;
+    };
     MemoryPica.prototype.picaAllowedStore = function (isIt) {
-        isIt = isIt === true;
+        isIt = isIt === true || isIt === 1;
         if (isIt !== this.picaAllowed) {
             this.picaAllowed = isIt;
             if (this.updateUnderway) {
@@ -1824,7 +1929,7 @@ var MemoryPica = (function (_super) {
     MemoryPica.prototype.exportAsObject = function () {
         var result = [];
         for (var i = 0; i < MemoryPica.fieldOrder.length; i++) {
-            result.push(this[MemoryPica.fieldOrder[i]]);
+            result.push(this[MemoryPica.fieldOrder[i] + "Export"]());
         }
         return result;
     };
@@ -2006,7 +2111,7 @@ var MemoryCutscene = (function (_super) {
         this.chatAllowed = true;
     };
     MemoryCutscene.prototype.storeValue = function (v) {
-        var allowed = v === true;
+        var allowed = v === true || v === 1;
         if (allowed !== this.chatAllowed) {
             this.chatAllowed = allowed;
             this.triggerChange();
@@ -2024,7 +2129,7 @@ var MemoryCutscene = (function (_super) {
         return this.chatAllowed;
     };
     MemoryCutscene.prototype.exportAsObject = function () {
-        return this.chatAllowed;
+        return this.chatAllowed ? 1 : 0;
     };
     MemoryCutscene.button = document.getElementById("chatHollywood");
     return MemoryCutscene;
@@ -2103,6 +2208,98 @@ var CombatParticipant = (function () {
         return participant;
     };
     return CombatParticipant;
+}());
+var ChatCombatRow = (function () {
+    function ChatCombatRow(combatant, currentTurn, currentTarget, isStoryteller) {
+        this.visible = document.createElement("div");
+        this.combatant = combatant;
+        this.visible.classList.add("combatRow");
+        if (currentTurn)
+            this.visible.classList.add("currentTurn");
+        if (currentTarget)
+            this.visible.classList.add("currentTarget");
+        if (isStoryteller) {
+            var remove = document.createElement("a");
+            remove.classList.add("combatRemove", "language");
+            UI.Language.addLanguageTitle(remove, "_COMBATTRACKERREMOVE_");
+            remove.addEventListener("click", (function (e) {
+                e.preventDefault();
+                this.remove();
+            }).bind(this));
+            this.visible.appendChild(remove);
+        }
+        var span = document.createElement("span");
+        span.classList.add("combatName");
+        span.appendChild(document.createTextNode(combatant.name));
+        this.visible.appendChild(span);
+        if (isStoryteller) {
+            var input = document.createElement("input");
+            input.classList.add("combatRowInitiative");
+            input.addEventListener("change", (function () {
+                this.change();
+            }).bind(this));
+            input.value = combatant.initiative.toString();
+            this.input = input;
+            this.visible.appendChild(input);
+            var turn = document.createElement("a");
+            turn.classList.add("combatSetTurn", "language");
+            UI.Language.addLanguageTitle(turn, "_COMBATTRACKERSETTURN_");
+            turn.addEventListener("click", (function (e) {
+                e.preventDefault();
+                this.setTurn();
+            }).bind(this));
+            this.visible.appendChild(turn);
+        }
+        var target = document.createElement("a");
+        target.classList.add("combatTarget", "language");
+        UI.Language.addLanguageTitle(target, "_COMBATTRACKERSETTARGET_");
+        target.addEventListener("click", (function (e) {
+            e.preventDefault();
+            this.setTarget();
+        }).bind(this));
+        this.visible.appendChild(target);
+        if (isStoryteller) {
+            var sheet = document.createElement("a");
+            sheet.classList.add("combatSheet", "language");
+            UI.Language.addLanguageTitle(sheet, "_COMBATTRACKERSHEET_");
+            sheet.addEventListener("click", (function (e) {
+                e.preventDefault();
+                this.openSheet();
+            }).bind(this));
+            this.visible.appendChild(sheet);
+        }
+        UI.Language.updateScreen(this.visible);
+    }
+    ChatCombatRow.prototype.getHTML = function () {
+        return this.visible;
+    };
+    ChatCombatRow.prototype.change = function () {
+        var value = Number(this.input.value);
+        if (!isNaN(value)) {
+            var memory = Server.Chat.Memory.getConfiguration("Combat");
+            memory.setInitiative(this.combatant, value);
+        }
+        else {
+            UI.Chat.Combat.update();
+        }
+    };
+    ChatCombatRow.prototype.remove = function () {
+        var memory = Server.Chat.Memory.getConfiguration("Combat");
+        memory.removeParticipant(this.combatant);
+    };
+    ChatCombatRow.prototype.setTurn = function () {
+        var memory = Server.Chat.Memory.getConfiguration("Combat");
+        memory.setTurn(this.combatant);
+        UI.Chat.Combat.announceTurn();
+    };
+    ChatCombatRow.prototype.setTarget = function () {
+        var memory = Server.Chat.Memory.getConfiguration("Combat");
+        memory.setTarget(this.combatant.id);
+    };
+    ChatCombatRow.prototype.openSheet = function () {
+        UI.Sheets.SheetManager.openSheetId(this.combatant.id);
+    };
+    return ChatCombatRow;
 }());
 var ChatInfo = (function () {
     function ChatInfo(floater) {
@@ -3621,6 +3818,13 @@ var Sheet = (function () {
     Sheet.prototype.updateFromObject = function (obj) {
         for (var id in this.values) {
             if (obj[id] === undefined) {
+                var aliases = this.values[id].getAliases();
+                for (var i = 0; i < aliases.length; i++) {
+                    if (obj[aliases[i]] !== undefined) {
+                        this.values[id].updateFromObject(obj[aliases[i]]);
+                        continue;
+                    }
+                }
                 this.values[id].reset();
             }
             else {
@@ -3686,6 +3890,10 @@ var Sheet = (function () {
         list = new constructor(this, this.style, element);
         this.values[list.getId()] = list;
         this.valuesSimplified[Sheet.simplifyString(list.getId())] = list;
+        var aliases = list.getAliases();
+        for (var i = 0; i < aliases.length; i++) {
+            this.valuesSimplified[Sheet.simplifyString(aliases[i])] = list;
+        }
         if (list.isIndexed()) {
             this.indexedLists.push(list);
         }
@@ -3705,6 +3913,10 @@ var Sheet = (function () {
         variable = new constructor(this, this.style, element);
         this.values[variable.getId()] = variable;
         this.valuesSimplified[Sheet.simplifyString(variable.getId())] = variable;
+        var aliases = variable.getAliases();
+        for (var i = 0; i < aliases.length; i++) {
+            this.valuesSimplified[Sheet.simplifyString(aliases[i])] = variable;
+        }
         variable.addChangeListener(this.changeListener);
     };
     Sheet.prototype.createButton = function (element) {
@@ -3756,6 +3968,7 @@ var SheetList = (function () {
         this.detachedRows = [];
         this.sheetElements = [];
         this.busy = false;
+        this.aliases = [];
         this.sheetChangeListener = {
             list: this,
             counter: -1,
@@ -3789,7 +4002,19 @@ var SheetList = (function () {
             console.warn("[SheetList] Received invalid JSON as default value for " + this.getId() + " in " + this.style.getName() + ", reverting to empty object.");
             this.defaultValue = [];
         }
+        if (this.visible.dataset['alias'] !== undefined) {
+            var aliases = this.visible.dataset['alias'].trim().split(";");
+            for (var i = 0; i < aliases.length; i++) {
+                var alias = aliases[i].trim();
+                if (alias !== "") {
+                    this.aliases.push(alias);
+                }
+            }
+        }
     }
+    SheetList.prototype.getAliases = function () {
+        return this.aliases;
+    };
     SheetList.prototype.breakIn = function (sheet) { };
     SheetList.prototype.addRow = function () {
         var newRow;
@@ -3958,6 +4183,7 @@ var SheetVariable = (function () {
     function SheetVariable(parent, style, element) {
         this.value = null;
         this.defaultValueString = null;
+        this.aliases = [];
         this.changeTrigger = new Trigger();
         this.parent = parent;
         this.visible = element;
@@ -3967,7 +4193,19 @@ var SheetVariable = (function () {
         this.editable = this.visible.dataset['editable'] === undefined ? true :
             (this.visible.dataset['editable'] === "1" ||
                 this.visible.dataset['editable'].toLowerCase() === "true");
+        if (this.visible.dataset['alias'] !== undefined) {
+            var aliases = this.visible.dataset['alias'].trim().split(";");
+            for (var i = 0; i < aliases.length; i++) {
+                var alias = aliases[i].trim();
+                if (alias !== "") {
+                    this.aliases.push(alias);
+                }
+            }
+        }
     }
+    SheetVariable.prototype.getAliases = function () {
+        return this.aliases;
+    };
     SheetVariable.prototype.updateVisible = function () { };
     SheetVariable.prototype.empty = function () {
         while (this.visible.firstChild !== null)
@@ -6161,6 +6399,9 @@ var MessageSheetturn = (function (_super) {
         a.classList.add("chatMessageTurnIcon");
         p.appendChild(a);
         p.appendChild(document.createTextNode(this.getSheetName() + ":"));
+        if (Application.isMe(this.getOwnerId()) && UI.Chat.doAutomation()) {
+            UI.SoundController.playAlert();
+        }
         return p;
     };
     MessageSheetturn.prototype.setSheetName = function (name) {
@@ -6169,9 +6410,15 @@ var MessageSheetturn = (function (_super) {
     MessageSheetturn.prototype.getSheetName = function () {
         var old = this.getSpecial("sheetname", null);
         if (old === null) {
-            old = this.msg;
+            return this.msg;
         }
         return old;
+    };
+    MessageSheetturn.prototype.setOwnerId = function (id) {
+        this.setSpecial("owner", id);
+    };
+    MessageSheetturn.prototype.getOwnerId = function () {
+        return this.getSpecial("owner", 0);
     };
     MessageSheetturn.prototype.setPlayer = function (id) {
         this.setSpecial("player", id);
@@ -6939,6 +7186,13 @@ var DB;
                     wanted.push(sheets[id]);
                 }
             }
+            wanted.sort(function (a, b) {
+                if (a.getName() < b.getName())
+                    return -1;
+                if (a.getName() > b.getName())
+                    return 1;
+                return 0;
+            });
             return wanted;
         }
         SheetDB.getSheetsByGame = getSheetsByGame;
@@ -8083,6 +8337,7 @@ var Server;
         var pollingController;
         Chat.currentController = socketController;
         var currentRoom = null;
+        var roomTrigger = new Trigger();
         var openListener = undefined;
         var errorListener = undefined;
         var messageTrigger = new Trigger();
@@ -8104,6 +8359,18 @@ var Server;
                 Server.Chat.end();
             }
         });
+        function addRoomListener(f) {
+            roomTrigger.addListener(f);
+        }
+        Chat.addRoomListener = addRoomListener;
+        function removeRoomListener(f) {
+            roomTrigger.removeListener(f);
+        }
+        Chat.removeRoomListener = removeRoomListener;
+        function triggerRoomListener() {
+            roomTrigger.trigger(currentRoom);
+        }
+        Chat.triggerRoomListener = triggerRoomListener;
         function isReconnecting() {
             return reconnecting;
         }
@@ -8148,6 +8415,7 @@ var Server;
         function leaveRoom() {
             currentRoom = null;
             reconnecting = false;
+            triggerRoomListener();
             Chat.currentController.end();
         }
         Chat.leaveRoom = leaveRoom;
@@ -8291,6 +8559,7 @@ var Server;
                     Server.Chat.setConnected();
                     UI.Chat.Avatar.updateFromObject(users, true);
                     UI.Chat.printMessages(room.getOrderedMessages(), false);
+                    Server.Chat.triggerRoomListener();
                 }
             };
             socketController.addMessageListener("getroom", getRoom);
@@ -9141,6 +9410,7 @@ ptbr.setLingo("_CHATBUTTONFONTMINUS_", "Diminuir tamanho da fonte");
 ptbr.setLingo("_CHATBUTTONLEAVE_", "Sair da sala");
 ptbr.setLingo("_CHATBUTTONHOLLYWOOD_", "Ativar/Desativar modo Cutscene");
 ptbr.setLingo("_CHATBUTTONLINGO_", "Abrir gerenciador de línguas");
+ptbr.setLingo("_CHATBUTTONCOMBAT_", "Abrir gerenciador de combate");
 ptbr.setLingo("_CHATBUTTONSEND_", "Enviar");
 ptbr.setLingo("_CHATPERSONAMANAGERBUTTON_", "Abrir administrador de personas");
 ptbr.setLingo("_CHATDICETOWER_", "Ativar/Desativar rolagem secreta");
@@ -9151,7 +9421,18 @@ ptbr.setLingo("_LINGOADD_", "+ Adicionar");
 ptbr.setLingo("_CHATLINGONOLINGO_", "Não fala linguas especiais");
 ptbr.setLingo("_SLASHLINGOINVALIDONLYGM_", "Apenas narradores podem enviar mensagens de história.");
 ptbr.setLingo("_SLASHLINGOINVALIDNOSUCHLINGO_", "Essa lingua não existe.");
-ptbr.setLingo("_SLASHLINGOINVALIDYOUKNOWNOTHINGINNOCENT_", "Você não tem permissão para falar essa língua.");
+ptbr.setLingo("_COMBATTRACKER_", "Gerenciador de Combate");
+ptbr.setLingo("_COMBATTRACKERREMOVE_", "Remover do combate");
+ptbr.setLingo("_COMBATTRACKERSETTARGET_", "Marcar/desmarcar como alvo");
+ptbr.setLingo("_COMBATTRACKERSETTURN_", "Definir como turno atual");
+ptbr.setLingo("_COMBATTRACKERSHEET_", "Abrir ficha");
+ptbr.setLingo("_COMBATTRACKERNOSHEETS_", "Nenhuma ficha carregada...");
+ptbr.setLingo("_COMBATTRACKERADD_", "Adicionar ao combate");
+ptbr.setLingo("_COMBATTRACKERNEWROUND_", "Começar nova rodada");
+ptbr.setLingo("_COMBATTRACKERNEXTTURN_", "Passar turno");
+ptbr.setLingo("_COMBATTRACKEENDCOMBAT_", "Finalizar combate");
+ptbr.setLingo("_COMBATTRACKERNOCOMBATANTS_", "Sem participantes em combate.");
+ptbr.setLingo("_CHATCOMBATENDEDCOMBAT_", "Combate finalizado. Todos os npcs foram removidos do combate.");
 ptbr.setLingo("_PERSONADESIGNERTITLE_", "Administrador de Personas");
 ptbr.setLingo("_PERSONADESIGNERNAME_", "Nome do Personagem");
 ptbr.setLingo("_PERSONADESIGNERAVATAR_", "Link para Imagem (Opcional)");
@@ -10657,6 +10938,27 @@ var UI;
                 updateButtons();
             }
             SheetManager.switchToSheet = switchToSheet;
+            function openSheetId(sheetid) {
+                var sheet = DB.SheetDB.getSheet(sheetid);
+                if (sheet !== null) {
+                    openSheet(sheet);
+                }
+                else {
+                    var cbs = {
+                        sheetid: sheetid,
+                        handleEvent: function () {
+                            UI.Sheets.SheetManager.openSheet(DB.SheetDB.getSheet(this.sheetid));
+                        }
+                    };
+                    var cbe = {
+                        handleEvent: function () {
+                            alert("Unable to open sheet. Sorri");
+                        }
+                    };
+                    Server.Sheets.loadSheet(sheetid, cbs, cbe);
+                }
+            }
+            SheetManager.openSheetId = openSheetId;
             function openSheet(sheet, reloadSheet, reloadStyle) {
                 var loadSheet = !sheet.loaded || reloadSheet === true;
                 var loadStyle = reloadStyle === true || !DB.StyleDB.hasStyle(sheet.getStyleId()) || !DB.StyleDB.getStyle(sheet.getStyleId()).isLoaded();
@@ -12844,7 +13146,7 @@ var UI;
             });
             function open() {
                 if (floater.style.display !== "none") {
-                    close();
+                    hide();
                     return;
                 }
                 floater.style.left = "0px";
@@ -12978,6 +13280,165 @@ var UI;
             }
             Lingo.speakInTongues = speakInTongues;
         })(Lingo = Chat.Lingo || (Chat.Lingo = {}));
+    })(Chat = UI.Chat || (UI.Chat = {}));
+})(UI || (UI = {}));
+var UI;
+(function (UI) {
+    var Chat;
+    (function (Chat) {
+        var Combat;
+        (function (Combat) {
+            var floater = document.getElementById("combatFloater");
+            var $floater = $(floater).draggable({
+                containment: '#chatSideWindow',
+                handle: '#combatHandle'
+            }).hide();
+            document.getElementById("combatMinus").addEventListener("click", function () { UI.Chat.Combat.hide(); });
+            document.getElementById("chatCombatButton").addEventListener("click", function () { UI.Chat.Combat.open(); });
+            document.getElementById("combatAddSheet").addEventListener("click", function () { UI.Chat.Combat.addSheet(); });
+            document.getElementById("combatNewRound").addEventListener("click", function () { UI.Chat.Combat.newRound(); });
+            document.getElementById("combatNextTurn").addEventListener("click", function () { UI.Chat.Combat.nextTurn(); });
+            document.getElementById("combatEndCombat").addEventListener("click", function () { UI.Chat.Combat.endCombat(); });
+            var memory = Server.Chat.Memory.getConfiguration("Combat");
+            var updFunction = function () { UI.Chat.Combat.update(); };
+            memory.addTargetListener(updFunction);
+            Server.Chat.Memory.registerChangeListener("Combat", updFunction);
+            Server.Chat.addRoomListener(updFunction);
+            DB.SheetDB.addChangeListener(function () {
+                UI.Chat.Combat.updateSelects();
+            });
+            var content = document.getElementById("combatContent");
+            var storyButtons = document.getElementById("combatStoryButtons");
+            var userSelect = document.getElementById("combatSelectUser");
+            var sheetSelect = document.getElementById("combatSelectSheet");
+            function hide() {
+                $floater.stop(true).fadeOut(Application.Config.getConfig("animTime").getValue());
+            }
+            Combat.hide = hide;
+            function open() {
+                if (floater.style.display !== "none") {
+                    hide();
+                    return;
+                }
+                floater.style.left = "0px";
+                floater.style.top = "0px";
+                $floater.stop(true).fadeIn(Application.Config.getConfig("animTime").getValue());
+                update();
+            }
+            Combat.open = open;
+            function empty() {
+                while (content.firstChild !== null)
+                    content.removeChild(content.firstChild);
+            }
+            function updateSelects() {
+                if (storyButtons.style.display !== "none") {
+                    var room = Server.Chat.getRoom();
+                    while (userSelect.firstChild !== null)
+                        userSelect.removeChild(userSelect.firstChild);
+                    while (sheetSelect.firstChild !== null)
+                        sheetSelect.removeChild(sheetSelect.firstChild);
+                    var option = document.createElement("option");
+                    option.value = "0";
+                    option.appendChild(document.createTextNode("NPC"));
+                    userSelect.appendChild(option);
+                    if (room !== null) {
+                        var users = room.getOrderedUserContexts();
+                        for (var i = 0; i < users.length; i++) {
+                            if (!users[i].isStoryteller()) {
+                                option = document.createElement("option");
+                                option.value = users[i].getUser().id.toString();
+                                option.appendChild(document.createTextNode(users[i].getUniqueNickname()));
+                                userSelect.appendChild(option);
+                            }
+                        }
+                        var sheets = DB.SheetDB.getSheetsByGame(room.getGame());
+                        if (sheets.length === 0) {
+                            option = document.createElement("option");
+                            option.value = "0";
+                            option.appendChild(document.createTextNode("_COMBATTRACKERNOSHEETS_"));
+                            UI.Language.markLanguage(option);
+                            sheetSelect.appendChild(option);
+                        }
+                        else {
+                            for (var i = 0; i < sheets.length; i++) {
+                                option = document.createElement("option");
+                                option.value = sheets[i].getId();
+                                option.appendChild(document.createTextNode(sheets[i].getName()));
+                                sheetSelect.appendChild(option);
+                            }
+                        }
+                    }
+                }
+            }
+            Combat.updateSelects = updateSelects;
+            function update() {
+                if (floater.style.display !== "none") {
+                    if (Server.Chat.getRoom() === null) {
+                        hide();
+                    }
+                    else {
+                        var me = Server.Chat.getRoom().getMe();
+                        storyButtons.style.display = me.isStoryteller() ? "" : "none";
+                        if (me.isStoryteller()) {
+                            updateSelects();
+                        }
+                        empty();
+                        var combatants = memory.getCombatants();
+                        var turn = memory.getTurn();
+                        if (combatants.length === 0) {
+                            var div = document.createElement("div");
+                            div.classList.add("combatRow");
+                            var span = document.createElement("span");
+                            span.classList.add("combatName", "language");
+                            span.appendChild(document.createTextNode("_COMBATTRACKERNOCOMBATANTS_"));
+                            div.appendChild(span);
+                            UI.Language.updateElement(span);
+                            content.appendChild(div);
+                        }
+                        else {
+                            for (var i = 0; i < combatants.length; i++) {
+                                var combatant = new ChatCombatRow(combatants[i], turn === i, memory.isTarget(combatants[i].id), me.isStoryteller());
+                                content.appendChild(combatant.getHTML());
+                            }
+                        }
+                    }
+                }
+            }
+            Combat.update = update;
+            function addSheet() {
+                var user = Number(userSelect.value);
+                var sheet = Number(sheetSelect.value);
+                if (sheet !== 0) {
+                    memory.addParticipant(DB.SheetDB.getSheet(sheet), user === 0 ? undefined : Server.Chat.getRoom().getUser(user).getUser());
+                }
+            }
+            Combat.addSheet = addSheet;
+            function announceTurn() {
+                var turner = memory.getCurrentTurnOwner();
+                var msg = new MessageSheetturn();
+                msg.setSheetName(turner.name);
+                msg.setOwnerId(turner.owner);
+                UI.Chat.sendMessage(msg);
+            }
+            Combat.announceTurn = announceTurn;
+            function newRound() {
+                memory.incrementRound();
+                announceTurn();
+            }
+            Combat.newRound = newRound;
+            function nextTurn() {
+                memory.incrementTurn();
+                announceTurn();
+            }
+            Combat.nextTurn = nextTurn;
+            function endCombat() {
+                memory.endCombat();
+                var msg = new ChatSystemMessage(true);
+                msg.addText("_CHATCOMBATENDEDCOMBAT_");
+                UI.Chat.printElement(msg.getElement());
+            }
+            Combat.endCombat = endCombat;
+        })(Combat = Chat.Combat || (Chat.Combat = {}));
     })(Chat = UI.Chat || (UI.Chat = {}));
 })(UI || (UI = {}));
 var UI;
@@ -13519,6 +13980,9 @@ change.addMessage("Chat font defaults to Caudex again, it was chosen for a reaso
 change.addMessage("Fonte do chat padrão retornada para Caudex. Alegreya ainda pode ser utilizada em opções.", "pt");
 change.addMessage("It is now possible to force images into a folder.", "en");
 change.addMessage("Opção para forçar imagens a uma determinada pasta criada.", "pt");
+change = new Changelog(0, 19, 0);
+change.addMessage("Initial combat tracker release. More planned for later.", "en");
+change.addMessage("Lançamento inicial do Combat Tracker. Atualizações planejadas para o futuro.", "pt");
 delete (change);
 Changelog.finished();
 UI.Language.searchLanguage();

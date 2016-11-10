@@ -20,7 +20,7 @@ module UI.Chat.Lingo {
 
     export function open() {
         if (floater.style.display !== "none") {
-            close();
+            hide();
             return;
         }
         floater.style.left = "0px";

@@ -44,6 +44,7 @@
 /// <reference path='Classes/Memory/Combat/CombatEffect.ts' />
 /// <reference path='Classes/Memory/Combat/CombatParticipant.ts' />
 
+/// <reference path='Elements/ChatCombatRow.ts' />
 /// <reference path='Elements/ChatInfo.ts' />
 /// <reference path='Elements/ChatAvatar.ts' />
 /// <reference path='Elements/ChatNotificationIcon.ts' />

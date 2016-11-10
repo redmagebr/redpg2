@@ -493,12 +493,30 @@ declare class MemoryCombat extends TrackerMemory {
     private combatants;
     private round;
     private turn;
+    private targets;
+    private targetTrigger;
+    addTargetListener(f: Function | Listener): void;
+    removeTargetListener(f: Function | Listener): void;
+    triggerTarget(): void;
+    getCurrentTurnOwner(): CombatParticipant;
+    cleanTargets(): void;
+    getTargets(): number[];
+    isTarget(id: number): boolean;
+    setTarget(id: number): void;
+    endCombat(): void;
+    getRound(): number;
+    getTurn(): number;
+    getCombatants(): CombatParticipant[];
     reset(): void;
+    removeParticipant(c: CombatParticipant): void;
+    reorderCombatants(): void;
     addParticipant(sheet: SheetInstance, owner?: User): void;
     incrementRound(): void;
+    setTurn(combatant: CombatParticipant): void;
     incrementTurn(): void;
-    exportAsObject(): number[];
+    exportAsObject(): any[];
     storeValue(obj: any): void;
+    setInitiative(combatant: CombatParticipant, initiative: number): void;
     getValue(): any;
 }
 declare class MemoryPica extends TrackerMemory {
@@ -508,7 +526,8 @@ declare class MemoryPica extends TrackerMemory {
     private static fieldOrder;
     reset(): void;
     getValue(): this;
-    picaAllowedStore(isIt: boolean): void;
+    picaAllowedExport(): number;
+    picaAllowedStore(isIt: boolean | number): void;
     storeValue(values: Array<any>): void;
     exportAsObject(): Array<any>;
 }
@@ -543,9 +562,9 @@ declare class MemoryCutscene extends TrackerMemory {
     constructor();
     click(): void;
     reset(): void;
-    storeValue(v: boolean): void;
+    storeValue(v: boolean | number): void;
     getValue(): boolean;
-    exportAsObject(): boolean;
+    exportAsObject(): number;
 }
 declare class CombatEffect {
     name: string;
@@ -575,6 +594,18 @@ declare class CombatParticipant {
     setOwner(id: number): void;
     updateFromObject(obj: Array<any>): void;
     exportAsObject(): any[];
+}
+declare class ChatCombatRow {
+    private visible;
+    private combatant;
+    private input;
+    constructor(combatant: CombatParticipant, currentTurn: boolean, currentTarget: boolean, isStoryteller: boolean);
+    getHTML(): HTMLDivElement;
+    change(): void;
+    remove(): void;
+    setTurn(): void;
+    setTarget(): void;
+    openSheet(): void;
 }
 declare class ChatInfo {
     private floater;
@@ -901,7 +932,9 @@ declare class SheetList {
     protected defaultValue: Array<Object>;
     protected sheetType: typeof Sheet;
     protected busy: boolean;
+    protected aliases: Array<string>;
     protected sheetChangeListener: Listener;
+    getAliases(): string[];
     protected tableIndex: string;
     protected tableValue: string;
     constructor(parent: Sheet, style: SheetStyle, element: HTMLElement);
@@ -937,6 +970,8 @@ declare class SheetVariable {
     protected editable: boolean;
     protected value: any;
     protected defaultValueString: String;
+    protected aliases: Array<string>;
+    getAliases(): string[];
     constructor(parent: Sheet, style: SheetStyle, element: HTMLElement);
     updateVisible(): void;
     empty(): void;
@@ -1286,6 +1321,8 @@ declare class MessageSheetturn extends Message {
     createHTML(): HTMLParagraphElement;
     setSheetName(name: string): void;
     getSheetName(): string;
+    setOwnerId(id: number): void;
+    getOwnerId(): any;
     setPlayer(id: number): void;
     getPlayer(): number;
 }
@@ -1517,6 +1554,9 @@ declare module Server.URL {
 declare module Server.Chat {
     var CHAT_URL: string;
     var currentController: ChatController;
+    function addRoomListener(f: Function | Listener): void;
+    function removeRoomListener(f: Function | Listener): void;
+    function triggerRoomListener(): void;
     function isReconnecting(): boolean;
     function setConnected(): void;
     function giveUpReconnect(): void;
@@ -1738,6 +1778,7 @@ declare module UI.Sheets.SheetManager {
     function detachStyle(): void;
     function attachStyle(): void;
     function switchToSheet(sheet: SheetInstance, reloadStyle?: boolean): void;
+    function openSheetId(sheetid: number): void;
     function openSheet(sheet: SheetInstance, reloadSheet?: boolean, reloadStyle?: boolean): void;
     function reload(reloadStyle?: boolean): void;
     function isAutoUpdate(): boolean;
@@ -1878,6 +1919,17 @@ declare module UI.Chat.Lingo {
     function open(): void;
     function update(): void;
     function speakInTongues(language: string): void;
+}
+declare module UI.Chat.Combat {
+    function hide(): void;
+    function open(): void;
+    function updateSelects(): void;
+    function update(): void;
+    function addSheet(): void;
+    function announceTurn(): void;
+    function newRound(): void;
+    function nextTurn(): void;
+    function endCombat(): void;
 }
 declare module UI.Chat.PersonaDesigner {
     function callSelf(): void;

@@ -1,0 +1,114 @@
+#combatFloater {
+  width: 450px;
+}
+
+#combatSelectSheet {
+  max-width: 100px;
+}
+
+.combatRow {
+  @extend .hoverable;
+  display: flex;
+
+  &.currentTarget {
+    border: solid 2px #ff0000;
+  }
+
+  &.currentTurn {
+    border-left: 8px solid #000;
+  }
+}
+
+.combatName {
+  flex: 1 0 auto;
+  font-weight: bold;
+  line-height: 24px;
+  margin: 4px;
+  padding: 0px;
+  vertical-align: top;
+}
+
+.combatButton {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  margin: 4px;
+  @extend .buttonBehavior;
+}
+
+.combatRemove, .combatSetTurn, .combatTarget, .combatSheet {
+  @extend .combatButton;
+}
+
+.combatSetTurn, .combatTarget, .combatSheet {
+  margin-left: 0px;
+}
+
+.combatRemove {
+  @extend .icons-chatCombatRemove;
+}
+
+.combatSetTurn {
+  @extend .icons-chatCombatFlag;
+}
+
+.combatTarget {
+  @extend .icons-chatCombatTarget;
+}
+
+.combatSheet {
+  @extend .icons-chatCombatSheet;
+}
+
+.combatRowInitiative{
+  flex: 0 0 auto;
+  float: right;
+  width: 24px;
+  vertical-align: middle;
+  margin: 4px;
+  text-align: center;
+  font-family: $mainFont;
+}
+
+#combatStoryButtons {
+  height: auto;
+  overflow: visible;
+  line-height: 30px;
+  height: 30px;
+  padding-left: 4px;
+}
+
+#combatSelectSheet, #combatSelectUser {
+  font-family: $mainFont;
+}
+
+.combatAdd, .combatNewRound, .combatNextTurn, .combatEndCombat {
+  display: inline-block;
+  height: 24px;
+  width: 24px;
+  vertical-align: middle;
+
+  @extend .buttonBehavior;
+}
+
+.combatNewRound, .combatNextTurn, .combatEndCombat {
+  float: right;
+  margin-right: 4px;
+  margin-top: 3px;
+}
+
+.combatAdd {
+  @extend .icons-chatCombatAdd;
+}
+
+.combatNewRound {
+  @extend .icons-chatCombatClock;
+}
+
+.combatNextTurn {
+  @extend .icons-chatCombatForward;
+}
+
+.combatEndCombat {
+  @extend .icons-chatCombatFlag;
+}

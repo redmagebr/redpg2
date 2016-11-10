@@ -4788,818 +4788,932 @@ body .ui-tooltip {
   font-size: 0.85em;
 }
 
-/* line 1496, icons/*.png */
-.icons-sprite, .icons-chatAnon, .icons-chatAnonError, .icons-chatAvatarAFK, .avatarAFK, .icons-chatAvatarTyping, .avatarTyping, .icons-chatDamageExp, .icons-chatDamageHP, .icons-chatDamageMP, .icons-chatDiceRoll, .icons-chatDiceTower, .icons-chatDiceTowerOn, .icons-chatDown, .icons-chatFontMinus, .icons-chatFontPlus, .icons-chatFormStateAction, .icons-chatFormStateNormal, .icons-chatFormStateOff, .icons-chatFormStateStory, .icons-chatHollywood, .icons-chatHollywoodOff, .icons-chatLeave, .icons-chatLingo, .icons-chatMessageTurn, .icons-chatNotDisconnected, .icons-chatNotReconnecting, .icons-chatPersonaButton, #personaAddButton, .icons-chatPersonaDelete, .chatAvatarChoiceBoxDelete, .icons-chatPersonaUse, .chatAvatarChoiceBoxUse, .icons-chatScrolldown, #chatScrollDown, .icons-chatSend, .icons-chatUp, .icons-d10, .icons-d100, .icons-d12, .icons-d20, .icons-d4, .icons-d6, .icons-d8, .icons-dropboxLogo, .icons-flagEN, .icons-flagFR, .icons-flagPT_BR, .icons-flagSP, .icons-folderClosed, .imagesFolder > .imagesFolderIcon, .icons-folderOpen, .imagesFolder.folderOpen > .imagesFolderIcon, .icons-handleChat, .icons-handleLogout, .icons-handleOptions, .icons-handleSheet, .icons-handlerLTR, .icons-handlerRTL, .icons-imagesDelete, .icons-imagesFolder, .icons-imagesPersona, .icons-imagesRename, .icons-imagesShare, .icons-imagesView, .icons-link, .icons-picaShare, .icons-sheetAutomatic, .icons-sheetAutomaticOn, .icons-sheetClose, .icons-sheetEdit, .icons-sheetEditOn, .icons-sheetExport, .icons-sheetExportOn, .icons-sheetFullReload, .icons-sheetImport, .icons-sheetImportOn, .icons-sheetReload, .icons-sheetSave, .icons-sheetSaveChanged, .icons-soundPlayer, .icons-soundPlayerListButton, .icons-soundPlayerPause, .icons-soundPlayerPlay, .icons-soundPlayerRepeat, .icons-soundPlayerRepeatActive, .icons-soundPlayerStop, .icons-soundsPlay, .icons-x, .xButton {
-  background-image: url('../images/icons-s27dc349464.png');
+/* line 1704, icons/*.png */
+.icons-sprite, .icons-chatAnon, .icons-chatAnonError, .icons-chatAvatarAFK, .avatarAFK, .icons-chatAvatarTyping, .avatarTyping, .icons-chatCombatAdd, .combatAdd, .icons-chatCombatButton, .icons-chatCombatClock, .combatNewRound, .icons-chatCombatFlag, .combatSetTurn, .combatEndCombat, .icons-chatCombatForward, .combatNextTurn, .icons-chatCombatHP, .icons-chatCombatMP, .icons-chatCombatRemove, .combatRemove, .icons-chatCombatSheet, .combatSheet, .icons-chatCombatTarget, .combatTarget, .icons-chatDamageExp, .icons-chatDamageHP, .icons-chatDamageMP, .icons-chatDiceRoll, .icons-chatDiceTower, .icons-chatDiceTowerOn, .icons-chatDown, .icons-chatFontMinus, .icons-chatFontPlus, .icons-chatFormStateAction, .icons-chatFormStateNormal, .icons-chatFormStateOff, .icons-chatFormStateStory, .icons-chatHollywood, .icons-chatHollywoodOff, .icons-chatLeave, .icons-chatLingo, .icons-chatMessageTurn, .icons-chatNotDisconnected, .icons-chatNotReconnecting, .icons-chatPersonaButton, #personaAddButton, .icons-chatPersonaDelete, .chatAvatarChoiceBoxDelete, .icons-chatPersonaUse, .chatAvatarChoiceBoxUse, .icons-chatScrolldown, #chatScrollDown, .icons-chatSend, .icons-chatUp, .icons-d10, .icons-d100, .icons-d12, .icons-d20, .icons-d4, .icons-d6, .icons-d8, .icons-dropboxLogo, .icons-flagEN, .icons-flagFR, .icons-flagPT_BR, .icons-flagSP, .icons-folderClosed, .imagesFolder > .imagesFolderIcon, .icons-folderOpen, .imagesFolder.folderOpen > .imagesFolderIcon, .icons-handleChat, .icons-handleLogout, .icons-handleOptions, .icons-handleSheet, .icons-handlerLTR, .icons-handlerRTL, .icons-imagesDelete, .icons-imagesFolder, .icons-imagesPersona, .icons-imagesRename, .icons-imagesShare, .icons-imagesView, .icons-link, .icons-picaShare, .icons-sheetAutomatic, .icons-sheetAutomaticOn, .icons-sheetClose, .icons-sheetEdit, .icons-sheetEditOn, .icons-sheetExport, .icons-sheetExportOn, .icons-sheetFullReload, .icons-sheetImport, .icons-sheetImportOn, .icons-sheetReload, .icons-sheetSave, .icons-sheetSaveChanged, .icons-soundPlayer, .icons-soundPlayerListButton, .icons-soundPlayerPause, .icons-soundPlayerPlay, .icons-soundPlayerRepeat, .icons-soundPlayerRepeatActive, .icons-soundPlayerStop, .icons-soundsPlay, .icons-x, .xButton {
+  background-image: url('../images/icons-s6b27f0f719.png');
   background-repeat: no-repeat;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-chatAnon {
-  background-position: -60px -1985px;
+  background-position: -60px -2138px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-chatAnonError {
-  background-position: -60px -1905px;
+  background-position: -60px -2058px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-chatAvatarAFK, .avatarAFK {
-  background-position: 0 -290px;
+  background-position: -120px -365px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-chatAvatarTyping, .avatarTyping {
-  background-position: -16px -22px;
+  background-position: 0 -46px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatDamageExp {
-  background-position: -80px -825px;
+.icons-chatCombatAdd, .combatAdd {
+  background-position: -120px -92px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatCombatAdd:hover, .combatAdd:hover, .icons-chatCombatAdd.chatCombatAdd-hover, .chatCombatAdd-hover.combatAdd {
+  background-position: -72px -140px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatCombatAdd:active, .combatAdd:active, .icons-chatCombatAdd.chatCombatAdd-active, .chatCombatAdd-active.combatAdd {
+  background-position: -96px -140px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatDamageHP {
-  background-position: -80px -1305px;
+.icons-chatCombatButton {
+  background-position: -40px -188px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatCombatButton:hover, .icons-chatCombatButton.chatCombatButton-hover {
+  background-position: 0 -288px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatCombatButton:active, .icons-chatCombatButton.chatCombatButton-active {
+  background-position: -105px -188px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatDamageMP {
-  background-position: 0 -785px;
+.icons-chatCombatClock, .combatNewRound {
+  background-position: -48px -140px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatCombatClock:hover, .combatNewRound:hover, .icons-chatCombatClock.chatCombatClock-hover, .chatCombatClock-hover.combatNewRound {
+  background-position: 0 -140px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatCombatClock:active, .combatNewRound:active, .icons-chatCombatClock.chatCombatClock-active, .chatCombatClock-active.combatNewRound {
+  background-position: -24px -140px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatDiceRoll {
-  background-position: 0 -640px;
+.icons-chatCombatFlag, .combatSetTurn, .combatEndCombat {
+  background-position: -96px -164px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatDiceRoll:hover, .icons-chatDiceRoll.chatDiceRoll-hover {
-  background-position: -40px -580px;
+.icons-chatCombatFlag:hover, .combatSetTurn:hover, .combatEndCombat:hover, .icons-chatCombatFlag.chatCombatFlag-hover, .chatCombatFlag-hover.combatSetTurn, .chatCombatFlag-hover.combatEndCombat {
+  background-position: -24px -213px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatDiceRoll:active, .icons-chatDiceRoll.chatDiceRoll-active {
-  background-position: -80px -580px;
+.icons-chatCombatFlag:active, .combatSetTurn:active, .combatEndCombat:active, .icons-chatCombatFlag.chatCombatFlag-active, .chatCombatFlag-active.combatSetTurn, .chatCombatFlag-active.combatEndCombat {
+  background-position: -72px -164px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatDiceTower {
-  background-position: -80px -550px;
-}
-/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatDiceTower:hover, .icons-chatDiceTower.chatDiceTower-hover {
-  background-position: 0 -520px;
-}
-/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatDiceTower:active, .icons-chatDiceTower.chatDiceTower-active {
-  background-position: -28px -370px;
-}
-
-/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatDiceTowerOn {
-  background-position: -40px -550px;
-}
-/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatDiceTowerOn:hover, .icons-chatDiceTowerOn.chatDiceTowerOn-hover {
-  background-position: 0 -580px;
-}
-/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatDiceTowerOn:active, .icons-chatDiceTowerOn.chatDiceTowerOn-active {
-  background-position: 0 -550px;
-}
-
-/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatDown {
-  background-position: -24px -239px;
-}
-/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatDown:hover, .icons-chatDown.chatDown-hover {
-  background-position: -24px -214px;
-}
-/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatDown:active, .icons-chatDown.chatDown-active {
-  background-position: -64px -239px;
-}
-
-/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatFontMinus {
-  background-position: -28px -342px;
-}
-/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatFontMinus:hover, .icons-chatFontMinus.chatFontMinus-hover {
-  background-position: -26px -316px;
-}
-/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatFontMinus:active, .icons-chatFontMinus.chatFontMinus-active {
-  background-position: -68px -342px;
-}
-
-/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatFontPlus {
-  background-position: -66px -316px;
-}
-/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatFontPlus:hover, .icons-chatFontPlus.chatFontPlus-hover {
-  background-position: 0 -400px;
-}
-/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatFontPlus:active, .icons-chatFontPlus.chatFontPlus-active {
-  background-position: -106px -316px;
-}
-
-/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatFormStateAction {
-  background-position: -50px -88px;
-}
-
-/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatFormStateNormal {
-  background-position: -75px -88px;
-}
-
-/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatFormStateOff {
-  background-position: 0 -88px;
-}
-
-/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatFormStateStory {
-  background-position: -25px -88px;
-}
-
-/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatHollywood {
-  background-position: -26px -139px;
-}
-/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatHollywood:hover, .icons-chatHollywood.chatHollywood-hover {
-  background-position: -106px -139px;
-}
-/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatHollywood:active, .icons-chatHollywood.chatHollywood-active {
-  background-position: -106px -114px;
-}
-
-/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatHollywoodOff {
-  background-position: -66px -139px;
-}
-/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatHollywoodOff:hover, .icons-chatHollywoodOff.chatHollywoodOff-hover {
-  background-position: -66px -114px;
-}
-/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatHollywoodOff:active, .icons-chatHollywoodOff.chatHollywoodOff-active {
-  background-position: -26px -114px;
-}
-
-/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatLeave {
-  background-position: -24px -189px;
-}
-/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatLeave:hover, .icons-chatLeave.chatLeave-hover {
+.icons-chatCombatForward, .combatNextTurn {
   background-position: -24px -164px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatLeave:active, .icons-chatLeave.chatLeave-active {
-  background-position: -64px -189px;
-}
-
-/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatLingo {
-  background-position: -64px -164px;
+.icons-chatCombatForward:hover, .combatNextTurn:hover, .icons-chatCombatForward.chatCombatForward-hover, .chatCombatForward-hover.combatNextTurn {
+  background-position: -122px -116px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatLingo:hover, .icons-chatLingo.chatLingo-hover {
-  background-position: -104px -189px;
-}
-/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatLingo:active, .icons-chatLingo.chatLingo-active {
-  background-position: -104px -164px;
-}
-
-/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatMessageTurn {
-  background-position: 0 -825px;
-}
-
-/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatNotDisconnected {
-  background-position: 0 -370px;
-}
-
-/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatNotReconnecting {
-  background-position: 0 -342px;
-}
-
-/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatPersonaButton, #personaAddButton {
-  background-position: -64px -214px;
-}
-/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatPersonaButton:hover, #personaAddButton:hover, .icons-chatPersonaButton.chatPersonaButton-hover, .chatPersonaButton-hover#personaAddButton {
-  background-position: -80px -400px;
-}
-/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatPersonaButton:active, #personaAddButton:active, .icons-chatPersonaButton.chatPersonaButton-active, .chatPersonaButton-active#personaAddButton {
-  background-position: -104px -214px;
-}
-
-/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatPersonaDelete, .chatAvatarChoiceBoxDelete {
-  background-position: -26px -290px;
-}
-/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatPersonaDelete:hover, .chatAvatarChoiceBoxDelete:hover, .icons-chatPersonaDelete.chatPersonaDelete-hover, .chatPersonaDelete-hover.chatAvatarChoiceBoxDelete {
-  background-position: -26px -264px;
-}
-/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatPersonaDelete:active, .chatAvatarChoiceBoxDelete:active, .icons-chatPersonaDelete.chatPersonaDelete-active, .chatPersonaDelete-active.chatAvatarChoiceBoxDelete {
-  background-position: -66px -290px;
-}
-
-/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatPersonaUse, .chatAvatarChoiceBoxUse {
-  background-position: -66px -264px;
-}
-/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatPersonaUse:hover, .chatAvatarChoiceBoxUse:hover, .icons-chatPersonaUse.chatPersonaUse-hover, .chatPersonaUse-hover.chatAvatarChoiceBoxUse {
-  background-position: -106px -290px;
-}
-/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatPersonaUse:active, .chatAvatarChoiceBoxUse:active, .icons-chatPersonaUse.chatPersonaUse-active, .chatPersonaUse-active.chatAvatarChoiceBoxUse {
-  background-position: -106px -264px;
-}
-
-/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatScrolldown, #chatScrollDown {
-  background-position: -80px -745px;
-}
-/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatScrolldown:hover, #chatScrollDown:hover, .icons-chatScrolldown.chatScrolldown-hover, .chatScrolldown-hover#chatScrollDown {
-  background-position: -80px -705px;
-}
-
-/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatSend {
-  background-position: -40px -430px;
-}
-/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatSend:hover, .icons-chatSend.chatSend-hover {
-  background-position: -80px -640px;
-}
-/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatSend:active, .icons-chatSend.chatSend-active {
-  background-position: -80px -460px;
-}
-
-/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatUp {
-  background-position: -108px -342px;
-}
-/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatUp:hover, .icons-chatUp.chatUp-hover {
-  background-position: -104px -239px;
-}
-/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-chatUp:active, .icons-chatUp.chatUp-active {
-  background-position: -40px -400px;
-}
-
-/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-d10 {
-  background-position: -50px -1395px;
-}
-/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-d10:hover, .icons-d10.d10-hover {
-  background-position: -100px -1395px;
-}
-
-/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-d100 {
-  background-position: 0 -1345px;
-}
-/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-d100:hover, .icons-d100.d100-hover {
-  background-position: -50px -1345px;
-}
-
-/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-d12 {
-  background-position: 0 -1495px;
-}
-/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-d12:hover, .icons-d12.d12-hover {
-  background-position: 0 -1395px;
-}
-
-/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-d20 {
-  background-position: 0 -1445px;
-}
-/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-d20:hover, .icons-d20.d20-hover {
-  background-position: -50px -1445px;
-}
-
-/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-d4 {
-  background-position: -100px -1445px;
-}
-/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-d4:hover, .icons-d4.d4-hover {
-  background-position: -100px -1495px;
-}
-
-/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-d6 {
-  background-position: 0 -1545px;
-}
-/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-d6:hover, .icons-d6.d6-hover {
-  background-position: -50px -1495px;
-}
-
-/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-d8 {
-  background-position: 0 -2065px;
-}
-/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-d8:hover, .icons-d8.d8-hover {
-  background-position: -35px -1605px;
-}
-
-/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-dropboxLogo {
-  background-position: 0 -670px;
-}
-
-/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
-.icons-flagEN {
+.icons-chatCombatForward:active, .combatNextTurn:active, .icons-chatCombatForward.chatCombatForward-active, .chatCombatForward-active.combatNextTurn {
   background-position: 0 -164px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatCombatHP {
+  background-position: 0 0;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatCombatMP {
+  background-position: -130px -68px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatCombatRemove, .combatRemove {
+  background-position: -72px -92px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatCombatRemove:hover, .combatRemove:hover, .icons-chatCombatRemove.chatCombatRemove-hover, .chatCombatRemove-hover.combatRemove {
+  background-position: -50px -116px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatCombatRemove:active, .combatRemove:active, .icons-chatCombatRemove.chatCombatRemove-active, .chatCombatRemove-active.combatRemove {
+  background-position: -48px -92px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatCombatSheet, .combatSheet {
+  background-position: -26px -116px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatCombatSheet:hover, .combatSheet:hover, .icons-chatCombatSheet.chatCombatSheet-hover, .chatCombatSheet-hover.combatSheet {
+  background-position: -74px -116px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatCombatSheet:active, .combatSheet:active, .icons-chatCombatSheet.chatCombatSheet-active, .chatCombatSheet-active.combatSheet {
+  background-position: -96px -92px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatCombatTarget, .combatTarget {
+  background-position: -98px -116px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatCombatTarget:hover, .combatTarget:hover, .icons-chatCombatTarget.chatCombatTarget-hover, .chatCombatTarget-hover.combatTarget {
+  background-position: -24px -92px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatCombatTarget:active, .combatTarget:active, .icons-chatCombatTarget.chatCombatTarget-active, .chatCombatTarget-active.combatTarget {
+  background-position: 0 -92px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatDamageExp {
+  background-position: -40px -968px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatDamageHP {
+  background-position: -40px -1448px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatDamageMP {
+  background-position: 0 -888px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatDiceRoll {
+  background-position: -80px -713px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatDiceRoll:hover, .icons-chatDiceRoll.chatDiceRoll-hover {
+  background-position: 0 -743px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatDiceRoll:active, .icons-chatDiceRoll.chatDiceRoll-active {
+  background-position: -40px -713px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatDiceTower {
+  background-position: -80px -683px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatDiceTower:hover, .icons-chatDiceTower.chatDiceTower-hover {
+  background-position: 0 -683px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatDiceTower:active, .icons-chatDiceTower.chatDiceTower-active {
+  background-position: -40px -653px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatDiceTowerOn {
+  background-position: -40px -683px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatDiceTowerOn:hover, .icons-chatDiceTowerOn.chatDiceTowerOn-hover {
+  background-position: -80px -653px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatDiceTowerOn:active, .icons-chatDiceTowerOn.chatDiceTowerOn-active {
+  background-position: 0 -713px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatDown {
+  background-position: 0 -365px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatDown:hover, .icons-chatDown.chatDown-hover {
+  background-position: -80px -417px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatDown:active, .icons-chatDown.chatDown-active {
+  background-position: -40px -365px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatFontMinus {
+  background-position: 0 -473px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatFontMinus:hover, .icons-chatFontMinus.chatFontMinus-hover {
+  background-position: 0 -445px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatFontMinus:active, .icons-chatFontMinus.chatFontMinus-active {
+  background-position: -40px -473px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatFontPlus {
+  background-position: -68px -445px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatFontPlus:hover, .icons-chatFontPlus.chatFontPlus-hover {
+  background-position: -80px -313px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatFontPlus:active, .icons-chatFontPlus.chatFontPlus-active {
+  background-position: -106px -391px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatFormStateAction {
+  background-position: -40px -288px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatFormStateNormal {
+  background-position: -80px -188px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatFormStateOff {
+  background-position: -40px -238px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatFormStateStory {
+  background-position: -120px -263px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatHollywood {
+  background-position: -88px -213px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatHollywood:hover, .icons-chatHollywood.chatHollywood-hover {
+  background-position: -105px -238px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatHollywood:active, .icons-chatHollywood.chatHollywood-active {
+  background-position: -65px -238px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatHollywoodOff {
+  background-position: 0 -263px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatHollywoodOff:hover, .icons-chatHollywoodOff.chatHollywoodOff-hover {
+  background-position: 0 -238px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatHollywoodOff:active, .icons-chatHollywoodOff.chatHollywoodOff-active {
+  background-position: -40px -263px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatLeave {
+  background-position: -80px -263px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatLeave:hover, .icons-chatLeave.chatLeave-hover {
+  background-position: -40px -313px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatLeave:active, .icons-chatLeave.chatLeave-active {
+  background-position: 0 -313px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatLingo {
+  background-position: -48px -213px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatLingo:hover, .icons-chatLingo.chatLingo-hover {
+  background-position: -105px -288px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatLingo:active, .icons-chatLingo.chatLingo-active {
+  background-position: -65px -288px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatMessageTurn {
+  background-position: 0 -848px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatNotDisconnected {
+  background-position: -40px -445px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatNotReconnecting {
+  background-position: -120px -417px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatPersonaButton, #personaAddButton {
+  background-position: 0 -339px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatPersonaButton:hover, #personaAddButton:hover, .icons-chatPersonaButton.chatPersonaButton-hover, .chatPersonaButton-hover#personaAddButton {
+  background-position: -106px -339px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatPersonaButton:active, #personaAddButton:active, .icons-chatPersonaButton.chatPersonaButton-active, .chatPersonaButton-active#personaAddButton {
+  background-position: 0 -533px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatPersonaDelete, .chatAvatarChoiceBoxDelete {
+  background-position: -80px -365px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatPersonaDelete:hover, .chatAvatarChoiceBoxDelete:hover, .icons-chatPersonaDelete.chatPersonaDelete-hover, .chatPersonaDelete-hover.chatAvatarChoiceBoxDelete {
+  background-position: -40px -417px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatPersonaDelete:active, .chatAvatarChoiceBoxDelete:active, .icons-chatPersonaDelete.chatPersonaDelete-active, .chatPersonaDelete-active.chatAvatarChoiceBoxDelete {
+  background-position: 0 -417px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatPersonaUse, .chatAvatarChoiceBoxUse {
+  background-position: 0 -391px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatPersonaUse:hover, .chatAvatarChoiceBoxUse:hover, .icons-chatPersonaUse.chatPersonaUse-hover, .chatPersonaUse-hover.chatAvatarChoiceBoxUse {
+  background-position: 0 -188px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatPersonaUse:active, .chatAvatarChoiceBoxUse:active, .icons-chatPersonaUse.chatPersonaUse-active, .chatPersonaUse-active.chatAvatarChoiceBoxUse {
+  background-position: -66px -391px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatScrolldown, #chatScrollDown {
+  background-position: -40px -848px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatScrolldown:hover, #chatScrollDown:hover, .icons-chatScrolldown.chatScrolldown-hover, .chatScrolldown-hover#chatScrollDown {
+  background-position: -80px -848px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatSend {
+  background-position: -40px -563px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatSend:hover, .icons-chatSend.chatSend-hover {
+  background-position: -110px -533px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatSend:active, .icons-chatSend.chatSend-active {
+  background-position: 0 -593px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatUp {
+  background-position: -108px -445px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatUp:hover, .icons-chatUp.chatUp-hover {
+  background-position: -66px -339px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-chatUp:active, .icons-chatUp.chatUp-active {
+  background-position: -80px -473px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-d10 {
+  background-position: -100px -1548px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-d10:hover, .icons-d10.d10-hover {
+  background-position: 0 -1498px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-d100 {
+  background-position: -50px -1548px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-d100:hover, .icons-d100.d100-hover {
+  background-position: -50px -1498px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-d12 {
+  background-position: 0 -1548px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-d12:hover, .icons-d12.d12-hover {
+  background-position: -76px -1448px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-d20 {
+  background-position: 0 -1698px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-d20:hover, .icons-d20.d20-hover {
+  background-position: 0 -1758px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-d4 {
+  background-position: -100px -1648px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-d4:hover, .icons-d4.d4-hover {
+  background-position: -50px -1648px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-d6 {
+  background-position: -100px -1598px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-d6:hover, .icons-d6.d6-hover {
+  background-position: -50px -1598px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-d8 {
+  background-position: 0 -1598px;
+}
+/* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-d8:hover, .icons-d8.d8-hover {
+  background-position: 0 -1648px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-dropboxLogo {
+  background-position: 0 -813px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
+.icons-flagEN {
+  background-position: -48px -164px;
+}
+
+/* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-flagFR {
-  background-position: 0 -189px;
+  background-position: 0 -213px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-flagPT_BR {
-  background-position: 0 -214px;
+  background-position: -120px -164px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-flagSP {
-  background-position: 0 -239px;
+  background-position: -120px -140px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-folderClosed, .imagesFolder > .imagesFolderIcon {
-  background-position: -120px -520px;
+  background-position: -80px -503px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-folderOpen, .imagesFolder.folderOpen > .imagesFolderIcon {
-  background-position: -80px -430px;
+  background-position: -80px -563px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-handleChat {
-  background-position: -85px -1605px;
+  background-position: -50px -1758px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-handleChat:hover, .icons-handleChat.handleChat-hover {
-  background-position: 0 -1665px;
+  background-position: 0 -1818px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-handleChat:active, .icons-handleChat.handleChat-active {
-  background-position: 0 -1725px;
+  background-position: 0 -1878px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-handleLogout {
-  background-position: -60px -1665px;
+  background-position: -60px -1818px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-handleLogout:hover, .icons-handleLogout.handleLogout-hover {
-  background-position: 0 -1845px;
+  background-position: 0 -1998px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-handleLogout:active, .icons-handleLogout.handleLogout-active {
-  background-position: -60px -1725px;
+  background-position: -60px -1878px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-handleOptions {
-  background-position: 0 -1905px;
+  background-position: 0 -2058px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-handleOptions:hover, .icons-handleOptions.handleOptions-hover {
-  background-position: -60px -1845px;
+  background-position: -60px -1998px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-handleOptions:active, .icons-handleOptions.handleOptions-active {
-  background-position: -60px -1785px;
+  background-position: -60px -1938px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-handleSheet {
-  background-position: 0 -1985px;
+  background-position: 0 -2138px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-handleSheet:hover, .icons-handleSheet.handleSheet-hover {
-  background-position: -50px -1545px;
+  background-position: -50px -1698px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-handleSheet:active, .icons-handleSheet.handleSheet-active {
-  background-position: 0 -1785px;
+  background-position: 0 -1938px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-handlerLTR {
-  background-position: -8px -22px;
+  background-position: -8px -24px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-handlerRTL {
-  background-position: 0 -22px;
+  background-position: 0 -24px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-imagesDelete {
-  background-position: -34px -22px;
+  background-position: -68px 0;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-imagesDelete:hover, .icons-imagesDelete.imagesDelete-hover {
-  background-position: -60px -22px;
+  background-position: -16px 0;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-imagesDelete:active, .icons-imagesDelete.imagesDelete-active {
-  background-position: -26px -66px;
+  background-position: -42px 0;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-imagesFolder {
-  background-position: 0 0;
+  background-position: -120px 0;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-imagesFolder:hover, .icons-imagesFolder.imagesFolder-hover {
-  background-position: -52px 0;
+  background-position: -104px -68px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-imagesFolder:active, .icons-imagesFolder.imagesFolder-active {
-  background-position: -26px 0;
+  background-position: -70px -46px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-imagesPersona {
-  background-position: -78px 0;
+  background-position: -42px -24px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-imagesPersona:hover, .icons-imagesPersona.imagesPersona-hover {
-  background-position: -112px -22px;
+  background-position: -18px -46px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-imagesPersona:active, .icons-imagesPersona.imagesPersona-active {
-  background-position: -104px 0;
+  background-position: -44px -46px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-imagesRename {
-  background-position: 0 -66px;
+  background-position: -78px -68px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-imagesRename:hover, .icons-imagesRename.imagesRename-hover {
-  background-position: -52px -66px;
+  background-position: -26px -68px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-imagesRename:active, .icons-imagesRename.imagesRename-active {
-  background-position: 0 -114px;
+  background-position: -52px -68px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-imagesShare {
-  background-position: -78px -44px;
+  background-position: 0 -68px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-imagesShare:hover, .icons-imagesShare.imagesShare-hover {
-  background-position: -26px -44px;
+  background-position: -16px -24px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-imagesShare:active, .icons-imagesShare.imagesShare-active {
-  background-position: -52px -44px;
+  background-position: -120px -24px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-imagesView {
-  background-position: 0 -44px;
+  background-position: -94px 0;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-imagesView:hover, .icons-imagesView.imagesView-hover {
-  background-position: -86px -22px;
+  background-position: -68px -24px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-imagesView:active, .icons-imagesView.imagesView-active {
-  background-position: 0 -139px;
+  background-position: -94px -24px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-link {
-  background-position: 0 -1605px;
+  background-position: -40px -773px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-picaShare {
-  background-position: 0 -316px;
+  background-position: -40px -391px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-picaShare:hover, .icons-picaShare.picaShare-hover {
-  background-position: 0 -264px;
+  background-position: -120px -313px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-picaShare:active, .icons-picaShare.picaShare-active {
-  background-position: -100px -88px;
+  background-position: -40px -339px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetAutomatic {
-  background-position: -40px -905px;
+  background-position: 0 -1048px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetAutomatic:hover, .icons-sheetAutomatic.sheetAutomatic-hover {
-  background-position: 0 -985px;
+  background-position: -80px -1048px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetAutomatic:active, .icons-sheetAutomatic.sheetAutomatic-active {
-  background-position: -80px -905px;
+  background-position: -40px -928px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetAutomaticOn {
-  background-position: 0 -865px;
+  background-position: 0 -1008px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetAutomaticOn:hover, .icons-sheetAutomaticOn.sheetAutomaticOn-hover {
-  background-position: -80px -865px;
+  background-position: -80px -1008px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetAutomaticOn:active, .icons-sheetAutomaticOn.sheetAutomaticOn-active {
-  background-position: -40px -865px;
+  background-position: -40px -1008px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetClose {
-  background-position: -40px -985px;
+  background-position: 0 -1128px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetClose:hover, .icons-sheetClose.sheetClose-hover {
-  background-position: -40px -945px;
+  background-position: -40px -1088px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetClose:active, .icons-sheetClose.sheetClose-active {
-  background-position: 0 -745px;
+  background-position: 0 -1088px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetEdit {
-  background-position: -80px -945px;
+  background-position: -75px -773px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetEdit:hover, .icons-sheetEdit.sheetEdit-hover {
-  background-position: -40px -1025px;
+  background-position: -40px -1168px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetEdit:active, .icons-sheetEdit.sheetEdit-active {
-  background-position: 0 -1025px;
+  background-position: 0 -1168px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetEditOn {
-  background-position: -80px -985px;
+  background-position: -40px -1128px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetEditOn:hover, .icons-sheetEditOn.sheetEditOn-hover {
-  background-position: -40px -1065px;
+  background-position: 0 -1208px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetEditOn:active, .icons-sheetEditOn.sheetEditOn-active {
-  background-position: 0 -1065px;
+  background-position: -80px -1128px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetExport {
-  background-position: -80px -1025px;
+  background-position: -80px -1168px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetExport:hover, .icons-sheetExport.sheetExport-hover {
-  background-position: -40px -1105px;
+  background-position: -40px -1248px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetExport:active, .icons-sheetExport.sheetExport-active {
-  background-position: 0 -1105px;
+  background-position: 0 -1248px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetExportOn {
-  background-position: -80px -1065px;
+  background-position: -40px -1208px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetExportOn:hover, .icons-sheetExportOn.sheetExportOn-hover {
-  background-position: -80px -1265px;
+  background-position: 0 -1288px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetExportOn:active, .icons-sheetExportOn.sheetExportOn-active {
-  background-position: 0 -1145px;
+  background-position: -80px -1208px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetFullReload {
-  background-position: -80px -1105px;
+  background-position: -80px -1248px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetFullReload:hover, .icons-sheetFullReload.sheetFullReload-hover {
-  background-position: 0 -1225px;
+  background-position: -80px -1288px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetFullReload:active, .icons-sheetFullReload.sheetFullReload-active {
-  background-position: -80px -1145px;
+  background-position: -40px -1288px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetImport {
-  background-position: -40px -1225px;
+  background-position: 0 -1368px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetImport:hover, .icons-sheetImport.sheetImport-hover {
-  background-position: 0 -1305px;
+  background-position: -80px -1368px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetImport:active, .icons-sheetImport.sheetImport-active {
-  background-position: -80px -1225px;
+  background-position: -40px -1368px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetImportOn {
-  background-position: 0 -1185px;
+  background-position: 0 -1328px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetImportOn:hover, .icons-sheetImportOn.sheetImportOn-hover {
-  background-position: -80px -1185px;
+  background-position: -80px -1328px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetImportOn:active, .icons-sheetImportOn.sheetImportOn-active {
-  background-position: -40px -1185px;
+  background-position: -40px -1328px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetReload {
-  background-position: -40px -1305px;
+  background-position: 0 -1448px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetReload:hover, .icons-sheetReload.sheetReload-hover {
-  background-position: -40px -1265px;
+  background-position: -40px -1408px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetReload:active, .icons-sheetReload.sheetReload-active {
-  background-position: 0 -1265px;
+  background-position: 0 -1408px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetSave {
-  background-position: -40px -1145px;
+  background-position: -80px -1408px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetSave:hover, .icons-sheetSave.sheetSave-hover {
-  background-position: -40px -785px;
+  background-position: 0 -968px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetSave:active, .icons-sheetSave.sheetSave-active {
-  background-position: -80px -785px;
+  background-position: 0 -928px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetSaveChanged {
-  background-position: -40px -825px;
+  background-position: -40px -1048px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetSaveChanged:hover, .icons-sheetSaveChanged.sheetSaveChanged-hover {
-  background-position: 0 -905px;
+  background-position: -80px -928px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-sheetSaveChanged:active, .icons-sheetSaveChanged.sheetSaveChanged-active {
-  background-position: -40px -745px;
+  background-position: -80px -968px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-soundPlayer {
-  background-position: -100px -1345px;
+  background-position: -100px -1498px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-soundPlayerListButton {
-  background-position: -40px -705px;
+  background-position: -80px -888px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-soundPlayerListButton:hover, .icons-soundPlayerListButton.soundPlayerListButton-hover {
-  background-position: 0 -945px;
+  background-position: -80px -1088px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-soundPlayerListButton:active, .icons-soundPlayerListButton.soundPlayerListButton-active {
-  background-position: 0 -705px;
+  background-position: -40px -888px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-soundPlayerPause {
-  background-position: -80px -520px;
+  background-position: -110px -503px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-soundPlayerPause:hover, .icons-soundPlayerPause.soundPlayerPause-hover {
-  background-position: -110px -490px;
+  background-position: -40px -593px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-soundPlayerPause:active, .icons-soundPlayerPause.soundPlayerPause-active {
-  background-position: -40px -520px;
+  background-position: -40px -503px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-soundPlayerPlay {
-  background-position: -40px -490px;
+  background-position: -40px -533px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-soundPlayerPlay:hover, .icons-soundPlayerPlay.soundPlayerPlay-hover {
-  background-position: -108px -370px;
+  background-position: -110px -593px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-soundPlayerPlay:active, .icons-soundPlayerPlay.soundPlayerPlay-active {
-  background-position: 0 -460px;
+  background-position: 0 -623px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-soundPlayerRepeat {
-  background-position: -68px -370px;
+  background-position: -40px -623px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-soundPlayerRepeat:hover, .icons-soundPlayerRepeat.soundPlayerRepeat-hover {
-  background-position: -80px -610px;
+  background-position: 0 -773px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-soundPlayerRepeat:active, .icons-soundPlayerRepeat.soundPlayerRepeat-active {
-  background-position: -40px -610px;
+  background-position: 0 -503px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-soundPlayerRepeatActive {
-  background-position: 0 -490px;
+  background-position: -80px -623px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-soundPlayerRepeatActive:hover, .icons-soundPlayerRepeatActive.soundPlayerRepeatActive-hover {
-  background-position: 0 -610px;
+  background-position: -110px -563px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-soundPlayerRepeatActive:active, .icons-soundPlayerRepeatActive.soundPlayerRepeatActive-active {
-  background-position: -40px -460px;
+  background-position: 0 -563px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-soundPlayerStop {
-  background-position: -40px -640px;
+  background-position: -80px -743px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-soundPlayerStop:hover, .icons-soundPlayerStop.soundPlayerStop-hover {
-  background-position: 0 -430px;
+  background-position: 0 -653px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-soundPlayerStop:active, .icons-soundPlayerStop.soundPlayerStop-active {
-  background-position: -110px -430px;
+  background-position: -40px -743px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-soundsPlay {
-  background-position: -104px -44px;
+  background-position: 0 -116px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-soundsPlay:hover, .icons-soundsPlay.soundsPlay-hover {
-  background-position: -78px -66px;
+  background-position: -122px -46px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-soundsPlay:active, .icons-soundsPlay.soundsPlay-active {
-  background-position: -104px -66px;
+  background-position: -96px -46px;
 }
 
 /* line 84, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-x, .xButton {
-  background-position: -80px -490px;
+  background-position: -120px -473px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-x:hover, .xButton:hover, .icons-x.x-hover, .x-hover.xButton {
-  background-position: -120px -400px;
+  background-position: -80px -593px;
 }
 /* line 59, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/utilities/sprites/_base.scss */
 .icons-x:active, .xButton:active, .icons-x.x-active, .x-active.xButton {
-  background-position: -120px -460px;
+  background-position: -80px -533px;
 }
 
 /* line 5, C:/Ruby23/lib/ruby/gems/2.3.0/gems/compass-core-1.0.3/stylesheets/compass/reset/_utilities.scss */
@@ -5755,7 +5869,7 @@ body {
 }
 
 /* line 71, ../sass/generalView.scss */
-.buttonBehavior:hover, .simpleButton:hover, .textLink:hover, .sheetNameLink:hover, .mainWindowParagraphSubmit:hover, .picaTool:hover, .picaToolButton:hover, .leftPicaToolButton:hover, .rightPicaToolButton:hover, .leftPicaTool:hover, .rightPicaTool:hover, .handleButton:hover, .leftHandleButton:hover, .rightHandleButton:hover, .lingoButton.clickable:hover, .imagesLeftButton:hover, .imagesRightButton:hover, .imagesFolderTitle:hover, #dropboxImagesButton:hover, .musicPlayerButton:hover, #dropboxBGMInput:hover, #dropboxSoundsButton:hover, .sheetListGameName:hover, .sheetListFolderName:hover, .sheetPermLabel:hover, .styleLabel:hover, #avatarUpButton:hover, #avatarDownButton:hover, #chatScrollDown:hover, .chatRightButton:hover, #chatMessageSendButton:hover, #personaAddButton:hover, .personaButton:hover, .diceButton:hover, #chatDiceTower:hover, #chatDiceSubmit:hover, .chatAvatarChoiceBoxUse:hover, .chatAvatarChoiceBoxDelete:hover, .chatWhisperLink:hover, .chatMessageVoteAmount:hover, .xButton:hover, .sheetTool:hover, .sheetTab:hover {
+.buttonBehavior:hover, .simpleButton:hover, .textLink:hover, .sheetNameLink:hover, .mainWindowParagraphSubmit:hover, .picaTool:hover, .picaToolButton:hover, .leftPicaToolButton:hover, .rightPicaToolButton:hover, .leftPicaTool:hover, .rightPicaTool:hover, .handleButton:hover, .leftHandleButton:hover, .rightHandleButton:hover, .lingoButton.clickable:hover, .imagesLeftButton:hover, .imagesRightButton:hover, .imagesFolderTitle:hover, #dropboxImagesButton:hover, .musicPlayerButton:hover, #dropboxBGMInput:hover, #dropboxSoundsButton:hover, .sheetListGameName:hover, .sheetListFolderName:hover, .sheetPermLabel:hover, .styleLabel:hover, #avatarUpButton:hover, #avatarDownButton:hover, #chatScrollDown:hover, .chatRightButton:hover, #chatMessageSendButton:hover, #personaAddButton:hover, .personaButton:hover, .diceButton:hover, #chatDiceTower:hover, #chatDiceSubmit:hover, .chatAvatarChoiceBoxUse:hover, .chatAvatarChoiceBoxDelete:hover, .chatWhisperLink:hover, .chatMessageVoteAmount:hover, .combatButton:hover, .combatRemove:hover, .combatSetTurn:hover, .combatTarget:hover, .combatSheet:hover, .combatAdd:hover, .combatNewRound:hover, .combatNextTurn:hover, .combatEndCombat:hover, .xButton:hover, .sheetTool:hover, .sheetTab:hover {
   cursor: pointer;
 }
 
@@ -5794,7 +5908,7 @@ body {
 }
 
 /* line 109, ../sass/generalView.scss */
-.buttonBehavior:hover, .simpleButton:hover, .textLink:hover, .sheetNameLink:hover, .mainWindowParagraphSubmit:hover, .picaTool:hover, .picaToolButton:hover, .leftPicaToolButton:hover, .rightPicaToolButton:hover, .leftPicaTool:hover, .rightPicaTool:hover, .handleButton:hover, .leftHandleButton:hover, .rightHandleButton:hover, .lingoButton.clickable:hover, .imagesLeftButton:hover, .imagesRightButton:hover, .imagesFolderTitle:hover, #dropboxImagesButton:hover, .musicPlayerButton:hover, #dropboxBGMInput:hover, #dropboxSoundsButton:hover, .sheetListGameName:hover, .sheetListFolderName:hover, .sheetPermLabel:hover, .styleLabel:hover, #avatarUpButton:hover, #avatarDownButton:hover, #chatScrollDown:hover, .chatRightButton:hover, #chatMessageSendButton:hover, #personaAddButton:hover, .personaButton:hover, .diceButton:hover, #chatDiceTower:hover, #chatDiceSubmit:hover, .chatAvatarChoiceBoxUse:hover, .chatAvatarChoiceBoxDelete:hover, .chatWhisperLink:hover, .chatMessageVoteAmount:hover, .xButton:hover, .sheetTool:hover, .sheetTab:hover {
+.buttonBehavior:hover, .simpleButton:hover, .textLink:hover, .sheetNameLink:hover, .mainWindowParagraphSubmit:hover, .picaTool:hover, .picaToolButton:hover, .leftPicaToolButton:hover, .rightPicaToolButton:hover, .leftPicaTool:hover, .rightPicaTool:hover, .handleButton:hover, .leftHandleButton:hover, .rightHandleButton:hover, .lingoButton.clickable:hover, .imagesLeftButton:hover, .imagesRightButton:hover, .imagesFolderTitle:hover, #dropboxImagesButton:hover, .musicPlayerButton:hover, #dropboxBGMInput:hover, #dropboxSoundsButton:hover, .sheetListGameName:hover, .sheetListFolderName:hover, .sheetPermLabel:hover, .styleLabel:hover, #avatarUpButton:hover, #avatarDownButton:hover, #chatScrollDown:hover, .chatRightButton:hover, #chatMessageSendButton:hover, #personaAddButton:hover, .personaButton:hover, .diceButton:hover, #chatDiceTower:hover, #chatDiceSubmit:hover, .chatAvatarChoiceBoxUse:hover, .chatAvatarChoiceBoxDelete:hover, .chatWhisperLink:hover, .chatMessageVoteAmount:hover, .combatButton:hover, .combatRemove:hover, .combatSetTurn:hover, .combatTarget:hover, .combatSheet:hover, .combatAdd:hover, .combatNewRound:hover, .combatNextTurn:hover, .combatEndCombat:hover, .xButton:hover, .sheetTool:hover, .sheetTab:hover {
   cursor: pointer;
 }
 
@@ -5815,25 +5929,25 @@ body {
 
 /* Scrollbar */
 /* line 128, ../sass/generalView.scss */
-.scrollbar::-webkit-scrollbar, .scrollable::-webkit-scrollbar, #lingoContent::-webkit-scrollbar, .scrollableVertically::-webkit-scrollbar, .mainWindowContent.singleton::-webkit-scrollbar, #chatBox::-webkit-scrollbar, #personaDesignerHolder::-webkit-scrollbar, #sheetViewport::-webkit-scrollbar {
+.scrollbar::-webkit-scrollbar, .scrollable::-webkit-scrollbar, .chatFloaterContent::-webkit-scrollbar, .scrollableVertically::-webkit-scrollbar, .mainWindowContent.singleton::-webkit-scrollbar, #chatBox::-webkit-scrollbar, #personaDesignerHolder::-webkit-scrollbar, #sheetViewport::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 /* line 133, ../sass/generalView.scss */
-.scrollbar::-webkit-scrollbar-track, .scrollable::-webkit-scrollbar-track, #lingoContent::-webkit-scrollbar-track, .scrollableVertically::-webkit-scrollbar-track, .mainWindowContent.singleton::-webkit-scrollbar-track, #chatBox::-webkit-scrollbar-track, #personaDesignerHolder::-webkit-scrollbar-track, #sheetViewport::-webkit-scrollbar-track {
+.scrollbar::-webkit-scrollbar-track, .scrollable::-webkit-scrollbar-track, .chatFloaterContent::-webkit-scrollbar-track, .scrollableVertically::-webkit-scrollbar-track, .mainWindowContent.singleton::-webkit-scrollbar-track, #chatBox::-webkit-scrollbar-track, #personaDesignerHolder::-webkit-scrollbar-track, #sheetViewport::-webkit-scrollbar-track {
   border-radius: 0px;
   background-color: #b9b9b9;
 }
 
 /* line 138, ../sass/generalView.scss */
-.scrollbar::-webkit-scrollbar-thumb, .scrollable::-webkit-scrollbar-thumb, #lingoContent::-webkit-scrollbar-thumb, .scrollableVertically::-webkit-scrollbar-thumb, .mainWindowContent.singleton::-webkit-scrollbar-thumb, #chatBox::-webkit-scrollbar-thumb, #personaDesignerHolder::-webkit-scrollbar-thumb, #sheetViewport::-webkit-scrollbar-thumb {
+.scrollbar::-webkit-scrollbar-thumb, .scrollable::-webkit-scrollbar-thumb, .chatFloaterContent::-webkit-scrollbar-thumb, .scrollableVertically::-webkit-scrollbar-thumb, .mainWindowContent.singleton::-webkit-scrollbar-thumb, #chatBox::-webkit-scrollbar-thumb, #personaDesignerHolder::-webkit-scrollbar-thumb, #sheetViewport::-webkit-scrollbar-thumb {
   border-radius: 0px;
   background-color: #626262;
 }
 
 /* line 143, ../sass/generalView.scss */
-.scrollable, #lingoContent {
+.scrollable, .chatFloaterContent {
   overflow: auto;
 }
 
@@ -5859,7 +5973,7 @@ body {
 
 /* UNselectable */
 /* line 167, ../sass/generalView.scss */
-.unselectable, .buttonBehavior, .simpleButton, .textLink, .sheetNameLink, .mainWindowParagraphSubmit, .picaTool, .picaToolButton, .leftPicaToolButton, .rightPicaToolButton, .leftPicaTool, .rightPicaTool, .handleButton, .leftHandleButton, .rightHandleButton, .lingoButton.clickable, .imagesLeftButton, .imagesRightButton, .imagesFolderTitle, #dropboxImagesButton, .musicPlayerButton, #dropboxBGMInput, #dropboxSoundsButton, .sheetListGameName, .sheetListFolderName, .sheetPermLabel, .styleLabel, #avatarUpButton, #avatarDownButton, #chatScrollDown, .chatRightButton, #chatMessageSendButton, #personaAddButton, .personaButton, .diceButton, #chatDiceTower, #chatDiceSubmit, .chatAvatarChoiceBoxUse, .chatAvatarChoiceBoxDelete, .chatWhisperLink, .chatMessageVoteAmount, .xButton, .sheetTool, .sheetTab, #loginNewAccount, #loginForgotPassword, #lingoFloater {
+.unselectable, .buttonBehavior, .simpleButton, .textLink, .sheetNameLink, .mainWindowParagraphSubmit, .picaTool, .picaToolButton, .leftPicaToolButton, .rightPicaToolButton, .leftPicaTool, .rightPicaTool, .handleButton, .leftHandleButton, .rightHandleButton, .lingoButton.clickable, .imagesLeftButton, .imagesRightButton, .imagesFolderTitle, #dropboxImagesButton, .musicPlayerButton, #dropboxBGMInput, #dropboxSoundsButton, .sheetListGameName, .sheetListFolderName, .sheetPermLabel, .styleLabel, #avatarUpButton, #avatarDownButton, #chatScrollDown, .chatRightButton, #chatMessageSendButton, #personaAddButton, .personaButton, .diceButton, #chatDiceTower, #chatDiceSubmit, .chatAvatarChoiceBoxUse, .chatAvatarChoiceBoxDelete, .chatWhisperLink, .chatMessageVoteAmount, .combatButton, .combatRemove, .combatSetTurn, .combatTarget, .combatSheet, .combatAdd, .combatNewRound, .combatNextTurn, .combatEndCombat, .xButton, .sheetTool, .sheetTab, #loginNewAccount, #loginForgotPassword, .chatFloater {
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select: none;
@@ -6127,72 +6241,25 @@ body {
 }
 
 /* line 1, ../sass/mainChatLanguages.scss */
-#lingoFloater {
-  position: absolute;
-  width: 400px;
-  z-index: 10;
-}
-
-/* line 8, ../sass/mainChatLanguages.scss */
-#lingoHandle {
-  background-color: #333745;
-  line-height: 30px;
-  font-size: 26px;
-  font-weight: bold;
-  color: #fff;
-  text-align: center;
-}
-/* line 16, ../sass/mainChatLanguages.scss */
-#lingoHandle:hover {
-  cursor: move;
-}
-
-/* line 21, ../sass/mainChatLanguages.scss */
-#lingoMinus {
-  float: left;
-  display: block;
-  line-height: 30px;
-  height: 30px;
-  width: 30px;
-}
-/* line 28, ../sass/mainChatLanguages.scss */
-#lingoMinus:hover {
-  cursor: pointer;
-  background-color: rgba(255, 255, 255, 0.4);
-}
-/* line 32, ../sass/mainChatLanguages.scss */
-#lingoMinus:active {
-  background-color: rgba(255, 255, 255, 0.15);
-}
-
-/* line 37, ../sass/mainChatLanguages.scss */
-#lingoContent {
-  background-color: #fff;
-  max-height: 350px;
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-
-/* line 45, ../sass/mainChatLanguages.scss */
 .lingoRow {
   padding: 6px;
 }
-/* line 48, ../sass/mainChatLanguages.scss */
+/* line 4, ../sass/mainChatLanguages.scss */
 .lingoRow:hover {
   background-color: rgba(0, 0, 0, 0.05);
 }
 
-/* line 53, ../sass/mainChatLanguages.scss */
+/* line 9, ../sass/mainChatLanguages.scss */
 .lingoRow {
   line-height: 30px;
 }
 
-/* line 57, ../sass/mainChatLanguages.scss */
+/* line 13, ../sass/mainChatLanguages.scss */
 .lingoName {
   margin-right: 6px;
 }
 
-/* line 61, ../sass/mainChatLanguages.scss */
+/* line 17, ../sass/mainChatLanguages.scss */
 .lingoButton {
   display: inline-block;
   padding: 2px;
@@ -6202,19 +6269,19 @@ body {
   line-height: 20px;
   vertical-align: middle;
 }
-/* line 70, ../sass/mainChatLanguages.scss */
+/* line 26, ../sass/mainChatLanguages.scss */
 .lingoButton:hover {
   background-color: rgba(0, 0, 0, 0.2);
 }
-/* line 74, ../sass/mainChatLanguages.scss */
+/* line 30, ../sass/mainChatLanguages.scss */
 .lingoButton.clickable {
   border: solid 1px #000;
 }
-/* line 78, ../sass/mainChatLanguages.scss */
+/* line 34, ../sass/mainChatLanguages.scss */
 .lingoButton.clickable:hover {
   border-color: #9c9c9c;
 }
-/* line 82, ../sass/mainChatLanguages.scss */
+/* line 38, ../sass/mainChatLanguages.scss */
 .lingoButton.clickable:active {
   background-color: rgba(0, 0, 0, 0.5);
   border-color: #484848;
@@ -6913,7 +6980,7 @@ body {
 }
 
 /* line 63, ../sass/mainWindowSimple.scss */
-.hoverable:hover, .gameInvitesEmptyP:hover, .gameInvitesContainer:hover, .configLabel:hover, .mainWindowParagraphSubmit:hover, #styleEditorSubmit:hover, .styleLabel:hover {
+.hoverable:hover, .gameInvitesEmptyP:hover, .gameInvitesContainer:hover, .configLabel:hover, .mainWindowParagraphSubmit:hover, #styleEditorSubmit:hover, .styleLabel:hover, .combatRow:hover {
   background-color: rgba(0, 0, 0, 0.3);
 }
 
@@ -7556,6 +7623,53 @@ body {
   margin-top: 4px;
 }
 
+/* line 491, ../sass/mainChat.scss */
+.chatFloater {
+  position: absolute;
+  width: 400px;
+  z-index: 10;
+}
+
+/* line 498, ../sass/mainChat.scss */
+.chatFloaterHandle {
+  background-color: #333745;
+  line-height: 30px;
+  font-size: 26px;
+  font-weight: bold;
+  color: #fff;
+  text-align: center;
+}
+/* line 506, ../sass/mainChat.scss */
+.chatFloaterHandle:hover {
+  cursor: move;
+}
+
+/* line 511, ../sass/mainChat.scss */
+.chatFloaterMinus {
+  float: left;
+  display: block;
+  line-height: 30px;
+  height: 30px;
+  width: 30px;
+}
+/* line 518, ../sass/mainChat.scss */
+.chatFloaterMinus:hover {
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.4);
+}
+/* line 522, ../sass/mainChat.scss */
+.chatFloaterMinus:active {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* line 527, ../sass/mainChat.scss */
+.chatFloaterContent {
+  background-color: #fff;
+  max-height: 350px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
 /* line 2, ../sass/mainChatMessages.scss */
 #chatTitle {
   font-size: 1.7em;
@@ -7957,6 +8071,92 @@ body {
   display: inline-block;
   margin-left: 5px;
   margin-right: 5px;
+}
+
+/* line 1, ../sass/mainChatCombat.scss */
+#combatFloater {
+  width: 450px;
+}
+
+/* line 5, ../sass/mainChatCombat.scss */
+#combatSelectSheet {
+  max-width: 100px;
+}
+
+/* line 9, ../sass/mainChatCombat.scss */
+.combatRow {
+  display: flex;
+}
+/* line 13, ../sass/mainChatCombat.scss */
+.combatRow.currentTarget {
+  border: solid 2px #ff0000;
+}
+/* line 17, ../sass/mainChatCombat.scss */
+.combatRow.currentTurn {
+  border-left: 8px solid #000;
+}
+
+/* line 22, ../sass/mainChatCombat.scss */
+.combatName {
+  flex: 1 0 auto;
+  font-weight: bold;
+  line-height: 24px;
+  margin: 4px;
+  padding: 0px;
+  vertical-align: top;
+}
+
+/* line 31, ../sass/mainChatCombat.scss */
+.combatButton, .combatRemove, .combatSetTurn, .combatTarget, .combatSheet {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  margin: 4px;
+}
+
+/* line 43, ../sass/mainChatCombat.scss */
+.combatSetTurn, .combatTarget, .combatSheet {
+  margin-left: 0px;
+}
+
+/* line 63, ../sass/mainChatCombat.scss */
+.combatRowInitiative {
+  flex: 0 0 auto;
+  float: right;
+  width: 24px;
+  vertical-align: middle;
+  margin: 4px;
+  text-align: center;
+  font-family: alegreya;
+}
+
+/* line 73, ../sass/mainChatCombat.scss */
+#combatStoryButtons {
+  height: auto;
+  overflow: visible;
+  line-height: 30px;
+  height: 30px;
+  padding-left: 4px;
+}
+
+/* line 81, ../sass/mainChatCombat.scss */
+#combatSelectSheet, #combatSelectUser {
+  font-family: alegreya;
+}
+
+/* line 85, ../sass/mainChatCombat.scss */
+.combatAdd, .combatNewRound, .combatNextTurn, .combatEndCombat {
+  display: inline-block;
+  height: 24px;
+  width: 24px;
+  vertical-align: middle;
+}
+
+/* line 94, ../sass/mainChatCombat.scss */
+.combatNewRound, .combatNextTurn, .combatEndCombat {
+  float: right;
+  margin-right: 4px;
+  margin-top: 3px;
 }
 
 /* line 1, ../sass/mainPicture.scss */

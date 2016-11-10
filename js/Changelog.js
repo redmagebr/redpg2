@@ -70,6 +70,10 @@ change.addMessage("Fonte do chat padrão retornada para Caudex. Alegreya ainda p
 change.addMessage("It is now possible to force images into a folder.", "en");
 change.addMessage("Opção para forçar imagens a uma determinada pasta criada.", "pt");
 
+change = new Changelog(0, 19, 0);
+change.addMessage("Initial combat tracker release. More planned for later.", "en");
+change.addMessage("Lançamento inicial do Combat Tracker. Atualizações planejadas para o futuro.", "pt");
+
 delete (change);
 
 Changelog.finished();

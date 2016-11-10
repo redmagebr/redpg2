@@ -34,8 +34,8 @@ class MemoryCutscene extends TrackerMemory {
         this.chatAllowed = true;
     }
 
-    public storeValue (v : boolean) {
-        var allowed = v === true;
+    public storeValue (v : boolean | number) {
+        var allowed = v === true || v === 1;
         if (allowed !== this.chatAllowed) {
             this.chatAllowed = allowed;
             this.triggerChange();
@@ -54,6 +54,6 @@ class MemoryCutscene extends TrackerMemory {
     }
 
     public exportAsObject () {
-        return this.chatAllowed;
+        return this.chatAllowed ? 1 : 0;
     }
 }

@@ -318,6 +318,7 @@ ptbr.setLingo("_CHATBUTTONFONTMINUS_", "Diminuir tamanho da fonte");
 ptbr.setLingo("_CHATBUTTONLEAVE_", "Sair da sala");
 ptbr.setLingo("_CHATBUTTONHOLLYWOOD_", "Ativar/Desativar modo Cutscene");
 ptbr.setLingo("_CHATBUTTONLINGO_", "Abrir gerenciador de línguas");
+ptbr.setLingo("_CHATBUTTONCOMBAT_", "Abrir gerenciador de combate");
 ptbr.setLingo("_CHATBUTTONSEND_", "Enviar");
 ptbr.setLingo("_CHATPERSONAMANAGERBUTTON_", "Abrir administrador de personas");
 ptbr.setLingo("_CHATDICETOWER_", "Ativar/Desativar rolagem secreta");
@@ -328,7 +329,18 @@ ptbr.setLingo("_LINGOADD_", "+ Adicionar");
 ptbr.setLingo("_CHATLINGONOLINGO_", "Não fala linguas especiais");
 ptbr.setLingo("_SLASHLINGOINVALIDONLYGM_", "Apenas narradores podem enviar mensagens de história.");
 ptbr.setLingo("_SLASHLINGOINVALIDNOSUCHLINGO_", "Essa lingua não existe.");
-ptbr.setLingo("_SLASHLINGOINVALIDYOUKNOWNOTHINGINNOCENT_", "Você não tem permissão para falar essa língua.");
+ptbr.setLingo("_COMBATTRACKER_", "Gerenciador de Combate");
+ptbr.setLingo("_COMBATTRACKERREMOVE_", "Remover do combate");
+ptbr.setLingo("_COMBATTRACKERSETTARGET_", "Marcar/desmarcar como alvo");
+ptbr.setLingo("_COMBATTRACKERSETTURN_", "Definir como turno atual");
+ptbr.setLingo("_COMBATTRACKERSHEET_", "Abrir ficha");
+ptbr.setLingo("_COMBATTRACKERNOSHEETS_", "Nenhuma ficha carregada...");
+ptbr.setLingo("_COMBATTRACKERADD_", "Adicionar ao combate");
+ptbr.setLingo("_COMBATTRACKERNEWROUND_", "Começar nova rodada");
+ptbr.setLingo("_COMBATTRACKERNEXTTURN_", "Passar turno");
+ptbr.setLingo("_COMBATTRACKEENDCOMBAT_", "Finalizar combate");
+ptbr.setLingo("_COMBATTRACKERNOCOMBATANTS_", "Sem participantes em combate.");
+ptbr.setLingo("_CHATCOMBATENDEDCOMBAT_", "Combate finalizado. Todos os npcs foram removidos do combate.");
 
 // Chat Persona Designer
 ptbr.setLingo("_PERSONADESIGNERTITLE_", "Administrador de Personas");

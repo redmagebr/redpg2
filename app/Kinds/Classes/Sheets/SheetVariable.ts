@@ -8,6 +8,11 @@ class SheetVariable {
 
     protected value : any = null;
     protected defaultValueString : String = null;
+    protected aliases : Array<string> = [];
+
+    public getAliases () {
+        return this.aliases;
+    }
 
     constructor (parent : Sheet, style : SheetStyle, element : HTMLElement) {
         this.parent = parent;
@@ -19,6 +24,16 @@ class SheetVariable {
         this.editable = this.visible.dataset['editable'] === undefined ? true :
             (this.visible.dataset['editable'] === "1" ||
             this.visible.dataset['editable'].toLowerCase() === "true");
+
+        if (this.visible.dataset['alias'] !== undefined) {
+            var aliases = this.visible.dataset['alias'].trim().split(";");
+            for (var i = 0; i < aliases.length; i++) {
+                var alias = aliases[i].trim();
+                if (alias !== "") {
+                    this.aliases.push(alias);
+                }
+            }
+        }
     }
 
     /**

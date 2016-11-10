@@ -12,6 +12,10 @@ class MessageSheetturn extends Message {
 
         p.appendChild(document.createTextNode(this.getSheetName() + ":"));
 
+        if (Application.isMe(this.getOwnerId()) && UI.Chat.doAutomation()) {
+            UI.SoundController.playAlert();
+        }
+
         return p;
     }
 
@@ -23,10 +27,18 @@ class MessageSheetturn extends Message {
         var old = this.getSpecial("sheetname", null);
 
         if (old === null) {
-            old = this.msg;
+            return this.msg;
         }
 
         return old;
+    }
+
+    public setOwnerId (id : number) {
+        this.setSpecial ("owner", id);
+    }
+
+    public getOwnerId () {
+        return this.getSpecial("owner", 0);
     }
 
     public setPlayer (id : number) {

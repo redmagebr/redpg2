@@ -102,6 +102,28 @@ module UI.Sheets.SheetManager {
         updateButtons();
     }
 
+    export function openSheetId (sheetid : number) {
+        var sheet = DB.SheetDB.getSheet(sheetid);
+        if (sheet !== null) {
+            openSheet(sheet);
+        } else {
+            var cbs = <EventListenerObject> {
+                sheetid : sheetid,
+                handleEvent : function () {
+                    UI.Sheets.SheetManager.openSheet(DB.SheetDB.getSheet(this.sheetid));
+                }
+            };
+
+            var cbe = <EventListenerObject> {
+                handleEvent : function () {
+                    alert("Unable to open sheet. Sorri");
+                }
+            };
+
+            Server.Sheets.loadSheet(sheetid, cbs, cbe);
+        }
+    }
+
     export function openSheet (sheet : SheetInstance, reloadSheet? : boolean, reloadStyle? : boolean) {
         var loadSheet = !sheet.loaded || reloadSheet === true;
         var loadStyle = reloadStyle === true || !DB.StyleDB.hasStyle(sheet.getStyleId()) || !DB.StyleDB.getStyle(sheet.getStyleId()).isLoaded();

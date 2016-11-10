@@ -396,12 +396,45 @@
         </div>
       </div>
       <div class='leftSideWindow' id='chatSideWindow'>
-        <div id='lingoFloater'>
-          <div class='language' id='lingoHandle'>
-            <div id='lingoMinus'>-</div>
+        <div class='chatFloater' id='combatFloater'>
+          <div class='language chatFloaterHandle' id='combatHandle'>
+            <div class='chatFloaterMinus' id='combatMinus'>-</div>
+            _COMBATTRACKER_
+          </div>
+          <div class='chatFloaterContent' id='combatContent'>
+            <div class='combatRow currentTurn currentTarget'>
+              <a class='combatRemove language' data-titlelingo='_COMBATTRACKERREMOVE_'></a>
+              <span class='combatName'>Nome do Sujeito</span>
+              <input class='combatRowInitiative'>
+              <a class='combatSetTurn language' data-titlelingo='_COMBATTRACKERSETTURN_'></a>
+              <a class='combatTarget language' data-titlelingo='_COMBATTRACKERSETTARGET_'></a>
+              <a class='combatSheet language' data-titlelingo='_COMBATTRACKERSHEET_'></a>
+            </div>
+            <div class='combatRow'>
+              <span class='combatName language'>_COMBATTRACKERNOCOMBATANTS_</span>
+            </div>
+          </div>
+          <div class='chatFloaterContent' id='combatStoryButtons'>
+            <select id='combatSelectUser'>
+              <option>NPC</option>
+              <option>Reddo</option>
+            </select>
+            -
+            <select id='combatSelectSheet'>
+              <option class='language' disabled='true'>_COMBATTRACKERNOSHEETS_</option>
+            </select>
+            <a class='combatAdd language' data-titlelingo='_COMBATTRACKERADD_' id='combatAddSheet'></a>
+            <a class='combatNewRound language' data-titlelingo='_COMBATTRACKERNEWROUND_' id='combatNewRound'></a>
+            <a class='combatNextTurn language' data-titlelingo='_COMBATTRACKERNEXTTURN_' id='combatNextTurn'></a>
+            <a class='combatEndCombat language' data-titlelingo='_COMBATTRACKEENDCOMBAT_' id='combatEndCombat'></a>
+          </div>
+        </div>
+        <div class='chatFloater' id='lingoFloater'>
+          <div class='language chatFloaterHandle' id='lingoHandle'>
+            <div class='chatFloaterMinus' id='lingoMinus'>-</div>
             _LINGOMANAGER_
           </div>
-          <div id='lingoContent'>
+          <div class='chatFloaterContent' id='lingoContent'>
             <div class='lingoRow'>
               <b class='lingoName'>Reddo#0001:</b>
               <a class='lingoButton'>Elvish</a>
@@ -444,6 +477,7 @@
           <a class='chatRightButton icons-chatFontPlus language' data-titlelingo='_CHATBUTTONFONTPLUS_' onclick="Application.Config.getConfig('chatfontsize').storeValue(Application.Config.getConfig('chatfontsize').getValue() + 1);"></a>
           <a class='chatRightButton icons-chatFontMinus language' data-titlelingo='_CHATBUTTONFONTMINUS_' onclick="Application.Config.getConfig('chatfontsize').storeValue(Application.Config.getConfig('chatfontsize').getValue() - 1);"></a>
           <a class='chatRightButton icons-chatHollywood language' data-titlelingo='_CHATBUTTONHOLLYWOOD_' id='chatHollywood'></a>
+          <a class='chatRightButton icons-chatCombatButton language' data-titlelingo='_CHATBUTTONCOMBAT_' id='chatCombatButton'></a>
           <a class='chatRightButton icons-chatLingo language' data-titlelingo='_CHATBUTTONLINGO_' id='chatLingoButton'></a>
         </div>
         <div id='chatMessageStateIcon'></div>

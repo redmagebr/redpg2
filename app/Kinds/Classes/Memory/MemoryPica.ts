@@ -14,8 +14,12 @@ class MemoryPica extends TrackerMemory {
         return this;
     }
 
-    public picaAllowedStore (isIt : boolean) {
-        isIt = isIt === true;
+    public picaAllowedExport () {
+        return this.picaAllowed ? 1 : 0;
+    }
+
+    public picaAllowedStore (isIt : boolean | number) {
+        isIt = isIt === true || isIt === 1;
         if (isIt !== this.picaAllowed) {
             this.picaAllowed = isIt;
             if (this.updateUnderway) {
@@ -46,7 +50,7 @@ class MemoryPica extends TrackerMemory {
     public exportAsObject () : Array<any> {
         var result : Array<any> = [];
         for (var i = 0; i < MemoryPica.fieldOrder.length; i++) {
-            result.push(this[MemoryPica.fieldOrder[i]]);
+            result.push(this[MemoryPica.fieldOrder[i] + "Export"]());
         }
         return result;
     }

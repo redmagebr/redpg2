@@ -9,6 +9,7 @@ module Server.Chat {
 
     export var currentController : ChatController = socketController;
     var currentRoom : Room = null;
+    var roomTrigger = new Trigger();
 
     var openListener : Listener = undefined;
     var errorListener : Listener = undefined;
@@ -35,6 +36,18 @@ module Server.Chat {
             Server.Chat.end();
         }
     });
+
+    export function addRoomListener (f : Function | Listener) {
+        roomTrigger.addListener(f);
+    }
+
+    export function removeRoomListener (f : Function | Listener) {
+        roomTrigger.removeListener(f);
+    }
+
+    export function triggerRoomListener () {
+        roomTrigger.trigger(currentRoom);
+    }
 
     export function isReconnecting () {
         return reconnecting;
@@ -84,6 +97,7 @@ module Server.Chat {
     export function leaveRoom () {
         currentRoom = null;
         reconnecting = false;
+        triggerRoomListener ();
         currentController.end();
     }
 
@@ -231,6 +245,7 @@ module Server.Chat {
                 Server.Chat.setConnected();
                 UI.Chat.Avatar.updateFromObject(users, true);
                 UI.Chat.printMessages(room.getOrderedMessages(), false);
+                Server.Chat.triggerRoomListener();
             }
         };
         socketController.addMessageListener("getroom", getRoom);

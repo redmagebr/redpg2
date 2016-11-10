@@ -48,6 +48,13 @@ module DB.SheetDB {
                 wanted.push(sheets[id]);
             }
         }
+
+        wanted.sort(function (a : SheetInstance, b : SheetInstance) {
+            if (a.getName() < b.getName()) return -1;
+            if (a.getName() > b.getName()) return 1;
+            return 0;
+        });
+
         return wanted;
     }
 
