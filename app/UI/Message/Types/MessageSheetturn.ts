@@ -1,5 +1,6 @@
 class MessageSheetturn extends Message {
     public module : string = "sheettr";
+    private playedBefore : boolean = false;
 
     public createHTML () {
         var p = document.createElement("p");
@@ -11,10 +12,6 @@ class MessageSheetturn extends Message {
         p.appendChild(a);
 
         p.appendChild(document.createTextNode(this.getSheetName() + ":"));
-
-        if (Application.isMe(this.getOwnerId()) && UI.Chat.doAutomation()) {
-            UI.SoundController.playAlert();
-        }
 
         return p;
     }
@@ -47,6 +44,16 @@ class MessageSheetturn extends Message {
 
     public getPlayer () : number {
         return this.getSpecial('player', 0);
+    }
+
+    public onPrint () {
+        if (this.playedBefore) {
+            return; // don't play yourself twice!
+        }
+        if (Application.isMe(this.getOwnerId()) && UI.Chat.doAutomation()) {
+            UI.SoundController.playAlert();
+            this.playedBefore = true;
+        }
     }
 }
 

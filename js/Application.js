@@ -2258,7 +2258,7 @@ var ChatCombatRow = (function () {
             this.setTarget();
         }).bind(this));
         this.visible.appendChild(target);
-        if (isStoryteller) {
+        if (isStoryteller || Application.isMe(this.combatant.owner)) {
             var sheet = document.createElement("a");
             sheet.classList.add("combatSheet", "language");
             UI.Language.addLanguageTitle(sheet, "_COMBATTRACKERSHEET_");
@@ -6390,6 +6390,7 @@ var MessageSheetturn = (function (_super) {
     function MessageSheetturn() {
         _super.apply(this, arguments);
         this.module = "sheettr";
+        this.playedBefore = false;
     }
     MessageSheetturn.prototype.createHTML = function () {
         var p = document.createElement("p");
@@ -6399,9 +6400,6 @@ var MessageSheetturn = (function (_super) {
         a.classList.add("chatMessageTurnIcon");
         p.appendChild(a);
         p.appendChild(document.createTextNode(this.getSheetName() + ":"));
-        if (Application.isMe(this.getOwnerId()) && UI.Chat.doAutomation()) {
-            UI.SoundController.playAlert();
-        }
         return p;
     };
     MessageSheetturn.prototype.setSheetName = function (name) {
@@ -6425,6 +6423,15 @@ var MessageSheetturn = (function (_super) {
     };
     MessageSheetturn.prototype.getPlayer = function () {
         return this.getSpecial('player', 0);
+    };
+    MessageSheetturn.prototype.onPrint = function () {
+        if (this.playedBefore) {
+            return;
+        }
+        if (Application.isMe(this.getOwnerId()) && UI.Chat.doAutomation()) {
+            UI.SoundController.playAlert();
+            this.playedBefore = true;
+        }
     };
     return MessageSheetturn;
 }(Message));

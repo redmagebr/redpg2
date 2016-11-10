@@ -64,7 +64,7 @@ class ChatCombatRow {
         this.visible.appendChild(target);
 
         // SHEET!!!!!!!
-        if (isStoryteller) {
+        if (isStoryteller || Application.isMe(this.combatant.owner)) {
             var sheet = document.createElement("a");
             sheet.classList.add("combatSheet", "language");
             UI.Language.addLanguageTitle(sheet, "_COMBATTRACKERSHEET_");

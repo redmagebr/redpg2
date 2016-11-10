@@ -1318,6 +1318,7 @@ declare class MessageSheetdamage extends Message {
 }
 declare class MessageSheetturn extends Message {
     module: string;
+    private playedBefore;
     createHTML(): HTMLParagraphElement;
     setSheetName(name: string): void;
     getSheetName(): string;
@@ -1325,6 +1326,7 @@ declare class MessageSheetturn extends Message {
     getOwnerId(): any;
     setPlayer(id: number): void;
     getPlayer(): number;
+    onPrint(): void;
 }
 declare class MessageDice extends Message {
     module: string;
