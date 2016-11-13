@@ -1987,6 +1987,19 @@ var MemoryCombat = (function (_super) {
             }
         }
     };
+    MemoryCombat.prototype.applyInitiative = function (id, initiative) {
+        var foundOne = false;
+        for (var i = 0; i < this.combatants.length; i++) {
+            if (this.combatants[i].id === id) {
+                foundOne = true;
+                this.combatants[i].setInitiative(initiative);
+            }
+        }
+        if (foundOne) {
+            this.reorderCombatants();
+            this.triggerChange();
+        }
+    };
     MemoryCombat.prototype.setInitiative = function (combatant, initiative) {
         var idx = this.combatants.indexOf(combatant);
         if (idx !== -1) {
@@ -2772,7 +2785,7 @@ var ChatSystemMessage = (function () {
     ChatSystemMessage.prototype.addLangVar = function (id, value) {
         UI.Language.addLanguageVariable(this.element, id, value);
     };
-    ChatSystemMessage.prototype.addTextLink = function (text, hasLanguage, click) {
+    ChatSystemMessage.createTextLink = function (text, hasLanguage, click) {
         var a = document.createElement("a");
         a.classList.add("textLink");
         a.appendChild(document.createTextNode(text));
@@ -2780,7 +2793,10 @@ var ChatSystemMessage = (function () {
             UI.Language.markLanguage(a);
         }
         a.addEventListener("click", click);
-        this.element.appendChild(a);
+        return a;
+    };
+    ChatSystemMessage.prototype.addTextLink = function (text, hasLanguage, click) {
+        this.element.appendChild(ChatSystemMessage.createTextLink(text, hasLanguage, click));
     };
     ChatSystemMessage.prototype.addText = function (text) {
         this.element.appendChild(document.createTextNode(text));
@@ -4163,11 +4179,15 @@ var SheetList = (function () {
     SheetList.prototype.getAliases = function () {
         return this.aliases;
     };
+    SheetList.prototype.getRows = function () {
+        return this.rows;
+    };
     SheetList.prototype.breakIn = function (sheet) { };
     SheetList.prototype.addRow = function () {
         var newRow;
         if (this.detachedRows.length > 0) {
             newRow = this.detachedRows.pop();
+            newRow.reset();
         }
         else {
             var newRowEles = [];
@@ -4273,6 +4293,24 @@ var SheetList = (function () {
             });
             this.reattachRows();
         }
+    };
+    SheetList.prototype.getRowIndex = function (id) {
+        id = Sheet.simplifyString(id);
+        if (this.tableIndex !== null && this.tableValue !== null) {
+            for (var i = 0; i < this.rows.length; i++) {
+                var name = this.rows[i].getValueFor(this.tableIndex);
+                if (typeof name === "string") {
+                    var simpleName = Sheet.simplifyString(name);
+                    if (simpleName === id) {
+                        return this.rows[i];
+                    }
+                }
+                else {
+                    return null;
+                }
+            }
+        }
+        return null;
     };
     SheetList.prototype.getValueFor = function (id) {
         if (this.tableIndex !== null && this.tableValue !== null) {
@@ -4560,6 +4598,7 @@ var SheetVariablelongtext = (function (_super) {
         this.pClass = null;
         this.mouse = false;
         this.empty();
+        this.defaultValueString = this.defaultValueString === null ? "" : this.defaultValueString;
         this.allowEmptyLines = this.visible.dataset['allowempty'] === undefined ? false :
             (this.visible.dataset['allowempty'] === "1" ||
                 this.visible.dataset['allowempty'].toLowerCase() === "true");
@@ -4626,7 +4665,13 @@ var SheetVariablelongtext = (function (_super) {
     SheetVariablelongtext.prototype.blur = function () {
         var lines = [];
         for (var i = 0; i < this.visible.children.length; i++) {
-            var line = this.visible.children[i].innerText.trim();
+            var line = this.visible.children[i].innerText;
+            if (line !== null && line !== undefined) {
+                line = line.trim();
+            }
+            else {
+                line = "";
+            }
             if (line !== "" || this.allowEmptyLines) {
                 lines.push(line);
             }
@@ -5064,6 +5109,12 @@ var SheetVariableselect = (function (_super) {
             this.select.addEventListener("change", (function (e) { this.selectChange(e); }).bind(this));
         }
         this.select.disabled = !this.editable;
+        if (this.defaultValueString !== null && this.values.indexOf(this.defaultValueString) !== -1) {
+            this.value = this.defaultValueString;
+        }
+        else {
+            this.value = this.values[0];
+        }
         this.showSelect();
     }
     SheetVariableselect.prototype.blur = function () { };
@@ -5154,45 +5205,56 @@ var SheetButtondice = (function (_super) {
         this.reason = this.visible.dataset['reason'] === undefined ? null : this.visible.dataset['reason'];
         this.parse();
     }
+    SheetButtondice.prototype.getReason = function () {
+        return this.reason;
+    };
     SheetButtondice.prototype.click = function (e) {
         e.preventDefault();
         if (UI.Chat.getRoom() !== null) {
-            var dice = new MessageDice();
-            dice.setPersona(this.style.getSheetInstance().getName());
-            var reason = this.diceAmount !== 0 && this.diceFaces !== 0 ? this.diceAmount.toString() + "d" + this.diceFaces.toString() : "";
-            var value = this.getValue();
-            if (value.toString() === this.modifier) {
-                if (value === 0 && reason === "") {
-                    reason = value.toString();
-                }
-                else if (value !== 0) {
-                    if (value < 0) {
-                        reason += " - " + Math.abs(value).toString();
-                    }
-                    else {
-                        reason += " + " + value;
-                    }
-                }
-            }
-            else {
-                if (reason === "") {
-                    reason = this.modifier + " = " + value;
-                }
-                else {
-                    reason += " + " + this.modifier + " = " + reason + " + " + value;
-                }
-            }
-            if (this.reason !== null) {
-                reason += ". " + this.reason;
-            }
-            dice.setMsg(reason);
-            dice.setMod(value);
-            dice.addDice(this.diceAmount, this.diceFaces);
-            if (UI.Chat.Forms.isDiceTower()) {
-                dice.addDestinationStorytellers(UI.Chat.getRoom());
-            }
+            var dice = this.createMessage();
             UI.Chat.sendMessage(dice);
         }
+    };
+    SheetButtondice.prototype.createMessage = function () {
+        var dice = new MessageDice();
+        dice.setPersona(this.style.getSheetInstance().getName());
+        var value = this.getValue();
+        var reason = this.createReason(value);
+        dice.setMsg(reason);
+        dice.setMod(value);
+        dice.addDice(this.diceAmount, this.diceFaces);
+        if (UI.Chat.Forms.isDiceTower()) {
+            dice.addDestinationStorytellers(UI.Chat.getRoom());
+        }
+        return dice;
+    };
+    SheetButtondice.prototype.createReason = function (value) {
+        var reason = this.diceAmount !== 0 && this.diceFaces !== 0 ? this.diceAmount.toString() + "d" + this.diceFaces.toString() : "";
+        if (value.toString() === this.modifier) {
+            if (value === 0 && reason === "") {
+                reason = value.toString();
+            }
+            else if (value !== 0) {
+                if (value < 0) {
+                    reason += " - " + Math.abs(value).toString();
+                }
+                else {
+                    reason += " + " + value;
+                }
+            }
+        }
+        else {
+            if (reason === "") {
+                reason = this.modifier + " = " + value;
+            }
+            else {
+                reason += " + " + this.modifier + " = " + reason + " + " + value;
+            }
+        }
+        if (this.reason !== null) {
+            reason += ". " + this.reason;
+        }
+        return reason;
     };
     SheetButtondice.prototype.parse = function () {
         var expr = this.modifier;
@@ -5807,6 +5869,102 @@ var Message = (function (_super) {
     };
     return Message;
 }(SlashCommand));
+var MessageBuff = (function (_super) {
+    __extends(MessageBuff, _super);
+    function MessageBuff() {
+        _super.apply(this, arguments);
+        this.module = "buff";
+    }
+    MessageBuff.prototype.createHTML = function () {
+        if (UI.Chat.doAutomation()) {
+            return null;
+        }
+        var msg = new ChatSystemMessage(true);
+        if (Application.isMe(this.origin)) {
+            msg.addText("_CHATCOMBATBUFFREQUESTED_");
+        }
+        else {
+            var auto = Application.Config.getConfig("chatAutoRolls").getValue() === 1;
+            if (auto) {
+                msg.addText("_CONFIGAUTOROLLAPPLYEFFECT_");
+            }
+            else {
+                msg.addText("_CHATCOMBATBUFFREQUEST_");
+            }
+            msg.addLangVar("a", this.getUser().getUniqueNickname());
+            msg.addLangVar("b", this.getEffectName());
+            msg.addLangVar("c", this.getSheetName());
+            if (!auto) {
+                msg.addText(" ");
+                msg.addTextLink("_CHATCOMBATBUFFREQUESTCLICK_", true, {
+                    buff: this,
+                    handleEvent: function () {
+                        this.buff.applyBuff();
+                    }
+                });
+            }
+        }
+        return msg.getElement();
+    };
+    MessageBuff.prototype.applyBuff = function () {
+        var ce = {
+            name: this.getEffectName(),
+            target: this.getSheetId(),
+            roundEnd: this.getEffectRoundEnd(),
+            turnEnd: this.getEffectTurnEnd(),
+            endOnStart: this.getEffectEndOnStart(),
+            customString: this.getEffectCustomString()
+        };
+        if (this.html !== null && this.html.parentElement !== null) {
+            this.html.parentElement.removeChild(this.html);
+        }
+        this.html = null;
+    };
+    MessageBuff.prototype.setSheetId = function (id) {
+        this.setSpecial("sheetid", id);
+    };
+    MessageBuff.prototype.getSheetId = function () {
+        return this.getSpecial("sheetid", 0);
+    };
+    MessageBuff.prototype.setSheetName = function (name) {
+        this.msg = name;
+    };
+    MessageBuff.prototype.getSheetName = function () {
+        return this.msg;
+    };
+    MessageBuff.prototype.setEffectName = function (name) {
+        this.setSpecial("effectName", name);
+    };
+    MessageBuff.prototype.getEffectName = function () {
+        return this.getSpecial("effectName", "Unknown");
+    };
+    MessageBuff.prototype.setEffectRoundEnd = function (round) {
+        this.setSpecial("effectRoundEnd", round);
+    };
+    MessageBuff.prototype.getEffectRoundEnd = function () {
+        return this.getSpecial("effectRoundEnd", 0);
+    };
+    MessageBuff.prototype.setEffectTurnEnd = function (turn) {
+        this.setSpecial("effectTurnEnd", 0);
+    };
+    MessageBuff.prototype.getEffectTurnEnd = function () {
+        return this.getSpecial("effectTurnEnd", 0);
+    };
+    MessageBuff.prototype.setEffectEndOnStart = function (endonstart) {
+        this.setSpecial("effectEndOnStart", endonstart);
+    };
+    MessageBuff.prototype.getEffectEndOnStart = function () {
+        return this.getSpecial("effectEndOnStart", false);
+    };
+    MessageBuff.prototype.setEffectCustomString = function (customString) {
+        this.setSpecial("effectCustomString", customString);
+    };
+    MessageBuff.prototype.getEffectCustomString = function () {
+        return this.getSpecial("effectCustomString", null);
+    };
+    return MessageBuff;
+}(Message));
+MessageFactory.registerMessage(MessageBuff, "buff", []);
 var MessageSystem = (function (_super) {
     __extends(MessageSystem, _super);
     function MessageSystem() {
@@ -6610,6 +6768,8 @@ var MessageDice = (function (_super) {
     function MessageDice() {
         _super.call(this);
         this.module = "dice";
+        this.diceHQTime = 30000;
+        this.initiativeClicker = null;
         this.addUpdatedListener({
             handleEvent: function (e) {
                 if (e.html !== null) {
@@ -6723,13 +6883,28 @@ var MessageDice = (function (_super) {
             span.appendChild(document.createTextNode(this.getResult().toString()));
             if (allCrits) {
                 span.classList.add("rainbow");
-                p.classList.add("rainbow");
             }
             else if (allFailures) {
                 span.classList.add("shame");
                 p.classList.add("shame");
             }
             p.appendChild(span);
+            if (UI.Chat.doAutomation()) {
+                if (Application.Config.getConfig("hqRainbow").getValue() !== 0) {
+                    var rainbows = p.getElementsByClassName("rainbow");
+                    for (var i = 0; i < rainbows.length; i++) {
+                        rainbows[i].classList.add("hq");
+                    }
+                    if (Application.Config.getConfig("hqRainbow").getValue() === 1) {
+                        var f = (function () {
+                            for (var i = 0; i < this.length; i++) {
+                                this[i].classList.remove("hq");
+                            }
+                        }).bind(rainbows);
+                        setTimeout(f, this.diceHQTime);
+                    }
+                }
+            }
         }
         else {
             var initialRoll = document.createElement("span");
@@ -6737,7 +6912,18 @@ var MessageDice = (function (_super) {
             initialRoll.appendChild(document.createTextNode(this.getMod().toString()));
             p.appendChild(initialRoll);
         }
-        if (this.getMsg() !== "") {
+        if (this.getIsInitiative() && (Server.Chat.getRoom() !== null && Server.Chat.getRoom().getMe().isStoryteller()) && UI.Chat.doAutomation()) {
+            if (Application.isMe(this.origin) || Application.Config.getConfig("chatAutoRolls").getValue() === 1) {
+                this.applyInitiative();
+            }
+            else {
+                var clickInitiative = (function () {
+                    this.applyInitiative();
+                }).bind(this);
+                this.initiativeClicker = ChatSystemMessage.createTextLink("_CHATMESSAGEDICEAPPLYINITIATIVE_", true, clickInitiative);
+            }
+        }
+        if (this.getMsg() !== "" || (this.initiativeClicker !== null && UI.Chat.doAutomation())) {
             var span = document.createElement("span");
             span.classList.add("chatMessageDiceReason");
             var b = document.createElement("b");
@@ -6746,10 +6932,36 @@ var MessageDice = (function (_super) {
             UI.Language.markLanguage(b);
             span.appendChild(b);
             span.appendChild(document.createTextNode(this.getMsg()));
+            if (this.initiativeClicker !== null && UI.Chat.doAutomation()) {
+                if (this.getMsg() !== "") {
+                    span.appendChild(document.createTextNode(" "));
+                }
+                span.appendChild(this.initiativeClicker);
+            }
             p.appendChild(span);
         }
         UI.Language.markLanguage(p);
         return p;
+    };
+    MessageDice.prototype.applyInitiative = function () {
+        if (this.initiativeClicker !== null && this.initiativeClicker.parentElement !== null) {
+            this.initiativeClicker.parentElement.removeChild(this.initiativeClicker);
+        }
+        var total = this.getResult();
+        var memory = Server.Chat.Memory.getConfiguration("Combat");
+        memory.applyInitiative(this.getSheetId(), total);
+    };
+    MessageDice.prototype.setSheetId = function (id) {
+        this.setSpecial("sheetid", id);
+    };
+    MessageDice.prototype.getSheetId = function () {
+        return this.getSpecial("sheetid", null);
+    };
+    MessageDice.prototype.setAsInitiative = function () {
+        this.setSpecial("initiative", true);
+    };
+    MessageDice.prototype.getIsInitiative = function () {
+        return this.getSpecial("initiative", false) && this.getSheetId() !== null;
     };
     MessageDice.prototype.getInitialRoll = function () {
         var dices = this.getDice();
@@ -9554,6 +9766,7 @@ ptbr.setLingo("_CHATDICESECRETROLLED_", "secretamente rolou");
 ptbr.setLingo("_CHATDICESHOWN_", "mostrou");
 ptbr.setLingo("_CHATDICESECRETSHOWN_", "secretamente mostrou");
 ptbr.setLingo("_CHATMESSAGEDICEREASON_", "Motivo");
+ptbr.setLingo("_CHATMESSAGEDICEAPPLYINITIATIVE_", "Aplicar como iniciativa.");
 ptbr.setLingo("_CHATMESSAGEWHISPERTO_", "Mensagem enviada para");
 ptbr.setLingo("_CHATMESSAGEWHISPERFROM_", "Mensagem recebida de");
 ptbr.setLingo("_CHATMESSAGESHAREDBGM_", "compartilhou um som");
@@ -9611,6 +9824,9 @@ ptbr.setLingo("_COMBATTRACKERNOCOMBATANTS_", "Sem participantes em combate.");
 ptbr.setLingo("_CHATCOMBATENDEDCOMBAT_", "Combate finalizado. Todos os NPCs foram removidos do combate e efeitos foram limpos.");
 ptbr.setLingo("_CHATCOMBATEFFECTENDED_", "Efeito \"%a\" terminou em \"%b\".");
 ptbr.setLingo("_CHATCOMBATEFFECTINPROGRESS_", "Efeitos em %a: %b.");
+ptbr.setLingo("_CHATCOMBATBUFFREQUESTED_", "Um pedido foi enviado ao mestre para aplicar o efeito.");
+ptbr.setLingo("_CHATCOMBATBUFFREQUEST_", "%a deseja aplicar o efeito %b em %c.");
+ptbr.setLingo("_CHATCOMBATBUFFREQUESTCLICK_", "Clique aqui para permitir.");
 ptbr.setLingo("_PERSONADESIGNERTITLE_", "Administrador de Personas");
 ptbr.setLingo("_PERSONADESIGNERNAME_", "Nome do Personagem");
 ptbr.setLingo("_PERSONADESIGNERAVATAR_", "Link para Imagem (Opcional)");
@@ -9649,6 +9865,11 @@ ptbr.setLingo("_CONFIGCHATAUTOBGM_", "(Chat) Aceitar músicas:");
 ptbr.setLingo("_CONFIGCHATAUTOSE_", "(Chat) Aceitar efeitos sonoros:");
 ptbr.setLingo("_CONFIGCHATAUTOIMAGE_", "(Chat) Aceitar imagens:");
 ptbr.setLingo("_CONFIGCHATAUTOVIDEO_", "(Chat) Aceitar vídeos:");
+ptbr.setLingo("_CONFIGCHATAUTOROLLS_", "(Chat) Aceitar rolagens:");
+ptbr.setLingo("_CONFIGAUTOROLL0_", "Apenas minhas rolagens");
+ptbr.setLingo("_CONFIGAUTOROLL1_", "Sempre aplicar automaticamente");
+ptbr.setLingo("_CONFIGAUTOROLLEXP_", "Algumas rolagens podem ter alguma automatização implementada para elas, como Iniciativas. Em geral, você, como mestre, receberá uma mensagem para aplicar ela. Aqui você pode aceitar todas as rolagens automaticamente.");
+ptbr.setLingo("_CONFIGAUTOROLLAPPLYEFFECT_", "O efeito %b, enviado por %a, foi aplicado automaticamente em %c.");
 ptbr.setLingo("_CONFIGCHATMAXMESSAGESEXP01_", "Define quantas mensagens podem estar impressas no chat ao mesmo tempo. Mínimo de 60 mensagens e máximo de 10000 mensagens. Escolha de acordo com seu CPU.");
 ptbr.setLingo("_CONFIGCHATMAXMESSAGESEXP02_", "Essa opção é ignorada e se torna 60 quando utilizando dispositivos móveis.");
 ptbr.setLingo("_CONFIGCHATMAXMESSAGES_", "(Chat) Número de mensagens:");
@@ -9657,9 +9878,11 @@ ptbr.setLingo("_CONFIGCLEANPERSONAS01_", "Mostrar personas padrão");
 ptbr.setLingo("_CONFIGCLEANPERSONAS02_", "Mostrar personas vazias");
 ptbr.setLingo("_CONFIGCLEANPERSONAS03_", "Mostrar personas vazias, sem nome");
 ptbr.setLingo("_CONFIGCLEANPERSONASEXP_", "Essa opção retira o estilo padrão das personas e os deixa transparentes.");
-ptbr.setLingo("", "");
-ptbr.setLingo("", "");
-ptbr.setLingo("", "");
+ptbr.setLingo("_CONFIGHQRAINBOW_", "(Chat) Arco-íris HQ");
+ptbr.setLingo("_CONFIGHQRAINBOW0_", "Nunca");
+ptbr.setLingo("_CONFIGHQRAINBOW1_", "Apenas por um tempo");
+ptbr.setLingo("_CONFIGHQRAINBOW2_", "Sempre");
+ptbr.setLingo("_CONFIGHQRAINBOWEXP_", "Dados críticos exigem muitos recursos para serem processados. Aqui você pode definir quando um dado crítico deve utilizar qualidade alta ou quando ele deve utilizar a qualidade baixa.");
 LingoList.storeLingo(ptbr);
 delete (ptbr);
 var UI;
@@ -9692,6 +9915,7 @@ var UI;
     Application.Config.registerConfiguration("language", new LanguageConfiguration());
     Application.Config.registerConfiguration("fsmode", new BooleanConfiguration(false));
     Application.Config.registerConfiguration("chatuseprompt", new BooleanConfiguration(true));
+    Application.Config.registerConfiguration("chatAutoRolls", new NumberConfiguration(0, 0, 1));
     Application.Config.registerConfiguration("autoImage", new NumberConfiguration(1, 0, 2));
     Application.Config.registerConfiguration("autoBGM", new NumberConfiguration(1, 0, 2));
     Application.Config.registerConfiguration("autoSE", new NumberConfiguration(1, 0, 2));
@@ -9699,6 +9923,7 @@ var UI;
     Application.Config.registerConfiguration("bgmVolume", new NumberConfiguration(50, 0, 100));
     Application.Config.registerConfiguration("seVolume", new NumberConfiguration(50, 0, 100));
     Application.Config.registerConfiguration("bgmLoop", new BooleanConfiguration(true));
+    Application.Config.registerConfiguration("hqRainbow", new NumberConfiguration(1, 0, 2));
     var cleanPersonaCSS = document.createElement("style");
     cleanPersonaCSS.type = "text/css";
     cleanPersonaCSS.innerHTML = ".avatarContainer { border-color: rgba(0,0,0,0); background-color: initial; } .avatarName { background-color: initial; }";
@@ -10102,6 +10327,7 @@ var UI;
         bindInput("chatfontsize", document.getElementById("configChatFontSize"));
         bindInput("chatshowhelp", document.getElementById("configChatShowHelp"));
         bindInput("cleanPersonas", document.getElementById("configCleanPersoas"));
+        bindInput("chatAutoRolls", document.getElementById("configAutoRollApplication"));
         bindInput("animTime", document.getElementById("configAnimTime"));
         bindInput("autoBGM", document.getElementById("configChatAutoBGM"));
         bindInput("autoSE", document.getElementById("configChatAutoSE"));
@@ -14089,7 +14315,6 @@ var UI;
                 style.gameid = parseInt(gameSelect.value);
                 var cbs = function () { UI.Styles.StyleDesigner.finish(); };
                 var cbe = function () { };
-                console.log(style);
                 Server.Sheets.sendStyle(style, cbs, cbe);
             }
             StyleDesigner.submit = submit;
@@ -14165,6 +14390,9 @@ change.addMessage("Lançamento inicial do Combat Tracker. Atualizações planeja
 change = new Changelog(0, 20, 0);
 change.addMessage("Effect tracking added to Combat Tracker. Admin screen not implemented for it.", "en");
 change.addMessage("Efeitos adicionados ao Combat Tracker. Uma tela de administração para eles não foi implementada.", "pt");
+change = new Changelog(0, 21, 0);
+change.addMessage("Multiple changes to Sheet classes.", "en");
+change.addMessage("Várias mudanças em classes Sheet.", "pt");
 delete (change);
 Changelog.finished();
 UI.Language.searchLanguage();

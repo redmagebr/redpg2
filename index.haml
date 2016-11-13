@@ -166,6 +166,14 @@
             .configExplanation.language
               _CONFIGCLEANPERSONASEXP_
           %label.configLabel
+            %b.configName.language="_CONFIGHQRAINBOW_"
+            %select.configInput#configHQRainbow
+              %option.language{:value => "0"}="_CONFIGHQRAINBOW0_"
+              %option.language{:value => "1"}="_CONFIGHQRAINBOW1_"
+              %option.language{:value => "2"}="_CONFIGHQRAINBOW2_"
+            .configExplanation.language
+              _CONFIGHQRAINBOWEXP_
+          %label.configLabel
             %b.configName.language="_CONFIGCHATAUTOBGM_"
             %select.configInput#configChatAutoBGM
               %option.language{:value => "0"}="_CONFIGCHATAUTONEVER_"
@@ -197,6 +205,13 @@
               %option.language{:value => "2"}="_CONFIGCHATAUTOALWAYS_"
             .configExplanation.language
               _CONFIGCHATAUTOEXP_
+          %label.configLabel
+            %b.configName.language="_CONFIGCHATAUTOROLLS_"
+            %select.configInput#configAutoRollApplication
+              %option.language{:value => "0"}="_CONFIGAUTOROLL0_"
+              %option.language{:value => "1"}="_CONFIGAUTOROLL1_"
+            .configExplanation.language
+              _CONFIGAUTOROLLEXP_
           %label.configLabel
             %b.configName.language="_CONFIGANIMATIONTIME_"
             %input.configInput#configAnimTime{:type => "range", :value => "150", :min => "0", :max => "300"}
@@ -450,7 +465,7 @@
             %input.mainWindowParagraphSubmit.language{:type=>"submit", :data=>{:valuelingo => "_SHEETDESIGNERSUBMIT_"}}
       -##### Sheet Viewer
       #sheetViewerSideWindow.rightSideWindow
-        %input#sheetViewerJSONImporter{:type => "file"}
+        %input#sheetViewerJSONImporter{:type => "file", :accept => ".json,.JSON"}
         #sheetViewerSheetsTab
         #sheetViewport
         #sheetToolbox
@@ -584,3 +599,4 @@
     %script{:type => "text/javascript"}="//LOGGERJSTARGET"
     %script{:type => 'text/javascript', :src => 'http://beta.redpg.com.br/js/Changelog.js'}
     %script{:type => "text/javascript"}="//LOGGERTARGET"
+    %script{:type => 'text/javascript', :src => 'http://rules.redpg.com.br/js/rulesData.js'}

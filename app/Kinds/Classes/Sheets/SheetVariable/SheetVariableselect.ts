@@ -30,6 +30,11 @@ class SheetVariableselect extends SheetVariable {
 
         this.select.disabled = !this.editable;
 
+        if (this.defaultValueString !== null && this.values.indexOf(<string> this.defaultValueString) !== -1) {
+            this.value = this.defaultValueString;
+        } else {
+            this.value = this.values[0];
+        }
 
         this.showSelect();
     }

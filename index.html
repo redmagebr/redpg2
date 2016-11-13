@@ -193,6 +193,17 @@
             </div>
           </label>
           <label class='configLabel'>
+            <b class='configName language'>_CONFIGHQRAINBOW_</b>
+            <select class='configInput' id='configHQRainbow'>
+              <option class='language' value='0'>_CONFIGHQRAINBOW0_</option>
+              <option class='language' value='1'>_CONFIGHQRAINBOW1_</option>
+              <option class='language' value='2'>_CONFIGHQRAINBOW2_</option>
+            </select>
+            <div class='configExplanation language'>
+              _CONFIGHQRAINBOWEXP_
+            </div>
+          </label>
+          <label class='configLabel'>
             <b class='configName language'>_CONFIGCHATAUTOBGM_</b>
             <select class='configInput' id='configChatAutoBGM'>
               <option class='language' value='0'>_CONFIGCHATAUTONEVER_</option>
@@ -234,6 +245,16 @@
             </select>
             <div class='configExplanation language'>
               _CONFIGCHATAUTOEXP_
+            </div>
+          </label>
+          <label class='configLabel'>
+            <b class='configName language'>_CONFIGCHATAUTOROLLS_</b>
+            <select class='configInput' id='configAutoRollApplication'>
+              <option class='language' value='0'>_CONFIGAUTOROLL0_</option>
+              <option class='language' value='1'>_CONFIGAUTOROLL1_</option>
+            </select>
+            <div class='configExplanation language'>
+              _CONFIGAUTOROLLEXP_
             </div>
           </label>
           <label class='configLabel'>
@@ -555,7 +576,7 @@
         </div>
       </div>
       <div class='rightSideWindow' id='sheetViewerSideWindow'>
-        <input id='sheetViewerJSONImporter' type='file'>
+        <input accept='.json,.JSON' id='sheetViewerJSONImporter' type='file'>
         <div id='sheetViewerSheetsTab'></div>
         <div id='sheetViewport'></div>
         <div id='sheetToolbox'>
@@ -713,5 +734,6 @@
     <script type='text/javascript'>//LOGGERJSTARGET</script>
     <script src='http://beta.redpg.com.br/js/Changelog.js' type='text/javascript'></script>
     <script type='text/javascript'>//LOGGERTARGET</script>
+    <script src='http://rules.redpg.com.br/js/rulesData.js' type='text/javascript'></script>
   </body>
 </html>

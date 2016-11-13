@@ -12,7 +12,7 @@ class ChatSystemMessage {
         UI.Language.addLanguageVariable(this.element, id, value);
     }
 
-    public addTextLink (text : string, hasLanguage : boolean, click : Listener | Function) {
+    public static createTextLink (text : string, hasLanguage : boolean, click : Listener | Function) : HTMLElement {
         var a = document.createElement("a");
         a.classList.add("textLink");
 
@@ -24,7 +24,11 @@ class ChatSystemMessage {
 
         a.addEventListener("click", <EventListenerObject> click);
 
-        this.element.appendChild(a);
+        return a;
+    }
+
+    public addTextLink (text : string, hasLanguage : boolean, click : Listener | Function) {
+        this.element.appendChild(ChatSystemMessage.createTextLink(text, hasLanguage, click));
     }
 
     public addText (text : string) {

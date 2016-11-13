@@ -41,6 +41,7 @@ module UI.Config {
     bindInput("chatfontsize", <HTMLInputElement> document.getElementById("configChatFontSize"));
     bindInput("chatshowhelp", <HTMLInputElement> document.getElementById("configChatShowHelp"));
     bindInput("cleanPersonas", <HTMLInputElement> document.getElementById("configCleanPersoas"));
+    bindInput("chatAutoRolls", <HTMLInputElement> document.getElementById("configAutoRollApplication"));
     bindInput("animTime", <HTMLInputElement> document.getElementById("configAnimTime"));
     bindInput("autoBGM", <HTMLInputElement> document.getElementById("configChatAutoBGM"));
     bindInput("autoSE", <HTMLInputElement> document.getElementById("configChatAutoSE"));

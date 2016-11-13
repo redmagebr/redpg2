@@ -327,6 +327,21 @@ class MemoryCombat extends TrackerMemory {
         }
     }
 
+    public applyInitiative (id : number, initiative : number) {
+        var foundOne = false;
+        for (var i = 0; i < this.combatants.length; i++) {
+            if (this.combatants[i].id === id) {
+                foundOne = true;
+                this.combatants[i].setInitiative(initiative);
+            }
+        }
+
+        if (foundOne) {
+            this.reorderCombatants();
+            this.triggerChange();
+        }
+    }
+
     public setInitiative (combatant : CombatParticipant, initiative : number) {
         var idx = this.combatants.indexOf(combatant);
         if (idx !== -1) {

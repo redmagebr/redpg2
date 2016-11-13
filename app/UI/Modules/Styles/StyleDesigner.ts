@@ -152,7 +152,6 @@ module UI.Styles.StyleDesigner {
 
         var cbs = function () { UI.Styles.StyleDesigner.finish(); };
         var cbe = function () {};
-        console.log(style);
         Server.Sheets.sendStyle(style, cbs, cbe);
     }
 

@@ -286,6 +286,7 @@ ptbr.setLingo("_CHATDICESECRETROLLED_", "secretamente rolou");
 ptbr.setLingo("_CHATDICESHOWN_", "mostrou");
 ptbr.setLingo("_CHATDICESECRETSHOWN_", "secretamente mostrou");
 ptbr.setLingo("_CHATMESSAGEDICEREASON_", "Motivo");
+ptbr.setLingo("_CHATMESSAGEDICEAPPLYINITIATIVE_", "Aplicar como iniciativa.");
 ptbr.setLingo("_CHATMESSAGEWHISPERTO_", "Mensagem enviada para");
 ptbr.setLingo("_CHATMESSAGEWHISPERFROM_", "Mensagem recebida de");
 ptbr.setLingo("_CHATMESSAGESHAREDBGM_", "compartilhou um som");
@@ -343,6 +344,9 @@ ptbr.setLingo("_COMBATTRACKERNOCOMBATANTS_", "Sem participantes em combate.");
 ptbr.setLingo("_CHATCOMBATENDEDCOMBAT_", "Combate finalizado. Todos os NPCs foram removidos do combate e efeitos foram limpos.");
 ptbr.setLingo("_CHATCOMBATEFFECTENDED_", "Efeito \"%a\" terminou em \"%b\".");
 ptbr.setLingo("_CHATCOMBATEFFECTINPROGRESS_", "Efeitos em %a: %b.");
+ptbr.setLingo("_CHATCOMBATBUFFREQUESTED_", "Um pedido foi enviado ao mestre para aplicar o efeito.");
+ptbr.setLingo("_CHATCOMBATBUFFREQUEST_", "%a deseja aplicar o efeito %b em %c.");
+ptbr.setLingo("_CHATCOMBATBUFFREQUESTCLICK_", "Clique aqui para permitir.");
 
 // Chat Persona Designer
 ptbr.setLingo("_PERSONADESIGNERTITLE_", "Administrador de Personas");
@@ -386,6 +390,11 @@ ptbr.setLingo("_CONFIGCHATAUTOBGM_", "(Chat) Aceitar músicas:");
 ptbr.setLingo("_CONFIGCHATAUTOSE_", "(Chat) Aceitar efeitos sonoros:");
 ptbr.setLingo("_CONFIGCHATAUTOIMAGE_", "(Chat) Aceitar imagens:");
 ptbr.setLingo("_CONFIGCHATAUTOVIDEO_", "(Chat) Aceitar vídeos:");
+ptbr.setLingo("_CONFIGCHATAUTOROLLS_", "(Chat) Aceitar rolagens:");
+ptbr.setLingo("_CONFIGAUTOROLL0_", "Apenas minhas rolagens");
+ptbr.setLingo("_CONFIGAUTOROLL1_", "Sempre aplicar automaticamente");
+ptbr.setLingo("_CONFIGAUTOROLLEXP_", "Algumas rolagens podem ter alguma automatização implementada para elas, como Iniciativas. Em geral, você, como mestre, receberá uma mensagem para aplicar ela. Aqui você pode aceitar todas as rolagens automaticamente.");
+ptbr.setLingo("_CONFIGAUTOROLLAPPLYEFFECT_", "O efeito %b, enviado por %a, foi aplicado automaticamente em %c.");
 ptbr.setLingo("_CONFIGCHATMAXMESSAGESEXP01_", "Define quantas mensagens podem estar impressas no chat ao mesmo tempo. Mínimo de 60 mensagens e máximo de 10000 mensagens. Escolha de acordo com seu CPU.");
 ptbr.setLingo("_CONFIGCHATMAXMESSAGESEXP02_", "Essa opção é ignorada e se torna 60 quando utilizando dispositivos móveis.");
 ptbr.setLingo("_CONFIGCHATMAXMESSAGES_", "(Chat) Número de mensagens:");
@@ -394,9 +403,11 @@ ptbr.setLingo("_CONFIGCLEANPERSONAS01_", "Mostrar personas padrão");
 ptbr.setLingo("_CONFIGCLEANPERSONAS02_", "Mostrar personas vazias");
 ptbr.setLingo("_CONFIGCLEANPERSONAS03_", "Mostrar personas vazias, sem nome");
 ptbr.setLingo("_CONFIGCLEANPERSONASEXP_", "Essa opção retira o estilo padrão das personas e os deixa transparentes.");
-ptbr.setLingo("", "");
-ptbr.setLingo("", "");
-ptbr.setLingo("", "");
+ptbr.setLingo("_CONFIGHQRAINBOW_", "(Chat) Arco-íris HQ");
+ptbr.setLingo("_CONFIGHQRAINBOW0_", "Nunca");
+ptbr.setLingo("_CONFIGHQRAINBOW1_", "Apenas por um tempo");
+ptbr.setLingo("_CONFIGHQRAINBOW2_", "Sempre");
+ptbr.setLingo("_CONFIGHQRAINBOWEXP_", "Dados críticos exigem muitos recursos para serem processados. Aqui você pode definir quando um dado crítico deve utilizar qualidade alta ou quando ele deve utilizar a qualidade baixa.");
 
 // Lingolist
 LingoList.storeLingo(ptbr);

@@ -32,6 +32,10 @@ class SheetList {
         return this.aliases;
     }
 
+    public getRows () {
+        return this.rows;
+    }
+
     protected tableIndex : string; // This becomes the PRIMARY KEY for the sheets inside
     protected tableValue : string; // This becomes the VALUE for each row inside
     // Example: tableIndex of "Name" and tableValue of "Level" in a table with multiple rows of Name, Level would mean NAME identifies a row while LEVEL gets it's value
@@ -84,6 +88,7 @@ class SheetList {
         var newRow : Sheet;
         if (this.detachedRows.length > 0) {
             newRow = this.detachedRows.pop();
+            newRow.reset();
         } else {
             var newRowEles : Array<Node> = [];
             for (var i = 0; i < this.sheetElements.length; i++) {
@@ -207,6 +212,24 @@ class SheetList {
             });
             this.reattachRows();
         }
+    }
+
+    public getRowIndex (id : string) : Sheet {
+        id = Sheet.simplifyString(id);
+        if (this.tableIndex !== null && this.tableValue !== null) {
+            for (var i = 0; i < this.rows.length; i++) {
+                var name = this.rows[i].getValueFor(<string> this.tableIndex);
+                if (typeof name === "string") {
+                    var simpleName = Sheet.simplifyString(name);
+                    if (simpleName === id) {
+                        return this.rows[i];
+                    }
+                } else {
+                    return null; // Variable types are constant, if one is not a string, neither is any of the others
+                }
+            }
+        }
+        return null;
     }
 
     public getValueFor (id : string) : number {

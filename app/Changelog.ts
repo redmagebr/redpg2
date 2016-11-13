@@ -78,6 +78,10 @@ change = new Changelog(0, 20, 0);
 change.addMessage("Effect tracking added to Combat Tracker. Admin screen not implemented for it.", "en");
 change.addMessage("Efeitos adicionados ao Combat Tracker. Uma tela de administração para eles não foi implementada.", "pt");
 
+change = new Changelog(0, 21, 0);
+change.addMessage("Multiple changes to Sheet classes.", "en");
+change.addMessage("Várias mudanças em classes Sheet.", "pt");
+
 delete (change);
 
 Changelog.finished();

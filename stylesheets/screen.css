@@ -7808,23 +7808,81 @@ body {
   text-indent: 0px;
 }
 
-/* line 140, ../sass/mainChatMessages.scss */
+@keyframes rainbowDice {
+  from {
+    color: #640000;
+    background-color: #ff9696;
+    border-color: #c80000;
+  }
+  15% {
+    color: #640064;
+    background-color: #ff96ff;
+    border-color: #c800c8;
+  }
+  30% {
+    color: #000064;
+    background-color: #9696ff;
+    border-color: #0000c8;
+  }
+  45% {
+    color: #006464;
+    background-color: #96ffff;
+    border-color: #00c8c8;
+  }
+  60% {
+    color: darkgreen;
+    background-color: #96ff96;
+    border-color: #00c800;
+  }
+  75% {
+    color: #646400;
+    background-color: #ffff96;
+    border-color: #c8c800;
+  }
+  to {
+    color: #640000;
+    background-color: #ff9696;
+    border-color: #c80000;
+  }
+}
+@keyframes shameDice {
+  from {
+    color: #640000;
+    background-color: #ffadad;
+    border-color: #e10037;
+  }
+  50% {
+    color: #006464;
+    background-color: #bd7f7f;
+    border-color: #a9002c;
+  }
+  to {
+    color: #640000;
+    background-color: #ffadad;
+    border-color: #e10037;
+  }
+}
+/* line 196, ../sass/mainChatMessages.scss */
 .chatMessageDice {
   color: #b900b3;
   text-indent: 0px;
   font-size: 1.1em;
   line-height: 1.5em;
 }
-/* line 147, ../sass/mainChatMessages.scss */
-.chatMessageDice.rainbow {
-  color: rgba(0, 0, 0, 0.9);
+/* line 205, ../sass/mainChatMessages.scss */
+.chatMessageDice.rainbow.hq {
+  animation: rainbowDice 1.5s linear 0s infinite;
 }
-/* line 151, ../sass/mainChatMessages.scss */
+/* line 210, ../sass/mainChatMessages.scss */
 .chatMessageDice.shame {
   color: #7d0000;
 }
+/* line 212, ../sass/mainChatMessages.scss */
+.chatMessageDice.shame.hq {
+  animation: shameDice 1.5s linear 0s infinite;
+}
 
-/* line 156, ../sass/mainChatMessages.scss */
+/* line 218, ../sass/mainChatMessages.scss */
 .chatMessageDiceBox, .chatMessageDiceBoxSquare, .chatMessageDiceBoxCircle, .chatMessageCounterSpan, .chatMessageDiceBoxRoll, .chatMessageDiceBoxResult {
   min-width: 0.6em;
   display: inline-block;
@@ -7838,38 +7896,48 @@ body {
   padding-right: 0.45em;
   font-size: 0.9em;
 }
-/* line 169, ../sass/mainChatMessages.scss */
+/* line 231, ../sass/mainChatMessages.scss */
 .chatMessageDiceBox.rainbow, .rainbow.chatMessageDiceBoxSquare, .rainbow.chatMessageDiceBoxCircle, .rainbow.chatMessageCounterSpan, .rainbow.chatMessageDiceBoxRoll, .rainbow.chatMessageDiceBoxResult {
   border-color: rgba(0, 0, 0, 0.9);
   color: rgba(0, 0, 0, 0.8);
   background-image: url("data:image/gif;base64,R0lGODlhAQABANUAANzK/8ru///K08r/yuXK/8rT///K7u7K///cysr//8rl/8r/3Mrc/8rK//fK////yuX/yv/K3Mr/5cr3///K5f/Kysr/7u7/yv/K98r/9//3yvf/yv/uyv/Tyv/K/8r/0//lytPK/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh/wtYTVAgRGF0YVhNUDw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYxIDY0LjE0MDk0OSwgMjAxMC8xMi8wNy0xMDo1NzowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNS4xIFdpbmRvd3MiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6RDkzRTlBNjc4OUUyMTFFNTk1NThFMEFBOTQ5MDUyQzUiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6RDkzRTlBNjg4OUUyMTFFNTk1NThFMEFBOTQ5MDUyQzUiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpEOTNFOUE2NTg5RTIxMUU1OTU1OEUwQUE5NDkwNTJDNSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpEOTNFOUE2Njg5RTIxMUU1OTU1OEUwQUE5NDkwNTJDNSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PgH//v38+/r5+Pf29fTz8vHw7+7t7Ovq6ejn5uXk4+Lh4N/e3dzb2tnY19bV1NPS0dDPzs3My8rJyMfGxcTDwsHAv769vLu6ubi3trW0s7KxsK+urayrqqmop6alpKOioaCfnp2cm5qZmJeWlZSTkpGQj46NjIuKiYiHhoWEg4KBgH9+fXx7enl4d3Z1dHNycXBvbm1sa2ppaGdmZWRjYmFgX15dXFtaWVhXVlVUU1JRUE9OTUxLSklIR0ZFRENCQUA/Pj08Ozo5ODc2NTQzMjEwLy4tLCsqKSgnJiUkIyIhIB8eHRwbGhkYFxYVFBMSERAPDg0MCwoJCAcGBQQDAgEAACH5BAQDAAAALAAAAAABAAEAAAYDwEoQACH5BAQDAAAALAAAAAABAAEAAAYDwE4QACH5BAQDAAAALAAAAAABAAEAAAYDQEQQACH5BAQDAAAALAAAAAABAAEAAAYDQFAQACH5BAQDAAAALAAAAAABAAEAAAYDQE4QACH5BAQDAAAALAAAAAABAAEAAAYDQE0QACH5BAQDAAAALAAAAAABAAEAAAYDwEcQACH5BAQDAAAALAAAAAABAAEAAAYDwE0QACH5BAQDAAAALAAAAAABAAEAAAYDwEsQACH5BAQDAAAALAAAAAABAAEAAAYDQEgQACH5BAQDAAAALAAAAAABAAEAAAYDwEEQACH5BAQDAAAALAAAAAABAAEAAAYDwE8QACH5BAQDAAAALAAAAAABAAEAAAYDwEUQACH5BAQDAAAALAAAAAABAAEAAAYDQEkQACH5BAQDAAAALAAAAAABAAEAAAYDQEsQACH5BAQDAAAALAAAAAABAAEAAAYDwEwQACH5BAQDAAAALAAAAAABAAEAAAYDwEQQACH5BAQDAAAALAAAAAABAAEAAAYDwEkQACH5BAQDAAAALAAAAAABAAEAAAYDwEAQACH5BAQDAAAALAAAAAABAAEAAAYDQEUQACH5BAQDAAAALAAAAAABAAEAAAYDQEYQACH5BAQDAAAALAAAAAABAAEAAAYDwEIQACH5BAQDAAAALAAAAAABAAEAAAYDwEYQACH5BAQDAAAALAAAAAABAAEAAAYDwFAQACH5BAQDAAAALAAAAAABAAEAAAYDQEAQACH5BAQDAAAALAAAAAABAAEAAAYDQEIQACH5BAQDAAAALAAAAAABAAEAAAYDwEMQACH5BAQDAAAALAAAAAABAAEAAAYDQEcQACH5BAQDAAAALAAAAAABAAEAAAYDQE8QACH5BAQDAAAALAAAAAABAAEAAAYDQEwQACH5BAQDAAAALAAAAAABAAEAAAYDQEMQACH5BAQDAAAALAAAAAABAAEAAAYDQEoQACH5BAQDAAAALAAAAAABAAEAAAYDwEgQACH5BAQDAAAALAAAAAABAAEAAAYDQEEQADs=");
 }
-/* line 178, ../sass/mainChatMessages.scss */
+/* line 238, ../sass/mainChatMessages.scss */
+.chatMessageDiceBox.rainbow.hq, .rainbow.hq.chatMessageDiceBoxSquare, .rainbow.hq.chatMessageDiceBoxCircle, .rainbow.hq.chatMessageCounterSpan, .rainbow.hq.chatMessageDiceBoxRoll, .rainbow.hq.chatMessageDiceBoxResult {
+  background-image: none;
+  animation: rainbowDice 1.5s linear 0s infinite;
+}
+/* line 244, ../sass/mainChatMessages.scss */
 .chatMessageDiceBox.shame, .shame.chatMessageDiceBoxSquare, .shame.chatMessageDiceBoxCircle, .shame.chatMessageCounterSpan, .shame.chatMessageDiceBoxRoll, .shame.chatMessageDiceBoxResult {
   border-color: rgba(40, 0, 0, 0.9);
   color: rgba(230, 200, 200, 0.8);
   background-image: url("data:image/gif;base64,R0lGODlhAQABAKIAAKoAAGQAAIIAAHgAAKAAAG4AAJYAAIwAACH/C05FVFNDQVBFMi4wAwEAAAAh/wtYTVAgRGF0YVhNUDw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMDY3IDc5LjE1Nzc0NywgMjAxNS8wMy8zMC0yMzo0MDo0MiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTUgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjA1MUQyNzNBOTIxNTExRTU5RTAwRDAxODM1NjM2MUZFIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjA1MUQyNzNCOTIxNTExRTU5RTAwRDAxODM1NjM2MUZFIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6MDUxRDI3Mzg5MjE1MTFFNTlFMDBEMDE4MzU2MzYxRkUiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6MDUxRDI3Mzk5MjE1MTFFNTlFMDBEMDE4MzU2MzYxRkUiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz4B//79/Pv6+fj39vX08/Lx8O/u7ezr6uno5+bl5OPi4eDf3t3c29rZ2NfW1dTT0tHQz87NzMvKycjHxsXEw8LBwL++vby7urm4t7a1tLOysbCvrq2sq6qpqKempaSjoqGgn56dnJuamZiXlpWUk5KRkI+OjYyLiomIh4aFhIOCgYB/fn18e3p5eHd2dXRzcnFwb25tbGtqaWhnZmVkY2JhYF9eXVxbWllYV1ZVVFNSUVBPTk1MS0pJSEdGRURDQkFAPz49PDs6OTg3NjU0MzIxMC8uLSwrKikoJyYlJCMiISAfHh0cGxoZGBcWFRQTEhEQDw4NDAsKCQgHBgUEAwIBAAAh+QQECgAAACwAAAAAAQABAAADAggJACH5BAQKAAAALAAAAAABAAEAAAMCSAkAIfkEBAoAAAAsAAAAAAEAAQAAAwJoCQAh+QQECgAAACwAAAAAAQABAAADAngJACH5BAQKAAAALAAAAAABAAEAAAMCKAkAIfkEBAoAAAAsAAAAAAEAAQAAAwI4CQAh+QQECgAAACwAAAAAAQABAAADAlgJACH5BAQKAAAALAAAAAABAAEAAAMCGAkAIfkEBAoAAAAsAAAAAAEAAQAAAwJYCQAh+QQECgAAACwAAAAAAQABAAADAjgJACH5BAQKAAAALAAAAAABAAEAAAMCKAkAIfkEBAoAAAAsAAAAAAEAAQAAAwJ4CQAh+QQECgAAACwAAAAAAQABAAADAmgJACH5BAQKAAAALAAAAAABAAEAAAMCSAkAOw==");
 }
+/* line 251, ../sass/mainChatMessages.scss */
+.chatMessageDiceBox.shame.hq, .shame.hq.chatMessageDiceBoxSquare, .shame.hq.chatMessageDiceBoxCircle, .shame.hq.chatMessageCounterSpan, .shame.hq.chatMessageDiceBoxRoll, .shame.hq.chatMessageDiceBoxResult {
+  background-image: none;
+  animation: shameDice 1.5s linear 0s infinite;
+}
 
-/* line 188, ../sass/mainChatMessages.scss */
+/* line 258, ../sass/mainChatMessages.scss */
 .chatMessageDiceBoxSquare {
   border-radius: 0;
 }
 
-/* line 193, ../sass/mainChatMessages.scss */
+/* line 263, ../sass/mainChatMessages.scss */
 .chatMessageDiceBoxCircle, .chatMessageCounterSpan {
   border-radius: 50%;
   padding-left: 0.6em;
   padding-right: 0.6em;
 }
 
-/* line 204, ../sass/mainChatMessages.scss */
+/* line 274, ../sass/mainChatMessages.scss */
 .chatMessageDiceBoxResult {
   background-color: #ffbafd;
   border-color: #8f2281;
 }
 
-/* line 210, ../sass/mainChatMessages.scss */
+/* line 280, ../sass/mainChatMessages.scss */
 .chatMessageDiceReason {
   display: block;
   font-size: 0.8em;
@@ -7877,7 +7945,7 @@ body {
   padding-bottom: 0px;
 }
 
-/* line 219, ../sass/mainChatMessages.scss */
+/* line 289, ../sass/mainChatMessages.scss */
 .chatMessageTurn {
   font-size: 1.2em;
   line-height: 1.2em;
@@ -7885,7 +7953,7 @@ body {
   padding-left: 0px;
 }
 
-/* line 227, ../sass/mainChatMessages.scss */
+/* line 297, ../sass/mainChatMessages.scss */
 .chatMessageTurnIcon {
   width: 40px;
   height: 40px;
@@ -7894,27 +7962,27 @@ body {
   margin-right: 6px;
 }
 
-/* line 236, ../sass/mainChatMessages.scss */
+/* line 306, ../sass/mainChatMessages.scss */
 .chatMessageSheetdamage {
   font-size: 1.2em;
   line-height: 1.2em;
   font-weight: bold;
   padding-left: 0px;
 }
-/* line 243, ../sass/mainChatMessages.scss */
+/* line 313, ../sass/mainChatMessages.scss */
 .chatMessageSheetdamage.HP {
   color: #8d0000;
 }
-/* line 247, ../sass/mainChatMessages.scss */
+/* line 317, ../sass/mainChatMessages.scss */
 .chatMessageSheetdamage.Exp {
   color: #333333;
 }
-/* line 251, ../sass/mainChatMessages.scss */
+/* line 321, ../sass/mainChatMessages.scss */
 .chatMessageSheetdamage.MP {
   color: #00037f;
 }
 
-/* line 256, ../sass/mainChatMessages.scss */
+/* line 326, ../sass/mainChatMessages.scss */
 .chatMessageDamageIcon {
   width: 40px;
   height: 40px;
@@ -7922,7 +7990,7 @@ body {
   vertical-align: middle;
 }
 
-/* line 263, ../sass/mainChatMessages.scss */
+/* line 333, ../sass/mainChatMessages.scss */
 .chatMessageDamageBubble {
   display: inline-block;
   vertical-align: middle;
@@ -7938,45 +8006,45 @@ body {
   line-height: 1.5em;
   font-size: 1.2em;
 }
-/* line 279, ../sass/mainChatMessages.scss */
+/* line 349, ../sass/mainChatMessages.scss */
 .chatMessageDamageBubble.HP {
   background-color: #ff9191;
   border-color: #8e0000;
 }
-/* line 284, ../sass/mainChatMessages.scss */
+/* line 354, ../sass/mainChatMessages.scss */
 .chatMessageDamageBubble.Exp {
   background-color: #e3e3e3;
   border-color: #929292;
 }
-/* line 289, ../sass/mainChatMessages.scss */
+/* line 359, ../sass/mainChatMessages.scss */
 .chatMessageDamageBubble.MP {
   background-color: #d9daee;
   border-color: #292b69;
 }
 
-/* line 296, ../sass/mainChatMessages.scss */
+/* line 366, ../sass/mainChatMessages.scss */
 .chatWhisper {
   text-indent: 0px;
   color: #920789;
 }
 
-/* line 304, ../sass/mainChatMessages.scss */
+/* line 374, ../sass/mainChatMessages.scss */
 .chatWhisperLink:hover {
   color: #be18b3;
 }
 
-/* line 310, ../sass/mainChatMessages.scss */
+/* line 380, ../sass/mainChatMessages.scss */
 .chatMessageShare {
   color: #00118a;
 }
 
-/* line 316, ../sass/mainChatMessages.scss */
+/* line 386, ../sass/mainChatMessages.scss */
 .chatMessageVote {
   color: #8a7400;
   min-height: 3.1em;
 }
 
-/* line 322, ../sass/mainChatMessages.scss */
+/* line 392, ../sass/mainChatMessages.scss */
 .chatMessageVoteAmount {
   text-indent: 0px;
   display: block;
@@ -7992,37 +8060,37 @@ body {
   text-align: center;
   margin-right: 10px;
 }
-/* line 339, ../sass/mainChatMessages.scss */
+/* line 409, ../sass/mainChatMessages.scss */
 .chatMessageVoteAmount:hover {
   border-color: #c5a500;
   background-color: #ffed92;
 }
-/* line 344, ../sass/mainChatMessages.scss */
+/* line 414, ../sass/mainChatMessages.scss */
 .chatMessageVoteAmount:active {
   border-color: #c5a500;
   background-color: #d7c97f;
 }
 
-/* line 350, ../sass/mainChatMessages.scss */
+/* line 420, ../sass/mainChatMessages.scss */
 .chatMessageVoteReason {
   text-indent: 0.25em;
   margin-right: 5px;
   font-weight: bold;
 }
 
-/* line 356, ../sass/mainChatMessages.scss */
+/* line 426, ../sass/mainChatMessages.scss */
 .chatMessageVoteVoters {
   text-indent: 2em;
   margin-top: 6px;
   display: block;
 }
 
-/* line 363, ../sass/mainChatMessages.scss */
+/* line 433, ../sass/mainChatMessages.scss */
 .chatMessageCounter {
   border-bottom: solid 1px #740000;
 }
 
-/* line 368, ../sass/mainChatMessages.scss */
+/* line 438, ../sass/mainChatMessages.scss */
 .chatMessageCounterEnd {
   border-top: solid 1px #740000;
   margin-top: -1px;
@@ -8030,7 +8098,7 @@ body {
   display: block;
 }
 
-/* line 375, ../sass/mainChatMessages.scss */
+/* line 445, ../sass/mainChatMessages.scss */
 .chatMessageCounterSpan {
   text-indent: 0px;
   text-align: center;
@@ -8039,23 +8107,23 @@ body {
   line-height: 2em;
 }
 
-/* line 385, ../sass/mainChatMessages.scss */
+/* line 455, ../sass/mainChatMessages.scss */
 .chatMessageSystem {
   text-indent: 0px;
   background-color: #eacedc;
   font-size: 1.4em;
 }
-/* line 390, ../sass/mainChatMessages.scss */
+/* line 460, ../sass/mainChatMessages.scss */
 .chatMessageSystem:hover {
   background-color: #d0afc0;
 }
 
-/* line 395, ../sass/mainChatMessages.scss */
+/* line 465, ../sass/mainChatMessages.scss */
 .chatMessageSystem:before {
   content: "---- ";
 }
 
-/* line 399, ../sass/mainChatMessages.scss */
+/* line 469, ../sass/mainChatMessages.scss */
 .chatMessageSystem:after {
   content: " ----";
 }

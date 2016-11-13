@@ -1,5 +1,8 @@
 class MessageDice extends Message {
     public module : string = "dice";
+    private diceHQTime : number = 30000;
+
+    private initiativeClicker : HTMLElement = null;
 
     constructor () {
         super();
@@ -129,13 +132,32 @@ class MessageDice extends Message {
 
             if (allCrits) {
                 span.classList.add("rainbow");
-                p.classList.add("rainbow");
+                //p.classList.add("rainbow");
             } else if (allFailures) {
                 span.classList.add("shame");
                 p.classList.add("shame");
             }
 
             p.appendChild(span);
+
+            if (UI.Chat.doAutomation()) {
+                if (Application.Config.getConfig("hqRainbow").getValue() !== 0) {
+                    var rainbows = p.getElementsByClassName("rainbow");
+                    for (var i = 0; i < rainbows.length; i++) {
+                        rainbows[i].classList.add("hq");
+                    }
+
+                    if (Application.Config.getConfig("hqRainbow").getValue() === 1) {
+                        var f = (function () {
+                            for (var i = 0; i < this.length; i++) {
+                                this[i].classList.remove("hq");
+                            }
+                        }).bind(rainbows);
+
+                        setTimeout(f, this.diceHQTime);
+                    }
+                }
+            }
         } else {
             var initialRoll = document.createElement("span");
             initialRoll.classList.add("chatMessageDiceBoxCircle");
@@ -147,23 +169,68 @@ class MessageDice extends Message {
         //
         //p.appendChild(document.createTextNode(msg));
 
-        if (this.getMsg() !== "") {
+        if (this.getIsInitiative() && (Server.Chat.getRoom() !== null && Server.Chat.getRoom().getMe().isStoryteller()) && UI.Chat.doAutomation()) {
+            if (Application.isMe(this.origin) || Application.Config.getConfig("chatAutoRolls").getValue() === 1) {
+                this.applyInitiative();
+            } else {
+                var clickInitiative = (function () {
+                    this.applyInitiative();
+                }).bind(this);
+
+                this.initiativeClicker = ChatSystemMessage.createTextLink("_CHATMESSAGEDICEAPPLYINITIATIVE_", true, clickInitiative);
+            }
+        }
+
+        if (this.getMsg() !== "" || (this.initiativeClicker !== null && UI.Chat.doAutomation())) {
             var span = document.createElement("span");
             span.classList.add("chatMessageDiceReason");
 
             var b = document.createElement("b");
             b.appendChild(document.createTextNode("_CHATMESSAGEDICEREASON_"));
             b.appendChild(document.createTextNode(": "));
-
             UI.Language.markLanguage(b);
-
             span.appendChild(b);
+
             span.appendChild(document.createTextNode(this.getMsg()));
+
+            if (this.initiativeClicker !== null && UI.Chat.doAutomation()) {
+                if (this.getMsg() !== "") {
+                    span.appendChild(document.createTextNode(" "));
+                }
+                span.appendChild(this.initiativeClicker);
+            }
+
             p.appendChild(span);
         }
 
         UI.Language.markLanguage(p);
         return p;
+    }
+
+    public applyInitiative () {
+        if (this.initiativeClicker !== null && this.initiativeClicker.parentElement !== null) {
+            this.initiativeClicker.parentElement.removeChild(this.initiativeClicker);
+        }
+        var total = this.getResult();
+        var memory = <MemoryCombat> Server.Chat.Memory.getConfiguration("Combat");
+
+        memory.applyInitiative(this.getSheetId(), total);
+    }
+
+    public setSheetId (id : number) {
+        this.setSpecial("sheetid", id);
+    }
+
+    public getSheetId () {
+        return this.getSpecial("sheetid", null);
+    }
+
+    public setAsInitiative () {
+        this.setSpecial("initiative", true);
+    }
+
+    public getIsInitiative () : boolean {
+        return this.getSpecial("initiative", false) && this.getSheetId() !== null;
     }
 
     public getInitialRoll () : string {

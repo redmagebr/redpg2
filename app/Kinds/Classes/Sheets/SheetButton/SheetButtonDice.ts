@@ -21,47 +21,63 @@ class SheetButtondice extends SheetButton {
         this.parse();
     }
 
+    public getReason () {
+        return this.reason;
+    }
+
     public click (e : Event) {
         e.preventDefault();
 
         if (UI.Chat.getRoom() !== null) {
-            var dice = new MessageDice();
-            dice.setPersona(this.style.getSheetInstance().getName());
-
-            var reason = this.diceAmount !== 0 && this.diceFaces !== 0 ? this.diceAmount.toString() + "d" + this.diceFaces.toString() : "";
-
-            var value = this.getValue();
-            if (value.toString() === this.modifier) {
-                if (value === 0 && reason === "") {
-                    reason = value.toString();
-                } else if (value !== 0) {
-                    if (value < 0) {
-                        reason += " - " + Math.abs(value).toString();
-                    } else {
-                        reason += " + " + value;
-                    }
-                }
-            } else {
-                if (reason === "") {
-                    reason = this.modifier + " = " + value;
-                } else {
-                    reason += " + " + this.modifier + " = " + reason + " + " + value;
-                }
-            }
-
-            if (this.reason !== null) {
-                reason += ". " + this.reason;
-            }
-
-            dice.setMsg(reason);
-            dice.setMod(value);
-            dice.addDice(this.diceAmount, this.diceFaces);
-            if (UI.Chat.Forms.isDiceTower()) {
-                dice.addDestinationStorytellers(UI.Chat.getRoom());
-            }
-
+            var dice = this.createMessage();
             UI.Chat.sendMessage(dice);
         }
+    }
+
+    public createMessage () {
+        var dice = new MessageDice();
+        dice.setPersona(this.style.getSheetInstance().getName());
+
+        var value = this.getValue();
+
+        var reason = this.createReason(value);
+
+        dice.setMsg(reason);
+        dice.setMod(value);
+        dice.addDice(this.diceAmount, this.diceFaces);
+        if (UI.Chat.Forms.isDiceTower()) {
+            dice.addDestinationStorytellers(UI.Chat.getRoom());
+        }
+
+        return dice;
+    }
+
+    protected createReason (value : number) {
+        var reason = this.diceAmount !== 0 && this.diceFaces !== 0 ? this.diceAmount.toString() + "d" + this.diceFaces.toString() : "";
+
+        if (value.toString() === this.modifier) {
+            if (value === 0 && reason === "") {
+                reason = value.toString();
+            } else if (value !== 0) {
+                if (value < 0) {
+                    reason += " - " + Math.abs(value).toString();
+                } else {
+                    reason += " + " + value;
+                }
+            }
+        } else {
+            if (reason === "") {
+                reason = this.modifier + " = " + value;
+            } else {
+                reason += " + " + this.modifier + " = " + reason + " + " + value;
+            }
+        }
+
+        if (this.reason !== null) {
+            reason += ". " + this.reason;
+        }
+
+        return reason;
     }
 
     protected parse () {

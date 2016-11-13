@@ -8,6 +8,8 @@ class SheetVariablelongtext extends SheetVariable {
 
         this.empty();
 
+        this.defaultValueString = this.defaultValueString === null? "" : this.defaultValueString;
+
         this.allowEmptyLines = this.visible.dataset['allowempty'] === undefined ? false :
             (this.visible.dataset['allowempty'] === "1" ||
             this.visible.dataset['allowempty'].toLowerCase() === "true");
@@ -101,7 +103,12 @@ class SheetVariablelongtext extends SheetVariable {
     public blur() {
         var lines = [];
         for (var i = 0; i < this.visible.children.length; i++ ){
-            var line = (<HTMLElement> this.visible.children[i]).innerText.trim();
+            var line = (<HTMLElement> this.visible.children[i]).innerText;
+            if (line !== null && line !== undefined) {
+                line = line.trim();
+            } else {
+                line = "";
+            }
             if (line !== "" || this.allowEmptyLines) {
                 lines.push(line);
             }

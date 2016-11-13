@@ -6,6 +6,7 @@
 /// <reference path='Types/SlashLog.ts' />
 /// <reference path='Types/SlashLingo.ts' />
 /// <reference path='Types/Message.ts' />
+/// <reference path='Types/MessageBuff.ts' />
 /// <reference path='Types/MessageSystem.ts' />
 /// <reference path='Types/MessageCountdown.ts' />
 /// <reference path='Types/MessageVote.ts' />

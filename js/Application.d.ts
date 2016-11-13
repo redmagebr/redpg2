@@ -529,6 +529,7 @@ declare class MemoryCombat extends TrackerMemory {
     storeEffectNames(): void;
     announceEffectEnding(): void;
     storeValue(obj: any): void;
+    applyInitiative(id: number, initiative: number): void;
     setInitiative(combatant: CombatParticipant, initiative: number): void;
     getValue(): any;
 }
@@ -703,6 +704,7 @@ declare class ChatSystemMessage {
     private hasLanguage;
     constructor(hasLanguage: boolean);
     addLangVar(id: string, value: string): void;
+    static createTextLink(text: string, hasLanguage: boolean, click: Listener | Function): HTMLElement;
     addTextLink(text: string, hasLanguage: boolean, click: Listener | Function): void;
     addText(text: string): void;
     addLingoVariable(id: string, value: string): void;
@@ -956,6 +958,7 @@ declare class SheetList {
     protected aliases: Array<string>;
     protected sheetChangeListener: Listener;
     getAliases(): string[];
+    getRows(): Sheet[];
     protected tableIndex: string;
     protected tableValue: string;
     constructor(parent: Sheet, style: SheetStyle, element: HTMLElement);
@@ -973,6 +976,7 @@ declare class SheetList {
     updateFromObject(obj: any): void;
     getTableIndex(): string;
     sort(): void;
+    getRowIndex(id: string): Sheet;
     getValueFor(id: string): number;
     getValue(): Array<number>;
     exportAsObject(): any[];
@@ -1142,7 +1146,10 @@ declare class SheetButtondice extends SheetButton {
     protected modifier: string;
     protected reason: String;
     constructor(parent: Sheet, style: SheetStyle, element: HTMLElement);
+    getReason(): String;
     click(e: Event): void;
+    createMessage(): MessageDice;
+    protected createReason(value: number): string;
     protected parse(): void;
     getSymbols(): Array<string>;
     getScope(symbols: Array<string>): {
@@ -1227,6 +1234,25 @@ declare class Message extends SlashCommand {
     addUpdatedListener(list: Listener | Function): void;
     triggerUpdated(): void;
     doNotPrint(): boolean;
+}
+declare class MessageBuff extends Message {
+    module: string;
+    createHTML(): HTMLElement;
+    applyBuff(): void;
+    setSheetId(id: number): void;
+    getSheetId(): number;
+    setSheetName(name: string): void;
+    getSheetName(): string;
+    setEffectName(name: string): void;
+    getEffectName(): any;
+    setEffectRoundEnd(round: number): void;
+    getEffectRoundEnd(): any;
+    setEffectTurnEnd(turn: number): void;
+    getEffectTurnEnd(): any;
+    setEffectEndOnStart(endonstart: boolean): void;
+    getEffectEndOnStart(): any;
+    setEffectCustomString(customString: string): void;
+    getEffectCustomString(): any;
 }
 declare class MessageSystem extends Message {
     module: string;
@@ -1353,10 +1379,17 @@ declare class MessageSheetturn extends Message {
 }
 declare class MessageDice extends Message {
     module: string;
+    private diceHQTime;
+    private initiativeClicker;
     constructor();
     findPersona(): void;
     makeMockUp(): MessageDice[];
     createHTML(): HTMLElement;
+    applyInitiative(): void;
+    setSheetId(id: number): void;
+    getSheetId(): any;
+    setAsInitiative(): void;
+    getIsInitiative(): boolean;
     getInitialRoll(): string;
     getRolls(): Array<number>;
     getMod(): number;
