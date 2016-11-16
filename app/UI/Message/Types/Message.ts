@@ -11,6 +11,7 @@
 class Message extends SlashCommand {
     public id : number = 0;
     public localid : number = null;
+    public wasLocal : boolean = false;
     public roomid : number = null;
     public date : string = null;
     public module : string = "";
@@ -51,6 +52,11 @@ class Message extends SlashCommand {
      */
     public getLocalId () {
         if (this.localid === null) DB.MessageDB.registerLocally(this);
+        this.wasLocal = true;
+    }
+
+    public wasLocalMessage () {
+        return this.wasLocal;
     }
 
     /**

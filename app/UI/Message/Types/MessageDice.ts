@@ -33,7 +33,7 @@ class MessageDice extends Message {
             return; // don't play yourself twice!
         }
         if (this.hasCustomAutomation() && this.customAutomationPossible())  {
-            if (Application.Config.getConfig('chatAutoRolls').getValue() === 1 || Application.isMe(this.getUser().getUser().id)) {
+            if (Application.Config.getConfig('chatAutoRolls').getValue() === 1 || (Application.isMe(this.getUser().getUser().id) && this.wasLocalMessage())) {
                 this.doCustom();
                 this.playedBefore = true;
             }
@@ -280,8 +280,8 @@ class MessageDice extends Message {
     }
 
     public customAutomationPossible () {
-        if ((Server.Chat.getRoom() !== null && Server.Chat.getRoom().getMe().isStoryteller()) && UI.Chat.doAutomation()) {
-            return true;
+        if (Server.Chat.getRoom() === null || !Server.Chat.getRoom().getMe().isStoryteller() || !UI.Chat.doAutomation()) {
+            return false;
         }
 
         var sheet = DB.SheetDB.getSheet(this.getSheetId());

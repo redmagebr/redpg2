@@ -5665,6 +5665,7 @@ var Message = (function (_super) {
         _super.apply(this, arguments);
         this.id = 0;
         this.localid = null;
+        this.wasLocal = false;
         this.roomid = null;
         this.date = null;
         this.module = "";
@@ -5695,6 +5696,10 @@ var Message = (function (_super) {
     Message.prototype.getLocalId = function () {
         if (this.localid === null)
             DB.MessageDB.registerLocally(this);
+        this.wasLocal = true;
+    };
+    Message.prototype.wasLocalMessage = function () {
+        return this.wasLocal;
     };
     Message.prototype.getUser = function () {
         var user = DB.UserDB.getAUser(this.origin);
@@ -6850,7 +6855,7 @@ var MessageDice = (function (_super) {
             return;
         }
         if (this.hasCustomAutomation() && this.customAutomationPossible()) {
-            if (Application.Config.getConfig('chatAutoRolls').getValue() === 1 || Application.isMe(this.getUser().getUser().id)) {
+            if (Application.Config.getConfig('chatAutoRolls').getValue() === 1 || (Application.isMe(this.getUser().getUser().id) && this.wasLocalMessage())) {
                 this.doCustom();
                 this.playedBefore = true;
             }
@@ -7060,8 +7065,8 @@ var MessageDice = (function (_super) {
         return this.getSheetId() !== null && this.getSheetName() !== null && this.getCustomAutomation() !== null && this.getCustomAutomationStyle() !== null;
     };
     MessageDice.prototype.customAutomationPossible = function () {
-        if ((Server.Chat.getRoom() !== null && Server.Chat.getRoom().getMe().isStoryteller()) && UI.Chat.doAutomation()) {
-            return true;
+        if (Server.Chat.getRoom() === null || !Server.Chat.getRoom().getMe().isStoryteller() || !UI.Chat.doAutomation()) {
+            return false;
         }
         var sheet = DB.SheetDB.getSheet(this.getSheetId());
         if (sheet !== null && sheet.loaded && sheet.isEditable()) {
@@ -7437,6 +7442,70 @@ var MessageRoleplay = (function (_super) {
     return MessageRoleplay;
 }(Message));
 MessageFactory.registerMessage(MessageRoleplay, "roleplay", []);
+var MessageSheetup = (function (_super) {
+    __extends(MessageSheetup, _super);
+    function MessageSheetup() {
+        _super.apply(this, arguments);
+        this.module = "sheetup";
+        this.playedBefore = false;
+        this.clicker = null;
+    }
+    MessageSheetup.prototype.onPrint = function () {
+        if (this.playedBefore) {
+            return;
+        }
+        if (UI.Chat.doAutomation() && UI.Sheets.SheetManager.isAutoUpdate() && !this.wasLocalMessage()) {
+            this.playedBefore = true;
+            this.updateSheet();
+        }
+        else if (UI.Chat.doAutomation()) {
+            if (!UI.Chat.doAutomation() || UI.Sheets.SheetManager.isAutoUpdate() || this.wasLocalMessage()) {
+                return;
+            }
+            var sheet = DB.SheetDB.getSheet(this.getSheetId());
+            if (sheet === null || !sheet.loaded) {
+                return null;
+            }
+            this.playedBefore = true;
+            var msg = new ChatSystemMessage(true);
+            msg.addText("_CHATMESSAGESHEETUPDATED_");
+            msg.addLangVar("a", sheet.getName());
+            msg.addText(" ");
+            msg.addTextLink("_CHATMESSAGESHEETUPDATEDCLICKER_", true, (function () {
+                this.updateSheet();
+            }).bind(this));
+            this.clicker = msg.getElement();
+            UI.Chat.printElement(this.clicker);
+        }
+    };
+    MessageSheetup.prototype.setSheetId = function (id) {
+        this.setSpecial("sheetid", id);
+    };
+    MessageSheetup.prototype.getSheetId = function () {
+        return this.getSpecial("sheetid", 0);
+    };
+    MessageSheetup.prototype.updateSheet = function () {
+        var sheet = DB.SheetDB.getSheet(this.getSheetId());
+        if (sheet === null || !sheet.loaded) {
+            return;
+        }
+        Server.Sheets.loadSheet(sheet.id);
+        if (this.clicker !== null) {
+            if (this.clicker.parentElement !== null) {
+                this.clicker.parentElement.removeChild(this.clicker);
+            }
+            this.clicker = null;
+        }
+    };
+    MessageSheetup.prototype.createHTML = function () {
+        if (!UI.Chat.doAutomation() || UI.Sheets.SheetManager.isAutoUpdate() || this.wasLocalMessage()) {
+            return null;
+        }
+        return null;
+    };
+    return MessageSheetup;
+}(Message));
+MessageFactory.registerMessage(MessageSheetup, "sheetup", []);
 var MessageUnknown = (function (_super) {
     __extends(MessageUnknown, _super);
     function MessageUnknown() {
@@ -7767,6 +7836,9 @@ var DB;
                 sheet: sheet,
                 handleEvent: function () {
                     this.sheet.setSaved();
+                    var msg = new MessageSheetup();
+                    msg.setSheetId(this.sheet.id);
+                    UI.Chat.sendMessage(msg);
                 }
             };
             var cbe = {
@@ -10009,6 +10081,8 @@ ptbr.setLingo("_CHATCOMBATEFFECTINPROGRESS_", "Efeitos em %a: %b.");
 ptbr.setLingo("_CHATCOMBATBUFFREQUESTED_", "Um pedido foi enviado ao mestre para aplicar o efeito.");
 ptbr.setLingo("_CHATCOMBATBUFFREQUEST_", "%a deseja aplicar o efeito %b em %c.");
 ptbr.setLingo("_CHATCOMBATBUFFREQUESTCLICK_", "Clique aqui para permitir.");
+ptbr.setLingo("_CHATMESSAGESHEETUPDATED_", "A ficha \"%a\" foi atualizada.");
+ptbr.setLingo("_CHATMESSAGESHEETUPDATEDCLICKER_", "Clique aqui para atualizar ela.");
 ptbr.setLingo("_PERSONADESIGNERTITLE_", "Administrador de Personas");
 ptbr.setLingo("_PERSONADESIGNERNAME_", "Nome do Personagem");
 ptbr.setLingo("_PERSONADESIGNERAVATAR_", "Link para Imagem (Opcional)");

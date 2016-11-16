@@ -1202,6 +1202,7 @@ declare class SlashLingo extends SlashCommand {
 declare class Message extends SlashCommand {
     id: number;
     localid: number;
+    wasLocal: boolean;
     roomid: number;
     date: string;
     module: string;
@@ -1221,6 +1222,7 @@ declare class Message extends SlashCommand {
     getPersona(): string;
     findPersona(): void;
     getLocalId(): void;
+    wasLocalMessage(): boolean;
     getUser(): UserRoomContext;
     addDestinationStorytellers(room: Room): void;
     addDestination(user: User): void;
@@ -1448,6 +1450,16 @@ declare class MessageRoleplay extends Message {
     setLanguage(lang: string): void;
     setTranslation(message: string): void;
     getTranslation(): String;
+}
+declare class MessageSheetup extends Message {
+    module: string;
+    private playedBefore;
+    private clicker;
+    onPrint(): any;
+    setSheetId(id: number): void;
+    getSheetId(): any;
+    updateSheet(): void;
+    createHTML(): HTMLElement;
 }
 declare class MessageUnknown extends Message {
     module: string;

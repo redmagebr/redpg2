@@ -92,6 +92,10 @@ module DB.SheetDB {
             sheet : sheet,
             handleEvent : function () {
                 this.sheet.setSaved();
+                var msg = new MessageSheetup();
+                msg.setSheetId(this.sheet.id);
+
+                UI.Chat.sendMessage(msg);
             }
         };
 
