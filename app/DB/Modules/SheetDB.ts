@@ -86,4 +86,22 @@ module DB.SheetDB {
 
         return result;
     }
+
+    export function saveSheet (sheet : SheetInstance) {
+        var cbs = <Listener> {
+            sheet : sheet,
+            handleEvent : function () {
+                this.sheet.setSaved();
+            }
+        };
+
+        var cbe = <Listener> {
+            sheet : sheet,
+            handleEvent : function () {
+                alert("Sheet not saved! " + this.sheet.getName());
+            }
+        };
+
+        Server.Sheets.sendSheet(sheet, cbs, cbe);
+    }
 }

@@ -82,6 +82,10 @@ change = new Changelog(0, 21, 0);
 change.addMessage("Multiple changes to Sheet classes.", "en");
 change.addMessage("Várias mudanças em classes Sheet.", "pt");
 
+change = new Changelog(0, 22, 0);
+change.addMessage("Multiple changes to Sheets. It's now possible to save sheets.", "en");
+change.addMessage("Várias mudanças em Sheets. Agora é possível salvar sheets.", "pt");
+
 delete (change);
 
 Changelog.finished();

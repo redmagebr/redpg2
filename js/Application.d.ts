@@ -510,6 +510,7 @@ declare class MemoryCombat extends TrackerMemory {
     addEffect(ce: CombatEffectInfo): void;
     cleanTargets(): void;
     getTargets(): number[];
+    getTargetCombatants(): any[];
     isTarget(id: number): boolean;
     setTarget(id: number): void;
     endCombat(): void;
@@ -889,6 +890,7 @@ declare class SheetStyle {
     getStyleInstance(): StyleInstance;
     getId(): number;
     getName(): string;
+    doDiceCustom(dice: MessageDice): boolean;
     getCSS(): HTMLStyleElement;
     getHTML(): HTMLElement;
     createNameVariable(sheet: Sheet, element: HTMLElement): void;
@@ -1119,6 +1121,15 @@ declare class SheetVariableselect extends SheetVariable {
     selectChange(e: Event): void;
     showSelect(): void;
     storeValue(value: string): void;
+    updateVisible(): void;
+}
+declare class SheetVariableboolean extends SheetVariable {
+    protected visible: HTMLInputElement;
+    protected defaultState: boolean;
+    constructor(parent: Sheet, style: SheetStyle, element: HTMLElement);
+    change(): void;
+    reset(): void;
+    storeValue(state: any): void;
     updateVisible(): void;
 }
 declare class SheetButtonaddrow extends SheetButton {
@@ -1381,10 +1392,19 @@ declare class MessageDice extends Message {
     module: string;
     private diceHQTime;
     private initiativeClicker;
+    private customClicker;
     constructor();
     findPersona(): void;
     makeMockUp(): MessageDice[];
     createHTML(): HTMLElement;
+    doCustom(): void;
+    hasCustomAutomation(): boolean;
+    setSheetName(name: string): void;
+    getSheetName(): any;
+    setCustomAutomationStyle(id: number): void;
+    getCustomAutomationStyle(): any;
+    setCustomAutomation(obj: any): void;
+    getCustomAutomation(): any;
     applyInitiative(): void;
     setSheetId(id: number): void;
     getSheetId(): any;
@@ -1482,6 +1502,7 @@ declare module DB.SheetDB {
     function updateFromObject(obj: Array<Object>): void;
     function getSheetsByGame(game: Game): any[];
     function getSheetsByFolder(sheets: Array<SheetInstance>): Array<Array<SheetInstance>>;
+    function saveSheet(sheet: SheetInstance): void;
 }
 declare module DB.ImageDB {
     function removeImage(img: ImageLink): void;
@@ -1672,6 +1693,7 @@ declare module Server.Sheets {
     function sendSheetPermissions(sheet: SheetInstance, permissions: Array<SheetPermRow>, cbs?: Listener | EventListenerObject | Function, cbe?: Listener | EventListenerObject | Function): void;
     function getStyleOptions(game: Game, cbs: Function | EventListenerObject, cbe: Function | EventListenerObject): void;
     function createSheet(game: Game, sheetName: string, styleId: number, isPublic: boolean, cbs?: Listener | EventListenerObject | Function, cbe?: Listener | EventListenerObject | Function): void;
+    function sendSheet(sheet: SheetInstance, cbs?: Listener | EventListenerObject | Function, cbe?: Listener | EventListenerObject | Function): void;
 }
 declare class Lingo {
     ids: Array<string>;
@@ -1838,6 +1860,7 @@ declare module UI.Sheets.SheetManager {
     function switchToSheet(sheet: SheetInstance, reloadStyle?: boolean): void;
     function openSheetId(sheetid: number): void;
     function openSheet(sheet: SheetInstance, reloadSheet?: boolean, reloadStyle?: boolean): void;
+    function saveSheet(): void;
     function reload(reloadStyle?: boolean): void;
     function isAutoUpdate(): boolean;
     function updateButtons(): void;

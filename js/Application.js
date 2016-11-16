@@ -863,6 +863,7 @@ var SheetInstance = (function () {
     SheetInstance.prototype.setSaved = function () {
         this.changed = false;
         Application.LocalMemory.unsetMemory(this.getMemoryId());
+        this.triggerChanged();
     };
     SheetInstance.prototype.setName = function (name) {
         if (name !== this.name) {
@@ -1791,6 +1792,17 @@ var MemoryCombat = (function (_super) {
     };
     MemoryCombat.prototype.getTargets = function () {
         return this.targets;
+    };
+    MemoryCombat.prototype.getTargetCombatants = function () {
+        var targets = [];
+        for (var i = 0; i < this.targets.length; i++) {
+            for (var k = 0; k < this.combatants.length; k++) {
+                if (this.combatants[k].id === this.targets[i]) {
+                    targets.push(this.combatants[k]);
+                }
+            }
+        }
+        return targets;
     };
     MemoryCombat.prototype.isTarget = function (id) {
         return this.targets.indexOf(id) !== -1;
@@ -3877,6 +3889,12 @@ var SheetStyle = (function () {
     SheetStyle.prototype.getName = function () {
         return this.styleInstance.getName();
     };
+    SheetStyle.prototype.doDiceCustom = function (dice) {
+        var msg = new ChatSystemMessage(true);
+        msg.addText("_CHATMESSAGEDICECUSTOMSTYLENOCUSTOM_");
+        UI.Chat.printElement(msg.getElement());
+        return false;
+    };
     SheetStyle.prototype.getCSS = function () {
         return this.css;
     };
@@ -5148,6 +5166,45 @@ var SheetVariableselect = (function (_super) {
         this.select.disabled = (!this.editable || (this.style.getSheetInstance() !== null && !this.style.getSheetInstance().isEditable()));
     };
     return SheetVariableselect;
+}(SheetVariable));
+var SheetVariableboolean = (function (_super) {
+    __extends(SheetVariableboolean, _super);
+    function SheetVariableboolean(parent, style, element) {
+        _super.call(this, parent, style, element);
+        if (this.visible.tagName.toLowerCase() !== "input" || this.visible.type !== "checkbox") {
+            console.warn("[SheetVariableBoolean] Must be a checkbox input. Offending id:", this.getId());
+            return;
+        }
+        this.defaultState = this.defaultValueString === null ? false :
+            (this.defaultValueString === "1" || this.defaultValueString.toLowerCase() === "true") ?
+                true : false;
+        this.value = this.defaultState;
+        if (this.editable) {
+            this.visible.addEventListener("change", (function () { this.change(); }).bind(this));
+        }
+        this.updateVisible();
+    }
+    SheetVariableboolean.prototype.change = function () {
+        this.storeValue(this.visible.checked);
+    };
+    SheetVariableboolean.prototype.reset = function () {
+        this.storeValue(this.defaultState);
+    };
+    SheetVariableboolean.prototype.storeValue = function (state) {
+        if (this.editable) {
+            state = state === true;
+            if (state !== this.value) {
+                this.value = state;
+                this.updateVisible();
+                this.considerTriggering();
+            }
+        }
+    };
+    SheetVariableboolean.prototype.updateVisible = function () {
+        this.visible.checked = this.value;
+        this.visible.disabled = !(this.editable && (this.style.getSheetInstance() === null || this.style.getSheetInstance().isEditable()));
+    };
+    return SheetVariableboolean;
 }(SheetVariable));
 var SheetButtonaddrow = (function (_super) {
     __extends(SheetButtonaddrow, _super);
@@ -6770,6 +6827,8 @@ var MessageDice = (function (_super) {
         this.module = "dice";
         this.diceHQTime = 30000;
         this.initiativeClicker = null;
+        this.customClicker = null;
+        this.setDice([]);
         this.addUpdatedListener({
             handleEvent: function (e) {
                 if (e.html !== null) {
@@ -6800,8 +6859,10 @@ var MessageDice = (function (_super) {
         return messages;
     };
     MessageDice.prototype.createHTML = function () {
+        var div = document.createElement("div");
+        div.classList.add("chatMessageDice");
         var p = document.createElement("p");
-        p.classList.add("chatMessageDice");
+        div.appendChild(p);
         if (this.getRolls().length === 0 && this.getDice().length !== 0) {
             p.appendChild(document.createTextNode("_CHATDICEROLLEDWAITING_"));
             UI.Language.markLanguage(p);
@@ -6941,11 +7002,70 @@ var MessageDice = (function (_super) {
             p.appendChild(span);
         }
         UI.Language.markLanguage(p);
-        return p;
+        if (this.hasCustomAutomation()) {
+            var f = (function (e) {
+                e.preventDefault();
+                this.doCustom();
+            }).bind(this);
+            var msg = new ChatSystemMessage(true);
+            msg.addText("_CHATMESSAGEDICECUSTOMWARNING_");
+            msg.addText(" ");
+            msg.addLangVar("a", this.getSheetName());
+            msg.addTextLink("_CHATMESSAGEDICECUSTOMGO_", true, f);
+            this.customClicker = msg.getElement();
+            div.appendChild(this.customClicker);
+        }
+        return div;
+    };
+    MessageDice.prototype.doCustom = function () {
+        var style = DB.StyleDB.getStyle(this.getCustomAutomationStyle());
+        var sheet = DB.SheetDB.getSheet(this.getSheetId());
+        if (style === null || !style.isLoaded()) {
+            var msg = new ChatSystemMessage(true);
+            msg.addText("_CHATMESSAGEDICECUSTOMSTYLENOTLOADED_");
+            UI.Chat.printElement(msg.getElement());
+            return;
+        }
+        if (sheet === null || !sheet.loaded) {
+            var msg = new ChatSystemMessage(true);
+            msg.addText("_CHATMESSAGEDICECUSTOMSHEETNOTLOADED_");
+            UI.Chat.printElement(msg.getElement());
+            return;
+        }
+        var sheetStyle = StyleFactory.getSheetStyle(style, false);
+        if (!sheetStyle.doDiceCustom(this)) {
+            return;
+        }
+        if (this.customClicker !== null && this.customClicker.parentElement !== null) {
+            this.customClicker.parentElement.removeChild(this.customClicker);
+            this.customClicker = null;
+        }
+    };
+    MessageDice.prototype.hasCustomAutomation = function () {
+        return this.getSheetId() !== null && this.getSheetName() !== null && this.getCustomAutomation() !== null && this.getCustomAutomationStyle() !== null;
+    };
+    MessageDice.prototype.setSheetName = function (name) {
+        this.setSpecial("sheetName", name);
+    };
+    MessageDice.prototype.getSheetName = function () {
+        return this.getSpecial("sheetName", null);
+    };
+    MessageDice.prototype.setCustomAutomationStyle = function (id) {
+        this.setSpecial("customStyle", id);
+    };
+    MessageDice.prototype.getCustomAutomationStyle = function () {
+        return this.getSpecial("customStyle", null);
+    };
+    MessageDice.prototype.setCustomAutomation = function (obj) {
+        this.setSpecial("custom", obj);
+    };
+    MessageDice.prototype.getCustomAutomation = function () {
+        return this.getSpecial("custom", null);
     };
     MessageDice.prototype.applyInitiative = function () {
         if (this.initiativeClicker !== null && this.initiativeClicker.parentElement !== null) {
             this.initiativeClicker.parentElement.removeChild(this.initiativeClicker);
+            this.initiativeClicker = null;
         }
         var total = this.getResult();
         var memory = Server.Chat.Memory.getConfiguration("Combat");
@@ -7615,6 +7735,22 @@ var DB;
             return result;
         }
         SheetDB.getSheetsByFolder = getSheetsByFolder;
+        function saveSheet(sheet) {
+            var cbs = {
+                sheet: sheet,
+                handleEvent: function () {
+                    this.sheet.setSaved();
+                }
+            };
+            var cbe = {
+                sheet: sheet,
+                handleEvent: function () {
+                    alert("Sheet not saved! " + this.sheet.getName());
+                }
+            };
+            Server.Sheets.sendSheet(sheet, cbs, cbe);
+        }
+        SheetDB.saveSheet = saveSheet;
     })(SheetDB = DB.SheetDB || (DB.SheetDB = {}));
 })(DB || (DB = {}));
 var DB;
@@ -9450,6 +9586,19 @@ var Server;
             Server.AJAX.requestPage(ajax, cbs, cbe);
         }
         Sheets.createSheet = createSheet;
+        function sendSheet(sheet, cbs, cbe) {
+            cbs = cbs === undefined ? emptyCallback : cbs;
+            cbe = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(SHEET_URL);
+            ajax.setResponseTypeJSON();
+            ajax.setData("action", "update");
+            ajax.setData("id", sheet.getId());
+            ajax.setData("values", sheet.getValues());
+            ajax.setData("name", sheet.getName());
+            ajax.setTargetRightWindow();
+            Server.AJAX.requestPage(ajax, cbs, cbe);
+        }
+        Sheets.sendSheet = sendSheet;
     })(Sheets = Server.Sheets || (Server.Sheets = {}));
 })(Server || (Server = {}));
 var Lingo = (function () {
@@ -9767,6 +9916,12 @@ ptbr.setLingo("_CHATDICESHOWN_", "mostrou");
 ptbr.setLingo("_CHATDICESECRETSHOWN_", "secretamente mostrou");
 ptbr.setLingo("_CHATMESSAGEDICEREASON_", "Motivo");
 ptbr.setLingo("_CHATMESSAGEDICEAPPLYINITIATIVE_", "Aplicar como iniciativa.");
+ptbr.setLingo("_CHATMESSAGEDICECUSTOMWARNING_", "Essa rolagem possui automação para %a.");
+ptbr.setLingo("_CHATMESSAGEDICECUSTOMGO_", "Clique aqui para aplicar.");
+ptbr.setLingo("_CHATMESSAGEDICECUSTOMSTYLENOTLOADED_", "O estilo necessário para aplicar essa automação não está carregado. Favor abrir a ficha em questão.");
+ptbr.setLingo("_CHATMESSAGEDICECUSTOMSHEETNOTLOADED_", "A ficha em questão não está carregada e não pode ser alterada. Favor carregar a ficha.");
+ptbr.setLingo("_CHATMESSAGEDICECUSTOMSTYLENOCUSTOM_", "O estilo da ficha não possui implementação para rolagens automatizadas e não pode ser o alvo dessa automação.");
+ptbr.setLingo("_CHATMESSAGEDICECUSTOMSTYLEINVALIDCUSTOM_", "Esse estilo de ficha não suporta a automação requisitada.");
 ptbr.setLingo("_CHATMESSAGEWHISPERTO_", "Mensagem enviada para");
 ptbr.setLingo("_CHATMESSAGEWHISPERFROM_", "Mensagem recebida de");
 ptbr.setLingo("_CHATMESSAGESHAREDBGM_", "compartilhou um som");
@@ -11399,6 +11554,14 @@ var UI;
             var sheetSave = document.getElementById("sheetSave");
             var importInput = document.getElementById("sheetViewerJSONImporter");
             var sheetAutomatic = document.getElementById("sheetAutomatic");
+            sheetSave.addEventListener("click", function (e) {
+                e.preventDefault();
+                UI.Sheets.SheetManager.saveSheet();
+            });
+            function saveSheet() {
+                DB.SheetDB.saveSheet(SheetManager.currentSheet);
+            }
+            SheetManager.saveSheet = saveSheet;
             sheetAutomatic.addEventListener("click", function (e) {
                 e.preventDefault();
                 this.classList.toggle("icons-sheetAutomaticOn");
@@ -11417,8 +11580,8 @@ var UI;
                 e.preventDefault();
                 UI.Sheets.SheetManager.exportAsJSON();
             });
-            document.getElementById("sheetFullReload").addEventListener("click", function () {
-                UI.Sheets.SheetManager.reload(true);
+            document.getElementById("sheetFullReload").addEventListener("click", function (e) {
+                UI.Sheets.SheetManager.reload(e.shiftKey);
             });
             function reload(reloadStyle) {
                 openSheet(SheetManager.currentSheet, true, reloadStyle === true);
@@ -14393,6 +14556,9 @@ change.addMessage("Efeitos adicionados ao Combat Tracker. Uma tela de administra
 change = new Changelog(0, 21, 0);
 change.addMessage("Multiple changes to Sheet classes.", "en");
 change.addMessage("Várias mudanças em classes Sheet.", "pt");
+change = new Changelog(0, 22, 0);
+change.addMessage("Multiple changes to Sheets. It's now possible to save sheets.", "en");
+change.addMessage("Várias mudanças em Sheets. Agora é possível salvar sheets.", "pt");
 delete (change);
 Changelog.finished();
 UI.Language.searchLanguage();

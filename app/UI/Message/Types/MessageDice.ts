@@ -3,9 +3,12 @@ class MessageDice extends Message {
     private diceHQTime : number = 30000;
 
     private initiativeClicker : HTMLElement = null;
+    private customClicker : HTMLElement = null;
 
     constructor () {
         super();
+
+        this.setDice([]);
 
         // Replace incomplete roll with server-provided rolls.
         this.addUpdatedListener(<Listener> {
@@ -44,8 +47,11 @@ class MessageDice extends Message {
     }
 
     public createHTML () : HTMLElement {
+        var div = document.createElement("div");
+        div.classList.add("chatMessageDice");
+
         var p = document.createElement("p");
-        p.classList.add("chatMessageDice");
+        div.appendChild(p);
 
         if (this.getRolls().length === 0 && this.getDice().length !== 0) {
             p.appendChild(document.createTextNode("_CHATDICEROLLEDWAITING_"));
@@ -204,12 +210,87 @@ class MessageDice extends Message {
         }
 
         UI.Language.markLanguage(p);
-        return p;
+
+        if (this.hasCustomAutomation()) {
+            var f = (function (e) {
+                e.preventDefault();
+                this.doCustom();
+            }).bind(this);
+
+            var msg = new ChatSystemMessage(true);
+            msg.addText("_CHATMESSAGEDICECUSTOMWARNING_");
+            msg.addText(" ");
+            msg.addLangVar("a", this.getSheetName());
+            msg.addTextLink("_CHATMESSAGEDICECUSTOMGO_", true, f);
+            this.customClicker = msg.getElement();
+
+            div.appendChild(this.customClicker);
+        }
+        return div;
+    }
+
+    public doCustom () {
+        var style = DB.StyleDB.getStyle(this.getCustomAutomationStyle());
+        var sheet = DB.SheetDB.getSheet(this.getSheetId());
+
+        if (style === null || !style.isLoaded()) {
+            var msg = new ChatSystemMessage(true);
+            msg.addText("_CHATMESSAGEDICECUSTOMSTYLENOTLOADED_");
+            UI.Chat.printElement(msg.getElement());
+            return;
+        }
+
+        if (sheet === null || !sheet.loaded) {
+            var msg = new ChatSystemMessage(true);
+            msg.addText("_CHATMESSAGEDICECUSTOMSHEETNOTLOADED_");
+            UI.Chat.printElement(msg.getElement());
+            return;
+        }
+
+        var sheetStyle = StyleFactory.getSheetStyle(style, false);
+
+        if (!sheetStyle.doDiceCustom(this)) {
+            return;
+        }
+
+        if (this.customClicker !== null && this.customClicker.parentElement !== null) {
+            this.customClicker.parentElement.removeChild(this.customClicker);
+            this.customClicker = null;
+        }
+    }
+
+    public hasCustomAutomation () {
+        return this.getSheetId() !== null && this.getSheetName() !== null && this.getCustomAutomation() !== null && this.getCustomAutomationStyle() !== null;
+    }
+
+    public setSheetName (name : string) {
+        this.setSpecial("sheetName", name);
+    }
+
+    public getSheetName () {
+        return this.getSpecial("sheetName", null);
+    }
+
+    public setCustomAutomationStyle (id : number) {
+        this.setSpecial("customStyle", id);
+    }
+
+    public getCustomAutomationStyle () {
+        return this.getSpecial("customStyle", null);
+    }
+
+    public setCustomAutomation (obj : any) {
+        this.setSpecial("custom", obj);
+    }
+
+    public getCustomAutomation () {
+        return this.getSpecial("custom", null);
     }
 
     public applyInitiative () {
         if (this.initiativeClicker !== null && this.initiativeClicker.parentElement !== null) {
             this.initiativeClicker.parentElement.removeChild(this.initiativeClicker);
+            this.initiativeClicker = null;
         }
         var total = this.getResult();
         var memory = <MemoryCombat> Server.Chat.Memory.getConfiguration("Combat");

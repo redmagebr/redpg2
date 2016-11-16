@@ -91,6 +91,18 @@ class MemoryCombat extends TrackerMemory {
         return this.targets;
     }
 
+    public getTargetCombatants () {
+        var targets = [];
+        for (var i = 0; i < this.targets.length; i++) {
+            for (var k = 0; k < this.combatants.length; k++) {
+                if (this.combatants[k].id === this.targets[i]) {
+                    targets.push(this.combatants[k]);
+                }
+            }
+        }
+        return targets;
+    }
+
     public isTarget (id : number) {
         return this.targets.indexOf(id) !== -1;
     }

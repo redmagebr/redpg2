@@ -162,6 +162,15 @@ module UI.Sheets.SheetManager {
     var importInput = <HTMLInputElement> document.getElementById("sheetViewerJSONImporter");
     var sheetAutomatic = document.getElementById("sheetAutomatic");
 
+    sheetSave.addEventListener("click", function (e) {
+        e.preventDefault();
+        UI.Sheets.SheetManager.saveSheet();
+    });
+
+    export function saveSheet () {
+        DB.SheetDB.saveSheet(currentSheet);
+    }
+
     sheetAutomatic.addEventListener("click", function (e) {
         e.preventDefault();
         this.classList.toggle("icons-sheetAutomaticOn");
@@ -185,8 +194,8 @@ module UI.Sheets.SheetManager {
         UI.Sheets.SheetManager.exportAsJSON();
     });
 
-    document.getElementById("sheetFullReload").addEventListener("click", function () {
-        UI.Sheets.SheetManager.reload(true);
+    document.getElementById("sheetFullReload").addEventListener("click", function (e : MouseEvent) {
+        UI.Sheets.SheetManager.reload(e.shiftKey);
     });
 
     // Hiding reload to reduce button bloat

@@ -187,6 +187,25 @@ class SheetStyle {
         return this.styleInstance.getName();
     }
 
+    /**
+     * Return true if the command was accepted, this will cause the Dice to remove the button.
+     * Return false if the command was not acceptable. Please print a Chat Message in this case.
+     * @param dice
+     * @returns {boolean}
+     */
+    public doDiceCustom (dice : MessageDice) {
+        var msg = new ChatSystemMessage(true);
+
+        // Use this message if not implemented
+        msg.addText("_CHATMESSAGEDICECUSTOMSTYLENOCUSTOM_");
+
+        // Use this message if invalid dice
+        //msg.addText("_CHATMESSAGEDICECUSTOMSTYLEINVALIDCUSTOM_");
+
+        UI.Chat.printElement(msg.getElement());
+        return false;
+    }
+
     public getCSS () {
         return this.css;
     }

@@ -79,6 +79,7 @@ class SheetInstance {
     public setSaved () {
         this.changed = false;
         Application.LocalMemory.unsetMemory(this.getMemoryId());
+        this.triggerChanged();
     }
 
     public setName (name : string) {
