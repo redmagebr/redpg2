@@ -1393,12 +1393,15 @@ declare class MessageDice extends Message {
     private diceHQTime;
     private initiativeClicker;
     private customClicker;
+    private playedBefore;
     constructor();
+    onPrint(): void;
     findPersona(): void;
     makeMockUp(): MessageDice[];
     createHTML(): HTMLElement;
     doCustom(): void;
     hasCustomAutomation(): boolean;
+    customAutomationPossible(): boolean;
     setSheetName(name: string): void;
     getSheetName(): any;
     setCustomAutomationStyle(id: number): void;

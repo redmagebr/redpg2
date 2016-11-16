@@ -6828,6 +6828,7 @@ var MessageDice = (function (_super) {
         this.diceHQTime = 30000;
         this.initiativeClicker = null;
         this.customClicker = null;
+        this.playedBefore = false;
         this.setDice([]);
         this.addUpdatedListener({
             handleEvent: function (e) {
@@ -6841,6 +6842,20 @@ var MessageDice = (function (_super) {
             }
         });
     }
+    MessageDice.prototype.onPrint = function () {
+        if (this.getRolls().length === 0 && this.getDice().length !== 0) {
+            return;
+        }
+        if (this.playedBefore) {
+            return;
+        }
+        if (this.hasCustomAutomation() && this.customAutomationPossible()) {
+            if (Application.Config.getConfig('chatAutoRolls').getValue() === 1 || Application.isMe(this.getUser().getUser().id)) {
+                this.doCustom();
+                this.playedBefore = true;
+            }
+        }
+    };
     MessageDice.prototype.findPersona = function () {
         var personaName = UI.Chat.PersonaManager.getPersonaName();
         this.setPersona(personaName === null ? "???" : personaName);
@@ -7002,7 +7017,7 @@ var MessageDice = (function (_super) {
             p.appendChild(span);
         }
         UI.Language.markLanguage(p);
-        if (this.hasCustomAutomation()) {
+        if (this.hasCustomAutomation() && this.customAutomationPossible()) {
             var f = (function (e) {
                 e.preventDefault();
                 this.doCustom();
@@ -7043,6 +7058,16 @@ var MessageDice = (function (_super) {
     };
     MessageDice.prototype.hasCustomAutomation = function () {
         return this.getSheetId() !== null && this.getSheetName() !== null && this.getCustomAutomation() !== null && this.getCustomAutomationStyle() !== null;
+    };
+    MessageDice.prototype.customAutomationPossible = function () {
+        if ((Server.Chat.getRoom() !== null && Server.Chat.getRoom().getMe().isStoryteller()) && UI.Chat.doAutomation()) {
+            return true;
+        }
+        var sheet = DB.SheetDB.getSheet(this.getSheetId());
+        if (sheet !== null && sheet.loaded && sheet.isEditable()) {
+            return true;
+        }
+        return false;
     };
     MessageDice.prototype.setSheetName = function (name) {
         this.setSpecial("sheetName", name);
@@ -7139,9 +7164,11 @@ var MessageDice = (function (_super) {
     MessageDice.prototype.getResult = function () {
         var result = 0;
         result += this.getMod();
-        result += this.getRolls().reduce(function (previousValue, currentValue) {
-            return previousValue + currentValue;
-        });
+        if (this.getRolls().length !== 0) {
+            result += this.getRolls().reduce(function (previousValue, currentValue) {
+                return previousValue + currentValue;
+            });
+        }
         return result;
     };
     return MessageDice;

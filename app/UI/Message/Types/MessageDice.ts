@@ -4,6 +4,7 @@ class MessageDice extends Message {
 
     private initiativeClicker : HTMLElement = null;
     private customClicker : HTMLElement = null;
+    private playedBefore : boolean = false;
 
     constructor () {
         super();
@@ -22,6 +23,21 @@ class MessageDice extends Message {
                 }
             }
         })
+    }
+
+    public onPrint () {
+        if (this.getRolls().length === 0 && this.getDice().length !== 0) {
+            return;
+        }
+        if (this.playedBefore) {
+            return; // don't play yourself twice!
+        }
+        if (this.hasCustomAutomation() && this.customAutomationPossible())  {
+            if (Application.Config.getConfig('chatAutoRolls').getValue() === 1 || Application.isMe(this.getUser().getUser().id)) {
+                this.doCustom();
+                this.playedBefore = true;
+            }
+        }
     }
 
     public findPersona () {
@@ -211,7 +227,7 @@ class MessageDice extends Message {
 
         UI.Language.markLanguage(p);
 
-        if (this.hasCustomAutomation()) {
+        if (this.hasCustomAutomation() && this.customAutomationPossible()) {
             var f = (function (e) {
                 e.preventDefault();
                 this.doCustom();
@@ -261,6 +277,19 @@ class MessageDice extends Message {
 
     public hasCustomAutomation () {
         return this.getSheetId() !== null && this.getSheetName() !== null && this.getCustomAutomation() !== null && this.getCustomAutomationStyle() !== null;
+    }
+
+    public customAutomationPossible () {
+        if ((Server.Chat.getRoom() !== null && Server.Chat.getRoom().getMe().isStoryteller()) && UI.Chat.doAutomation()) {
+            return true;
+        }
+
+        var sheet = DB.SheetDB.getSheet(this.getSheetId());
+        if (sheet !== null && sheet.loaded && sheet.isEditable()) {
+            return true;
+        }
+
+        return false;
     }
 
     public setSheetName (name : string) {
@@ -383,9 +412,11 @@ class MessageDice extends Message {
     public getResult () : number {
         var result = 0;
         result += this.getMod();
-        result += this.getRolls().reduce(function(previousValue, currentValue) {
-            return previousValue + currentValue;
-        });
+        if (this.getRolls().length !== 0) {
+            result += this.getRolls().reduce(function (previousValue, currentValue) {
+                return previousValue + currentValue;
+            });
+        }
         return result;
     }
 }
