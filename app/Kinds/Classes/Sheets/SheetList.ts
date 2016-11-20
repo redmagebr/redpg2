@@ -28,6 +28,10 @@ class SheetList {
         }
     };
 
+    public getParent () {
+        return this.parent;
+    }
+
     public getAliases () {
         return this.aliases;
     }

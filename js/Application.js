@@ -1838,6 +1838,14 @@ var MemoryCombat = (function (_super) {
     MemoryCombat.prototype.getTurn = function () {
         return this.turn;
     };
+    MemoryCombat.prototype.getRoundFor = function (id) {
+        for (var i = 0; i < this.combatants.length; i++) {
+            if (this.combatants[i].id === id) {
+                return i;
+            }
+        }
+        return null;
+    };
     MemoryCombat.prototype.getCombatants = function () {
         return this.combatants;
     };
@@ -1885,7 +1893,7 @@ var MemoryCombat = (function (_super) {
     };
     MemoryCombat.prototype.considerEndingEffects = function () {
         for (var id in this.effects) {
-            for (var i = 0; i < this.effects[id].length; i++) {
+            for (var i = this.effects[id].length - 1; i >= 0; i--) {
                 this.effects[id][i].considerEnding();
             }
         }
@@ -3775,6 +3783,9 @@ var SheetStyle = (function () {
     SheetStyle.prototype.stringToType = function (str) {
         return str.replace(/[^A-Za-z0-9]/g, "").toLowerCase();
     };
+    SheetStyle.prototype.isEditable = function () {
+        return this.sheetInstance !== null && this.sheetInstance.isEditable();
+    };
     SheetStyle.prototype.getCreator = function (kind, type, def) {
         var name = kind + this.stringToType(type);
         if (eval("typeof " + name) === "function") {
@@ -3893,6 +3904,9 @@ var SheetStyle = (function () {
         var msg = new ChatSystemMessage(true);
         msg.addText("_CHATMESSAGEDICECUSTOMSTYLENOCUSTOM_");
         UI.Chat.printElement(msg.getElement());
+        return false;
+    };
+    SheetStyle.prototype.processCommand = function (msg) {
         return false;
     };
     SheetStyle.prototype.getCSS = function () {
@@ -4194,6 +4208,9 @@ var SheetList = (function () {
             }
         }
     }
+    SheetList.prototype.getParent = function () {
+        return this.parent;
+    };
     SheetList.prototype.getAliases = function () {
         return this.aliases;
     };
@@ -5135,6 +5152,14 @@ var SheetVariableselect = (function (_super) {
         }
         this.showSelect();
     }
+    SheetVariableselect.prototype.reset = function () {
+        if (this.defaultValueString !== null && this.values.indexOf(this.defaultValueString) !== -1) {
+            this.storeValue(this.defaultValueString);
+        }
+        else {
+            this.storeValue(this.values[0]);
+        }
+    };
     SheetVariableselect.prototype.blur = function () { };
     SheetVariableselect.prototype.focus = function () {
     };
@@ -5811,8 +5836,10 @@ var Message = (function (_super) {
             this.html.classList.add("chatMessageSending");
             var timeoutFunction = (function (message) {
                 var html = message.getHTML();
-                html.classList.remove("chatMessageSending");
-                html.classList.add("chatMessageError");
+                if (html !== null) {
+                    html.classList.remove("chatMessageSending");
+                    html.classList.add("chatMessageError");
+                }
                 var errorMessage = new ChatSystemMessage(true);
                 errorMessage.addText("_CHATMESSAGENOTSENT_");
                 errorMessage.addText(" ");
@@ -5825,14 +5852,18 @@ var Message = (function (_super) {
                             error.parentNode.removeChild(error);
                         }
                         var html = this.message.getHTML();
-                        html.classList.remove("chatMessageError");
+                        if (html !== null) {
+                            html.classList.remove("chatMessageError");
+                        }
                         UI.Chat.sendMessage(this.message);
                     }
                 };
                 errorMessage.addTextLink("_CHATMESSAGENOTSENTRESEND_", true, click);
-                if (html.parentNode !== null) {
-                    html.parentNode.insertBefore(errorMessage.getElement(), html.nextSibling);
-                    UI.Chat.updateScrollPosition(true);
+                if (html !== null) {
+                    if (html.parentNode !== null) {
+                        html.parentNode.insertBefore(errorMessage.getElement(), html.nextSibling);
+                        UI.Chat.updateScrollPosition(true);
+                    }
                 }
             }).bind(null, this);
             this.sending = setTimeout(timeoutFunction, 8000);
@@ -5916,7 +5947,9 @@ var Message = (function (_super) {
         this.updatedTrigger.trigger(this);
         if (this.sending !== null) {
             clearTimeout(this.sending);
-            this.html.classList.remove("chatMessageSending");
+            if (this.html !== null) {
+                this.html.classList.remove("chatMessageSending");
+            }
             this.sending = null;
         }
         if (this.localid !== null) {
@@ -5936,17 +5969,32 @@ var MessageBuff = (function (_super) {
     function MessageBuff() {
         _super.apply(this, arguments);
         this.module = "buff";
+        this.playedBefore = false;
     }
-    MessageBuff.prototype.createHTML = function () {
-        if (UI.Chat.doAutomation()) {
-            return null;
+    MessageBuff.prototype.onPrint = function () {
+        if (this.playedBefore) {
+            return;
         }
+        if (this.customAutomationPossible()) {
+            if (Application.Config.getConfig('chatAutoRolls').getValue() === 1 || (Application.isMe(this.getUser().getUser().id) && this.wasLocalMessage())) {
+                this.applyBuff();
+                this.playedBefore = true;
+            }
+        }
+    };
+    MessageBuff.prototype.customAutomationPossible = function () {
+        if (Server.Chat.getRoom() === null || !Server.Chat.getRoom().getMe().isStoryteller() || !UI.Chat.doAutomation()) {
+            return false;
+        }
+        return true;
+    };
+    MessageBuff.prototype.createHTML = function () {
         var msg = new ChatSystemMessage(true);
-        if (Application.isMe(this.origin)) {
+        if (Application.isMe(this.origin) && (Server.Chat.getRoom() === null || !Server.Chat.getRoom().getMe().isStoryteller())) {
             msg.addText("_CHATCOMBATBUFFREQUESTED_");
         }
         else {
-            var auto = Application.Config.getConfig("chatAutoRolls").getValue() === 1;
+            var auto = Application.Config.getConfig("chatAutoRolls").getValue() === 1 || (Application.isMe(this.origin) && this.wasLocalMessage());
             if (auto) {
                 msg.addText("_CONFIGAUTOROLLAPPLYEFFECT_");
             }
@@ -5956,8 +6004,8 @@ var MessageBuff = (function (_super) {
             msg.addLangVar("a", this.getUser().getUniqueNickname());
             msg.addLangVar("b", this.getEffectName());
             msg.addLangVar("c", this.getSheetName());
+            msg.addText(" ");
             if (!auto) {
-                msg.addText(" ");
                 msg.addTextLink("_CHATCOMBATBUFFREQUESTCLICK_", true, {
                     buff: this,
                     handleEvent: function () {
@@ -5977,10 +6025,15 @@ var MessageBuff = (function (_super) {
             endOnStart: this.getEffectEndOnStart(),
             customString: this.getEffectCustomString()
         };
-        if (this.html !== null && this.html.parentElement !== null) {
-            this.html.parentElement.removeChild(this.html);
+        var memory = Server.Chat.Memory.getConfiguration("Combat");
+        memory.addEffect(ce);
+        var auto = Application.Config.getConfig("chatAutoRolls").getValue() === 1 || (Application.isMe(this.origin) && this.wasLocalMessage());
+        if (!auto) {
+            if (this.html !== null && this.html.parentElement !== null) {
+                this.html.parentElement.removeChild(this.html);
+            }
+            this.html = null;
         }
-        this.html = null;
     };
     MessageBuff.prototype.setSheetId = function (id) {
         this.setSpecial("sheetid", id);
@@ -6571,9 +6624,99 @@ var MessageSheetcommand = (function (_super) {
     function MessageSheetcommand() {
         _super.apply(this, arguments);
         this.module = "sheetcmd";
+        this.playedBefore = false;
     }
+    MessageSheetcommand.prototype.onPrint = function () {
+        if (this.playedBefore) {
+            return;
+        }
+        if (this.customAutomationPossible()) {
+            if (Application.Config.getConfig('chatAutoRolls').getValue() === 1 || (Application.isMe(this.getUser().getUser().id) && this.wasLocalMessage())) {
+                this.applyCommand();
+                this.playedBefore = true;
+            }
+        }
+    };
+    MessageSheetcommand.prototype.customAutomationPossible = function () {
+        if (Server.Chat.getRoom() === null || !Server.Chat.getRoom().getMe().isStoryteller() || !UI.Chat.doAutomation()) {
+            return false;
+        }
+        return true;
+    };
     MessageSheetcommand.prototype.createHTML = function () {
-        return null;
+        var msg = new ChatSystemMessage(true);
+        if (Application.isMe(this.origin) && (Server.Chat.getRoom() === null || !Server.Chat.getRoom().getMe().isStoryteller())) {
+            msg.addText("_CHATCOMMANDREQUESTED_");
+        }
+        else {
+            var auto = Application.Config.getConfig("chatAutoRolls").getValue() === 1 || (Application.isMe(this.origin) && this.wasLocalMessage());
+            if (auto) {
+                msg.addText("_CHATCOMMANDAUTODID_");
+            }
+            else {
+                msg.addText("_CHATCOMMANDREQUEST_");
+            }
+            msg.addLangVar("a", this.getUser().getUniqueNickname());
+            msg.addLangVar("b", this.getSheetName());
+            if (!auto) {
+                msg.addText(" ");
+                msg.addTextLink("_CHATCOMMANDCLICK_", true, {
+                    buff: this,
+                    handleEvent: function () {
+                        this.buff.applyCommand();
+                    }
+                });
+            }
+        }
+        return msg.getElement();
+    };
+    MessageSheetcommand.prototype.applyCommand = function () {
+        var sheet = DB.SheetDB.getSheet(this.getSheetId());
+        if (sheet === null || !sheet.loaded) {
+            var msg = new ChatSystemMessage(true);
+            msg.addText("_CHATCOMMANDNOTLOADED_");
+            return;
+        }
+        var style = sheet.getStyle();
+        if (style === null || !style.isLoaded()) {
+            var msg = new ChatSystemMessage(true);
+            msg.addText("_CHATCOMMANDNOTLOADED_");
+            return;
+        }
+        var sheetstyle = StyleFactory.getSheetStyle(style);
+        if (sheetstyle === null) {
+            var msg = new ChatSystemMessage(true);
+            msg.addText("_CHATCOMMANDNOTLOADED_");
+            return;
+        }
+        if (!sheetstyle.processCommand(this)) {
+            return;
+        }
+        var auto = Application.Config.getConfig("chatAutoRolls").getValue() === 1 || (Application.isMe(this.origin) && this.wasLocalMessage());
+        if (!auto) {
+            if (this.html !== null && this.html.parentElement !== null) {
+                this.html.parentElement.removeChild(this.html);
+            }
+            this.html = null;
+        }
+    };
+    MessageSheetcommand.prototype.setSheetId = function (id) {
+        this.setSpecial("sheetid", id);
+    };
+    MessageSheetcommand.prototype.getSheetId = function () {
+        return this.getSpecial("sheetid", 0);
+    };
+    MessageSheetcommand.prototype.setSheetName = function (name) {
+        this.msg = name;
+    };
+    MessageSheetcommand.prototype.getSheetName = function () {
+        return this.msg;
+    };
+    MessageSheetcommand.prototype.setCustomString = function (customString) {
+        this.setSpecial("effectCustomString", customString);
+    };
+    MessageSheetcommand.prototype.getCustomString = function () {
+        return this.getSpecial("effectCustomString", null);
     };
     return MessageSheetcommand;
 }(Message));
@@ -10082,6 +10225,10 @@ ptbr.setLingo("_CHATCOMBATBUFFREQUESTED_", "Um pedido foi enviado ao mestre para
 ptbr.setLingo("_CHATCOMBATBUFFREQUEST_", "%a deseja aplicar o efeito %b em %c.");
 ptbr.setLingo("_CHATCOMBATBUFFREQUESTCLICK_", "Clique aqui para permitir.");
 ptbr.setLingo("_CHATMESSAGESHEETUPDATED_", "A ficha \"%a\" foi atualizada.");
+ptbr.setLingo("_CHATCOMMANDREQUESTED_", "Um pedido foi enviado ao mestre para aplicar o comando.");
+ptbr.setLingo("_CHATCOMMANDREQUEST_", "%a deseja aplicar um comando em %b.");
+ptbr.setLingo("_CHATCOMMANDCLICK_", "Clique aqui para permitir.");
+ptbr.setLingo("_CHATMESSAGESHEETUPDATED_", "A ficha \"%a\" foi atualizada.");
 ptbr.setLingo("_CHATMESSAGESHEETUPDATEDCLICKER_", "Clique aqui para atualizar ela.");
 ptbr.setLingo("_PERSONADESIGNERTITLE_", "Administrador de Personas");
 ptbr.setLingo("_PERSONADESIGNERNAME_", "Nome do Personagem");
@@ -10126,6 +10273,8 @@ ptbr.setLingo("_CONFIGAUTOROLL0_", "Apenas minhas rolagens");
 ptbr.setLingo("_CONFIGAUTOROLL1_", "Sempre aplicar automaticamente");
 ptbr.setLingo("_CONFIGAUTOROLLEXP_", "Algumas rolagens podem ter alguma automatização implementada para elas, como Iniciativas. Em geral, você, como mestre, receberá uma mensagem para aplicar ela. Aqui você pode aceitar todas as rolagens automaticamente.");
 ptbr.setLingo("_CONFIGAUTOROLLAPPLYEFFECT_", "O efeito %b, enviado por %a, foi aplicado automaticamente em %c.");
+ptbr.setLingo("_CHATCOMMANDAUTODID_", "Um comando, enviado por %a, foi aplicado automaticamente em %b.");
+ptbr.setLingo("_CHATCOMMANDNOTLOADED_", "Ficha para o comando não carregada.");
 ptbr.setLingo("_CONFIGCHATMAXMESSAGESEXP01_", "Define quantas mensagens podem estar impressas no chat ao mesmo tempo. Mínimo de 60 mensagens e máximo de 10000 mensagens. Escolha de acordo com seu CPU.");
 ptbr.setLingo("_CONFIGCHATMAXMESSAGESEXP02_", "Essa opção é ignorada e se torna 60 quando utilizando dispositivos móveis.");
 ptbr.setLingo("_CONFIGCHATMAXMESSAGES_", "(Chat) Número de mensagens:");

@@ -144,6 +144,15 @@ class MemoryCombat extends TrackerMemory {
         return this.turn;
     }
 
+    public getRoundFor (id : number) {
+        for (var i = 0; i < this.combatants.length; i++) {
+            if (this.combatants[i].id === id) {
+                return i;
+            }
+        }
+        return null;
+    }
+
     public getCombatants () {
         return this.combatants;
     }
@@ -201,7 +210,7 @@ class MemoryCombat extends TrackerMemory {
 
     public considerEndingEffects () {
         for (var id in this.effects) {
-            for (var i = 0; i < this.effects[id].length; i++) {
+            for (var i = this.effects[id].length - 1; i >= 0; i--) {
                 this.effects[id][i].considerEnding();
             }
         }

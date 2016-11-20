@@ -354,6 +354,10 @@ ptbr.setLingo("_CHATCOMBATBUFFREQUESTED_", "Um pedido foi enviado ao mestre para
 ptbr.setLingo("_CHATCOMBATBUFFREQUEST_", "%a deseja aplicar o efeito %b em %c.");
 ptbr.setLingo("_CHATCOMBATBUFFREQUESTCLICK_", "Clique aqui para permitir.");
 ptbr.setLingo("_CHATMESSAGESHEETUPDATED_", "A ficha \"%a\" foi atualizada.");
+ptbr.setLingo("_CHATCOMMANDREQUESTED_", "Um pedido foi enviado ao mestre para aplicar o comando.");
+ptbr.setLingo("_CHATCOMMANDREQUEST_", "%a deseja aplicar um comando em %b.");
+ptbr.setLingo("_CHATCOMMANDCLICK_", "Clique aqui para permitir.");
+ptbr.setLingo("_CHATMESSAGESHEETUPDATED_", "A ficha \"%a\" foi atualizada.");
 ptbr.setLingo("_CHATMESSAGESHEETUPDATEDCLICKER_", "Clique aqui para atualizar ela.");
 
 // Chat Persona Designer
@@ -403,6 +407,8 @@ ptbr.setLingo("_CONFIGAUTOROLL0_", "Apenas minhas rolagens");
 ptbr.setLingo("_CONFIGAUTOROLL1_", "Sempre aplicar automaticamente");
 ptbr.setLingo("_CONFIGAUTOROLLEXP_", "Algumas rolagens podem ter alguma automatização implementada para elas, como Iniciativas. Em geral, você, como mestre, receberá uma mensagem para aplicar ela. Aqui você pode aceitar todas as rolagens automaticamente.");
 ptbr.setLingo("_CONFIGAUTOROLLAPPLYEFFECT_", "O efeito %b, enviado por %a, foi aplicado automaticamente em %c.");
+ptbr.setLingo("_CHATCOMMANDAUTODID_", "Um comando, enviado por %a, foi aplicado automaticamente em %b.");
+ptbr.setLingo("_CHATCOMMANDNOTLOADED_", "Ficha para o comando não carregada.");
 ptbr.setLingo("_CONFIGCHATMAXMESSAGESEXP01_", "Define quantas mensagens podem estar impressas no chat ao mesmo tempo. Mínimo de 60 mensagens e máximo de 10000 mensagens. Escolha de acordo com seu CPU.");
 ptbr.setLingo("_CONFIGCHATMAXMESSAGESEXP02_", "Essa opção é ignorada e se torna 60 quando utilizando dispositivos móveis.");
 ptbr.setLingo("_CONFIGCHATMAXMESSAGES_", "(Chat) Número de mensagens:");

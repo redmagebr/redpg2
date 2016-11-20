@@ -36,6 +36,10 @@ class SheetStyle {
         return str.replace(/[^A-Za-z0-9]/g, "").toLowerCase();
     }
 
+    public isEditable () {
+        return this.sheetInstance !== null && this.sheetInstance.isEditable();
+    }
+
     /**
      * This function needs to be rewritten anytime a Style has custom types.
      * @param kind = string, "Sheet" | "SheetButton" | "SheetList"
@@ -203,6 +207,10 @@ class SheetStyle {
         //msg.addText("_CHATMESSAGEDICECUSTOMSTYLEINVALIDCUSTOM_");
 
         UI.Chat.printElement(msg.getElement());
+        return false;
+    }
+
+    public processCommand (msg : MessageSheetcommand) {
         return false;
     }
 

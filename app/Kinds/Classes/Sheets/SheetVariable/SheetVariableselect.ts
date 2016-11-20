@@ -39,6 +39,14 @@ class SheetVariableselect extends SheetVariable {
         this.showSelect();
     }
 
+    public reset () {
+        if (this.defaultValueString !== null && this.values.indexOf(<string> this.defaultValueString) !== -1) {
+            this.storeValue(<string> this.defaultValueString);
+        } else {
+            this.storeValue(this.values[0]);
+        }
+    }
+
     public blur () {}
 
     public focus () {

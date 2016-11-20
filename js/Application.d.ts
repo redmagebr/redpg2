@@ -516,6 +516,7 @@ declare class MemoryCombat extends TrackerMemory {
     endCombat(): void;
     getRound(): number;
     getTurn(): number;
+    getRoundFor(id: number): number;
     getCombatants(): CombatParticipant[];
     getMyCombatants(): any[];
     reset(): void;
@@ -869,6 +870,7 @@ declare class SheetStyle {
     protected sheetInstanceChangeTrigger: Trigger;
     addSheetInstanceChangeListener(f: Listener | Function): void;
     stringToType(str: String): string;
+    isEditable(): boolean;
     getCreator(kind: string, type: string, def: string): any;
     getSheet(): Sheet;
     addCreatorListener(obj: SheetCreatorListener): void;
@@ -891,6 +893,7 @@ declare class SheetStyle {
     getId(): number;
     getName(): string;
     doDiceCustom(dice: MessageDice): boolean;
+    processCommand(msg: MessageSheetcommand): boolean;
     getCSS(): HTMLStyleElement;
     getHTML(): HTMLElement;
     createNameVariable(sheet: Sheet, element: HTMLElement): void;
@@ -959,6 +962,7 @@ declare class SheetList {
     protected busy: boolean;
     protected aliases: Array<string>;
     protected sheetChangeListener: Listener;
+    getParent(): Sheet;
     getAliases(): string[];
     getRows(): Sheet[];
     protected tableIndex: string;
@@ -1115,6 +1119,7 @@ declare class SheetVariableselect extends SheetVariable {
     protected select: HTMLSelectElement;
     protected values: Array<string>;
     constructor(parent: Sheet, style: SheetStyle, element: HTMLElement);
+    reset(): void;
     blur(): void;
     focus(): void;
     selectBlur(e: Event): void;
@@ -1250,6 +1255,9 @@ declare class Message extends SlashCommand {
 }
 declare class MessageBuff extends Message {
     module: string;
+    private playedBefore;
+    onPrint(): void;
+    customAutomationPossible(): boolean;
     createHTML(): HTMLElement;
     applyBuff(): void;
     setSheetId(id: number): void;
@@ -1352,7 +1360,17 @@ declare class MessageStream extends Message {
 }
 declare class MessageSheetcommand extends Message {
     module: string;
-    createHTML(): any;
+    private playedBefore;
+    onPrint(): void;
+    customAutomationPossible(): boolean;
+    createHTML(): HTMLElement;
+    applyCommand(): void;
+    setSheetId(id: number): void;
+    getSheetId(): number;
+    setSheetName(name: string): void;
+    getSheetName(): string;
+    setCustomString(customString: string): void;
+    getCustomString(): any;
 }
 declare class MessageWhisper extends Message {
     module: string;

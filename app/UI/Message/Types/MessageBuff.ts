@@ -1,17 +1,34 @@
 class MessageBuff extends Message {
     public module: string = "buff";
+    private playedBefore : boolean = false;
 
-    public createHTML () {
-        if (UI.Chat.doAutomation()) {
-            return null;
+    public onPrint () {
+        if (this.playedBefore) {
+            return; // don't play yourself twice!
+        }
+        if (this.customAutomationPossible())  {
+            if (Application.Config.getConfig('chatAutoRolls').getValue() === 1 || (Application.isMe(this.getUser().getUser().id) && this.wasLocalMessage())) {
+                this.applyBuff();
+                this.playedBefore = true;
+            }
+        }
+    }
+
+    public customAutomationPossible () {
+        if (Server.Chat.getRoom() === null || !Server.Chat.getRoom().getMe().isStoryteller() || !UI.Chat.doAutomation()) {
+            return false;
         }
 
+        return true;
+    }
+
+    public createHTML () {
         var msg = new ChatSystemMessage(true);
 
-        if (Application.isMe(this.origin)) {
+        if (Application.isMe(this.origin) && (Server.Chat.getRoom() === null || !Server.Chat.getRoom().getMe().isStoryteller())) {
             msg.addText("_CHATCOMBATBUFFREQUESTED_");
         } else {
-            var auto = Application.Config.getConfig("chatAutoRolls").getValue() === 1;
+            var auto = Application.Config.getConfig("chatAutoRolls").getValue() === 1 || (Application.isMe(this.origin) && this.wasLocalMessage());
             if (auto) {
                 msg.addText("_CONFIGAUTOROLLAPPLYEFFECT_");
             } else {
@@ -21,9 +38,8 @@ class MessageBuff extends Message {
             msg.addLangVar("a", this.getUser().getUniqueNickname());
             msg.addLangVar("b", this.getEffectName());
             msg.addLangVar("c", this.getSheetName());
-
+            msg.addText(" ");
             if (!auto) {
-                msg.addText(" ");
                 msg.addTextLink("_CHATCOMBATBUFFREQUESTCLICK_", true, <Listener> {
                     buff: this,
                     handleEvent: function () {
@@ -46,13 +62,18 @@ class MessageBuff extends Message {
             customString : this.getEffectCustomString()
         };
 
-        if (this.html !== null && this.html.parentElement !== null) {
-            this.html.parentElement.removeChild(this.html);
+        var memory = <MemoryCombat> Server.Chat.Memory.getConfiguration("Combat");
+        memory.addEffect(ce);
+
+        var auto = Application.Config.getConfig("chatAutoRolls").getValue() === 1 || (Application.isMe(this.origin) && this.wasLocalMessage());
+
+        if (!auto) {
+            if (this.html !== null && this.html.parentElement !== null) {
+                this.html.parentElement.removeChild(this.html);
+            }
+
+            this.html = null;
         }
-
-        this.html = null;
-
-
     }
 
     public setSheetId (id : number) {

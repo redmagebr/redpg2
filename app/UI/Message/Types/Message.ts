@@ -201,8 +201,10 @@ class Message extends SlashCommand {
 
             var timeoutFunction = (function (message:Message) {
                 var html = message.getHTML();
-                html.classList.remove("chatMessageSending");
-                html.classList.add("chatMessageError");
+                if (html !== null) {
+                    html.classList.remove("chatMessageSending");
+                    html.classList.add("chatMessageError");
+                }
 
                 var errorMessage = new ChatSystemMessage(true);
                 errorMessage.addText("_CHATMESSAGENOTSENT_");
@@ -218,16 +220,20 @@ class Message extends SlashCommand {
                         }
 
                         var html = this.message.getHTML();
-                        html.classList.remove("chatMessageError");
+                        if (html !== null) {
+                            html.classList.remove("chatMessageError");
+                        }
                         UI.Chat.sendMessage(this.message);
                     }
                 };
 
                 errorMessage.addTextLink("_CHATMESSAGENOTSENTRESEND_", true, click);
 
-                if (html.parentNode !== null) {
-                    html.parentNode.insertBefore(errorMessage.getElement(), html.nextSibling);
-                    UI.Chat.updateScrollPosition(true);
+                if (html !== null) {
+                    if (html.parentNode !== null) {
+                        html.parentNode.insertBefore(errorMessage.getElement(), html.nextSibling);
+                        UI.Chat.updateScrollPosition(true);
+                    }
                 }
             }).bind(null, this);
 
@@ -355,7 +361,9 @@ class Message extends SlashCommand {
 
         if (this.sending !== null) {
             clearTimeout(<number> this.sending);
-            this.html.classList.remove("chatMessageSending");
+            if (this.html !== null) {
+                this.html.classList.remove("chatMessageSending");
+            }
             this.sending =  null;
         }
 
