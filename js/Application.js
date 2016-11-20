@@ -4015,11 +4015,16 @@ var Sheet = (function () {
         for (var id in this.values) {
             if (obj[id] === undefined) {
                 var aliases = this.values[id].getAliases();
+                var foundAlias = false;
                 for (var i = 0; i < aliases.length; i++) {
                     if (obj[aliases[i]] !== undefined) {
                         this.values[id].updateFromObject(obj[aliases[i]]);
-                        continue;
+                        foundAlias = true;
+                        break;
                     }
+                }
+                if (foundAlias) {
+                    continue;
                 }
                 this.values[id].reset();
             }
@@ -8628,7 +8633,7 @@ var Server;
 (function (Server) {
     Server.IMAGE_URL = "http://img.redpg.com.br/";
     Server.APPLICATION_URL = "http://app.redpg.com.br/service/";
-    Server.CLIENT_URL = "http://beta.redpg.com.br/";
+    Server.CLIENT_URL = "http://app.redpg.com.br/";
     Server.WEBSOCKET_SERVERURL = "ws://app.redpg.com.br";
     Server.WEBSOCKET_CONTEXT = "/service/";
     Server.WEBSOCKET_PORTS = [80, 8080, 8081];
@@ -14809,6 +14814,13 @@ change.addMessage("Várias mudanças em classes Sheet.", "pt");
 change = new Changelog(0, 22, 0);
 change.addMessage("Multiple changes to Sheets. It's now possible to save sheets.", "en");
 change.addMessage("Várias mudanças em Sheets. Agora é possível salvar sheets.", "pt");
+change = new Changelog(0, 23, 0);
+change.addMessage("Fixes for sheets.", "en");
+change.addMessage("Sheet Auto-Update is now the Default state.", "en");
+change.addMessage("Move from Beta to Current.", "en");
+change.addMessage("Correções em Sheets.", "pt");
+change.addMessage("Atualizar Fichas Automaticamente agora é o estado padrão.", "pt");
+change.addMessage("Mudança de Beta para Atual. We 2 now.", "pt");
 delete (change);
 Changelog.finished();
 UI.Language.searchLanguage();

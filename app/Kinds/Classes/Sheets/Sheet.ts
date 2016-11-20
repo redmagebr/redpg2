@@ -96,11 +96,16 @@ class Sheet {
         for (var id in this.values) {
             if (obj[id] === undefined) {
                 var aliases = this.values[id].getAliases();
+                var foundAlias = false;
                 for (var i = 0; i < aliases.length; i++) {
                     if (obj[aliases[i]] !== undefined) {
                         this.values[id].updateFromObject(obj[aliases[i]]);
-                        continue;
+                        foundAlias = true;
+                        break;
                     }
+                }
+                if (foundAlias) {
+                    continue;
                 }
                 this.values[id].reset();
             } else {

@@ -86,6 +86,14 @@ change = new Changelog(0, 22, 0);
 change.addMessage("Multiple changes to Sheets. It's now possible to save sheets.", "en");
 change.addMessage("Várias mudanças em Sheets. Agora é possível salvar sheets.", "pt");
 
+change = new Changelog(0, 23, 0);
+change.addMessage("Fixes for sheets.", "en");
+change.addMessage("Sheet Auto-Update is now the Default state.", "en");
+change.addMessage("Move from Beta to Current.", "en");
+change.addMessage("Correções em Sheets.", "pt");
+change.addMessage("Atualizar Fichas Automaticamente agora é o estado padrão.", "pt");
+change.addMessage("Mudança de Beta para Atual. We 2 now.", "pt");
+
 delete (change);
 
 Changelog.finished();
