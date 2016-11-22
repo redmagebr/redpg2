@@ -77,8 +77,10 @@ module UI.Sheets.SheetManager {
         }
     }
 
-    export function switchToSheet (sheet : SheetInstance, reloadStyle? : boolean) {
-        UI.PageManager.callPage(UI.idSheetViewer);
+    export function switchToSheet (sheet : SheetInstance, reloadStyle? : boolean, callPage? : boolean) {
+        if (callPage) {
+            UI.PageManager.callPage(UI.idSheetViewer);
+        }
         addButton(sheet);
         if (currentSheet !== sheet && currentSheet !== null) {
             currentSheet.removeChangeListener(sheetChangeListener);
@@ -124,9 +126,10 @@ module UI.Sheets.SheetManager {
         }
     }
 
-    export function openSheet (sheet : SheetInstance, reloadSheet? : boolean, reloadStyle? : boolean) {
+    export function openSheet (sheet : SheetInstance, reloadSheet? : boolean, reloadStyle? : boolean, callPage? : boolean) {
         var loadSheet = !sheet.loaded || reloadSheet === true;
         var loadStyle = reloadStyle === true || !DB.StyleDB.hasStyle(sheet.getStyleId()) || !DB.StyleDB.getStyle(sheet.getStyleId()).isLoaded();
+        callPage = callPage === undefined ? true : callPage
 
         if (reloadStyle === true && currentStyle !== null && currentStyle.getStyleInstance() === sheet.getStyle()) {
             detachStyle();
@@ -136,8 +139,9 @@ module UI.Sheets.SheetManager {
         var cbs = <EventListenerObject> {
             sheet : sheet,
             reloadStyle : reloadStyle === true,
+            callPage : callPage,
             handleEvent : function () {
-                UI.Sheets.SheetManager.switchToSheet(this.sheet, this.reloadStyle);
+                UI.Sheets.SheetManager.switchToSheet(this.sheet, this.reloadStyle, this.callPage);
             }
         };
 
@@ -154,18 +158,23 @@ module UI.Sheets.SheetManager {
         } else if (loadStyle) {
             Server.Sheets.loadStyle(sheet.getStyleId(), cbs, cbe);
         } else {
-            switchToSheet(sheet);
+            switchToSheet(sheet, false, callPage);
         }
     }
 
     var sheetSave = document.getElementById("sheetSave");
     var importInput = <HTMLInputElement> document.getElementById("sheetViewerJSONImporter");
     var sheetAutomatic = document.getElementById("sheetAutomatic");
+    var sheetEdit = document.getElementById("sheetEdit");
 
     sheetSave.addEventListener("click", function (e) {
         e.preventDefault();
         UI.Sheets.SheetManager.saveSheet();
     });
+
+    export function isEditable () {
+        return sheetEdit.classList.contains("icons-sheetEditOn");
+    }
 
     export function saveSheet () {
         DB.SheetDB.saveSheet(currentSheet);
@@ -175,6 +184,16 @@ module UI.Sheets.SheetManager {
         e.preventDefault();
         this.classList.toggle("icons-sheetAutomaticOn");
         this.classList.toggle("icons-sheetAutomatic");
+    });
+
+    sheetEdit.addEventListener("click", function (e) {
+        e.preventDefault();
+        this.classList.toggle("icons-sheetEditOn");
+        this.classList.toggle("icons-sheetEdit");
+
+        if (currentSheet !== null) {
+            currentSheet.considerEditable();
+        }
     });
 
     document.getElementById("sheetClose").addEventListener("click", function(e) {

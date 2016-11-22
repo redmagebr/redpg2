@@ -255,13 +255,14 @@ declare class SheetInstance {
     styleCreatorNickname: string;
     styleSafe: boolean;
     view: boolean;
-    edit: boolean;
+    private _edit;
     delete: boolean;
     promote: boolean;
     isPublic: boolean;
     changed: boolean;
     loaded: boolean;
     private changeTrigger;
+    edit: boolean;
     getStyleId(): number;
     getStyle(): StyleInstance;
     getTab(): SheetTab;
@@ -284,6 +285,7 @@ declare class SheetInstance {
     isPromotable(): boolean;
     isDeletable(): boolean;
     isNPC(): boolean;
+    considerEditable(): void;
 }
 declare class StyleInstance {
     id: number;
@@ -742,7 +744,7 @@ declare class SheetsRow {
     private sheet;
     private html;
     private nameNode;
-    open(): void;
+    open(e: MouseEvent): void;
     deleteSheet(): void;
     editPerm(): void;
     editFolder(): void;
@@ -1890,9 +1892,10 @@ declare module UI.Sheets.SheetManager {
     function close(): void;
     function detachStyle(): void;
     function attachStyle(): void;
-    function switchToSheet(sheet: SheetInstance, reloadStyle?: boolean): void;
+    function switchToSheet(sheet: SheetInstance, reloadStyle?: boolean, callPage?: boolean): void;
     function openSheetId(sheetid: number): void;
-    function openSheet(sheet: SheetInstance, reloadSheet?: boolean, reloadStyle?: boolean): void;
+    function openSheet(sheet: SheetInstance, reloadSheet?: boolean, reloadStyle?: boolean, callPage?: boolean): void;
+    function isEditable(): boolean;
     function saveSheet(): void;
     function reload(reloadStyle?: boolean): void;
     function isAutoUpdate(): boolean;

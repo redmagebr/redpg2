@@ -815,7 +815,7 @@ var SheetInstance = (function () {
         this.styleCreatorNickname = "???#???";
         this.styleSafe = false;
         this.view = true;
-        this.edit = false;
+        this._edit = false;
         this.delete = false;
         this.promote = false;
         this.isPublic = false;
@@ -823,6 +823,16 @@ var SheetInstance = (function () {
         this.loaded = false;
         this.changeTrigger = new Trigger();
     }
+    Object.defineProperty(SheetInstance.prototype, "edit", {
+        get: function () {
+            return this._edit && UI.Sheets.SheetManager.isEditable();
+        },
+        set: function (value) {
+            this._edit = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
     SheetInstance.prototype.getStyleId = function () {
         return this.styleId;
     };
@@ -915,7 +925,7 @@ var SheetInstance = (function () {
         if (typeof obj['deletar'] !== 'undefined')
             this.delete = obj['deletar'];
         if (typeof obj['editar'] !== 'undefined')
-            this.edit = obj['editar'];
+            this._edit = obj['editar'];
         if (typeof obj['promote'] !== 'undefined')
             this.promote = obj['promote'];
         if (typeof obj['nickStyleCreator'] !== 'undefined' && typeof obj['nicksufixStyleCreator'] !== 'undefined')
@@ -939,7 +949,7 @@ var SheetInstance = (function () {
         }
     };
     SheetInstance.prototype.isEditable = function () {
-        return this.edit;
+        return this._edit && UI.Sheets.SheetManager.isEditable();
     };
     SheetInstance.prototype.isPromotable = function () {
         return this.promote;
@@ -957,6 +967,9 @@ var SheetInstance = (function () {
             return true;
         }
         return false;
+    };
+    SheetInstance.prototype.considerEditable = function () {
+        this.triggerChanged();
     };
     return SheetInstance;
 }());
@@ -3016,7 +3029,7 @@ var SheetsRow = (function () {
             row: this,
             handleEvent: function (e) {
                 e.preventDefault();
-                this.row.open();
+                this.row.open(e);
             }
         });
         if (sheet.isEditable()) {
@@ -3065,8 +3078,8 @@ var SheetsRow = (function () {
             });
         }
     }
-    SheetsRow.prototype.open = function () {
-        UI.Sheets.SheetManager.openSheet(this.sheet, true, false);
+    SheetsRow.prototype.open = function (e) {
+        UI.Sheets.SheetManager.openSheet(this.sheet, false, false, !e.ctrlKey);
     };
     SheetsRow.prototype.deleteSheet = function () {
         if (confirm(UI.Language.getLanguage().getLingo("_SHEETCONFIRMDELETE_", { languagea: this.sheet.getName() }))) {
@@ -11732,8 +11745,10 @@ var UI;
                 }
             }
             SheetManager.attachStyle = attachStyle;
-            function switchToSheet(sheet, reloadStyle) {
-                UI.PageManager.callPage(UI.idSheetViewer);
+            function switchToSheet(sheet, reloadStyle, callPage) {
+                if (callPage) {
+                    UI.PageManager.callPage(UI.idSheetViewer);
+                }
                 addButton(sheet);
                 if (SheetManager.currentSheet !== sheet && SheetManager.currentSheet !== null) {
                     SheetManager.currentSheet.removeChangeListener(sheetChangeListener);
@@ -11773,9 +11788,10 @@ var UI;
                 }
             }
             SheetManager.openSheetId = openSheetId;
-            function openSheet(sheet, reloadSheet, reloadStyle) {
+            function openSheet(sheet, reloadSheet, reloadStyle, callPage) {
                 var loadSheet = !sheet.loaded || reloadSheet === true;
                 var loadStyle = reloadStyle === true || !DB.StyleDB.hasStyle(sheet.getStyleId()) || !DB.StyleDB.getStyle(sheet.getStyleId()).isLoaded();
+                callPage = callPage === undefined ? true : callPage;
                 if (reloadStyle === true && SheetManager.currentStyle !== null && SheetManager.currentStyle.getStyleInstance() === sheet.getStyle()) {
                     detachStyle();
                     SheetManager.currentStyle = null;
@@ -11783,8 +11799,9 @@ var UI;
                 var cbs = {
                     sheet: sheet,
                     reloadStyle: reloadStyle === true,
+                    callPage: callPage,
                     handleEvent: function () {
-                        UI.Sheets.SheetManager.switchToSheet(this.sheet, this.reloadStyle);
+                        UI.Sheets.SheetManager.switchToSheet(this.sheet, this.reloadStyle, this.callPage);
                     }
                 };
                 var cbe = {
@@ -11802,17 +11819,22 @@ var UI;
                     Server.Sheets.loadStyle(sheet.getStyleId(), cbs, cbe);
                 }
                 else {
-                    switchToSheet(sheet);
+                    switchToSheet(sheet, false, callPage);
                 }
             }
             SheetManager.openSheet = openSheet;
             var sheetSave = document.getElementById("sheetSave");
             var importInput = document.getElementById("sheetViewerJSONImporter");
             var sheetAutomatic = document.getElementById("sheetAutomatic");
+            var sheetEdit = document.getElementById("sheetEdit");
             sheetSave.addEventListener("click", function (e) {
                 e.preventDefault();
                 UI.Sheets.SheetManager.saveSheet();
             });
+            function isEditable() {
+                return sheetEdit.classList.contains("icons-sheetEditOn");
+            }
+            SheetManager.isEditable = isEditable;
             function saveSheet() {
                 DB.SheetDB.saveSheet(SheetManager.currentSheet);
             }
@@ -11821,6 +11843,14 @@ var UI;
                 e.preventDefault();
                 this.classList.toggle("icons-sheetAutomaticOn");
                 this.classList.toggle("icons-sheetAutomatic");
+            });
+            sheetEdit.addEventListener("click", function (e) {
+                e.preventDefault();
+                this.classList.toggle("icons-sheetEditOn");
+                this.classList.toggle("icons-sheetEdit");
+                if (SheetManager.currentSheet !== null) {
+                    SheetManager.currentSheet.considerEditable();
+                }
             });
             document.getElementById("sheetClose").addEventListener("click", function (e) {
                 e.preventDefault();
@@ -14821,6 +14851,11 @@ change.addMessage("Move from Beta to Current.", "en");
 change.addMessage("Correções em Sheets.", "pt");
 change.addMessage("Atualizar Fichas Automaticamente agora é o estado padrão.", "pt");
 change.addMessage("Mudança de Beta para Atual. We 2 now.", "pt");
+change = new Changelog(0, 24, 0);
+change.addMessage("New button to toggle out of Sheet editing.", "en");
+change.addMessage("Holding Control while opening a sheet will not move the page.", "en");
+change.addMessage("Novo botão para sair de edição de fichas.", "pt");
+change.addMessage("Segurar Control ao abrir fichas não troca a página.", "pt");
 delete (change);
 Changelog.finished();
 UI.Language.searchLanguage();

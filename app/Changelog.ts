@@ -94,6 +94,12 @@ change.addMessage("Correções em Sheets.", "pt");
 change.addMessage("Atualizar Fichas Automaticamente agora é o estado padrão.", "pt");
 change.addMessage("Mudança de Beta para Atual. We 2 now.", "pt");
 
+change = new Changelog(0, 24, 0);
+change.addMessage("New button to toggle out of Sheet editing.", "en");
+change.addMessage("Holding Control while opening a sheet will not move the page.", "en");
+change.addMessage("Novo botão para sair de edição de fichas.", "pt");
+change.addMessage("Segurar Control ao abrir fichas não troca a página.", "pt");
+
 delete (change);
 
 Changelog.finished();

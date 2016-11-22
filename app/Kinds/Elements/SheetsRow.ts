@@ -3,9 +3,8 @@ class SheetsRow {
     private html : HTMLElement;
     private nameNode : Text;
 
-    public open () {
-        // TODO: Call Open Sheet
-        UI.Sheets.SheetManager.openSheet(this.sheet, true, false);
+    public open (e : MouseEvent) {
+        UI.Sheets.SheetManager.openSheet(this.sheet, false, false, !e.ctrlKey);
     }
 
     public deleteSheet () {
@@ -65,7 +64,7 @@ class SheetsRow {
             row : this,
             handleEvent : function (e) {
                 e.preventDefault();
-                this.row.open();
+                this.row.open(e);
             }
         });
 
