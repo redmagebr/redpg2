@@ -137,7 +137,7 @@ module UI.Chat {
 
     export function printMessage (message : Message, doScroll? : boolean) {
         var chatAllowed = Server.Chat.Memory.getConfiguration("Cutscene").getValue();
-        if (!chatAllowed && !(Server.Chat.getRoom().getMe().isStoryteller() || message.hasDestination())) {
+        if (!chatAllowed && !(message.getUser().isStoryteller() || message.hasDestination())) {
             return;
         }
 

@@ -100,6 +100,10 @@ change.addMessage("Holding Control while opening a sheet will not move the page.
 change.addMessage("Novo botão para sair de edição de fichas.", "pt");
 change.addMessage("Segurar Control ao abrir fichas não troca a página.", "pt");
 
+change = new Changelog(0, 24, 1);
+change.addMessage("Fix: Cutscene mode", "en");
+change.addMessage("Fix: Modo Cutscene.", "pt");
+
 delete (change);
 
 Changelog.finished();

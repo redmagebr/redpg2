@@ -13070,7 +13070,7 @@ var UI;
         Chat.printElement = printElement;
         function printMessage(message, doScroll) {
             var chatAllowed = Server.Chat.Memory.getConfiguration("Cutscene").getValue();
-            if (!chatAllowed && !(Server.Chat.getRoom().getMe().isStoryteller() || message.hasDestination())) {
+            if (!chatAllowed && !(message.getUser().isStoryteller() || message.hasDestination())) {
                 return;
             }
             var element = message.getHTML();
@@ -14856,6 +14856,9 @@ change.addMessage("New button to toggle out of Sheet editing.", "en");
 change.addMessage("Holding Control while opening a sheet will not move the page.", "en");
 change.addMessage("Novo botão para sair de edição de fichas.", "pt");
 change.addMessage("Segurar Control ao abrir fichas não troca a página.", "pt");
+change = new Changelog(0, 24, 1);
+change.addMessage("Fix: Cutscene mode", "en");
+change.addMessage("Fix: Modo Cutscene.", "pt");
 delete (change);
 Changelog.finished();
 UI.Language.searchLanguage();
