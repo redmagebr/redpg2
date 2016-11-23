@@ -248,8 +248,6 @@ module UI.Logger {
         document.getElementById("chatBox").style.top="5px";
         document.getElementById("chatBox").style.bottom="5px";
         document.getElementById("chatScrollDown").style.bottom="15px";
-        document.getElementById("leftSideWindow").style.left="0px";
-        document.getElementById("rightSideWindow ").style.right="0px";
         UI.Chat.scrollToTop();
     }
 }
