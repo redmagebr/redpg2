@@ -10665,13 +10665,19 @@ var UI;
             return currentRoom.getGame().exportAsLog(currentRoom.id, filter());
         }
         Logger.giveMeLog = giveMeLog;
+        function hardReplace(str, target, replaceWith) {
+            var idx = str.indexOf(target);
+            var tarLength = target.length;
+            var strLength = str.length;
+            return str.substr(0, idx) + replaceWith + str.substr(idx + tarLength, strLength - idx - tarLength);
+        }
         function saveLog() {
             var log = currentRoom.getGame().exportAsLog(currentRoom.id, filter());
-            html = html.replace("//LOGGERTARGET", "UI.Logger.openLog(" + JSON.stringify(log) + ");")
-                .replace("href='stylesheets", "href='" + Server.CLIENT_URL + "stylesheets")
-                .replace("href='images", "href='" + Server.CLIENT_URL + "images")
-                .replace("src='js/lib", "src='" + Server.CLIENT_URL + "js/lib")
-                .replace("//LOGGERJSTARGET", js);
+            js = "<script type='text/javascript'>" + js + "\nUI.Logger.openLog(" + JSON.stringify(log) + ");" + "</script>";
+            html = html.replace(new RegExp("href='stylesheets", 'g'), "href='" + Server.CLIENT_URL + "stylesheets");
+            html = html.replace(new RegExp("href='images", 'g'), "href='" + Server.CLIENT_URL + "images");
+            html = html.replace(new RegExp("src='js/lib", 'g'), "src='" + Server.CLIENT_URL + "js/lib");
+            html = hardReplace(html, "<script src='js/Application.js' type='text/javascript'></script>", js);
             var blob = new Blob([html], { type: "text/plain;charset=utf-8;" });
             var d = new Date();
             var curr_date = d.getDate() < 10 ? "0" + d.getDate().toString() : d.getDate().toString();
@@ -10686,7 +10692,7 @@ var UI;
             Application.Config.getConfig("chatMaxMessages").storeValue(log['rooms'][0]['messages'].length + 10);
             DB.GameDB.updateFromObject([log], true);
             UI.WindowManager.callWindow(('mainWindow'));
-            UI.PageManager.callPage(UI.idHome);
+            UI.PageManager.callPage(UI.idChat);
             UI.Chat.callSelf(0, true);
             document.getElementById("chatMessageStateIcon").style.display = "none";
             document.getElementById("leftHandleBar").style.display = "none";
@@ -14859,6 +14865,9 @@ change.addMessage("Segurar Control ao abrir fichas não troca a página.", "pt")
 change = new Changelog(0, 24, 1);
 change.addMessage("Fix: Cutscene mode", "en");
 change.addMessage("Fix: Modo Cutscene.", "pt");
+change = new Changelog(0, 24, 2);
+change.addMessage("Fix: Logger should correctly log.", "en");
+change.addMessage("Fix: Logger deve loggar corretamente.", "pt");
 delete (change);
 Changelog.finished();
 UI.Language.searchLanguage();

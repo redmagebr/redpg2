@@ -104,6 +104,10 @@ change = new Changelog(0, 24, 1);
 change.addMessage("Fix: Cutscene mode", "en");
 change.addMessage("Fix: Modo Cutscene.", "pt");
 
+change = new Changelog(0, 24, 2);
+change.addMessage("Fix: Logger should correctly log.", "en");
+change.addMessage("Fix: Logger deve loggar corretamente.", "pt");
+
 delete (change);
 
 Changelog.finished();
