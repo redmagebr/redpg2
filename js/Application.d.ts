@@ -1792,6 +1792,7 @@ declare module UI.Logger {
     function submit(): void;
     function setHTML(code: any): void;
     function setJS(code: any): void;
+    function setLib(code: any): void;
     function giveMeLog(): {
         description: string;
         name: string;

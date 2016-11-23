@@ -108,6 +108,10 @@ change = new Changelog(0, 24, 2);
 change.addMessage("Fix: Logger should correctly log.", "en");
 change.addMessage("Fix: Logger deve loggar corretamente.", "pt");
 
+change = new Changelog(0, 24, 3);
+change.addMessage("Improvements to logger.", "en");
+change.addMessage("Melhoras ao logger.", "pt");
+
 delete (change);
 
 Changelog.finished();

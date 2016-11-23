@@ -153,9 +153,11 @@ module UI.Logger {
 
     var html : string;
     var js : string;
+    var lib : string;
     export function submit () {
         html = null;
         js = null;
+        lib = null;
 
         var cbe = function () {};
 
@@ -167,6 +169,10 @@ module UI.Logger {
             UI.Logger.setJS(js);
         };
 
+        var cbsLib = function (lib) {
+            UI.Logger.setLib(lib);
+        };
+
         var ajaxHTML = new AJAXConfig(Server.CLIENT_URL + "index.html?" + (new Date).getTime());
         ajaxHTML.setResponseTypeText();
         ajaxHTML.setTargetLeftWindow();
@@ -176,18 +182,30 @@ module UI.Logger {
         ajaxJS.setResponseTypeText();
         ajaxJS.setTargetLeftWindow();
         Server.AJAX.requestPage(ajaxJS, cbsJS, cbe);
+
+        var ajaxLib = new AJAXConfig(Server.CLIENT_URL + document.getElementById("redpgLibraries").getAttribute("src") + "?" + (new Date).getTime());
+        ajaxLib.setResponseTypeText();
+        ajaxLib.setTargetLeftWindow();
+        Server.AJAX.requestPage(ajaxLib, cbsLib, cbe);
     }
 
     export function setHTML (code) {
         html = code;
-        if (js !== null) {
+        if (js !== null && lib !== null) {
             saveLog();
         }
     }
 
     export function setJS (code) {
         js = code;
-        if (html !== null) {
+        if (html !== null && lib !== null) {
+            saveLog();
+        }
+    }
+
+    export function setLib (code) {
+        lib = code;
+        if (html !== null && js !== null) {
             saveLog();
         }
     }
@@ -206,11 +224,12 @@ module UI.Logger {
     export function saveLog () {
         var log = currentRoom.getGame().exportAsLog(currentRoom.id, filter());
 
-        js = "<script type='text/javascript'>" + js + "\nUI.Logger.openLog(" + JSON.stringify(log) + ");" + "<\/script>"
+        js = "<script type='text/javascript' charset='UTF-8'>" + lib + "\n" + js + "\nUI.Logger.openLog(" + JSON.stringify(log) + ");" + "<\/script>"
 
         html = html.replace(new RegExp("href='stylesheets", 'g'), "href='" + Server.CLIENT_URL + "stylesheets");
         html = html.replace(new RegExp("href='images", 'g'), "href='" + Server.CLIENT_URL + "images");
-        html = html.replace(new RegExp("src='js/lib", 'g'), "src='" + Server.CLIENT_URL + "js/lib");
+        html = html.replace(new RegExp("src='images", 'g'), "src='" + Server.CLIENT_URL + "images");
+        html = hardReplace(html, "<link href='http://app.redpg.com.br/stylesheets/screen.css' id='redpgCss' media='all' rel='stylesheet' type='text/css'>", css);
         html = hardReplace(html, "<script src='js/Application.js' type='text/javascript'><\/script>", js);
 
         var blob = new Blob([html], { type : "text/plain;charset=utf-8;"});
