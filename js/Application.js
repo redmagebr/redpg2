@@ -10670,7 +10670,8 @@ var UI;
             html = html.replace("//LOGGERTARGET", "UI.Logger.openLog(" + JSON.stringify(log) + ");")
                 .replace("href='stylesheets", "href='" + Server.CLIENT_URL + "stylesheets")
                 .replace("href='images", "href='" + Server.CLIENT_URL + "images")
-                .replace("src='js/lib", "src='" + Server.CLIENT_URL + "js/lib");
+                .replace("src='js/lib", "src='" + Server.CLIENT_URL + "js/lib")
+                .replace("//LOGGERJSTARGET", js);
             var blob = new Blob([html], { type: "text/plain;charset=utf-8;" });
             var d = new Date();
             var curr_date = d.getDate() < 10 ? "0" + d.getDate().toString() : d.getDate().toString();
