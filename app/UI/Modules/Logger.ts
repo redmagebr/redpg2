@@ -206,12 +206,12 @@ module UI.Logger {
     export function saveLog () {
         var log = currentRoom.getGame().exportAsLog(currentRoom.id, filter());
 
-        js = "<script type='text/javascript'>" + js + "\nUI.Logger.openLog(" + JSON.stringify(log) + ");" + "</script>"
+        js = "<script type='text/javascript'>" + js + "\nUI.Logger.openLog(" + JSON.stringify(log) + ");" + "<\/script>"
 
         html = html.replace(new RegExp("href='stylesheets", 'g'), "href='" + Server.CLIENT_URL + "stylesheets");
         html = html.replace(new RegExp("href='images", 'g'), "href='" + Server.CLIENT_URL + "images");
         html = html.replace(new RegExp("src='js/lib", 'g'), "src='" + Server.CLIENT_URL + "js/lib");
-        html = hardReplace(html, "<script src='js/Application.js' type='text/javascript'></script>", js);
+        html = hardReplace(html, "<script src='js/Application.js' type='text/javascript'><\/script>", js);
 
         var blob = new Blob([html], { type : "text/plain;charset=utf-8;"});
         var d = new Date();
