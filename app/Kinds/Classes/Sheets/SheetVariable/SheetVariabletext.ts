@@ -105,11 +105,12 @@ class SheetVariabletext extends SheetVariable {
     }
 
     public blur() {
-        this.storeValue(this.visible.innerText.trim());
-        if (this.visible.childNodes.length !== 1 && this.textNode.parentElement !== this.visible) {
+        var value = this.visible.innerText.trim();
+        if (this.visible.childNodes.length !== 1 || this.textNode.parentElement !== this.visible) {
             this.empty();
             this.attachTextNode();
         }
+        this.storeValue(value);
     }
 
     public updateContentEditable () {

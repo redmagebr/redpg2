@@ -4608,11 +4608,12 @@ var SheetVariabletext = (function (_super) {
         this.mouse = false;
     };
     SheetVariabletext.prototype.blur = function () {
-        this.storeValue(this.visible.innerText.trim());
-        if (this.visible.childNodes.length !== 1 && this.textNode.parentElement !== this.visible) {
+        var value = this.visible.innerText.trim();
+        if (this.visible.childNodes.length !== 1 || this.textNode.parentElement !== this.visible) {
             this.empty();
             this.attachTextNode();
         }
+        this.storeValue(value);
     };
     SheetVariabletext.prototype.updateContentEditable = function () {
         this.visible.contentEditable = (this.editable && (this.style.getSheetInstance() === null || this.style.getSheetInstance().isEditable())) ? "true" : "false";
@@ -14887,6 +14888,9 @@ change.addMessage("Fix: Logger deve loggar corretamente.", "pt");
 change = new Changelog(0, 24, 3);
 change.addMessage("Improvements to logger.", "en");
 change.addMessage("Melhoras ao logger.", "pt");
+change = new Changelog(0, 24, 4);
+change.addMessage("Fix: Sheet Variables randomly forgetting who they are.", "en");
+change.addMessage("Fix: Variáveis de Ficha esquecendo quem são.", "pt");
 delete (change);
 Changelog.finished();
 UI.Language.searchLanguage();
