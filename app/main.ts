@@ -14,16 +14,15 @@ UI.PageManager.readWindows();
 // Update window sizes
 UI.WindowManager.updateWindowSizes();
 
+// Set up initial pages of main window
+UI.PageManager.callPage(UI.idChangelog);
+UI.PageManager.callPage(UI.idHome);
+
 // Return to loginWindow on logout, return to mainWindow on login
 Application.Login.addListener({
     handleEvent: function () {
         if (Application.Login.isLogged()) {
             UI.WindowManager.callWindow(('mainWindow'));
-
-            // Set up initial pages of main window
-            UI.PageManager.callPage(UI.idChangelog);
-            //UI.PageManager.callPage(UI.idChat);
-            UI.PageManager.callPage(UI.idHome);
         } else {
             UI.Login.callSelf();
             UI.Login.resetState();

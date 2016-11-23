@@ -10693,7 +10693,6 @@ var UI;
             Application.Config.getConfig("chatMaxMessages").storeValue(log['rooms'][0]['messages'].length + 10);
             DB.GameDB.updateFromObject([log], true);
             UI.WindowManager.callWindow(('mainWindow'));
-            UI.PageManager.callPage(UI.idChat);
             UI.PageManager.callPage(UI.idHome);
             UI.Chat.callSelf(0, true);
             document.getElementById("chatMessageStateIcon").style.display = "none";
@@ -14873,12 +14872,12 @@ Changelog.finished();
 UI.Language.searchLanguage();
 UI.PageManager.readWindows();
 UI.WindowManager.updateWindowSizes();
+UI.PageManager.callPage(UI.idChangelog);
+UI.PageManager.callPage(UI.idHome);
 Application.Login.addListener({
     handleEvent: function () {
         if (Application.Login.isLogged()) {
             UI.WindowManager.callWindow(('mainWindow'));
-            UI.PageManager.callPage(UI.idChangelog);
-            UI.PageManager.callPage(UI.idHome);
         }
         else {
             UI.Login.callSelf();
