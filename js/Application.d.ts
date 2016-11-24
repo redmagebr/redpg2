@@ -1810,6 +1810,7 @@ declare module UI.Config {
     function saveConfig(): void;
     function setUniqueTimeout(f: Function, t: number): void;
 }
+declare var change: any;
 declare module UI.ChangelogManager {
     function print(): void;
 }
@@ -2088,7 +2089,6 @@ declare module UI.Styles.StyleDesigner {
     function submit(): void;
     function finish(): void;
 }
-declare var change: any;
 declare module Dropbox {
     function choose(options: any): any;
 }

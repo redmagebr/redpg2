@@ -73,7 +73,7 @@ class Changelog {
     }
 
     public static getExternalVersion () {
-        if (Changelog.updatesExternal === null) {
+        if (Changelog.updatesExternal === null || Changelog.updatesExternal.length === 0) {
             return null;
         }
         return Changelog.updatesExternal[Changelog.updatesExternal.length - 1].getVersion();

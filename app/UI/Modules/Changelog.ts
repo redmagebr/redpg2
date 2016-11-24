@@ -1,3 +1,4 @@
+/// <reference path='../../Changelog.ts' />
 module UI.ChangelogManager {
     var currentVersionNode : Text = <Text> document.getElementById("changelogCurrentVersion").childNodes[0];
     var externalVersionNode : Text = <Text> document.getElementById("changelogActualVersion").childNodes[0];
@@ -47,4 +48,10 @@ module UI.ChangelogManager {
             target.appendChild(ele);
         }
     }
+
+    addOnReady("UI.ChangelogManager", "Printing initial Changelog", <Listener> {
+        handleEvent : function () {
+            UI.ChangelogManager.print();
+        }
+    });
 }

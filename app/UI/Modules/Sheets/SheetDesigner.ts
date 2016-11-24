@@ -47,6 +47,14 @@ module UI.Sheets.SheetDesigner {
     export function fillStyles (data) {
         while (selectStyle.firstChild !== null) selectStyle.removeChild(selectStyle.firstChild);
 
+        data.sort(function (a, b) {
+            var na = a['name'].toLowerCase();
+            var nb = b['name'].toLowerCase();
+            if (na < nb) return -1;
+            if (na > nb) return 1;
+            return 0;
+        });
+
         for (var i = 0; i < data.length; i++) {
             if (data[i]['name'].indexOf("RedPG1") !== -1) {
                 continue
