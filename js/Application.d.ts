@@ -1771,7 +1771,6 @@ declare module UI {
     var idImages: string;
     var idSounds: string;
     var idSheetPerm: string;
-    function cleanPersona(cfg: NumberConfiguration): void;
 }
 declare module UI.WindowManager {
     var currentLeftSize: number;
@@ -1953,7 +1952,6 @@ declare module UI.Games.Designer {
 declare module UI.SoundController {
     function updateSEVolume(newVolume: number): void;
     function updateBGMVolume(newVolume: number): void;
-    function getSoundList(): HTMLInputElement;
     function getBGM(): HTMLAudioElement;
     function playDice(): void;
     function playAlert(): void;

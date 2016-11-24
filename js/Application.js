@@ -10351,39 +10351,6 @@ var UI;
     Application.Config.registerConfiguration("seVolume", new NumberConfiguration(50, 0, 100));
     Application.Config.registerConfiguration("bgmLoop", new BooleanConfiguration(true));
     Application.Config.registerConfiguration("hqRainbow", new NumberConfiguration(1, 0, 2));
-    var cleanPersonaCSS = document.createElement("style");
-    cleanPersonaCSS.type = "text/css";
-    cleanPersonaCSS.innerHTML = ".avatarContainer { border-color: rgba(0,0,0,0); background-color: initial; } .avatarName { background-color: initial; }";
-    var cleanPersonaTotallyCSS = document.createElement("style");
-    cleanPersonaTotallyCSS.type = "text/css";
-    cleanPersonaTotallyCSS.innerHTML = ".avatarContainer { border-color: rgba(0,0,0,0); background-color: initial; } .avatarName { opacity: 0; }";
-    function cleanPersona(cfg) {
-        if (cfg.getValue() === 1) {
-            document.head.appendChild(cleanPersonaCSS);
-            if (cleanPersonaTotallyCSS.parentElement !== null) {
-                cleanPersonaTotallyCSS.parentElement.removeChild(cleanPersonaTotallyCSS);
-            }
-        }
-        else if (cfg.getValue() === 2) {
-            document.head.appendChild(cleanPersonaTotallyCSS);
-            if (cleanPersonaCSS.parentElement !== null) {
-                cleanPersonaCSS.parentElement.removeChild(cleanPersonaCSS);
-            }
-        }
-        else {
-            if (cleanPersonaTotallyCSS.parentElement !== null) {
-                cleanPersonaTotallyCSS.parentElement.removeChild(cleanPersonaTotallyCSS);
-            }
-            if (cleanPersonaCSS.parentElement !== null) {
-                cleanPersonaCSS.parentElement.removeChild(cleanPersonaCSS);
-            }
-        }
-    }
-    UI.cleanPersona = cleanPersona;
-    Application.Config.registerConfiguration("cleanPersonas", new NumberConfiguration(0, 0, 2));
-    Application.Config.getConfig("cleanPersonas").addChangeListener(function (cfg) {
-        UI.cleanPersona(cfg);
-    });
 })(UI || (UI = {}));
 var UI;
 (function (UI) {
@@ -10774,7 +10741,6 @@ var UI;
         bindInput("chatMaxMessages", document.getElementById("configChatMaxMessages"));
         bindInput("chatfontsize", document.getElementById("configChatFontSize"));
         bindInput("chatshowhelp", document.getElementById("configChatShowHelp"));
-        bindInput("cleanPersonas", document.getElementById("configCleanPersoas"));
         bindInput("chatAutoRolls", document.getElementById("configAutoRollApplication"));
         bindInput("animTime", document.getElementById("configAnimTime"));
         bindInput("autoBGM", document.getElementById("configChatAutoBGM"));
@@ -12797,7 +12763,6 @@ var UI;
         var alertSound = document.getElementById("soundAlert");
         var bgmSound = document.getElementById("soundPlayerBGM");
         var seSound = document.getElementById("soundPlayerSE");
-        var soundList = document.getElementById("chatSounds");
         var lastURL = null;
         var lastSEURL = null;
         var startedPlaying = false;
@@ -12840,33 +12805,13 @@ var UI;
         bgmSound.addEventListener("error", function (e) {
             var msg = new ChatSystemMessage(true);
             msg.addText("_CHATBGMERROR_");
-            msg.addText(" ");
-            var list = {
-                soundList: soundList,
-                handleEvent: function () {
-                    this.soundList.click();
-                }
-            };
-            msg.addTextLink("_CHATSOUNDADDMORE_", true, list);
             UI.Chat.printElement(msg.getElement());
         });
         seSound.addEventListener("error", function () {
             var msg = new ChatSystemMessage(true);
             msg.addText("_CHATSEERROR_");
-            msg.addText(" ");
-            var list = {
-                soundList: soundList,
-                handleEvent: function () {
-                    this.soundList.click();
-                }
-            };
-            msg.addTextLink("_CHATSOUNDADDMORE_", true, list);
             UI.Chat.printElement(msg.getElement());
         });
-        function getSoundList() {
-            return soundList;
-        }
-        SoundController.getSoundList = getSoundList;
         function getBGM() {
             return bgmSound;
         }
@@ -12903,24 +12848,7 @@ var UI;
             startedPlaying = true;
             var found = false;
             var isLink = url.indexOf("://") !== -1;
-            if (!isLink) {
-                for (var id in soundList.files) {
-                    if (soundList.files[id].name === url) {
-                        url = URL.createObjectURL(soundList.files[id]);
-                        lastURL = url;
-                        found = true;
-                        break;
-                    }
-                }
-            }
-            if (!found) {
-                if (!isLink) {
-                    url = "Sounds/" + url;
-                }
-                else {
-                    url = Server.URL.fixURL(url);
-                }
-            }
+            url = Server.URL.fixURL(url);
             bgmSound.src = url;
         }
         SoundController.playBGM = playBGM;
@@ -12931,24 +12859,7 @@ var UI;
             }
             var found = false;
             var isLink = url.indexOf("://") !== -1;
-            if (!isLink) {
-                for (var id in soundList.files) {
-                    if (soundList.files[id].name === url) {
-                        url = URL.createObjectURL(soundList.files[id]);
-                        lastSEURL = url;
-                        found = true;
-                        break;
-                    }
-                }
-            }
-            if (!found) {
-                if (!isLink) {
-                    url = "Sounds/" + url;
-                }
-                else {
-                    url = Server.URL.fixURL(url);
-                }
-            }
+            url = Server.URL.fixURL(url);
             seSound.src = url;
         }
         SoundController.playSE = playSE;
@@ -12968,18 +12879,6 @@ var UI;
             var playpause = document.getElementById("musicPlayerPlayPause");
             var stop = document.getElementById("musicPlayerStop");
             var repeat = document.getElementById("musicPlayerRepeat");
-            var soundListButtonText = document.createTextNode("0");
-            document.getElementById("musicPlayerLocal").addEventListener("click", function (e) {
-                UI.SoundController.getSoundList().click();
-            });
-            document.getElementById("musicPlayerLocal").appendChild(soundListButtonText);
-            UI.SoundController.getSoundList().addEventListener("change", {
-                button: soundListButtonText,
-                list: UI.SoundController.getSoundList(),
-                handleEvent: function () {
-                    this.button.nodeValue = this.list.files.length;
-                }
-            });
             parent.removeChild(button);
             button.removeChild(container);
             playpause.addEventListener("click", function () {

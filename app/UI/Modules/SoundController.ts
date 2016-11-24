@@ -3,7 +3,6 @@ module UI.SoundController {
     var alertSound = <HTMLAudioElement> document.getElementById("soundAlert");
     var bgmSound = <HTMLAudioElement> document.getElementById("soundPlayerBGM");
     var seSound = <HTMLAudioElement> document.getElementById("soundPlayerSE");
-    var soundList = <HTMLInputElement> document.getElementById("chatSounds");
     var lastURL : String = null;
     var lastSEURL : String = null;
 
@@ -48,14 +47,6 @@ module UI.SoundController {
     bgmSound.addEventListener("error", function (e : ErrorEvent) {
         var msg = new ChatSystemMessage(true);
         msg.addText("_CHATBGMERROR_");
-        msg.addText(" ");
-        var list = {
-            soundList : soundList,
-            handleEvent : function () {
-                this.soundList.click();
-            }
-        }
-        msg.addTextLink("_CHATSOUNDADDMORE_", true, list);
 
         UI.Chat.printElement(msg.getElement());
     });
@@ -63,21 +54,9 @@ module UI.SoundController {
     seSound.addEventListener("error", function () {
         var msg = new ChatSystemMessage(true);
         msg.addText("_CHATSEERROR_");
-        msg.addText(" ");
-        var list = {
-            soundList : soundList,
-            handleEvent : function () {
-                this.soundList.click();
-            }
-        };
-        msg.addTextLink("_CHATSOUNDADDMORE_", true, list);
 
         UI.Chat.printElement(msg.getElement());
     });
-
-    export function getSoundList() {
-        return soundList;
-    }
 
     export function getBGM () {
         return bgmSound;
@@ -118,25 +97,7 @@ module UI.SoundController {
         startedPlaying = true;
         var found = false;
         var isLink = url.indexOf("://") !== -1;
-
-        if (!isLink) {
-            for (var id in soundList.files) {
-                if (soundList.files[id].name === url) {
-                    url = URL.createObjectURL(soundList.files[id]);
-                    lastURL = url;
-                    found = true;
-                    break;
-                }
-            }
-        }
-
-        if (!found) {
-            if (!isLink) {
-                url = "Sounds/" + url;
-            } else {
-                url = Server.URL.fixURL(url);
-            }
-        }
+        url = Server.URL.fixURL(url);
 
         bgmSound.src = url;
     }
@@ -149,25 +110,7 @@ module UI.SoundController {
 
         var found = false;
         var isLink = url.indexOf("://") !== -1;
-
-        if (!isLink) {
-            for (var id in soundList.files) {
-                if (soundList.files[id].name === url) {
-                    url = URL.createObjectURL(soundList.files[id]);
-                    lastSEURL = url;
-                    found = true;
-                    break;
-                }
-            }
-        }
-
-        if (!found) {
-            if (!isLink) {
-                url = "Sounds/" + url;
-            } else {
-                url = Server.URL.fixURL(url);
-            }
-        }
+        url = Server.URL.fixURL(url);
 
         seSound.src = url;
     }

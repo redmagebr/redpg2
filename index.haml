@@ -54,7 +54,6 @@
           %a#musicPlayerPlayPause.musicPlayerButton.icons-soundPlayerPause
           %a#musicPlayerStop.musicPlayerButton.icons-soundPlayerStop
           %a#musicPlayerRepeat.musicPlayerButton.icons-soundPlayerRepeatActive
-          #musicPlayerLocal.buttonBehavior.icons-soundPlayerListButton
       -# Left Ear
       #leftHandleBar.handleBar
         #leftHandleIcon.icons-handlerLTR
@@ -155,14 +154,6 @@
               %option.language{:value => "false"}="_CONFIGCHATHELPOP02_"
             .configExplanation.language
               _CONFIGCHATHELPEXP_
-          %label.configLabel
-            %b.configName.language="_CONFIGCLEANPERSONAS_"
-            %select.configInput#configCleanPersoas
-              %option.language{:value => "0"}="_CONFIGCLEANPERSONAS01_"
-              %option.language{:value => "1"}="_CONFIGCLEANPERSONAS02_"
-              %option.language{:value => "2"}="_CONFIGCLEANPERSONAS03_"
-            .configExplanation.language
-              _CONFIGCLEANPERSONASEXP_
           %label.configLabel
             %b.configName.language="_CONFIGHQRAINBOW_"
             %select.configInput#configHQRainbow
@@ -395,8 +386,6 @@
           %p.chatInitHelp.language="_CHATHELP04_"
           %p.chatInitHelp.language="_CHATHELP05_"
           %p.chatInitHelp.language="_CHATHELP06_"
-          %p.chatInitHelp.language="_CHATHELP07_"
-          %input#chatSounds{:type => "file", :multiple => "true"}
           #chatMessages
         #chatScrollDown
         #chatButtonsBox
@@ -596,4 +585,3 @@
     %script{:type => 'text/javascript', :src => 'js/lib/libraries161029.js', :id=>"redpgLibraries"}
     %script{:type => 'text/javascript', :src => 'js/Application.js'}
     %script{:type => 'text/javascript', :src => 'http://beta.redpg.com.br/js/Changelog.js'}
-    %script{:type => 'text/javascript', :src => 'http://rules.redpg.com.br/js/rulesData.js'}

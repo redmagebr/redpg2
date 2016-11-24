@@ -48,38 +48,4 @@ module UI {
     Application.Config.registerConfiguration("seVolume", new NumberConfiguration(50, 0, 100)); // Volume for Sound Effect
     Application.Config.registerConfiguration("bgmLoop", new BooleanConfiguration(true)); // Whether BGMs loop or not
     Application.Config.registerConfiguration("hqRainbow", new NumberConfiguration(1, 0, 2)); // Automatically open shared Videos
-
-    var cleanPersonaCSS = document.createElement("style");
-    cleanPersonaCSS.type = "text/css";
-    cleanPersonaCSS.innerHTML = ".avatarContainer { border-color: rgba(0,0,0,0); background-color: initial; } .avatarName { background-color: initial; }";
-
-    var cleanPersonaTotallyCSS = document.createElement("style");
-    cleanPersonaTotallyCSS.type = "text/css";
-    cleanPersonaTotallyCSS.innerHTML = ".avatarContainer { border-color: rgba(0,0,0,0); background-color: initial; } .avatarName { opacity: 0; }";
-
-    export function cleanPersona (cfg : NumberConfiguration) {
-        if (cfg.getValue() === 1) {
-            document.head.appendChild(cleanPersonaCSS);
-            if (cleanPersonaTotallyCSS.parentElement !== null) {
-                cleanPersonaTotallyCSS.parentElement.removeChild(cleanPersonaTotallyCSS);
-            }
-        } else if (cfg.getValue() === 2) {
-            document.head.appendChild(cleanPersonaTotallyCSS);
-            if (cleanPersonaCSS.parentElement !== null) {
-                cleanPersonaCSS.parentElement.removeChild(cleanPersonaCSS);
-            }
-        } else {
-            if (cleanPersonaTotallyCSS.parentElement !== null) {
-                cleanPersonaTotallyCSS.parentElement.removeChild(cleanPersonaTotallyCSS);
-            }
-            if (cleanPersonaCSS.parentElement !== null) {
-                cleanPersonaCSS.parentElement.removeChild(cleanPersonaCSS);
-            }
-        }
-    }
-
-    Application.Config.registerConfiguration("cleanPersonas", new NumberConfiguration(0, 0, 2));
-    Application.Config.getConfig("cleanPersonas").addChangeListener(function (cfg : NumberConfiguration) {
-        UI.cleanPersona(cfg);
-    });
 }
