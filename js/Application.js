@@ -726,7 +726,7 @@ var Game = (function () {
         }
         if (game['users'] !== undefined) {
             var cleanedup = [];
-            for (var i = 0; i < game['users'].length; i++) {
+            for (var i = game['users'].length - 1; i >= 0; i--) {
                 game['users'][i]['gameid'] = this.id;
             }
             DB.UserDB.updateFromObject(game['users']);
@@ -778,11 +778,14 @@ var Game = (function () {
         }
         if (game['sheets'] !== undefined) {
             var cleanedup = [];
-            for (var i = 0; i < game['sheets'].length; i++) {
+            for (var i = game['sheets'].length - 1; i >= 0; --i) {
                 game['sheets'][i]['gameid'] = this.id;
+                if (game['sheets'][i]['styleName'] !== undefined && game['sheets'][i]['styleName'].indexOf("RedPG1") !== -1) {
+                    game['sheets'].splice(i, 1);
+                }
             }
             DB.SheetDB.updateFromObject(game['sheets']);
-            for (var i = 0; i < game['sheets'].length; i++) {
+            for (var i = game['sheets'].length - 1; i >= 0; --i) {
                 this.sheets[game['sheets'][i]['id']] = DB.SheetDB.getSheet(game['sheets'][i]['id']);
                 cleanedup.push(game['sheets'][i]['id']);
             }
@@ -8646,8 +8649,8 @@ var Application;
 var Server;
 (function (Server) {
     Server.IMAGE_URL = "http://img.redpg.com.br/";
-    Server.APPLICATION_URL = "http://app.redpg.com.br/service/";
-    Server.CLIENT_URL = "http://app.redpg.com.br/";
+    Server.APPLICATION_URL = "http://beta.redpg.com.br/service/";
+    Server.CLIENT_URL = "http://beta.redpg.com.br/";
     Server.WEBSOCKET_SERVERURL = "ws://app.redpg.com.br";
     Server.WEBSOCKET_CONTEXT = "/service/";
     Server.WEBSOCKET_PORTS = [80, 8080, 8081];
@@ -10694,7 +10697,6 @@ var UI;
             html = html.replace(new RegExp("href='stylesheets", 'g'), "href='" + Server.CLIENT_URL + "stylesheets");
             html = html.replace(new RegExp("href='images", 'g'), "href='" + Server.CLIENT_URL + "images");
             html = html.replace(new RegExp("src='images", 'g'), "src='" + Server.CLIENT_URL + "images");
-            html = hardReplace(html, "<link href='http://app.redpg.com.br/stylesheets/screen.css' id='redpgCss' media='all' rel='stylesheet' type='text/css'>", css);
             html = hardReplace(html, "<script src='js/Application.js' type='text/javascript'><\/script>", js);
             var blob = new Blob([html], { type: "text/plain;charset=utf-8;" });
             var d = new Date();
@@ -12007,12 +12009,15 @@ var UI;
                 while (selectStyle.firstChild !== null)
                     selectStyle.removeChild(selectStyle.firstChild);
                 for (var i = 0; i < data.length; i++) {
+                    if (data[i]['name'].indexOf("RedPG1") !== -1) {
+                        continue;
+                    }
                     var option = document.createElement("option");
                     option.value = data[i]['id'];
                     option.appendChild(document.createTextNode(data[i]['name']));
                     selectStyle.appendChild(option);
                 }
-                selectStyle.value = "1";
+                selectStyle.value = "49";
             }
             SheetDesigner.fillStyles = fillStyles;
             function submit() {
@@ -14623,6 +14628,9 @@ var UI;
         function printStyles(styles) {
             emptyTarget();
             for (var i = 0; i < styles.length; i++) {
+                if (styles[i].name.indexOf("RedPG1") !== -1) {
+                    continue;
+                }
                 var p = document.createElement("p");
                 p.classList.add("mainWindowParagraph");
                 p.classList.add("hoverable");
@@ -14891,6 +14899,9 @@ change.addMessage("Melhoras ao logger.", "pt");
 change = new Changelog(0, 24, 4);
 change.addMessage("Fix: Sheet Variables randomly forgetting who they are.", "en");
 change.addMessage("Fix: Variáveis de Ficha esquecendo quem são.", "pt");
+change = new Changelog(0, 24, 5);
+change.addMessage("Will now ignore Sheet Styles meant for deprecated RedPG.", "en");
+change.addMessage("Estilos feitos para RedPG abandonado não serão mostrados.", "pt");
 delete (change);
 Changelog.finished();
 UI.Language.searchLanguage();

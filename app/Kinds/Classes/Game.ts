@@ -128,7 +128,7 @@ class Game {
 
         if (game['users'] !== undefined) {
             var cleanedup : Array<number> = [];
-            for (var i = 0; i < game['users'].length; i++) {
+            for (var i = game['users'].length - 1; i >= 0; i--) {
                 game['users'][i]['gameid'] = this.id;
             }
             DB.UserDB.updateFromObject(game['users']);
@@ -185,11 +185,14 @@ class Game {
 
         if (game['sheets'] !== undefined) {
             var cleanedup:Array<number> = [];
-            for (var i = 0; i < game['sheets'].length; i++) {
+            for (var i = game['sheets'].length - 1; i >= 0; --i) {
                 game['sheets'][i]['gameid'] = this.id;
+                if (game['sheets'][i]['styleName'] !== undefined && game['sheets'][i]['styleName'].indexOf("RedPG1") !== -1) {
+                    game['sheets'].splice(i, 1);
+                }
             }
             DB.SheetDB.updateFromObject(game['sheets']);
-            for (var i = 0; i < game['sheets'].length; i++) {
+            for (var i = game['sheets'].length - 1; i >= 0; --i) {
                 this.sheets[game['sheets'][i]['id']] = DB.SheetDB.getSheet(game['sheets'][i]['id']);
                 cleanedup.push(game['sheets'][i]['id']);
             }

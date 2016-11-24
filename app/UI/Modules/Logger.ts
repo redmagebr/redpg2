@@ -229,7 +229,6 @@ module UI.Logger {
         html = html.replace(new RegExp("href='stylesheets", 'g'), "href='" + Server.CLIENT_URL + "stylesheets");
         html = html.replace(new RegExp("href='images", 'g'), "href='" + Server.CLIENT_URL + "images");
         html = html.replace(new RegExp("src='images", 'g'), "src='" + Server.CLIENT_URL + "images");
-        html = hardReplace(html, "<link href='http://app.redpg.com.br/stylesheets/screen.css' id='redpgCss' media='all' rel='stylesheet' type='text/css'>", css);
         html = hardReplace(html, "<script src='js/Application.js' type='text/javascript'><\/script>", js);
 
         var blob = new Blob([html], { type : "text/plain;charset=utf-8;"});

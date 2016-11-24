@@ -25,6 +25,9 @@ module UI.Styles {
         // %p.mainWindowParagraph.language.textLink.hoverable
 
         for (var i = 0; i < styles.length; i++) {
+            if (styles[i].name.indexOf("RedPG1") !== -1) {
+                continue;
+            }
             var p = document.createElement("p");
             p.classList.add("mainWindowParagraph");
             p.classList.add("hoverable");

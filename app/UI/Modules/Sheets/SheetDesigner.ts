@@ -48,6 +48,9 @@ module UI.Sheets.SheetDesigner {
         while (selectStyle.firstChild !== null) selectStyle.removeChild(selectStyle.firstChild);
 
         for (var i = 0; i < data.length; i++) {
+            if (data[i]['name'].indexOf("RedPG1") !== -1) {
+                continue
+            }
             var option = document.createElement("option");
             option.value = data[i]['id'];
             option.appendChild(document.createTextNode(data[i]['name']));
@@ -55,7 +58,7 @@ module UI.Sheets.SheetDesigner {
             selectStyle.appendChild(option);
         }
 
-        selectStyle.value = "1";
+        selectStyle.value = "49";
     }
 
     export function submit () {
