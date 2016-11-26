@@ -120,6 +120,10 @@ change = new Changelog(0, 24, 5);
 change.addMessage("Will now ignore Sheet Styles meant for deprecated RedPG.", "en");
 change.addMessage("Estilos feitos para RedPG abandonado não serão mostrados.", "pt");
 
+change = new Changelog(9, 24, 5);
+change.addMessage("RedPG entrará em manutenção Segunda Feira, sem previsão para terminar.", "en");
+change.addMessage("RedPG entrará em manutenção Segunda Feira, sem previsão para terminar.", "pt");
+
 delete (change);
 
 Changelog.finished();
