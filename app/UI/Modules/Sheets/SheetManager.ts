@@ -165,16 +165,11 @@ module UI.Sheets.SheetManager {
     var sheetSave = document.getElementById("sheetSave");
     var importInput = <HTMLInputElement> document.getElementById("sheetViewerJSONImporter");
     var sheetAutomatic = document.getElementById("sheetAutomatic");
-    var sheetEdit = document.getElementById("sheetEdit");
 
     sheetSave.addEventListener("click", function (e) {
         e.preventDefault();
         UI.Sheets.SheetManager.saveSheet();
     });
-
-    export function isEditable () {
-        return sheetEdit.classList.contains("icons-sheetEditOn");
-    }
 
     export function saveSheet () {
         DB.SheetDB.saveSheet(currentSheet);
@@ -184,16 +179,6 @@ module UI.Sheets.SheetManager {
         e.preventDefault();
         this.classList.toggle("icons-sheetAutomaticOn");
         this.classList.toggle("icons-sheetAutomatic");
-    });
-
-    sheetEdit.addEventListener("click", function (e) {
-        e.preventDefault();
-        this.classList.toggle("icons-sheetEditOn");
-        this.classList.toggle("icons-sheetEdit");
-
-        if (currentSheet !== null) {
-            currentSheet.considerEditable();
-        }
     });
 
     document.getElementById("sheetClose").addEventListener("click", function(e) {

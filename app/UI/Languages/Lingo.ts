@@ -10,9 +10,24 @@ class Lingo {
     public unknownLingo : string = " :( ";
 
     public langValues : { [id : string] : string } = {};
+    public myLingos : Array<string> = [];
 
     public setLingo (id : string, value : string) {
         this.langValues[id] = value;
+        this.myLingos.push(id);
+    }
+
+    public getLingos () {
+        return this.langValues;
+    }
+
+    public merge(lingo : Lingo) {
+        var newLingos = lingo.getLingos();
+        for (var id in newLingos) {
+            if (this.myLingos.indexOf(id) === -1) {
+                this.langValues[id] = newLingos[id];
+            }
+        }
     }
 
     public getLingo (id : string, dataset? : {[id : string] : string}) {
@@ -77,6 +92,20 @@ module LingoList {
     export function storeLingo (lingo : Lingo) {
         for (var i = 0; i < lingo.ids.length; i++) {
             lingos[lingo.ids[i]] = lingo;
+        }
+    }
+
+    export function mergeLingo (lingo : Lingo) {
+        var found = false;
+        for (var i = 0; i < lingo.ids.length; i++) {
+            if (lingos[lingo.ids[i]] !== undefined) {
+                lingos[lingo.ids[i]].merge(lingo);
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            console.warn("[Lingo] Language not found for:", lingo);
         }
     }
 }

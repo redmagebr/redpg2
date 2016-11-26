@@ -1,6 +1,6 @@
 // Create new Lingo
 var ptbr = new Lingo();
-ptbr.ids = ["pt", "pt-br"]
+ptbr.ids = ["pt", "pt-br", "ptbr"]
 ptbr.name = "Português - Brasil";
 ptbr.shortname = "Português";
 ptbr.flagIcon = "PT_BR";

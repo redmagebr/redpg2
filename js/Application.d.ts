@@ -255,14 +255,13 @@ declare class SheetInstance {
     styleCreatorNickname: string;
     styleSafe: boolean;
     view: boolean;
-    private _edit;
+    private edit;
     delete: boolean;
     promote: boolean;
     isPublic: boolean;
     changed: boolean;
     loaded: boolean;
     private changeTrigger;
-    edit: boolean;
     getStyleId(): number;
     getStyle(): StyleInstance;
     getTab(): SheetTab;
@@ -1739,7 +1738,12 @@ declare class Lingo {
     langValues: {
         [id: string]: string;
     };
+    myLingos: Array<string>;
     setLingo(id: string, value: string): void;
+    getLingos(): {
+        [id: string]: string;
+    };
+    merge(lingo: Lingo): void;
     getLingo(id: string, dataset?: {
         [id: string]: string;
     }): string;
@@ -1748,6 +1752,7 @@ declare module LingoList {
     function getLingos(): Array<Lingo>;
     function getLingo(id: string): Lingo;
     function storeLingo(lingo: Lingo): void;
+    function mergeLingo(lingo: Lingo): void;
 }
 declare var ptbr: Lingo;
 declare module UI {
@@ -1896,7 +1901,6 @@ declare module UI.Sheets.SheetManager {
     function switchToSheet(sheet: SheetInstance, reloadStyle?: boolean, callPage?: boolean): void;
     function openSheetId(sheetid: number): void;
     function openSheet(sheet: SheetInstance, reloadSheet?: boolean, reloadStyle?: boolean, callPage?: boolean): void;
-    function isEditable(): boolean;
     function saveSheet(): void;
     function reload(reloadStyle?: boolean): void;
     function isAutoUpdate(): boolean;

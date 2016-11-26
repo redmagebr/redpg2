@@ -18,7 +18,7 @@ class SheetInstance {
     public styleSafe : boolean = false;
 
     public view : boolean = true;
-    private _edit : boolean = false;
+    private edit : boolean = false;
     public delete : boolean = false;
     public promote : boolean = false;
     public isPublic : boolean = false;
@@ -27,14 +27,6 @@ class SheetInstance {
     public loaded : boolean = false;
 
     private changeTrigger = new Trigger();
-
-    get edit():boolean {
-        return this._edit && UI.Sheets.SheetManager.isEditable();
-    }
-
-    set edit(value:boolean) {
-        this._edit = value;
-    }
 
     public getStyleId() {
         return this.styleId;
@@ -141,7 +133,7 @@ class SheetInstance {
         if (typeof obj['publica'] !== 'undefined') this.isPublic = obj['publica'];
         if (typeof obj['visualizar'] !== 'undefined') this.view = obj['visualizar'];
         if (typeof obj['deletar'] !== 'undefined') this.delete = obj['deletar'];
-        if (typeof obj['editar'] !== 'undefined') this._edit = obj['editar'];
+        if (typeof obj['editar'] !== 'undefined') this.edit = obj['editar'];
         if (typeof obj['promote'] !== 'undefined') this.promote = obj['promote'];
 
         if (typeof obj['nickStyleCreator'] !== 'undefined' && typeof obj['nicksufixStyleCreator'] !== 'undefined') this.styleCreatorNickname = obj['nickStyleCreator'] + "#" + obj['nicksufixStyleCreator'];
@@ -164,7 +156,7 @@ class SheetInstance {
     }
 
     public isEditable () {
-        return this._edit && UI.Sheets.SheetManager.isEditable();
+        return this.edit;
     }
 
     public isPromotable () {

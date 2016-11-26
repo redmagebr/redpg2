@@ -818,7 +818,7 @@ var SheetInstance = (function () {
         this.styleCreatorNickname = "???#???";
         this.styleSafe = false;
         this.view = true;
-        this._edit = false;
+        this.edit = false;
         this.delete = false;
         this.promote = false;
         this.isPublic = false;
@@ -826,16 +826,6 @@ var SheetInstance = (function () {
         this.loaded = false;
         this.changeTrigger = new Trigger();
     }
-    Object.defineProperty(SheetInstance.prototype, "edit", {
-        get: function () {
-            return this._edit && UI.Sheets.SheetManager.isEditable();
-        },
-        set: function (value) {
-            this._edit = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
     SheetInstance.prototype.getStyleId = function () {
         return this.styleId;
     };
@@ -928,7 +918,7 @@ var SheetInstance = (function () {
         if (typeof obj['deletar'] !== 'undefined')
             this.delete = obj['deletar'];
         if (typeof obj['editar'] !== 'undefined')
-            this._edit = obj['editar'];
+            this.edit = obj['editar'];
         if (typeof obj['promote'] !== 'undefined')
             this.promote = obj['promote'];
         if (typeof obj['nickStyleCreator'] !== 'undefined' && typeof obj['nicksufixStyleCreator'] !== 'undefined')
@@ -952,7 +942,7 @@ var SheetInstance = (function () {
         }
     };
     SheetInstance.prototype.isEditable = function () {
-        return this._edit && UI.Sheets.SheetManager.isEditable();
+        return this.edit;
     };
     SheetInstance.prototype.isPromotable = function () {
         return this.promote;
@@ -9870,9 +9860,22 @@ var Lingo = (function () {
         this.ids = [];
         this.unknownLingo = " :( ";
         this.langValues = {};
+        this.myLingos = [];
     }
     Lingo.prototype.setLingo = function (id, value) {
         this.langValues[id] = value;
+        this.myLingos.push(id);
+    };
+    Lingo.prototype.getLingos = function () {
+        return this.langValues;
+    };
+    Lingo.prototype.merge = function (lingo) {
+        var newLingos = lingo.getLingos();
+        for (var id in newLingos) {
+            if (this.myLingos.indexOf(id) === -1) {
+                this.langValues[id] = newLingos[id];
+            }
+        }
     };
     Lingo.prototype.getLingo = function (id, dataset) {
         if (this.langValues[id] === undefined) {
@@ -9931,9 +9934,23 @@ var LingoList;
         }
     }
     LingoList.storeLingo = storeLingo;
+    function mergeLingo(lingo) {
+        var found = false;
+        for (var i = 0; i < lingo.ids.length; i++) {
+            if (lingos[lingo.ids[i]] !== undefined) {
+                lingos[lingo.ids[i]].merge(lingo);
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            console.warn("[Lingo] Language not found for:", lingo);
+        }
+    }
+    LingoList.mergeLingo = mergeLingo;
 })(LingoList || (LingoList = {}));
 var ptbr = new Lingo();
-ptbr.ids = ["pt", "pt-br"];
+ptbr.ids = ["pt", "pt-br", "ptbr"];
 ptbr.name = "Português - Brasil";
 ptbr.shortname = "Português";
 ptbr.flagIcon = "PT_BR";
@@ -11920,15 +11937,10 @@ var UI;
             var sheetSave = document.getElementById("sheetSave");
             var importInput = document.getElementById("sheetViewerJSONImporter");
             var sheetAutomatic = document.getElementById("sheetAutomatic");
-            var sheetEdit = document.getElementById("sheetEdit");
             sheetSave.addEventListener("click", function (e) {
                 e.preventDefault();
                 UI.Sheets.SheetManager.saveSheet();
             });
-            function isEditable() {
-                return sheetEdit.classList.contains("icons-sheetEditOn");
-            }
-            SheetManager.isEditable = isEditable;
             function saveSheet() {
                 DB.SheetDB.saveSheet(SheetManager.currentSheet);
             }
@@ -11937,14 +11949,6 @@ var UI;
                 e.preventDefault();
                 this.classList.toggle("icons-sheetAutomaticOn");
                 this.classList.toggle("icons-sheetAutomatic");
-            });
-            sheetEdit.addEventListener("click", function (e) {
-                e.preventDefault();
-                this.classList.toggle("icons-sheetEditOn");
-                this.classList.toggle("icons-sheetEdit");
-                if (SheetManager.currentSheet !== null) {
-                    SheetManager.currentSheet.considerEditable();
-                }
             });
             document.getElementById("sheetClose").addEventListener("click", function (e) {
                 e.preventDefault();
