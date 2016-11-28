@@ -116,6 +116,7 @@ change = new Changelog(0, 24, 4);
 change.addMessage("Fix: Sheet Variables randomly forgetting who they are.", "en");
 change.addMessage("Fix: Variáveis de Ficha esquecendo quem são.", "pt");
 
+
 delete (change);
 
 Changelog.finished();
