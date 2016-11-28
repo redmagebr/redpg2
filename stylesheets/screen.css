@@ -6238,7 +6238,7 @@ body {
   top: 0px;
   bottom: 0px;
   background-color: #414141;
-  z-index: 4;
+  z-index: 6;
 }
 
 /* line 31, ../sass/mainWindow.scss */
@@ -7387,7 +7387,7 @@ body {
 }
 
 /* line 205, ../sass/mainChat.scss */
-#chatButtonsBox {
+#chatButtonsBox, #moodWindow {
   position: absolute;
   top: 90px;
   right: 5px;
@@ -7538,7 +7538,7 @@ body {
 }
 
 /* line 351, ../sass/mainChat.scss */
-#chatSideWindow.noAvatar #chatBox, #chatSideWindow.noAvatar #chatButtonsBox, #chatSideWindow.noAvatar #chatNotificationBar {
+#chatSideWindow.noAvatar #chatBox, #chatSideWindow.noAvatar #chatButtonsBox, #chatSideWindow.noAvatar #moodWindow, #chatSideWindow.noAvatar #chatNotificationBar {
   top: 5px;
 }
 
@@ -8282,7 +8282,7 @@ body {
 
 /* line 1, ../sass/mainPicture.scss */
 #pictureWindow {
-  z-index: 3;
+  z-index: 5;
   background-color: rgba(0, 0, 0, 0.4);
   pointer-events: none;
   opacity: 0;
@@ -8539,4 +8539,77 @@ body {
 /* line 109, ../sass/mainSheetViewer.scss */
 #sheetViewerJSONImporter {
   display: none;
+}
+
+/* line 1, ../sass/mainWindowFilters.scss */
+#moodWindow {
+  display: none;
+  right: 50px;
+  width: 300px;
+  height: auto;
+  background-color: #FFF;
+  border: solid 1px #000;
+  z-index: 2;
+  overflow: visible;
+}
+/* line 12, ../sass/mainWindowFilters.scss */
+#moodWindow:after {
+  display: block;
+  height: 3px;
+  content: "";
+  width: 0px;
+  border: solid;
+  border-color: #333;
+  border-left: 3px solid #000;
+  border-top: 0px;
+  border-bottom: 0px;
+  right: -6px;
+  top: 10px;
+  position: absolute;
+}
+
+/* line 29, ../sass/mainWindowFilters.scss */
+#mainWindow > .leftSideWindow, #mainWindow > .rightSideWindow {
+  transition: filter 5s ease-in-out;
+}
+/* line 34, ../sass/mainWindowFilters.scss */
+#mainWindow.noir > .leftSideWindow, #mainWindow.noir > .rightSideWindow {
+  filter: grayscale(100%) brightness(-5%) contrast(180%);
+}
+/* line 40, ../sass/mainWindowFilters.scss */
+#mainWindow.night > .leftSideWindow, #mainWindow.night > .rightSideWindow {
+  filter: grayscale(10%) brightness(80%) contrast(125%);
+}
+/* line 46, ../sass/mainWindowFilters.scss */
+#mainWindow.gray > .leftSideWindow, #mainWindow.gray > .rightSideWindow {
+  filter: grayscale(1);
+}
+/* line 52, ../sass/mainWindowFilters.scss */
+#mainWindow.sepia > .leftSideWindow, #mainWindow.sepia > .rightSideWindow {
+  filter: sepia(1);
+}
+
+/* line 58, ../sass/mainWindowFilters.scss */
+#pictureWindow {
+  filter: none !important;
+}
+
+/* line 62, ../sass/mainWindowFilters.scss */
+#nightMode {
+  display: block;
+  background-color: #000e62;
+  opacity: 0;
+  position: fixed;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+  pointer-events: none;
+  z-index: 4;
+  transition: opacity 5s ease-in-out;
+}
+
+/* line 76, ../sass/mainWindowFilters.scss */
+#mainWindow.night > #nightMode {
+  opacity: 0.3;
 }

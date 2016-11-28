@@ -29,7 +29,8 @@ module UI.Config {
             handleEvent : function () {
                 var cfg = Application.Config.getConfig(this.configName);
                 cfg.storeValue(this.input.value);
-                this.input.value = cfg.getValue().toString();
+                var str = cfg.getValue().toString();
+                this.input.value = str;
             }
         });
 
@@ -48,6 +49,7 @@ module UI.Config {
     bindInput("autoVIDEO", <HTMLInputElement> document.getElementById("configChatAutoVideo"));
     bindInput("bgmVolume", <HTMLInputElement> document.getElementById("configBGMVolume"));
     bindInput("seVolume", <HTMLInputElement> document.getElementById("configSEVolume"));
+    bindInput("screeneffects", <HTMLInputElement> document.getElementById("configChatScreenEffects"));
 
     export function saveConfig () {
         var hide = function () {

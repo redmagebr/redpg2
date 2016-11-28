@@ -1443,6 +1443,8 @@ declare class MessageDice extends Message {
     addMod(mod: number): void;
     addDice(amount: number, faces: number): void;
     getResult(): number;
+    getIsOrdered(): boolean;
+    setIsOrdered(order: boolean): void;
 }
 declare class MessageStory extends Message {
     module: string;

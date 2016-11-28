@@ -107,6 +107,11 @@ class MessageDice extends Message {
             var faces = this.getDice();
             var allCrits = true;
             var allFailures = true;
+
+            if (this.getIsOrdered()) {
+                rolls.sort(function (a,b) { return b - a;});
+            }
+
             for (var i = 0; i < rolls.length; i++) {
                 var span = document.createElement("span");
                 span.classList.add("chatMessageDiceBoxRoll");
@@ -418,6 +423,14 @@ class MessageDice extends Message {
             });
         }
         return result;
+    }
+
+    public getIsOrdered () : boolean {
+        return this.getSpecial("order", false);
+    }
+
+    public setIsOrdered (order : boolean) {
+        this.setSpecial("order", order === true);
     }
 }
 

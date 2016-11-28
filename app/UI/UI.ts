@@ -48,4 +48,5 @@ module UI {
     Application.Config.registerConfiguration("seVolume", new NumberConfiguration(50, 0, 100)); // Volume for Sound Effect
     Application.Config.registerConfiguration("bgmLoop", new BooleanConfiguration(true)); // Whether BGMs loop or not
     Application.Config.registerConfiguration("hqRainbow", new NumberConfiguration(1, 0, 2)); // Automatically open shared Videos
+    Application.Config.registerConfiguration("screeneffects", new BooleanConfiguration(true)); // Open up message prompt on mobile
 }

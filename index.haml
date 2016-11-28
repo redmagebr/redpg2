@@ -43,6 +43,7 @@
           #loginNewAccount.language="_LOGINCREATEACCOUNT_"
     -# Main Window Begins here
     #mainWindow.window
+      #nightMode
       -# Music Player
       #musicPlayerButton.icons-soundPlayer.dontDetach.leftSideWindow
         %audio#soundPlayerSE{:crossOrigin => "anonymous"}
@@ -201,6 +202,13 @@
               %option.language{:value => "1"}="_CONFIGAUTOROLL1_"
             .configExplanation.language
               _CONFIGAUTOROLLEXP_
+          %label.configLabel
+            %b.configName.language="_CONFIGCHATSCREENEFFECTS_"
+            %select.configInput#configChatScreenEffects
+              %option.language{:value => "false"}="_CONFIGCHATEFFECTSNO_"
+              %option.language{:value => "true"}="_CONFIGCHATEFFECTSYES_"
+            .configExplanation.language
+              _CONFIGCHATEFFECTSEXP_
           %label.configLabel
             %b.configName.language="_CONFIGANIMATIONTIME_"
             %input.configInput#configAnimTime{:type => "range", :value => "150", :min => "0", :max => "300"}
@@ -377,6 +385,7 @@
         .icons-chatDown#avatarDownButton
         #chatNotificationBar
         #chatFloater
+        #moodWindow
         #chatBox
           %p#chatTitle
           %p#chatDescription
@@ -389,6 +398,7 @@
           #chatMessages
         #chatScrollDown
         #chatButtonsBox
+          %a.chatRightButton.icons-chatHollywood.language#chatMood{:data => {:titlelingo => "_CHATBUTTONMOOD_"}}
           %a.chatRightButton.icons-chatLeave.language{:data => {:titlelingo => "_CHATBUTTONLEAVE_"}, :onclick => "UI.Chat.leave();"}
           %a.chatRightButton.icons-chatFontPlus.language{:data => {:titlelingo => "_CHATBUTTONFONTPLUS_"}, :onclick => "Application.Config.getConfig('chatfontsize').storeValue(Application.Config.getConfig('chatfontsize').getValue() + 1);"}
           %a.chatRightButton.icons-chatFontMinus.language{:data => {:titlelingo => "_CHATBUTTONFONTMINUS_"}, :onclick => "Application.Config.getConfig('chatfontsize').storeValue(Application.Config.getConfig('chatfontsize').getValue() - 1);"}

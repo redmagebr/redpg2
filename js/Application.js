@@ -7073,6 +7073,9 @@ var MessageDice = (function (_super) {
             var faces = this.getDice();
             var allCrits = true;
             var allFailures = true;
+            if (this.getIsOrdered()) {
+                rolls.sort(function (a, b) { return b - a; });
+            }
             for (var i = 0; i < rolls.length; i++) {
                 var span = document.createElement("span");
                 span.classList.add("chatMessageDiceBoxRoll");
@@ -7330,6 +7333,12 @@ var MessageDice = (function (_super) {
             });
         }
         return result;
+    };
+    MessageDice.prototype.getIsOrdered = function () {
+        return this.getSpecial("order", false);
+    };
+    MessageDice.prototype.setIsOrdered = function (order) {
+        this.setSpecial("order", order === true);
     };
     return MessageDice;
 }(Message));
@@ -10234,6 +10243,7 @@ ptbr.setLingo("_CHATBUTTONFONTPLUS_", "Aumentar tamanho da fonte");
 ptbr.setLingo("_CHATBUTTONFONTMINUS_", "Diminuir tamanho da fonte");
 ptbr.setLingo("_CHATBUTTONLEAVE_", "Sair da sala");
 ptbr.setLingo("_CHATBUTTONHOLLYWOOD_", "Ativar/Desativar modo Cutscene");
+ptbr.setLingo("_CHATBUTTONMOOD_", "Escolher efeito de tela");
 ptbr.setLingo("_CHATBUTTONLINGO_", "Abrir gerenciador de línguas");
 ptbr.setLingo("_CHATBUTTONCOMBAT_", "Abrir gerenciador de combate");
 ptbr.setLingo("_CHATBUTTONSEND_", "Enviar");
@@ -10327,6 +10337,10 @@ ptbr.setLingo("_CONFIGHQRAINBOW0_", "Nunca");
 ptbr.setLingo("_CONFIGHQRAINBOW1_", "Apenas por um tempo");
 ptbr.setLingo("_CONFIGHQRAINBOW2_", "Sempre");
 ptbr.setLingo("_CONFIGHQRAINBOWEXP_", "Dados críticos exigem muitos recursos para serem processados. Aqui você pode definir quando um dado crítico deve utilizar qualidade alta ou quando ele deve utilizar a qualidade baixa.");
+ptbr.setLingo("_CONFIGCHATSCREENEFFECTS_", "(Chat) Efeitos de Tela");
+ptbr.setLingo("_CONFIGCHATEFFECTSNO_", "Não aceitar efeitos");
+ptbr.setLingo("_CONFIGCHATEFFECTSYES_", "Aceitar efeitos");
+ptbr.setLingo("_CONFIGCHATEFFECTSEXP_", "Um mestre pode definir efeitos de tela para tentar atingir um \"clima\" em sua sessão. Aqui você pode definir se esses efeitos de tela são aceitáveis ou não.");
 LingoList.storeLingo(ptbr);
 delete (ptbr);
 var UI;
@@ -10368,6 +10382,7 @@ var UI;
     Application.Config.registerConfiguration("seVolume", new NumberConfiguration(50, 0, 100));
     Application.Config.registerConfiguration("bgmLoop", new BooleanConfiguration(true));
     Application.Config.registerConfiguration("hqRainbow", new NumberConfiguration(1, 0, 2));
+    Application.Config.registerConfiguration("screeneffects", new BooleanConfiguration(true));
 })(UI || (UI = {}));
 var UI;
 (function (UI) {
@@ -10748,7 +10763,8 @@ var UI;
                 handleEvent: function () {
                     var cfg = Application.Config.getConfig(this.configName);
                     cfg.storeValue(this.input.value);
-                    this.input.value = cfg.getValue().toString();
+                    var str = cfg.getValue().toString();
+                    this.input.value = str;
                 }
             });
             input.value = Application.Config.getConfig(configName).getValue().toString();
@@ -10766,6 +10782,7 @@ var UI;
         bindInput("autoVIDEO", document.getElementById("configChatAutoVideo"));
         bindInput("bgmVolume", document.getElementById("configBGMVolume"));
         bindInput("seVolume", document.getElementById("configSEVolume"));
+        bindInput("screeneffects", document.getElementById("configChatScreenEffects"));
         function saveConfig() {
             var hide = function () {
                 this.finish().fadeOut(Application.Config.getConfig("animTime").getValue());
@@ -10895,9 +10912,6 @@ change.addMessage("Melhoras ao logger.", "pt");
 change = new Changelog(0, 24, 4);
 change.addMessage("Fix: Sheet Variables randomly forgetting who they are.", "en");
 change.addMessage("Fix: Variáveis de Ficha esquecendo quem são.", "pt");
-change = new Changelog(0, 24, 5);
-change.addMessage("Will now ignore Sheet Styles meant for deprecated RedPG.", "en");
-change.addMessage("Estilos feitos para RedPG abandonado não serão mostrados.", "pt");
 delete (change);
 Changelog.finished();
 var UI;

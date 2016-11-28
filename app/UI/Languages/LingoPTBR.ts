@@ -324,6 +324,7 @@ ptbr.setLingo("_CHATBUTTONFONTPLUS_", "Aumentar tamanho da fonte");
 ptbr.setLingo("_CHATBUTTONFONTMINUS_", "Diminuir tamanho da fonte");
 ptbr.setLingo("_CHATBUTTONLEAVE_", "Sair da sala");
 ptbr.setLingo("_CHATBUTTONHOLLYWOOD_", "Ativar/Desativar modo Cutscene");
+ptbr.setLingo("_CHATBUTTONMOOD_", "Escolher efeito de tela");
 ptbr.setLingo("_CHATBUTTONLINGO_", "Abrir gerenciador de línguas");
 ptbr.setLingo("_CHATBUTTONCOMBAT_", "Abrir gerenciador de combate");
 ptbr.setLingo("_CHATBUTTONSEND_", "Enviar");
@@ -422,6 +423,10 @@ ptbr.setLingo("_CONFIGHQRAINBOW0_", "Nunca");
 ptbr.setLingo("_CONFIGHQRAINBOW1_", "Apenas por um tempo");
 ptbr.setLingo("_CONFIGHQRAINBOW2_", "Sempre");
 ptbr.setLingo("_CONFIGHQRAINBOWEXP_", "Dados críticos exigem muitos recursos para serem processados. Aqui você pode definir quando um dado crítico deve utilizar qualidade alta ou quando ele deve utilizar a qualidade baixa.");
+ptbr.setLingo("_CONFIGCHATSCREENEFFECTS_", "(Chat) Efeitos de Tela");
+ptbr.setLingo("_CONFIGCHATEFFECTSNO_", "Não aceitar efeitos");
+ptbr.setLingo("_CONFIGCHATEFFECTSYES_", "Aceitar efeitos");
+ptbr.setLingo("_CONFIGCHATEFFECTSEXP_", "Um mestre pode definir efeitos de tela para tentar atingir um \"clima\" em sua sessão. Aqui você pode definir se esses efeitos de tela são aceitáveis ou não.");
 
 // Lingolist
 LingoList.storeLingo(ptbr);

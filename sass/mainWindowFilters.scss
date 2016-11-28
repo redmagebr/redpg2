@@ -1,0 +1,78 @@
+#moodWindow {
+  display: none;
+  @extend #chatButtonsBox;
+  right: 50px;
+  width: 300px;
+  height: auto;
+  background-color: #FFF;
+  border: solid 1px #000;
+  z-index: 2;
+  overflow: visible;
+
+  &:after {
+    display: block;
+    height: 3px;
+    content: "";
+    width: 0px;
+    border: solid;
+    border-color: #333;
+    border-left: 3px solid #000;
+    border-top: 0px;
+    border-bottom: 0px;
+    right: -6px;
+    top: 10px;
+    position: absolute;
+  }
+}
+
+#mainWindow {
+  & > .leftSideWindow, & > .rightSideWindow {
+    transition: filter 5s ease-in-out;
+  }
+
+  &.noir {
+    & > .leftSideWindow, & > .rightSideWindow {
+      filter: grayscale(100%) brightness(-5%) contrast(180%);
+    }
+  }
+
+  &.night {
+    & > .leftSideWindow, & > .rightSideWindow {
+      filter: grayscale(10%) brightness(80%) contrast(125%)
+    }
+  }
+
+  &.gray {
+    & > .leftSideWindow, & > .rightSideWindow {
+      filter: grayscale(1);
+    }
+  }
+
+  &.sepia {
+    & > .leftSideWindow, & > .rightSideWindow {
+      filter: sepia(1);
+    }
+  }
+}
+
+#pictureWindow {
+  filter: none !important;
+}
+
+#nightMode {
+  display: block;
+  background-color: #000e62;
+  opacity: 0;
+  position: fixed;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+  pointer-events: none;
+  z-index: 4;
+  transition: opacity 5s ease-in-out;
+}
+
+#mainWindow.night > #nightMode {
+  opacity: 0.3;
+}

@@ -50,6 +50,7 @@
       </div>
     </div>
     <div class='window' id='mainWindow'>
+      <div id='nightMode'></div>
       <div class='icons-soundPlayer dontDetach leftSideWindow' id='musicPlayerButton'>
         <audio crossOrigin='anonymous' id='soundPlayerSE'></audio>
         <audio crossOrigin='anonymous' id='soundPlayerBGM'></audio>
@@ -243,6 +244,16 @@
             </select>
             <div class='configExplanation language'>
               _CONFIGAUTOROLLEXP_
+            </div>
+          </label>
+          <label class='configLabel'>
+            <b class='configName language'>_CONFIGCHATSCREENEFFECTS_</b>
+            <select class='configInput' id='configChatScreenEffects'>
+              <option class='language' value='false'>_CONFIGCHATEFFECTSNO_</option>
+              <option class='language' value='true'>_CONFIGCHATEFFECTSYES_</option>
+            </select>
+            <div class='configExplanation language'>
+              _CONFIGCHATEFFECTSEXP_
             </div>
           </label>
           <label class='configLabel'>
@@ -467,6 +478,7 @@
         <div class='icons-chatDown' id='avatarDownButton'></div>
         <div id='chatNotificationBar'></div>
         <div id='chatFloater'></div>
+        <div id='moodWindow'></div>
         <div id='chatBox'>
           <p id='chatTitle'></p>
           <p id='chatDescription'></p>
@@ -480,6 +492,7 @@
         </div>
         <div id='chatScrollDown'></div>
         <div id='chatButtonsBox'>
+          <a class='chatRightButton icons-chatHollywood language' data-titlelingo='_CHATBUTTONMOOD_' id='chatMood'></a>
           <a class='chatRightButton icons-chatLeave language' data-titlelingo='_CHATBUTTONLEAVE_' onclick='UI.Chat.leave();'></a>
           <a class='chatRightButton icons-chatFontPlus language' data-titlelingo='_CHATBUTTONFONTPLUS_' onclick="Application.Config.getConfig('chatfontsize').storeValue(Application.Config.getConfig('chatfontsize').getValue() + 1);"></a>
           <a class='chatRightButton icons-chatFontMinus language' data-titlelingo='_CHATBUTTONFONTMINUS_' onclick="Application.Config.getConfig('chatfontsize').storeValue(Application.Config.getConfig('chatfontsize').getValue() - 1);"></a>

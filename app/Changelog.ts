@@ -116,10 +116,6 @@ change = new Changelog(0, 24, 4);
 change.addMessage("Fix: Sheet Variables randomly forgetting who they are.", "en");
 change.addMessage("Fix: Variáveis de Ficha esquecendo quem são.", "pt");
 
-change = new Changelog(0, 24, 5);
-change.addMessage("Will now ignore Sheet Styles meant for deprecated RedPG.", "en");
-change.addMessage("Estilos feitos para RedPG abandonado não serão mostrados.", "pt");
-
 delete (change);
 
 Changelog.finished();
