@@ -43,7 +43,7 @@
           #loginNewAccount.language="_LOGINCREATEACCOUNT_"
     -# Main Window Begins here
     #mainWindow.window
-      #nightMode
+      #colorFilter
       -# Music Player
       #musicPlayerButton.icons-soundPlayer.dontDetach.leftSideWindow
         %audio#soundPlayerSE{:crossOrigin => "anonymous"}
@@ -386,6 +386,12 @@
         #chatNotificationBar
         #chatFloater
         #moodWindow
+          .moodButton.language{:onclick=>"UI.Chat.Filters.applyFilter('none');"}="_MOODNONE_"
+          .moodButton.language{:onclick=>"UI.Chat.Filters.applyFilter('night');"}="_MOODNIGHT_"
+          .moodButton.language{:onclick=>"UI.Chat.Filters.applyFilter('evening');"}="_MOODEVENING_"
+          .moodButton.language{:onclick=>"UI.Chat.Filters.applyFilter('fire');"}="_MOODFIRE_"
+          .moodButton.language{:onclick=>"UI.Chat.Filters.applyFilter('trauma');"}="_MOODTRAUMA_"
+          .moodButton.language{:onclick=>"UI.Chat.Filters.applyFilter('sepia');"}="_MOODSEPIA_"
         #chatBox
           %p#chatTitle
           %p#chatDescription
@@ -398,7 +404,7 @@
           #chatMessages
         #chatScrollDown
         #chatButtonsBox
-          %a.chatRightButton.icons-chatHollywood.language#chatMood{:data => {:titlelingo => "_CHATBUTTONMOOD_"}}
+          %a.chatRightButton.icons-chatMood.language#chatMoodButton{:data => {:titlelingo => "_CHATBUTTONMOOD_"}}
           %a.chatRightButton.icons-chatLeave.language{:data => {:titlelingo => "_CHATBUTTONLEAVE_"}, :onclick => "UI.Chat.leave();"}
           %a.chatRightButton.icons-chatFontPlus.language{:data => {:titlelingo => "_CHATBUTTONFONTPLUS_"}, :onclick => "Application.Config.getConfig('chatfontsize').storeValue(Application.Config.getConfig('chatfontsize').getValue() + 1);"}
           %a.chatRightButton.icons-chatFontMinus.language{:data => {:titlelingo => "_CHATBUTTONFONTMINUS_"}, :onclick => "Application.Config.getConfig('chatfontsize').storeValue(Application.Config.getConfig('chatfontsize').getValue() - 1);"}

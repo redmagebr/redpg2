@@ -536,6 +536,15 @@ declare class MemoryCombat extends TrackerMemory {
     setInitiative(combatant: CombatParticipant, initiative: number): void;
     getValue(): any;
 }
+declare class MemoryFilter extends TrackerMemory {
+    static names: Array<string>;
+    private value;
+    reset(): void;
+    getValue(): string;
+    storeName(name: string): void;
+    storeValue(i: number): void;
+    exportAsObject(): number;
+}
 declare class MemoryPica extends TrackerMemory {
     private picaAllowed;
     private updateUnderway;
@@ -1783,6 +1792,7 @@ declare module UI.WindowManager {
     var currentLeftSize: number;
     var currentRightSize: number;
     function callWindow(id: string): void;
+    function getWindow(id: string): HTMLElement;
     function updateWindowSizes(): void;
 }
 declare module UI.Logger {
@@ -2063,6 +2073,13 @@ declare module UI.Chat.PersonaDesigner {
     function createPersona(name?: string, avatar?: String): void;
     function removeChoice(choice: ChatAvatarChoice): void;
     function usePersona(name: string, avatar: String): void;
+}
+declare module UI.Chat.Filters {
+    function toggle(): void;
+    function close(): void;
+    function updateButton(): void;
+    function applyFilter(name: string): void;
+    function updateEffects(): void;
 }
 declare module UI.Pica {
     function getPica(): PicaContainer;

@@ -318,7 +318,6 @@ class MemoryCombat extends TrackerMemory {
                     if (combatant.id !== 0) {
                         this.combatants.push(combatant);
                     }
-                    console.log(combatant);
                 }
             }
             this.reorderCombatants();

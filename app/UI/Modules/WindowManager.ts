@@ -66,6 +66,13 @@ module UI.WindowManager {
         document.body.removeChild(windowList[id]);
     }
 
+    export function getWindow (id : string) {
+        if (windowList[id] !== undefined) {
+            return windowList[id];
+        }
+        return null;
+    }
+
     export function updateWindowSizes () {
         var stylehtml = "";
         // Find left and right sizes

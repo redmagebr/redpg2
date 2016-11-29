@@ -361,6 +361,15 @@ ptbr.setLingo("_CHATCOMMANDCLICK_", "Clique aqui para permitir.");
 ptbr.setLingo("_CHATMESSAGESHEETUPDATED_", "A ficha \"%a\" foi atualizada.");
 ptbr.setLingo("_CHATMESSAGESHEETUPDATEDCLICKER_", "Clique aqui para atualizar ela.");
 
+// Chat Mood
+ptbr.setLingo("_MOODNONE_", "Nenhum");
+ptbr.setLingo("_MOODNIGHT_", "Noite");
+ptbr.setLingo("_MOODEVENING_", "Entardecer");
+ptbr.setLingo("_MOODFIRE_", "Fogo");
+ptbr.setLingo("_MOODTRAUMA_", "Trauma");
+ptbr.setLingo("_MOODSEPIA_", "Antigo");
+
+
 // Chat Persona Designer
 ptbr.setLingo("_PERSONADESIGNERTITLE_", "Administrador de Personas");
 ptbr.setLingo("_PERSONADESIGNERNAME_", "Nome do Personagem");

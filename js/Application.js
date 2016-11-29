@@ -1989,7 +1989,6 @@ var MemoryCombat = (function (_super) {
                     if (combatant.id !== 0) {
                         this.combatants.push(combatant);
                     }
-                    console.log(combatant);
                 }
             }
             this.reorderCombatants();
@@ -2038,6 +2037,36 @@ var MemoryCombat = (function (_super) {
         return null;
     };
     return MemoryCombat;
+}(TrackerMemory));
+var MemoryFilter = (function (_super) {
+    __extends(MemoryFilter, _super);
+    function MemoryFilter() {
+        _super.apply(this, arguments);
+        this.value = 0;
+    }
+    MemoryFilter.prototype.reset = function () {
+        this.storeValue(0);
+    };
+    MemoryFilter.prototype.getValue = function () {
+        return MemoryFilter.names[this.value];
+    };
+    MemoryFilter.prototype.storeName = function (name) {
+        this.storeValue(MemoryFilter.names.indexOf(name));
+    };
+    MemoryFilter.prototype.storeValue = function (i) {
+        if (i < 0 || i >= MemoryFilter.names.length) {
+            i = 0;
+        }
+        if (this.value !== i) {
+            this.value = i;
+            this.triggerChange();
+        }
+    };
+    MemoryFilter.prototype.exportAsObject = function () {
+        return this.value;
+    };
+    MemoryFilter.names = ["none", "night", "noir", "trauma", "gray", "sepia", "evening", "fire"];
+    return MemoryFilter;
 }(TrackerMemory));
 var MemoryPica = (function (_super) {
     __extends(MemoryPica, _super);
@@ -9541,6 +9570,7 @@ Server.Chat.Memory.registerConfiguration("v", "Version", new MemoryVersion());
 Server.Chat.Memory.registerConfiguration("p", "Pica", new MemoryPica());
 Server.Chat.Memory.registerConfiguration("m", "Cutscene", new MemoryCutscene());
 Server.Chat.Memory.registerConfiguration("l", "Lingo", new MemoryLingo());
+Server.Chat.Memory.registerConfiguration("f", "Mood", new MemoryFilter());
 var Server;
 (function (Server) {
     var Storage;
@@ -10279,6 +10309,12 @@ ptbr.setLingo("_CHATCOMMANDREQUEST_", "%a deseja aplicar um comando em %b.");
 ptbr.setLingo("_CHATCOMMANDCLICK_", "Clique aqui para permitir.");
 ptbr.setLingo("_CHATMESSAGESHEETUPDATED_", "A ficha \"%a\" foi atualizada.");
 ptbr.setLingo("_CHATMESSAGESHEETUPDATEDCLICKER_", "Clique aqui para atualizar ela.");
+ptbr.setLingo("_MOODNONE_", "Nenhum");
+ptbr.setLingo("_MOODNIGHT_", "Noite");
+ptbr.setLingo("_MOODEVENING_", "Entardecer");
+ptbr.setLingo("_MOODFIRE_", "Fogo");
+ptbr.setLingo("_MOODTRAUMA_", "Trauma");
+ptbr.setLingo("_MOODSEPIA_", "Antigo");
 ptbr.setLingo("_PERSONADESIGNERTITLE_", "Administrador de Personas");
 ptbr.setLingo("_PERSONADESIGNERNAME_", "Nome do Personagem");
 ptbr.setLingo("_PERSONADESIGNERAVATAR_", "Link para Imagem (Opcional)");
@@ -10446,6 +10482,13 @@ var UI;
         function detachWindow(id) {
             document.body.removeChild(windowList[id]);
         }
+        function getWindow(id) {
+            if (windowList[id] !== undefined) {
+                return windowList[id];
+            }
+            return null;
+        }
+        WindowManager.getWindow = getWindow;
         function updateWindowSizes() {
             var stylehtml = "";
             var totalWidth = window.innerWidth;
@@ -10912,6 +10955,9 @@ change.addMessage("Melhoras ao logger.", "pt");
 change = new Changelog(0, 24, 4);
 change.addMessage("Fix: Sheet Variables randomly forgetting who they are.", "en");
 change.addMessage("Fix: Variáveis de Ficha esquecendo quem são.", "pt");
+change = new Changelog(0, 25, 0);
+change.addMessage("Filters are now available in Rooms.", "en");
+change.addMessage("É possível aplicar Filtros em Salas.", "pt");
 delete (change);
 Changelog.finished();
 var UI;
@@ -14480,6 +14526,74 @@ var UI;
                 Application.LocalMemory.setMemory(getMemoryString(), lastMemory);
             }
         })(PersonaDesigner = Chat.PersonaDesigner || (Chat.PersonaDesigner = {}));
+    })(Chat = UI.Chat || (UI.Chat = {}));
+})(UI || (UI = {}));
+var UI;
+(function (UI) {
+    var Chat;
+    (function (Chat) {
+        var Filters;
+        (function (Filters) {
+            var filterWindow = document.getElementById("moodWindow");
+            var moodButton = document.getElementById("chatMoodButton");
+            moodButton.addEventListener("click", function () {
+                UI.Chat.Filters.toggle();
+            });
+            Server.Chat.addRoomListener(function () {
+                UI.Chat.Filters.updateButton();
+            });
+            var mem = Server.Chat.Memory.getConfiguration("Mood");
+            mem.addChangeListener(function () {
+                UI.Chat.Filters.updateEffects();
+            });
+            var cfg = Application.Config.getConfig("screeneffects");
+            cfg.addChangeListener(function () {
+                UI.Chat.Filters.updateEffects();
+            });
+            function toggle() {
+                filterWindow.style.display = filterWindow.style.display === "" ? "none" : "";
+            }
+            Filters.toggle = toggle;
+            function close() {
+                filterWindow.style.display = "none";
+            }
+            Filters.close = close;
+            function updateButton() {
+                var room = Server.Chat.getRoom();
+                if (room !== null) {
+                    var me = room.getMe();
+                    if (me.isStoryteller()) {
+                        moodButton.style.display = "";
+                        return;
+                    }
+                }
+                moodButton.style.display = "none";
+                UI.Chat.Filters.close();
+            }
+            Filters.updateButton = updateButton;
+            function applyFilter(name) {
+                var mem = Server.Chat.Memory.getConfiguration("Mood");
+                mem.storeName(name);
+                UI.Chat.Filters.close();
+            }
+            Filters.applyFilter = applyFilter;
+            function removeEffects() {
+                var w = UI.WindowManager.getWindow(UI.idMainWindow);
+                for (var i = 0; i < MemoryFilter.names.length; i++) {
+                    w.classList.remove(MemoryFilter.names[i]);
+                }
+            }
+            function updateEffects() {
+                removeEffects();
+                if (cfg.getValue() && mem.getValue() !== "none") {
+                    var w = UI.WindowManager.getWindow(UI.idMainWindow);
+                    w.classList.add(mem.getValue());
+                }
+            }
+            Filters.updateEffects = updateEffects;
+            close();
+            updateButton();
+        })(Filters = Chat.Filters || (Chat.Filters = {}));
     })(Chat = UI.Chat || (UI.Chat = {}));
 })(UI || (UI = {}));
 var UI;

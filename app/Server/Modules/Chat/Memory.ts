@@ -117,3 +117,4 @@ Server.Chat.Memory.registerConfiguration("v", "Version", new MemoryVersion());
 Server.Chat.Memory.registerConfiguration("p", "Pica", new MemoryPica());
 Server.Chat.Memory.registerConfiguration("m", "Cutscene", new MemoryCutscene());
 Server.Chat.Memory.registerConfiguration("l", "Lingo", new MemoryLingo());
+Server.Chat.Memory.registerConfiguration("f", "Mood", new MemoryFilter());

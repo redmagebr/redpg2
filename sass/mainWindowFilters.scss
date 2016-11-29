@@ -1,13 +1,16 @@
 #moodWindow {
-  display: none;
-  @extend #chatButtonsBox;
+  position: absolute;
+  top: 90px;
   right: 50px;
   width: 300px;
   height: auto;
   background-color: #FFF;
   border: solid 1px #000;
-  z-index: 2;
-  overflow: visible;
+  z-index: 3;
+  display: flex;
+  align-content: flex-start;
+  align-items: flex-start;
+  flex-wrap: wrap;
 
   &:after {
     display: block;
@@ -25,9 +28,49 @@
   }
 }
 
+.moodButton {
+  width: 150px;
+  font-weight: bold;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  flex: 1 0 auto;
+  align-self: auto;
+  @extend .buttonBehavior;
+  &:hover {
+    background-color: rgba(0,0,0,.2);
+  }
+  &:active {
+    background-color: rgba(0,0,0,.3);
+  }
+}
+
+@keyframes trauma {
+  from {
+    filter: blur(0px);
+  }
+  10% {
+    filter: blur(1px);
+
+  }
+  to {
+    filter: blur(0px);
+  }
+}
+
 #mainWindow {
+  transition: filter 3s ease-in-out;
+
   & > .leftSideWindow, & > .rightSideWindow {
-    transition: filter 5s ease-in-out;
+    transition: filter 3s ease-in-out;
+  }
+
+  &.trauma {
+    & > .leftSideWindow, & > .rightSideWindow {
+      animation-name: trauma;
+      animation-duration: 10s;
+      animation-iteration-count: infinite;
+    }
   }
 
   &.noir {
@@ -36,9 +79,32 @@
     }
   }
 
+  &.evening {
+    filter: grayscale(10%) brightness(80%);
+
+    & > #colorFilter {
+      opacity: 0.1;
+      background-color: #740d00;
+    }
+  }
+
+  &.fire {
+    filter: grayscale(10%) brightness(90%);
+
+    & > #colorFilter {
+      opacity: 0.25;
+      background-color: #972700;
+    }
+  }
+
   &.night {
     & > .leftSideWindow, & > .rightSideWindow {
       filter: grayscale(10%) brightness(80%) contrast(125%)
+    }
+
+    & > #colorFilter {
+      opacity: 0.3;
+      background-color: #000e62;
     }
   }
 
@@ -47,11 +113,10 @@
       filter: grayscale(1);
     }
   }
+  
 
   &.sepia {
-    & > .leftSideWindow, & > .rightSideWindow {
-      filter: sepia(1);
-    }
+    filter: sepia(0.3) brightness(80%);
   }
 }
 
@@ -59,9 +124,8 @@
   filter: none !important;
 }
 
-#nightMode {
+#colorFilter {
   display: block;
-  background-color: #000e62;
   opacity: 0;
   position: fixed;
   left: 0px;
@@ -71,8 +135,4 @@
   pointer-events: none;
   z-index: 4;
   transition: opacity 5s ease-in-out;
-}
-
-#mainWindow.night > #nightMode {
-  opacity: 0.3;
 }

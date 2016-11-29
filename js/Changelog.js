@@ -116,6 +116,10 @@ change = new Changelog(0, 24, 4);
 change.addMessage("Fix: Sheet Variables randomly forgetting who they are.", "en");
 change.addMessage("Fix: Variáveis de Ficha esquecendo quem são.", "pt");
 
+change = new Changelog(0, 25, 0);
+change.addMessage("Filters are now available in Rooms.", "en");
+change.addMessage("É possível aplicar Filtros em Salas.", "pt");
+
 
 delete (change);
 
