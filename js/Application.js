@@ -8677,9 +8677,14 @@ var Application;
 var Server;
 (function (Server) {
     Server.IMAGE_URL = "http://img.redpg.com.br/";
-    Server.APPLICATION_URL = "http://beta.redpg.com.br/service/";
-    Server.CLIENT_URL = "http://beta.redpg.com.br/";
+    Server.APPLICATION_URL = "http://app.redpg.com.br/service/";
+    Server.CLIENT_URL = "http://app.redpg.com.br/";
     Server.WEBSOCKET_SERVERURL = "ws://app.redpg.com.br";
+    if (window.location.hostname.indexOf("beta")) {
+        Server.APPLICATION_URL = "http://beta.redpg.com.br/service/";
+        Server.CLIENT_URL = "http://beta.redpg.com.br/";
+        Server.WEBSOCKET_SERVERURL = "ws://beta.redpg.com.br";
+    }
     Server.WEBSOCKET_CONTEXT = "/service/";
     Server.WEBSOCKET_PORTS = [80, 8080, 8081];
     Application.Config.registerConfiguration("wsPort", new WsportConfiguration(Server.WEBSOCKET_PORTS[0]));
