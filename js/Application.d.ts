@@ -1328,6 +1328,13 @@ declare class MessageVideo extends Message {
     getName(): any;
     setName(name: string): void;
 }
+declare class MessageQuote extends Message {
+    module: string;
+    createHTML(): HTMLElement;
+    setQuoted(name: String): void;
+    getQuoted(): any;
+    receiveCommand(slashCommand: string, message: string): boolean;
+}
 declare class MessageSE extends Message {
     module: string;
     private playedBefore;

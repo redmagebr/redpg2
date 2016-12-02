@@ -7768,12 +7768,12 @@ body {
 }
 
 /* line 31, ../sass/mainChatMessages.scss */
-.chatMessage, .chatMessageParagraph, .chatMessageStory, .chatOff, .chatAction, .chatMessageDice, .chatMessageTurn, .chatMessageSheetdamage, .chatWhisper, .chatMessageShare, .chatMessageVote, .chatMessageCounter, .chatMessageSystem, .chatMessageNotification {
+.chatMessage, .chatMessageParagraph, .chatMessageStory, .chatOff, .chatAction, .chatMessageDice, .chatMessageTurn, .chatMessageSheetdamage, .chatWhisper, .chatMessageShare, .chatMessageVote, .chatMessageCounter, .chatMessageSystem, .chatMessageQuoteParagraph, .chatMessageNotification {
   line-height: 1.2em;
   font-size: 1em;
 }
 /* line 34, ../sass/mainChatMessages.scss */
-.chatMessage:hover, .chatMessageParagraph:hover, .chatMessageStory:hover, .chatOff:hover, .chatAction:hover, .chatMessageDice:hover, .chatMessageTurn:hover, .chatMessageSheetdamage:hover, .chatWhisper:hover, .chatMessageShare:hover, .chatMessageVote:hover, .chatMessageCounter:hover, .chatMessageSystem:hover, .chatMessageNotification:hover {
+.chatMessage:hover, .chatMessageParagraph:hover, .chatMessageStory:hover, .chatOff:hover, .chatAction:hover, .chatMessageDice:hover, .chatMessageTurn:hover, .chatMessageSheetdamage:hover, .chatWhisper:hover, .chatMessageShare:hover, .chatMessageVote:hover, .chatMessageCounter:hover, .chatMessageSystem:hover, .chatMessageQuoteParagraph:hover, .chatMessageNotification:hover {
   background-color: rgba(0, 0, 0, 0.2);
 }
 
@@ -7796,7 +7796,7 @@ body {
 }
 
 /* line 53, ../sass/mainChatMessages.scss */
-.chatMessagePadding, .chatMessageParagraph, .chatMessageStory, .chatOff, .chatAction, .chatMessageDice, .chatMessageTurn, .chatMessageSheetdamage, .chatWhisper, .chatMessageShare, .chatMessageVote, .chatMessageCounter, .chatMessageSystem, .chatMessageNotification, .chatMessageDiceReason {
+.chatMessagePadding, .chatMessageParagraph, .chatMessageStory, .chatOff, .chatAction, .chatMessageDice, .chatMessageTurn, .chatMessageSheetdamage, .chatWhisper, .chatMessageShare, .chatMessageVote, .chatMessageCounter, .chatMessageSystem, .chatMessageQuoteParagraph, .chatMessageNotification, .chatMessageDiceReason {
   padding-left: 7px;
   padding-right: 7px;
   padding-top: 3px;
@@ -7804,7 +7804,7 @@ body {
 }
 
 /* line 60, ../sass/mainChatMessages.scss */
-.chatMessageParagraph, .chatMessageStory, .chatOff, .chatAction, .chatMessageDice, .chatMessageTurn, .chatMessageSheetdamage, .chatWhisper, .chatMessageShare, .chatMessageVote, .chatMessageCounter, .chatMessageSystem {
+.chatMessageParagraph, .chatMessageStory, .chatOff, .chatAction, .chatMessageDice, .chatMessageTurn, .chatMessageSheetdamage, .chatWhisper, .chatMessageShare, .chatMessageVote, .chatMessageCounter, .chatMessageSystem, .chatMessageQuoteParagraph {
   text-align: justify;
   display: block;
   text-indent: 0.8em;
@@ -8191,6 +8191,22 @@ body {
 /* line 469, ../sass/mainChatMessages.scss */
 .chatMessageSystem:after {
   content: " ----";
+}
+
+/* line 473, ../sass/mainChatMessages.scss */
+.chatMessageQuoteParagraph {
+  text-align: center;
+  font-style: italic;
+  text-indent: 0px;
+}
+
+/* line 480, ../sass/mainChatMessages.scss */
+.chatMessageQuoteQuoted {
+  font-weight: bold;
+  font-style: normal;
+  display: block;
+  text-align: center;
+  text-indent: 0px;
 }
 
 /* line 1, ../sass/mainChatLogger.scss */

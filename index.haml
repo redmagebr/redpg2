@@ -210,6 +210,13 @@
             .configExplanation.language
               _CONFIGCHATEFFECTSEXP_
           %label.configLabel
+            %b.configName.language="_CONFIGCHATUNNECESSARYMESSAGES_"
+            %select.configInput#configChatHideSomeMessages
+              %option.language{:value => "false"}="_CONFIGCHATUNNECESSARYMESSAGESNO_"
+              %option.language{:value => "true"}="_CONFIGCHATUNNECESSARYMESSAGESYES_"
+            .configExplanation.language
+              _CONFIGCHATUNNECESSARYMESSAGESEXP_
+          %label.configLabel
             %b.configName.language="_CONFIGANIMATIONTIME_"
             %input.configInput#configAnimTime{:type => "range", :value => "150", :min => "0", :max => "300"}
             .configExplanation.language

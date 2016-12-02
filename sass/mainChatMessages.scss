@@ -469,3 +469,18 @@ $actionColor: #d90000;
 .chatMessageSystem:after {
   content: " ----";
 }
+
+.chatMessageQuoteParagraph {
+  @extend .chatMessageParagraph;
+  text-align: center;
+  font-style: italic;
+  text-indent: 0px;
+}
+
+.chatMessageQuoteQuoted {
+  font-weight: bold;
+  font-style: normal;
+  display: block;
+  text-align: center;
+  text-indent: 0px;
+}

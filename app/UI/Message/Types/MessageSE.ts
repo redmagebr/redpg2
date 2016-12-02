@@ -17,6 +17,9 @@ class MessageSE extends Message {
     }
 
     public createHTML () {
+        if (Application.Config.getConfig("hideMessages").getValue()) {
+            return null;
+        }
         var p = document.createElement("p");
         p.classList.add("chatMessageShare");
         p.appendChild(document.createTextNode(this.getUser().getUniqueNickname() + " "));

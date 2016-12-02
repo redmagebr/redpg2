@@ -120,6 +120,12 @@ change = new Changelog(0, 25, 0);
 change.addMessage("Filters are now available in Rooms.", "en");
 change.addMessage("É possível aplicar Filtros em Salas.", "pt");
 
+change = new Changelog(0, 26, 0);
+change.addMessage("New message type: quotes. Usage: /quote Name, Quote.", "en");
+change.addMessage("New option to not print certain message types for immersion purposes.", "en");
+change.addMessage("Novo tipo de mensagem: citação. Como usar: /citar Nome, Citação.", "pt");
+change.addMessage("Nova opção para não imprimir certos tipos de mensagem e aumentar imersão.", "pt");
+
 
 delete (change);
 

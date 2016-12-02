@@ -50,6 +50,7 @@ module UI.Config {
     bindInput("bgmVolume", <HTMLInputElement> document.getElementById("configBGMVolume"));
     bindInput("seVolume", <HTMLInputElement> document.getElementById("configSEVolume"));
     bindInput("screeneffects", <HTMLInputElement> document.getElementById("configChatScreenEffects"));
+    bindInput("hideMessages", <HTMLInputElement> document.getElementById("configChatHideSomeMessages"));
 
     export function saveConfig () {
         var hide = function () {

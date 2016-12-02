@@ -215,6 +215,7 @@ class SheetList {
                 return 0;
             });
             this.reattachRows();
+            this.considerTriggering();
         }
     }
 

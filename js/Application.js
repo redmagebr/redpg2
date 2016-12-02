@@ -4367,6 +4367,7 @@ var SheetList = (function () {
                 return 0;
             });
             this.reattachRows();
+            this.considerTriggering();
         }
     };
     SheetList.prototype.getRowIndex = function (id) {
@@ -6409,6 +6410,49 @@ var MessageVideo = (function (_super) {
     return MessageVideo;
 }(Message));
 MessageFactory.registerMessage(MessageVideo, "youtube", ["/video", "/youtube"]);
+var MessageQuote = (function (_super) {
+    __extends(MessageQuote, _super);
+    function MessageQuote() {
+        _super.apply(this, arguments);
+        this.module = "quote";
+    }
+    MessageQuote.prototype.createHTML = function () {
+        var p = document.createElement("p");
+        p.classList.add("chatMessageQuoteParagraph");
+        p.appendChild(document.createTextNode('"' + this.getMsg() + '"'));
+        var name = this.getQuoted();
+        if (name !== null) {
+            var b = document.createElement("b");
+            b.classList.add("chatMessageQuoteQuoted");
+            b.appendChild(document.createTextNode("- " + name));
+            p.appendChild(b);
+        }
+        return p;
+    };
+    MessageQuote.prototype.setQuoted = function (name) {
+        this.setSpecial("name", name);
+    };
+    MessageQuote.prototype.getQuoted = function () {
+        return this.getSpecial("name", null);
+    };
+    MessageQuote.prototype.receiveCommand = function (slashCommand, message) {
+        var name;
+        var idx = message.indexOf(",");
+        if (idx === -1) {
+            name = null;
+            message = message.trim();
+        }
+        else {
+            name = message.substr(0, idx).trim();
+            message = message.substr(idx + 1, message.length - (idx + 1)).trim();
+        }
+        this.setQuoted(name);
+        this.setMsg(message);
+        return true;
+    };
+    return MessageQuote;
+}(Message));
+MessageFactory.registerMessage(MessageQuote, "quote", ["/quote", "/citar", "/citação", "/citaçao", "/citacao"]);
 var MessageSE = (function (_super) {
     __extends(MessageSE, _super);
     function MessageSE() {
@@ -6431,6 +6475,9 @@ var MessageSE = (function (_super) {
         }
     };
     MessageSE.prototype.createHTML = function () {
+        if (Application.Config.getConfig("hideMessages").getValue()) {
+            return null;
+        }
         var p = document.createElement("p");
         p.classList.add("chatMessageShare");
         p.appendChild(document.createTextNode(this.getUser().getUniqueNickname() + " "));
@@ -6527,6 +6574,9 @@ var MessageImage = (function (_super) {
         MessageImage.addLastImage(this);
     };
     MessageImage.prototype.createHTML = function () {
+        if (Application.Config.getConfig("hideMessages").getValue()) {
+            return null;
+        }
         var p = document.createElement("p");
         p.classList.add("chatMessageShare");
         p.appendChild(document.createTextNode(this.getUser().getUniqueNickname() + " "));
@@ -6606,6 +6656,9 @@ var MessageBGM = (function (_super) {
         }
     };
     MessageBGM.prototype.createHTML = function () {
+        if (Application.Config.getConfig("hideMessages").getValue()) {
+            return null;
+        }
         var p = document.createElement("p");
         p.classList.add("chatMessageShare");
         p.appendChild(document.createTextNode(this.getUser().getUniqueNickname() + " "));
@@ -10320,6 +10373,10 @@ ptbr.setLingo("_MOODEVENING_", "Entardecer");
 ptbr.setLingo("_MOODFIRE_", "Fogo");
 ptbr.setLingo("_MOODTRAUMA_", "Trauma");
 ptbr.setLingo("_MOODSEPIA_", "Antigo");
+ptbr.setLingo("_CONFIGCHATUNNECESSARYMESSAGES_", "(Chat) Esconder algumas mensagens:");
+ptbr.setLingo("_CONFIGCHATUNNECESSARYMESSAGESNO_", "Não esconder");
+ptbr.setLingo("_CONFIGCHATUNNECESSARYMESSAGESYES_", "Sim");
+ptbr.setLingo("_CONFIGCHATUNNECESSARYMESSAGESEXP_", "Para tentar manter um certo clima durante a sessão, é possível desabilitar a impressão de mensagens desnecessárias. As mensagens que não serão impressas (mas ainda serão processadas) por essa configuração são mensagens de Som, Música e Imagens.");
 ptbr.setLingo("_PERSONADESIGNERTITLE_", "Administrador de Personas");
 ptbr.setLingo("_PERSONADESIGNERNAME_", "Nome do Personagem");
 ptbr.setLingo("_PERSONADESIGNERAVATAR_", "Link para Imagem (Opcional)");
@@ -10424,6 +10481,7 @@ var UI;
     Application.Config.registerConfiguration("bgmLoop", new BooleanConfiguration(true));
     Application.Config.registerConfiguration("hqRainbow", new NumberConfiguration(1, 0, 2));
     Application.Config.registerConfiguration("screeneffects", new BooleanConfiguration(true));
+    Application.Config.registerConfiguration("hideMessages", new BooleanConfiguration(false));
 })(UI || (UI = {}));
 var UI;
 (function (UI) {
@@ -10831,6 +10889,7 @@ var UI;
         bindInput("bgmVolume", document.getElementById("configBGMVolume"));
         bindInput("seVolume", document.getElementById("configSEVolume"));
         bindInput("screeneffects", document.getElementById("configChatScreenEffects"));
+        bindInput("hideMessages", document.getElementById("configChatHideSomeMessages"));
         function saveConfig() {
             var hide = function () {
                 this.finish().fadeOut(Application.Config.getConfig("animTime").getValue());
@@ -10963,6 +11022,11 @@ change.addMessage("Fix: Variáveis de Ficha esquecendo quem são.", "pt");
 change = new Changelog(0, 25, 0);
 change.addMessage("Filters are now available in Rooms.", "en");
 change.addMessage("É possível aplicar Filtros em Salas.", "pt");
+change = new Changelog(0, 26, 0);
+change.addMessage("New message type: quotes. Usage: /quote Name, Quote.", "en");
+change.addMessage("New option to not print certain message types for immersion purposes.", "en");
+change.addMessage("Novo tipo de mensagem: citação. Como usar: /citar Nome, Citação.", "pt");
+change.addMessage("Nova opção para não imprimir certos tipos de mensagem e aumentar imersão.", "pt");
 delete (change);
 Changelog.finished();
 var UI;

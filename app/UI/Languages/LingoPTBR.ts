@@ -369,6 +369,12 @@ ptbr.setLingo("_MOODFIRE_", "Fogo");
 ptbr.setLingo("_MOODTRAUMA_", "Trauma");
 ptbr.setLingo("_MOODSEPIA_", "Antigo");
 
+// Chat Hide Some Mssages
+ptbr.setLingo("_CONFIGCHATUNNECESSARYMESSAGES_", "(Chat) Esconder algumas mensagens:");
+ptbr.setLingo("_CONFIGCHATUNNECESSARYMESSAGESNO_", "Não esconder");
+ptbr.setLingo("_CONFIGCHATUNNECESSARYMESSAGESYES_", "Sim");
+ptbr.setLingo("_CONFIGCHATUNNECESSARYMESSAGESEXP_", "Para tentar manter um certo clima durante a sessão, é possível desabilitar a impressão de mensagens desnecessárias. As mensagens que não serão impressas (mas ainda serão processadas) por essa configuração são mensagens de Som, Música e Imagens.");
+
 
 // Chat Persona Designer
 ptbr.setLingo("_PERSONADESIGNERTITLE_", "Administrador de Personas");

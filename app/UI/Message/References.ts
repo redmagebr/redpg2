@@ -12,6 +12,7 @@
 /// <reference path='Types/MessageVote.ts' />
 /// <reference path='Types/MessageWebm.ts' />
 /// <reference path='Types/MessageVideo.ts' />
+/// <reference path='Types/MessageQuote.ts' />
 /// <reference path='Types/MessageSE.ts' />
 /// <reference path='Types/MessageImage.ts' />
 /// <reference path='Types/MessageBGM.ts' />
