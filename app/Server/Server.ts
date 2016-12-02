@@ -4,7 +4,7 @@ module Server {
     export var CLIENT_URL:string = "http://app.redpg.com.br/";
     export var WEBSOCKET_SERVERURL:string = "ws://app.redpg.com.br";
 
-    if (window.location.hostname.indexOf("beta")) {
+    if (window.location.hostname.indexOf("beta") === 0) {
         APPLICATION_URL = "http://beta.redpg.com.br/service/";
         CLIENT_URL = "http://beta.redpg.com.br/";
         WEBSOCKET_SERVERURL = "ws://beta.redpg.com.br";

@@ -8733,7 +8733,7 @@ var Server;
     Server.APPLICATION_URL = "http://app.redpg.com.br/service/";
     Server.CLIENT_URL = "http://app.redpg.com.br/";
     Server.WEBSOCKET_SERVERURL = "ws://app.redpg.com.br";
-    if (window.location.hostname.indexOf("beta")) {
+    if (window.location.hostname.indexOf("beta") === 0) {
         Server.APPLICATION_URL = "http://beta.redpg.com.br/service/";
         Server.CLIENT_URL = "http://beta.redpg.com.br/";
         Server.WEBSOCKET_SERVERURL = "ws://beta.redpg.com.br";
@@ -15044,5 +15044,6 @@ if (Application.Login.hasSession()) {
 else {
     UI.Login.resetFocus();
 }
+document.write("<script src='" + Server.CLIENT_URL + "js/Changelog.js' type='text/javascript'></script>");
 allReady();
 //# sourceMappingURL=Application.js.map
