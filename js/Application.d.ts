@@ -909,6 +909,10 @@ declare class SheetStyle {
     createNameVariable(sheet: Sheet, element: HTMLElement): void;
     die(): void;
 }
+declare class SheetStyleTranslatable extends SheetStyle {
+    protected translateObject(obj: Object): Object;
+    protected createSheet(): void;
+}
 declare class Sheet {
     protected parent: SheetStyle | SheetList;
     protected style: SheetStyle;
@@ -1185,6 +1189,21 @@ declare class SheetButtondice extends SheetButton {
 }
 declare class SheetButtonsort extends SheetButtonaddrow {
     click(e: Event): void;
+}
+declare class SheetButtoncommonsroll extends SheetButton {
+    protected parsed: any;
+    protected compiled: any;
+    protected symbols: Array<string>;
+    protected scope: {
+        [id: string]: number;
+    };
+    click(e: MouseEvent): void;
+    getSymbols(): Array<string>;
+    getScope(symbols: Array<string>): {
+        [id: string]: number;
+    };
+    protected parse(expr: string): void;
+    getValue(): number;
 }
 declare module MessageFactory {
     function registerMessage(msg: typeof Message, id: string, slashCommands: Array<string>): void;
@@ -1766,11 +1785,19 @@ declare class Lingo {
         [id: string]: string;
     }): string;
 }
+declare class SheetLingo {
+    private defaultLingo;
+    private lingos;
+    addLingo(lingo: Lingo, isDefault: boolean): void;
+    getDefaultLingo(): Lingo;
+    getLingo(ids: Array<string>): Lingo;
+}
 declare module LingoList {
     function getLingos(): Array<Lingo>;
     function getLingo(id: string): Lingo;
     function storeLingo(lingo: Lingo): void;
     function mergeLingo(lingo: Lingo): void;
+    function addSheetLingo(lingo: SheetLingo): void;
 }
 declare var ptbr: Lingo;
 declare module UI {

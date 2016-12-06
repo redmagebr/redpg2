@@ -64,5 +64,12 @@ class SheetVariablenumber extends SheetVariabletext {
         } else {
             this.textNode.nodeValue = this.defaultValue.toString();
         }
+
+        this.visible.classList.remove("negative", "positive");
+        if (this.value < 0) {
+            this.visible.classList.add("negative");
+        } else if (this.value > 0) {
+            this.visible.classList.add("positive");
+        }
     }
 }

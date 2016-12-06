@@ -138,6 +138,7 @@ class SheetVariablemath extends SheetVariabletext implements SheetCreatorListene
     }
 
     public updateVisible () {
+        this.visible.classList.remove("negative", "positive");
         if (document.activeElement === this.visible) {
             this.textNode.nodeValue = this.value === null ? this.defaultValueString === null ? "0" : <string> this.defaultValueString : this.value;
         } else {
@@ -147,6 +148,12 @@ class SheetVariablemath extends SheetVariabletext implements SheetCreatorListene
                 this.textNode.nodeValue = UI.Language.getLanguage().getLingo("_SHEETVARIABLEMATHNAN_");
             } else {
                 this.textNode.nodeValue = (+value.toFixed(1)).toString();
+            }
+
+            if (value < 0) {
+                this.visible.classList.add("negative");
+            } else if (value > 0) {
+                this.visible.classList.add("positive");
             }
         }
     }

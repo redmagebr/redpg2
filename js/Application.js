@@ -3966,6 +3966,59 @@ var SheetStyle = (function () {
     };
     return SheetStyle;
 }());
+var SheetStyleTranslatable = (function (_super) {
+    __extends(SheetStyleTranslatable, _super);
+    function SheetStyleTranslatable() {
+        _super.apply(this, arguments);
+    }
+    SheetStyleTranslatable.prototype.translateObject = function (obj) {
+        for (var key in obj) {
+            if (typeof obj[key] === "string" && obj[key].charAt(0) === "_") {
+                obj[key] = UI.Language.getLanguage().getLingo(obj[key]);
+            }
+            else if (typeof obj[key] === "object") {
+                obj[key] = this.translateObject(obj[key]);
+            }
+        }
+        return obj;
+    };
+    SheetStyleTranslatable.prototype.createSheet = function () {
+        var variables = this.visible.getElementsByClassName("sheetVariable");
+        for (var i = 0; i < variables.length; i++) {
+            if (variables[i].dataset["placeholder"] !== undefined && variables[i].dataset['placeholder'].charAt(0) === "_") {
+                variables[i].dataset['placeholder'] = UI.Language.getLanguage().getLingo(variables[i].dataset['placeholder']);
+            }
+            if (variables[i].dataset['default'] !== undefined && variables[i].dataset['default'].charAt(0) === "_") {
+                variables[i].dataset['default'] = UI.Language.getLanguage().getLingo(variables[i].dataset['default']);
+            }
+        }
+        var lists = this.visible.getElementsByClassName("sheetList");
+        for (var i = 0; i < lists.length; i++) {
+            var list = lists[i];
+            var listDefault = list.dataset['default'];
+            if (listDefault !== undefined) {
+                try {
+                    var defaultObj = JSON.parse(listDefault);
+                    if (Array.isArray(defaultObj)) {
+                        for (var k = 0; k < defaultObj.length; k++) {
+                            if (defaultObj[k] instanceof Object) {
+                                defaultObj[k] = this.translateObject(defaultObj[k]);
+                            }
+                        }
+                        list.dataset['default'] = JSON.stringify(defaultObj);
+                    }
+                }
+                catch (e) {
+                    continue;
+                }
+            }
+        }
+        UI.Language.updateScreen(this.visible);
+        this.sheet = new Sheet(this, this, this.visible.childNodes);
+        this.triggerCreatorListeners();
+    };
+    return SheetStyleTranslatable;
+}(SheetStyle));
 var Sheet = (function () {
     function Sheet(parent, style, elements) {
         this.parent = null;
@@ -4531,12 +4584,23 @@ var StyleFactory;
             console.warn(e);
             creator = SheetStyle;
         }
-        if (creator === SheetStyle) {
-            console.warn("[SheetStyle] No changes made to SheetStyle, utilizing common style.");
-        }
+        var SheetStyleAdapted = (function (_super) {
+            __extends(SheetStyleAdapted, _super);
+            function SheetStyleAdapted() {
+                _super.apply(this, arguments);
+            }
+            SheetStyleAdapted.prototype.getCreator = function (kind, type, def) {
+                var name = kind + this.stringToType(type);
+                if (eval("typeof " + name) === "function") {
+                    return eval(name);
+                }
+                return eval(kind + def);
+            };
+            return SheetStyleAdapted;
+        }(creator));
         var _endTime = (new Date()).getTime();
         console.debug("[StyleFactory] " + style.name + "'s Creator took " + (_endTime - _startTime) + "ms to process.");
-        return creator;
+        return SheetStyleAdapted;
     }
     StyleFactory.getCreator = getCreator;
     function getSheetStyle(style, reload) {
@@ -4846,6 +4910,13 @@ var SheetVariablenumber = (function (_super) {
         else {
             this.textNode.nodeValue = this.defaultValue.toString();
         }
+        this.visible.classList.remove("negative", "positive");
+        if (this.value < 0) {
+            this.visible.classList.add("negative");
+        }
+        else if (this.value > 0) {
+            this.visible.classList.add("positive");
+        }
     };
     return SheetVariablenumber;
 }(SheetVariabletext));
@@ -4982,6 +5053,7 @@ var SheetVariablemath = (function (_super) {
         }
     };
     SheetVariablemath.prototype.updateVisible = function () {
+        this.visible.classList.remove("negative", "positive");
         if (document.activeElement === this.visible) {
             this.textNode.nodeValue = this.value === null ? this.defaultValueString === null ? "0" : this.defaultValueString : this.value;
         }
@@ -4993,6 +5065,12 @@ var SheetVariablemath = (function (_super) {
             }
             else {
                 this.textNode.nodeValue = (+value.toFixed(1)).toString();
+            }
+            if (value < 0) {
+                this.visible.classList.add("negative");
+            }
+            else if (value > 0) {
+                this.visible.classList.add("positive");
             }
         }
     };
@@ -5441,6 +5519,130 @@ var SheetButtonsort = (function (_super) {
     };
     return SheetButtonsort;
 }(SheetButtonaddrow));
+var SheetButtoncommonsroll = (function (_super) {
+    __extends(SheetButtoncommonsroll, _super);
+    function SheetButtoncommonsroll() {
+        _super.apply(this, arguments);
+    }
+    SheetButtoncommonsroll.prototype.click = function (e) {
+        e.preventDefault();
+        var diceAmount = Number(this.parent.getValueFor("Dice Amount"));
+        var diceFaces = Number(this.parent.getValueFor("Dice Faces"));
+        var modifierVariable = this.parent.findField("Dice Modifier");
+        var modText;
+        if (modifierVariable !== null) {
+            modText = modifierVariable.getValue();
+        }
+        else {
+            modText = "0";
+        }
+        if (isNaN(diceAmount) || isNaN(diceFaces)) {
+            diceAmount = 0;
+            diceFaces = 0;
+        }
+        else {
+            diceAmount = Math.floor(diceAmount);
+            diceFaces = Math.floor(diceFaces);
+            if (diceAmount <= 0 || diceFaces <= 0) {
+                diceAmount = 0;
+                diceFaces = 0;
+            }
+        }
+        if (typeof modText !== "string") {
+            modText = "0";
+        }
+        this.parse(modText);
+        var modValue = this.getValue();
+        var reason = "";
+        if (diceAmount !== 0) {
+            reason += diceAmount + "d" + diceFaces;
+            if (modText !== "0") {
+                reason += " + (" + modText + ")";
+            }
+        }
+        else {
+            reason += modText;
+        }
+        if (modText !== modValue.toString()) {
+            reason += " = ";
+            if (diceAmount !== 0) {
+                reason += diceAmount + "d" + diceFaces;
+                if (modValue !== 0) {
+                    if (modValue > 0) {
+                        reason += " + " + modValue;
+                    }
+                    else {
+                        reason += " - " + Math.abs(modValue);
+                    }
+                }
+            }
+            else {
+                if (modValue > 0) {
+                    reason += " +" + modValue;
+                }
+                else {
+                    reason += " -" + Math.abs(modValue);
+                }
+            }
+        }
+        if (UI.Chat.getRoom() !== null) {
+            var dice = new MessageDice();
+            dice.setPersona(this.style.getSheetInstance().getName());
+            dice.setMsg(reason);
+            dice.setMod(modValue);
+            dice.addDice(diceAmount, diceFaces);
+            if (UI.Chat.Forms.isDiceTower()) {
+                dice.addDestinationStorytellers(UI.Chat.getRoom());
+            }
+            UI.Chat.sendMessage(dice);
+        }
+    };
+    SheetButtoncommonsroll.prototype.getSymbols = function () {
+        var symbols = [];
+        var nodes = this.parsed.filter(function (node) {
+            return node.type == 'SymbolNode';
+        });
+        for (var i = 0; i < nodes.length; i++) {
+            symbols.push(nodes[i].name);
+        }
+        return symbols;
+    };
+    SheetButtoncommonsroll.prototype.getScope = function (symbols) {
+        var scope = {};
+        for (var i = 0; i < symbols.length; i++) {
+            scope[symbols[i]] = 0;
+        }
+        return scope;
+    };
+    SheetButtoncommonsroll.prototype.parse = function (expr) {
+        expr = Sheet.simplifyString(expr);
+        try {
+            this.parsed = math.parse(expr);
+            this.compiled = math.compile(expr);
+        }
+        catch (e) {
+            console.warn("[SheetButtonCommonsRoll] Invalid Math expression. Error:", e);
+            this.parsed = math.parse("0");
+            this.compiled = math.compile("0");
+        }
+        this.symbols = this.getSymbols();
+        this.scope = this.getScope(this.symbols);
+    };
+    SheetButtoncommonsroll.prototype.getValue = function () {
+        for (var i = 0; i < this.symbols.length; i++) {
+            this.scope[this.symbols[i]] = this.style.getSheet().getValueFor(this.symbols[i]);
+        }
+        try {
+            var result = this.compiled.eval(this.scope);
+            return result;
+        }
+        catch (e) {
+            console.warn("[SheetButtonCommonsRoll] Evaluation error", e);
+            return NaN;
+        }
+    };
+    return SheetButtoncommonsroll;
+}(SheetButton));
 var MessageFactory;
 (function (MessageFactory) {
     var messageClasses = {};
@@ -6574,7 +6776,7 @@ var MessageImage = (function (_super) {
         MessageImage.addLastImage(this);
     };
     MessageImage.prototype.createHTML = function () {
-        if (Application.Config.getConfig("hideMessages").getValue()) {
+        if (Application.Config.getConfig("hideMessages").getValue() && !MessageImage.noAutomation) {
             return null;
         }
         var p = document.createElement("p");
@@ -9992,6 +10194,33 @@ var Lingo = (function () {
     };
     return Lingo;
 }());
+var SheetLingo = (function () {
+    function SheetLingo() {
+        this.defaultLingo = null;
+        this.lingos = [];
+    }
+    SheetLingo.prototype.addLingo = function (lingo, isDefault) {
+        this.lingos.push(lingo);
+        if (isDefault || this.defaultLingo === null) {
+            this.defaultLingo = lingo;
+        }
+    };
+    SheetLingo.prototype.getDefaultLingo = function () {
+        return this.defaultLingo;
+    };
+    SheetLingo.prototype.getLingo = function (ids) {
+        for (var k = 0; k < ids.length; k++) {
+            var id = ids[k];
+            for (var i = 0; i < this.lingos.length; i++) {
+                if (this.lingos[i].ids.indexOf(id) !== -1) {
+                    return this.lingos[i];
+                }
+            }
+        }
+        return this.defaultLingo;
+    };
+    return SheetLingo;
+}());
 var LingoList;
 (function (LingoList) {
     var lingos = {};
@@ -10045,6 +10274,13 @@ var LingoList;
         }
     }
     LingoList.mergeLingo = mergeLingo;
+    function addSheetLingo(lingo) {
+        var listOLingos = getLingos();
+        for (var i = 0; i < listOLingos.length; i++) {
+            listOLingos[i].merge(lingo.getLingo(listOLingos[i].ids));
+        }
+    }
+    LingoList.addSheetLingo = addSheetLingo;
 })(LingoList || (LingoList = {}));
 var ptbr = new Lingo();
 ptbr.ids = ["pt", "pt-br", "ptbr"];
@@ -11027,6 +11263,11 @@ change.addMessage("New message type: quotes. Usage: /quote Name, Quote.", "en");
 change.addMessage("New option to not print certain message types for immersion purposes.", "en");
 change.addMessage("Novo tipo de mensagem: citação. Como usar: /citar Nome, Citação.", "pt");
 change.addMessage("Nova opção para não imprimir certos tipos de mensagem e aumentar imersão.", "pt");
+change = new Changelog(0, 27, 0);
+change.addMessage("Updates to sheet code.", "en");
+change.addMessage("Fix: /images works when unnecessary messages are disabled.", "en");
+change.addMessage("Updates no código de sheets.", "pt");
+change.addMessage("Fix: /imagens funciona quando mensagens desnecessárias está desabilitado.", "pt");
 delete (change);
 Changelog.finished();
 var UI;

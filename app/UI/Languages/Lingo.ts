@@ -52,6 +52,34 @@ class Lingo {
     }
 }
 
+class SheetLingo {
+    private defaultLingo : Lingo = null;
+    private lingos : Array<Lingo> = [];
+
+    public addLingo (lingo : Lingo, isDefault : boolean) {
+        this.lingos.push(lingo);
+        if (isDefault || this.defaultLingo === null) {
+            this.defaultLingo = lingo;
+        }
+    }
+
+    public getDefaultLingo () {
+        return this.defaultLingo;
+    }
+
+    public getLingo (ids : Array<string>) {
+        for (var k = 0; k < ids.length; k++) {
+            var id = ids[k];
+            for (var i = 0; i < this.lingos.length; i++) {
+                if (this.lingos[i].ids.indexOf(id) !== -1) {
+                    return this.lingos[i];
+                }
+            }
+        }
+        return this.defaultLingo;
+    }
+}
+
 module LingoList {
     var lingos :{ [id : string] : Lingo } = {};
 
@@ -106,6 +134,13 @@ module LingoList {
         }
         if (!found) {
             console.warn("[Lingo] Language not found for:", lingo);
+        }
+    }
+
+    export function addSheetLingo (lingo : SheetLingo) {
+        var listOLingos = getLingos();
+        for (var i = 0; i < listOLingos.length; i++) {
+            listOLingos[i].merge(lingo.getLingo(listOLingos[i].ids));
         }
     }
 }

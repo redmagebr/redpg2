@@ -127,6 +127,12 @@ change.addMessage("Novo tipo de mensagem: citação. Como usar: /citar Nome, Cit
 change.addMessage("Nova opção para não imprimir certos tipos de mensagem e aumentar imersão.", "pt");
 
 
+change = new Changelog(0, 27, 0);
+change.addMessage("Updates to sheet code.", "en");
+change.addMessage("Fix: /images works when unnecessary messages are disabled.", "en");
+change.addMessage("Updates no código de sheets.", "pt");
+change.addMessage("Fix: /imagens funciona quando mensagens desnecessárias está desabilitado.", "pt");
+
 delete (change);
 
 Changelog.finished();

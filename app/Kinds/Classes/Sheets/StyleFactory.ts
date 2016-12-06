@@ -13,13 +13,19 @@ module StyleFactory {
             creator = SheetStyle;
         }
 
-        if (creator === SheetStyle) {
-            console.warn("[SheetStyle] No changes made to SheetStyle, utilizing common style.");
+        class SheetStyleAdapted extends creator {
+            public getCreator (kind : string, type : string, def : string) {
+                var name = kind + this.stringToType(type);
+                if (eval ("typeof " + name) === "function") {
+                    return eval(name);
+                }
+                return eval(kind + def);
+            }
         }
 
         var _endTime = (new Date()).getTime();
         console.debug("[StyleFactory] " + style.name + "'s Creator took " + (_endTime - _startTime) + "ms to process.");
-        return creator;
+        return SheetStyleAdapted;
     }
 
     export function getSheetStyle (style : StyleInstance, reload? : boolean) {

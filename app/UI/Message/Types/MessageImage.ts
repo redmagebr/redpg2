@@ -54,7 +54,7 @@ class MessageImage extends Message {
     }
 
     public createHTML () {
-        if (Application.Config.getConfig("hideMessages").getValue()) {
+        if (Application.Config.getConfig("hideMessages").getValue() && !MessageImage.noAutomation) {
             return null;
         }
         var p = document.createElement("p");
