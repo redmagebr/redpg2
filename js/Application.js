@@ -3701,7 +3701,7 @@ var SheetTab = (function () {
     .addNumbers(['o', 'u', 'uli', 'lia', 'sa', 'mi', 'ola', 'su', 'kaala', 'thus'])
     .addLetters(['a', 'i', 'e'])
     .addShortWords(['ae', 'ea', 'lae', 'lea', 'mia', 'thal', 'maae', 'leah', 'tea', 'ma', 'da', 'le', 'li', 'ta', 'te', 'ia', 'io'])
-    .addSyllabi(['el', 'shal', 'shel', 'ae', 'ea', 'lae', 'lea', 'mia', 'thal', 'maae', 'leah', 'tea', 'ma', 'da', 'le', 'li', 'ta', 'te', 'ia', 'io', 'a', 'i', 'e'])
+    .addSyllabi(['el', 'shal', 'shel', 'ae', 'ea', 'lae', 'lea', 'mia', 'thal', 'maae', 'leah', 'tea', 'ma', 'da', 'le', 'li', 'ta', 'te', 'ia', 'io', 'a', 'i', 'e', 'ri', 'v', 'ss', 's', 'rh', 't', 'q', 'r', 'h', 'hw', 'w', 'ng', 'li', 'lo', 'sha', 'bel', 'annah'])
     .addStaticWord(['calor', 'quente', 'fogo', 'chama', 'flamejante', 'chamas', 'fogos'], "uloloki")
     .getSyllableCustom = function () {
     if (this.currentTranslation.length < 1 || this.currentWord.length < 4 || (this.currentWord.length - this.currentTranslation.length) < 3) {
@@ -4713,7 +4713,13 @@ var SheetVariabletext = (function (_super) {
     };
     SheetVariabletext.prototype.storeValue = function (value) {
         if (this.editable) {
-            if (typeof value === "string" && value !== this.value) {
+            if (value === null || typeof value === "undefined") {
+                value = this.value;
+            }
+            else if (typeof value !== "string") {
+                value = value.toString();
+            }
+            if (value !== this.value) {
                 this.value = value;
                 this.considerTriggering();
             }
@@ -11268,6 +11274,11 @@ change.addMessage("Updates to sheet code.", "en");
 change.addMessage("Fix: /images works when unnecessary messages are disabled.", "en");
 change.addMessage("Updates no código de sheets.", "pt");
 change.addMessage("Fix: /imagens funciona quando mensagens desnecessárias está desabilitado.", "pt");
+change = new Changelog(0, 27, 1);
+change.addMessage("Updates to sheet code.", "en");
+change.addMessage("Added syllabi to Elvish.", "en");
+change.addMessage("Updates no código de sheets.", "pt");
+change.addMessage("Adicionadas sílabas a Elfico.", "pt");
 delete (change);
 Changelog.finished();
 var UI;

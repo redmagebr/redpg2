@@ -124,7 +124,12 @@ class SheetVariabletext extends SheetVariable {
 
     public storeValue (value : string) {
         if (this.editable) {
-            if (typeof value === "string" && value !== this.value) {
+            if (value === null || typeof value === "undefined") {
+                value = this.value;
+            } else if (typeof value !== "string") {
+                value = (<Object> value).toString();
+            }
+            if (value !== this.value) {
                 this.value = value;
                 this.considerTriggering();
             }

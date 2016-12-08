@@ -21,7 +21,7 @@
     .addNumbers(['o', 'u', 'uli', 'lia', 'sa', 'mi', 'ola', 'su', 'kaala', 'thus'])
     .addLetters(['a', 'i', 'e'])
     .addShortWords(['ae', 'ea', 'lae', 'lea', 'mia', 'thal', 'maae', 'leah', 'tea', 'ma', 'da', 'le', 'li', 'ta', 'te', 'ia', 'io'])
-    .addSyllabi(['el', 'shal', 'shel', 'ae', 'ea', 'lae', 'lea', 'mia', 'thal', 'maae', 'leah', 'tea', 'ma', 'da', 'le', 'li', 'ta', 'te', 'ia', 'io', 'a', 'i', 'e'])
+    .addSyllabi(['el', 'shal', 'shel', 'ae', 'ea', 'lae', 'lea', 'mia', 'thal', 'maae', 'leah', 'tea', 'ma', 'da', 'le', 'li', 'ta', 'te', 'ia', 'io', 'a', 'i', 'e', 'ri', 'v', 'ss', 's', 'rh', 't', 'q', 'r', 'h', 'hw', 'w', 'ng', 'li', 'lo', 'sha', 'bel', 'annah'])
     .addStaticWord(['calor','quente','fogo','chama','flamejante','chamas','fogos'], "uloloki")
     .getSyllableCustom = function () {
     if (this.currentTranslation.length < 1 || this.currentWord.length < 4 || (this.currentWord.length - this.currentTranslation.length) < 3) {

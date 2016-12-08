@@ -133,6 +133,12 @@ change.addMessage("Fix: /images works when unnecessary messages are disabled.", 
 change.addMessage("Updates no código de sheets.", "pt");
 change.addMessage("Fix: /imagens funciona quando mensagens desnecessárias está desabilitado.", "pt");
 
+change = new Changelog(0, 27, 1);
+change.addMessage("Updates to sheet code.", "en");
+change.addMessage("Added syllabi to Elvish.", "en");
+change.addMessage("Updates no código de sheets.", "pt");
+change.addMessage("Adicionadas sílabas a Elfico.", "pt");
+
 delete (change);
 
 Changelog.finished();
