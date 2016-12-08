@@ -139,6 +139,10 @@ change.addMessage("Added syllabi to Elvish.", "en");
 change.addMessage("Updates no código de sheets.", "pt");
 change.addMessage("Adicionadas sílabas a Elfico.", "pt");
 
+change = new Changelog(0, 27, 1);
+change.addMessage("Fix: /w auto-complete will use the FULL nickname rather than the UNIQUE nickname.", "en");
+change.addMessage("Fix: Auto-completar do /w ira usar o nick COMPLETO ao invés de nick ÚNICO.", "pt");
+
 delete (change);
 
 Changelog.finished();

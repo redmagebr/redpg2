@@ -189,7 +189,7 @@ module UI.Chat.Forms {
 
                     var users = room.getUsersByName(target);
                     if (users.length === 1) {
-                        setInput("/whisper " + users[0].getUniqueNickname() + ", " + message);
+                        setInput("/whisper " + users[0].getUser().getFullNickname() + ", " + message);
                     } else {
                         var error = new ChatSystemMessage(true);
                         if (users.length === 0) {
@@ -204,7 +204,7 @@ module UI.Chat.Forms {
                             error.addText(": ");
                             for (var i = 0; i < users.length; i++) {
                                 var listener = {
-                                    target : users[i].getUniqueNickname(),
+                                    target : users[i].getUser().getFullNickname(),
                                     message : message,
                                     handleEvent : clickF
                                 };

@@ -11279,6 +11279,9 @@ change.addMessage("Updates to sheet code.", "en");
 change.addMessage("Added syllabi to Elvish.", "en");
 change.addMessage("Updates no código de sheets.", "pt");
 change.addMessage("Adicionadas sílabas a Elfico.", "pt");
+change = new Changelog(0, 27, 1);
+change.addMessage("Fix: /w auto-complete will use the FULL nickname rather than the UNIQUE nickname.", "en");
+change.addMessage("Fix: Auto-completar do /w ira usar o nick COMPLETO ao invés de nick ÚNICO.", "pt");
 delete (change);
 Changelog.finished();
 var UI;
@@ -14131,7 +14134,7 @@ var UI;
                             }
                             var users = room.getUsersByName(target);
                             if (users.length === 1) {
-                                setInput("/whisper " + users[0].getUniqueNickname() + ", " + message);
+                                setInput("/whisper " + users[0].getUser().getFullNickname() + ", " + message);
                             }
                             else {
                                 var error = new ChatSystemMessage(true);
@@ -14147,7 +14150,7 @@ var UI;
                                     error.addText(": ");
                                     for (var i = 0; i < users.length; i++) {
                                         var listener = {
-                                            target: users[i].getUniqueNickname(),
+                                            target: users[i].getUser().getFullNickname(),
                                             message: message,
                                             handleEvent: clickF
                                         };
