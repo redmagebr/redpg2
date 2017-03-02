@@ -10,7 +10,7 @@ class SheetStyleTranslatable extends SheetStyle {
         return obj;
     }
 
-    protected createSheet () {
+    protected translateSheet () {
         var variables = this.visible.getElementsByClassName("sheetVariable");
         for (var i = 0; i < variables.length; i++) {
             // Placeholder Lingo
@@ -45,7 +45,11 @@ class SheetStyleTranslatable extends SheetStyle {
             }
         }
         UI.Language.updateScreen(this.visible);
-        this.sheet = new Sheet(this, this, this.visible.childNodes);
-        this.triggerCreatorListeners();
+    }
+
+    protected fillElements () {
+        this.visible.innerHTML = this.styleInstance.html;
+        this.css.innerHTML = this.styleInstance.css;
+        this.translateSheet();
     }
 }

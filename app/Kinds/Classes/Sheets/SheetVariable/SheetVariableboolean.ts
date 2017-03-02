@@ -36,10 +36,10 @@ class SheetVariableboolean extends SheetVariable {
             state = state === true;
             if (state !== this.value) {
                 this.value = state;
-                this.updateVisible();
                 this.considerTriggering();
             }
         }
+        this.updateVisible();
     }
 
     public updateVisible () {

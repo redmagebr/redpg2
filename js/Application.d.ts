@@ -911,7 +911,8 @@ declare class SheetStyle {
 }
 declare class SheetStyleTranslatable extends SheetStyle {
     protected translateObject(obj: Object): Object;
-    protected createSheet(): void;
+    protected translateSheet(): void;
+    protected fillElements(): void;
 }
 declare class Sheet {
     protected parent: SheetStyle | SheetList;
@@ -1150,6 +1151,20 @@ declare class SheetVariableboolean extends SheetVariable {
     reset(): void;
     storeValue(state: any): void;
     updateVisible(): void;
+}
+declare class SheetVariableimageselect extends SheetVariable {
+    protected defaultName: string;
+    protected defaultUrl: string;
+    protected select: HTMLSelectElement;
+    protected errorUrl: string;
+    constructor(parent: Sheet, style: SheetStyle, element: HTMLElement);
+    createOptions(name: string, arr: Array<Array<string>>): HTMLOptGroupElement;
+    createOption(name: string, url: string): HTMLOptionElement;
+    updateOptions(): void;
+    storeValue(arr: Array<string>): void;
+    updateVisible(): void;
+    change(e: any): void;
+    click(e: any): void;
 }
 declare class SheetButtonaddrow extends SheetButton {
     protected target: string;

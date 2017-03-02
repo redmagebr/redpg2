@@ -17,6 +17,7 @@
 /// <reference path='SheetVariable/SheetVariableimage.ts' />
 /// <reference path='SheetVariable/SheetVariableselect.ts' />
 /// <reference path='SheetVariable/SheetVariableboolean.ts' />
+/// <reference path='SheetVariable/SheetVariableimageselect.ts' />
 
 
 /// <reference path='SheetButton/SheetButtonaddrow.ts' />

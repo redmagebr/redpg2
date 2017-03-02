@@ -43,7 +43,7 @@ if (Application.Login.hasSession()) {
     UI.Login.resetFocus();
 }
 
-document.write("<script src='" + Server.CLIENT_URL + "js/Changelog.js' type='text/javascript'></script>");
+document.write("<script src='" + Server.CLIENT_URL + "js/Changelog.js' type='text/javascript'>" + "<" + "/" + "script>");
 
 // Call any onReady listeners
 allReady();

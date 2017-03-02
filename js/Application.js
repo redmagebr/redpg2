@@ -3982,7 +3982,7 @@ var SheetStyleTranslatable = (function (_super) {
         }
         return obj;
     };
-    SheetStyleTranslatable.prototype.createSheet = function () {
+    SheetStyleTranslatable.prototype.translateSheet = function () {
         var variables = this.visible.getElementsByClassName("sheetVariable");
         for (var i = 0; i < variables.length; i++) {
             if (variables[i].dataset["placeholder"] !== undefined && variables[i].dataset['placeholder'].charAt(0) === "_") {
@@ -4014,8 +4014,11 @@ var SheetStyleTranslatable = (function (_super) {
             }
         }
         UI.Language.updateScreen(this.visible);
-        this.sheet = new Sheet(this, this, this.visible.childNodes);
-        this.triggerCreatorListeners();
+    };
+    SheetStyleTranslatable.prototype.fillElements = function () {
+        this.visible.innerHTML = this.styleInstance.html;
+        this.css.innerHTML = this.styleInstance.css;
+        this.translateSheet();
     };
     return SheetStyleTranslatable;
 }(SheetStyle));
@@ -5346,16 +5349,148 @@ var SheetVariableboolean = (function (_super) {
             state = state === true;
             if (state !== this.value) {
                 this.value = state;
-                this.updateVisible();
                 this.considerTriggering();
             }
         }
+        this.updateVisible();
     };
     SheetVariableboolean.prototype.updateVisible = function () {
         this.visible.checked = this.value;
         this.visible.disabled = !(this.editable && (this.style.getSheetInstance() === null || this.style.getSheetInstance().isEditable()));
     };
     return SheetVariableboolean;
+}(SheetVariable));
+var SheetVariableimageselect = (function (_super) {
+    __extends(SheetVariableimageselect, _super);
+    function SheetVariableimageselect(parent, style, element) {
+        _super.call(this, parent, style, element);
+        this.select = document.createElement("select");
+        this.errorUrl = "images/sheetImgError.png";
+        while (this.visible.firstChild !== null)
+            this.visible.removeChild(this.visible.firstChild);
+        this.visible.appendChild(this.select);
+        if (this.defaultValueString === null) {
+            this.defaultName = "";
+            this.defaultUrl = "";
+        }
+        else {
+            var obj;
+            try {
+                obj = JSON.parse(this.defaultValueString);
+                if (Array.isArray(obj) && obj.length === 2) {
+                    this.defaultName = obj[0];
+                    this.defaultUrl = obj[1];
+                }
+                else {
+                    this.defaultName = "";
+                    this.defaultUrl = "";
+                }
+            }
+            catch (e) {
+                console.log("[SheetVariableImageSelect] Produced invalid Default Value at " + this.id + ":", this.defaultValueString);
+                this.defaultName = "";
+                this.defaultUrl = "";
+            }
+        }
+        if (this.visible.dataset['selectclass'] !== undefined) {
+            this.select.classList.add(this.visible.dataset['selectclass']);
+        }
+        if (this.editable) {
+            this.select.addEventListener("change", (function (e) {
+                this.change(e);
+            }).bind(this));
+            this.select.addEventListener("click", (function (e) {
+                this.click(e);
+            }).bind(this));
+        }
+        this.value = [this.defaultName, this.defaultUrl];
+        this.updateOptions();
+        this.updateVisible();
+    }
+    SheetVariableimageselect.prototype.createOptions = function (name, arr) {
+        var optgroup = document.createElement("optgroup");
+        optgroup.label = name;
+        for (var i = 0; i < arr.length; i++) {
+            optgroup.appendChild(this.createOption(arr[i][0], arr[i][1]));
+        }
+        return optgroup;
+    };
+    SheetVariableimageselect.prototype.createOption = function (name, url) {
+        var option = document.createElement("option");
+        option.value = JSON.stringify([name, url]);
+        option.appendChild(document.createTextNode(name));
+        return option;
+    };
+    SheetVariableimageselect.prototype.updateOptions = function () {
+        while (this.select.firstChild !== null)
+            this.select.removeChild(this.select.firstChild);
+        if (this.value !== null && this.value[0] !== "" && this.value[1] !== "") {
+            var lastValueName = UI.Language.getLanguage().getLingo("_SHEETVARIABLEIMAGELASTVALUE_");
+            this.select.appendChild(this.createOptions(lastValueName, [this.value]));
+        }
+        if (this.defaultName !== "" && this.defaultUrl !== "") {
+            this.select.appendChild(this.createOption(this.defaultName, this.defaultUrl));
+        }
+        else {
+            var opt = this.createOption(UI.Language.getLanguage().getLingo("_SHEETVARIABLEIMAGENONE_"), this.errorUrl);
+            this.select.appendChild(opt);
+        }
+        var images = DB.ImageDB.getImagesByFolder();
+        if (images.length === 0) {
+            var opt = this.createOption(UI.Language.getLanguage().getLingo("_SHEETVARIABLEIMAGESNOTLOADED_"), "");
+            opt.disabled = true;
+            this.select.appendChild(opt);
+        }
+        else {
+            for (var i = 0; i < images.length; i++) {
+                if (images[i].length > 0) {
+                    var group = {
+                        name: images[i][0].getFolder(),
+                        images: []
+                    };
+                    if (group.name === "") {
+                        group.name = UI.Language.getLanguage().getLingo("_IMAGESNOFOLDERNAME_");
+                    }
+                    for (var k = 0; k < images[i].length; k++) {
+                        group.images.push([images[i][k].getName(), images[i][k].getLink()]);
+                    }
+                    this.select.appendChild(this.createOptions(group.name, group.images));
+                }
+            }
+        }
+        this.select.value = JSON.stringify(this.value);
+    };
+    SheetVariableimageselect.prototype.storeValue = function (arr) {
+        if (!Array.isArray(arr) || arr.length !== 2) {
+            arr = [this.defaultName, this.defaultUrl];
+        }
+        if (this.value[0] !== arr[0] || this.value[1] !== arr[1]) {
+            this.value = arr;
+            this.considerTriggering();
+        }
+        this.updateVisible();
+    };
+    SheetVariableimageselect.prototype.updateVisible = function () {
+        this.updateOptions();
+        this.select.disabled = (!this.editable || (this.style.getSheetInstance() !== null && !this.style.getSheetInstance().isEditable()));
+    };
+    SheetVariableimageselect.prototype.change = function (e) {
+        var obj;
+        try {
+            obj = JSON.parse(this.select.value);
+            if (Array.isArray(obj) && obj.length === 2) {
+                this.storeValue(obj);
+            }
+        }
+        catch (e) {
+            console.log("[SheetVariableImageSelect] Produced invalid Array at " + this.id + ":", this.select.value, e);
+            this.storeValue([this.defaultName, this.defaultUrl]);
+        }
+    };
+    SheetVariableimageselect.prototype.click = function (e) {
+        this.updateOptions();
+    };
+    return SheetVariableimageselect;
 }(SheetVariable));
 var SheetButtonaddrow = (function (_super) {
     __extends(SheetButtonaddrow, _super);
@@ -15299,6 +15434,6 @@ if (Application.Login.hasSession()) {
 else {
     UI.Login.resetFocus();
 }
-document.write("<script src='" + Server.CLIENT_URL + "js/Changelog.js' type='text/javascript'></script>");
+document.write("<script src='" + Server.CLIENT_URL + "js/Changelog.js' type='text/javascript'>" + "<" + "/" + "script>");
 allReady();
 //# sourceMappingURL=Application.js.map
