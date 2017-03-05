@@ -58,6 +58,36 @@
   }
 }
 
+@keyframes fireBackground {
+  from {
+    opacity: 0.15;
+  }
+  10% {
+    opacity: 0.20;
+  }
+  20% {
+    opacity: 0.20;
+  }
+  40% {
+    opacity: 0.25;
+  }
+  60% {
+    opacity: 0.15;
+  }
+  70% {
+    opacity: 0.10;
+  }
+  80% {
+    opacity: 0.20;
+  }
+  90% {
+    opacity: 0.10;
+  }
+  to {
+    opacity: 0.15;
+  }
+}
+
 #mainWindow {
   transition: filter 3s ease-in-out;
 
@@ -92,8 +122,10 @@
     filter: grayscale(10%) brightness(90%);
 
     & > #colorFilter {
-      opacity: 0.25;
-      background-color: #972700;
+      background-color: #bd2e00;
+      animation-name: fireBackground;
+      animation-duration: 8s;
+      animation-iteration-count: infinite;
     }
   }
 
