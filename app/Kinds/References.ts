@@ -61,6 +61,7 @@
 /// <reference path='Elements/PicaTool.ts' />
 /// <reference path='Elements/PicaToolbar.ts' />
 /// <reference path='Elements/PicaBoard.ts' />
+/// <reference path='Elements/PicaCanvas.ts' />
 /// <reference path='Elements/PicaBG.ts' />
 /// <reference path='Elements/SoundsRow.ts' />
 /// <reference path='Elements/SoundsFolder.ts' />
