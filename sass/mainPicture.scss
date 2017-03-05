@@ -97,3 +97,11 @@
   @extend .rightPicaTool;
   @extend .picaToolButton;
 }
+
+.picaCanvas {
+  cursor: crosshair;
+
+  &.locked {
+    cursor: not-allowed;
+  }
+}
