@@ -144,7 +144,7 @@
     function Point () {
         this.x = 0;
         this.y = 0;
-        var maxCurve = 0;
+        var maxCurve = 40;
         var encoding = "0123456789abcdefghijklmnopqrstuvxwyzABCDEFGHIJKLMNOPQRSTUVXWYZ-+_=![]{}()*@/\\:;";
         var canvasSize = Math.pow(encoding.length, 2);
 
@@ -180,7 +180,19 @@
             var triangle = !((dab + dbc) <= dac);
             if (!triangle) return false;
 
-            if (((dab + dbc) - dac) < maxCurve) {
+            /*if (((dab + dbc) - dac) < maxCurve) {
+                return false;
+            }*/
+
+            //var angleDeg = Math.atan2(ps[0].y - ps[1].y, ps[0].x - ps[1].x) * 180 / Math.PI;
+
+            var angle = Math.acos(((dab * dab) + (dac*dac) - (dbc * dbc)) / (2 * dac * dab));
+            angle = angle * 180 / Math.PI;
+
+            //alert(Math.abs(angleDeg));
+
+
+            if (angle > 160) {
                 return false;
             }
 
