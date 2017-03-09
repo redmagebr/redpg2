@@ -1,0 +1,1 @@
+copy /Y C:\Users\Reddo\WebstormProjects\redpg2\app\Changelog.ts C:\Users\Reddo\WebstormProjects\redpg2\js\Changelog.js
