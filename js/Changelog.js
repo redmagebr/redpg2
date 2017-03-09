@@ -147,6 +147,10 @@ change = new Changelog(0, 27, 2);
 change.addMessage("Fix: Logs should work now. Old logs need to be recreated or fixed manually.", "en");
 change.addMessage("Fix: Logs devem funcionar agora. Logs antigos deverão ser recriados ou consertados manualmente.", "pt");
 
+change = new Changelog(0, 27, 2);
+change.addMessage("Fix: Logs will no longer include personal messages.", "en");
+change.addMessage("Fix: Logs não irão mais incluir mensagens pessoais.", "pt");
+
 delete (change);
 
 Changelog.finished();

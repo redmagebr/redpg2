@@ -552,6 +552,7 @@ declare class MemoryPica extends TrackerMemory {
     private static fieldOrder;
     reset(): void;
     getValue(): this;
+    isPicaAllowed(): boolean;
     picaAllowedExport(): number;
     picaAllowedStore(isIt: boolean | number): void;
     storeValue(values: Array<any>): void;
@@ -798,6 +799,9 @@ declare class PicaContainer {
 }
 declare abstract class PicaTool {
     abstract getHTML(): HTMLElement;
+    abstract onHover(): void;
+    abstract onClick(): void;
+    abstract updateVisibility(isStoryteller: boolean, isPicaDraw: boolean): void;
 }
 declare class PicaToolbar {
     private container;
@@ -808,14 +812,47 @@ declare class PicaToolbar {
 declare class PicaBoard {
     private board;
     private background;
+    private canvas;
     private availHeight;
     private availWidth;
     constructor();
+    getBackground(): PicaBG;
     loadImage(url: string): void;
     getAvailHeight(): number;
     getAvailWidth(): number;
     resize(): void;
     getHTML(): HTMLDivElement;
+}
+declare class PicaCanvas {
+    private parent;
+    private canvas;
+    private artAllowed;
+    private locked;
+    private width;
+    private height;
+    constructor(board: PicaBoard);
+    setLock(isLocked: boolean): void;
+    redraw(): void;
+    getHeight(): number;
+    getWidth(): number;
+    resize(): void;
+}
+declare class PicaCanvasPen {
+    mouseDown(e: any): void;
+    mouseUp(e: any): void;
+    mouseMove(e: any): void;
+}
+declare class PicaCanvasPoint {
+    private x;
+    private y;
+    private canvas;
+    private static minCurve;
+    private static encoding;
+    private static precision;
+    constructor(offsetX: any, offsetY: any, canvas: any);
+    distanceTo(p2: PicaCanvasPoint): number;
+    static isTriangle(p1: PicaCanvasPoint, p2: PicaCanvasPoint, p3: PicaCanvasPoint): boolean;
+    static isEqual(p1: PicaCanvasPoint, p2: PicaCanvasPoint): boolean;
 }
 declare class PicaBG {
     private board;
@@ -824,6 +861,12 @@ declare class PicaBG {
     onLoad(): void;
     loadImage(url: string): void;
     resize(): void;
+    exportSizing(): {
+        height: number;
+        width: number;
+        left: string;
+        top: string;
+    };
 }
 declare class SoundsRow {
     private html;

@@ -1,6 +1,7 @@
 class PicaBoard {
     private board = document.createElement("div");
     private background = new PicaBG(this);
+    private canvas = new PicaCanvas(this);
 
     private availHeight : number;
     private availWidth : number;
@@ -18,6 +19,10 @@ class PicaBoard {
         };
 
         window.addEventListener("resize", resizer);
+    }
+
+    public getBackground () : PicaBG {
+        return this.background;
     }
 
     public loadImage (url : string) {
@@ -38,6 +43,7 @@ class PicaBoard {
         this.availWidth = this.board.offsetWidth;
 
         this.background.resize();
+        this.canvas.resize();
     }
 
     public getHTML () {

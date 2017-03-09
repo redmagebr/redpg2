@@ -35,7 +35,7 @@ module UI.Logger {
         var newMessages = [];
 
         for (var i = currentLeft; i <= currentRight; i++) {
-            if (acceptedModules.indexOf(messages[i].module) !== -1) {
+            if (acceptedModules.indexOf(messages[i].module) !== -1 && !messages[i].hasDestination()) {
                 newMessages.push(messages[i]);
             }
         }

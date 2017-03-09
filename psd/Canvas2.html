@@ -81,6 +81,37 @@
         }
     });
 
+    function cleanArt (currentArt) {
+        var cleanedArt = [currentArt[0], currentArt[1], []];
+
+        cleanedArt[2].push(currentArt[2][0]);
+        lastAdded = currentArt[2][0];
+
+        for (var i = 0; i < currentArt[2].length; i++) {
+            var p = currentArt[2][i];
+            if ((i + 1) == currentArt[2].length) {
+                cleanedArt[2].push(p);
+            } else {
+                var found = false;
+                for (var k = cleanedArt[2].length - 1; k >=0; k--) {
+                    var p2 = cleanedArt[2][k];
+                    if (p.parseX(canvas.width) === p2.parseX(canvas.width) && p2.parseX(canvas.width) === p2.parseY(canvas.width)) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (found) continue;
+
+                if (!p.isTriangle([p, lastAdded, currentArt[2][i + 1]], canvas.width, canvas.height)) continue;
+
+                lastAdded = p;
+                cleanedArt[2].push(p);
+            }
+        }
+
+        return cleanedArt;
+    }
+
     canvas.addEventListener("mouseup", function (e) {
         if (currentArt !== null) {
             var p = new Point();
@@ -92,32 +123,7 @@
             var origLength = JSON.stringify(currentArt).length;
             console.log("Original Art Size: " + origLength);
 
-            var cleanedArt = [currentArt[0], currentArt[1], []];
-
-            cleanedArt[2].push(currentArt[2][0]);
-            lastAdded = currentArt[2][0];
-
-            for (var i = 0; i < currentArt[2].length; i++) {
-                var p = currentArt[2][i];
-                if ((i + 1) == currentArt[2].length) {
-                    cleanedArt[2].push(p);
-                } else {
-                    var found = false;
-                    for (var k = cleanedArt[2].length - 1; k >=0; k--) {
-                        var p2 = cleanedArt[2][k];
-                        if (p.parseX(canvas.width) === p2.parseX(canvas.width) && p2.parseX(canvas.width) === p2.parseY(canvas.width)) {
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (found) continue;
-
-                    if (!p.isTriangle([p, lastAdded, currentArt[2][i + 1]], canvas.width, canvas.height)) continue;
-
-                    lastAdded = p;
-                    cleanedArt[2].push(p);
-                }
-            }
+            cleanedArt = cleanArt(currentArt);
 
             var cleanLength = JSON.stringify(cleanedArt).length;
             console.log("Cleaned Art Size: " + cleanLength + " (" + parseInt((cleanLength * 100)/origLength) + "%)");
@@ -192,7 +198,7 @@
             //alert(Math.abs(angleDeg));
 
 
-            if (angle > 160) {
+            if (angle > 170) {
                 return false;
             }
 

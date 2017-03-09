@@ -2082,6 +2082,9 @@ var MemoryPica = (function (_super) {
     MemoryPica.prototype.getValue = function () {
         return this;
     };
+    MemoryPica.prototype.isPicaAllowed = function () {
+        return this.picaAllowed;
+    };
     MemoryPica.prototype.picaAllowedExport = function () {
         return this.picaAllowed ? 1 : 0;
     };
@@ -3271,6 +3274,7 @@ var PicaBoard = (function () {
     function PicaBoard() {
         this.board = document.createElement("div");
         this.background = new PicaBG(this);
+        this.canvas = new PicaCanvas(this);
         this.board.id = "pictureBoard";
         console.debug("[PicaBoard] Binding on window resize.");
         var resizer = {
@@ -3281,6 +3285,9 @@ var PicaBoard = (function () {
         };
         window.addEventListener("resize", resizer);
     }
+    PicaBoard.prototype.getBackground = function () {
+        return this.background;
+    };
     PicaBoard.prototype.loadImage = function (url) {
         this.resize();
         this.background.loadImage(url);
@@ -3295,16 +3302,116 @@ var PicaBoard = (function () {
         this.availHeight = this.board.offsetHeight;
         this.availWidth = this.board.offsetWidth;
         this.background.resize();
+        this.canvas.resize();
     };
     PicaBoard.prototype.getHTML = function () {
         return this.board;
     };
     return PicaBoard;
 }());
+var PicaCanvas = (function () {
+    function PicaCanvas(board) {
+        this.canvas = document.createElement("canvas");
+        this.artAllowed = Server.Chat.Memory.getConfiguration("Pica");
+        this.locked = false;
+        this.parent = board;
+        this.canvas.style.zIndex = "2";
+        this.canvas.style.position = "absolute";
+        this.canvas.classList.add("picaCanvas");
+        this.parent.getHTML().appendChild(this.canvas);
+        this.artAllowed.addChangeListener({
+            picaCanvas: this,
+            handleEvent: function (artAllowed) {
+                console.log("Updating canvas to pica allowed change");
+                this.picaCanvas.setLock(artAllowed.isPicaAllowed());
+            }
+        });
+        this.setLock(this.artAllowed.isPicaAllowed());
+    }
+    PicaCanvas.prototype.setLock = function (isLocked) {
+        this.locked = isLocked;
+        if (this.locked) {
+            this.canvas.classList.add("locked");
+        }
+        else {
+            this.canvas.classList.remove("locked");
+        }
+    };
+    PicaCanvas.prototype.redraw = function () {
+    };
+    PicaCanvas.prototype.getHeight = function () {
+        return this.height;
+    };
+    PicaCanvas.prototype.getWidth = function () {
+        return this.width;
+    };
+    PicaCanvas.prototype.resize = function () {
+        var sizeObj = this.parent.getBackground().exportSizing();
+        this.height = sizeObj.height;
+        this.width = sizeObj.width;
+        this.canvas.width = sizeObj.width;
+        this.canvas.height = sizeObj.height;
+        this.canvas.style.left = sizeObj.left;
+        this.canvas.style.top = sizeObj.top;
+        this.redraw();
+    };
+    return PicaCanvas;
+}());
+var PicaCanvasPen = (function () {
+    function PicaCanvasPen() {
+    }
+    PicaCanvasPen.prototype.mouseDown = function (e) {
+    };
+    PicaCanvasPen.prototype.mouseUp = function (e) {
+    };
+    PicaCanvasPen.prototype.mouseMove = function (e) {
+    };
+    return PicaCanvasPen;
+}());
+var PicaCanvasPoint = (function () {
+    function PicaCanvasPoint(offsetX, offsetY, canvas) {
+        this.x = 0;
+        this.y = 0;
+        this.x = parseInt((offsetX * PicaCanvasPoint.precision) / width);
+        this.y = parseInt((offsetY * PicaCanvasPoint.precision) / height);
+    }
+    PicaCanvasPoint.prototype.distanceTo = function (p2) {
+        var x1 = this.x;
+        var x2 = p2.x;
+        var y1 = this.y;
+        var y2 = p2.y;
+        return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+    };
+    PicaCanvasPoint.isTriangle = function (p1, p2, p3) {
+        var dab = p1.distanceTo(p2);
+        var dbc = p2.distanceTo(p3);
+        var dac = p1.distanceTo(p3);
+        var triangle = !((dab + dbc) <= dac);
+        if (!triangle)
+            return false;
+        if (((dab + dbc) - dac) < PicaCanvasPoint.maxCurve) {
+            return false;
+        }
+        var angle = Math.acos(((dab * dab) + (dac * dac) - (dbc * dbc)) / (2 * dac * dab));
+        angle = angle * 180 / Math.PI;
+        if (angle > (180 - PicaCanvasPoint.minCurve)) {
+            return false;
+        }
+        return true;
+    };
+    PicaCanvasPoint.isEqual = function (p1, p2) {
+        return p1.x == p2.x && p1.y == p2.y;
+    };
+    PicaCanvasPoint.minCurve = 10;
+    PicaCanvasPoint.encoding = "0123456789abcdefghijklmnopqrstuvxwyzABCDEFGHIJKLMNOPQRSTUVXWYZ-+_=![]{}()*@/\\:;";
+    PicaCanvasPoint.precision = Math.pow(PicaCanvasPoint.encoding.length, 2);
+    return PicaCanvasPoint;
+}());
 var PicaBG = (function () {
     function PicaBG(board) {
         this.img = document.createElement("img");
         this.board = board;
+        this.img.style.zIndex = "1";
         this.img.style.position = "absolute";
         this.img.addEventListener("load", {
             BG: this,
@@ -3319,20 +3426,7 @@ var PicaBG = (function () {
             return;
         }
         this.img.style.opacity = "1";
-        var height = this.img.naturalHeight;
-        var width = this.img.naturalWidth;
-        if (!(height < this.board.getAvailHeight() && width < this.board.getAvailWidth())) {
-            var fWidth = this.board.getAvailWidth() / width;
-            var fHeight = this.board.getAvailHeight() / height;
-            var factor = fWidth < fHeight ? fWidth : fHeight;
-            height = height * factor;
-            width = width * factor;
-            console.log(fWidth, fHeight, factor, height, width);
-        }
-        this.img.height = height;
-        this.img.width = width;
-        this.img.style.left = ((this.board.getAvailWidth() - width) / 2).toString() + "px";
-        this.img.style.top = ((this.board.getAvailHeight() - height) / 2).toString() + "px";
+        this.board.resize();
         UI.Pica.stopLoading();
     };
     PicaBG.prototype.loadImage = function (url) {
@@ -3346,6 +3440,27 @@ var PicaBG = (function () {
         }
     };
     PicaBG.prototype.resize = function () {
+        var height = this.img.naturalHeight;
+        var width = this.img.naturalWidth;
+        if (!(height < this.board.getAvailHeight() && width < this.board.getAvailWidth())) {
+            var fWidth = this.board.getAvailWidth() / width;
+            var fHeight = this.board.getAvailHeight() / height;
+            var factor = fWidth < fHeight ? fWidth : fHeight;
+            height = height * factor;
+            width = width * factor;
+        }
+        this.img.height = height;
+        this.img.width = width;
+        this.img.style.left = ((this.board.getAvailWidth() - width) / 2).toString() + "px";
+        this.img.style.top = ((this.board.getAvailHeight() - height) / 2).toString() + "px";
+    };
+    PicaBG.prototype.exportSizing = function () {
+        return {
+            height: this.img.height,
+            width: this.img.width,
+            left: this.img.style.left,
+            top: this.img.style.top
+        };
     };
     return PicaBG;
 }());
@@ -10999,7 +11114,7 @@ var UI;
         function filter() {
             var newMessages = [];
             for (var i = currentLeft; i <= currentRight; i++) {
-                if (acceptedModules.indexOf(messages[i].module) !== -1) {
+                if (acceptedModules.indexOf(messages[i].module) !== -1 && !messages[i].hasDestination()) {
                     newMessages.push(messages[i]);
                 }
             }
@@ -11420,6 +11535,9 @@ change.addMessage("Fix: Auto-completar do /w ira usar o nick COMPLETO ao invés 
 change = new Changelog(0, 27, 2);
 change.addMessage("Fix: Logs should work now. Old logs need to be recreated or fixed manually.", "en");
 change.addMessage("Fix: Logs devem funcionar agora. Logs antigos deverão ser recriados ou consertados manualmente.", "pt");
+change = new Changelog(0, 27, 2);
+change.addMessage("Fix: Logs will no longer include personal messages.", "en");
+change.addMessage("Fix: Logs não irão mais incluir mensagens pessoais.", "pt");
 delete (change);
 Changelog.finished();
 var UI;
