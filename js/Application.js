@@ -3274,7 +3274,6 @@ var PicaBoard = (function () {
     function PicaBoard() {
         this.board = document.createElement("div");
         this.background = new PicaBG(this);
-        this.canvas = new PicaCanvas(this);
         this.board.id = "pictureBoard";
         console.debug("[PicaBoard] Binding on window resize.");
         var resizer = {
@@ -3302,7 +3301,6 @@ var PicaBoard = (function () {
         this.availHeight = this.board.offsetHeight;
         this.availWidth = this.board.offsetWidth;
         this.background.resize();
-        this.canvas.resize();
     };
     PicaBoard.prototype.getHTML = function () {
         return this.board;
@@ -15097,6 +15095,12 @@ var UI;
                 lastMemory.sort(function (a, b) {
                     var na = a.name.toLowerCase().latinise();
                     var nb = b.name.toLowerCase().latinise();
+                    if (na < nb)
+                        return -1;
+                    if (nb < na)
+                        return 1;
+                    var na = a.avatar.toLowerCase().latinise();
+                    var nb = b.avatar.toLowerCase().latinise();
                     if (na < nb)
                         return -1;
                     if (nb < na)

@@ -812,7 +812,6 @@ declare class PicaToolbar {
 declare class PicaBoard {
     private board;
     private background;
-    private canvas;
     private availHeight;
     private availWidth;
     constructor();

@@ -131,6 +131,10 @@ module UI.Chat.PersonaDesigner {
             var nb = b.name.toLowerCase().latinise();
             if (na < nb) return -1;
             if (nb < na) return 1;
+            var na = a.avatar.toLowerCase().latinise();
+            var nb = b.avatar.toLowerCase().latinise();
+            if (na < nb) return -1;
+            if (nb < na) return 1;
             return 0;
         });
         Application.LocalMemory.setMemory(getMemoryString(), lastMemory);
