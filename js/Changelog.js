@@ -157,6 +157,10 @@ change.addMessage("Fix: Personas with no avatar will no longer bug out.", "en");
 change.addMessage("Personas com o mesmo nome irão manter uma ordem consistente no gerenciador de personas.", "pt");
 change.addMessage("Fix: Personas sem um link de imagem não vão mais causar erros.", "pt");
 
+change = new Changelog(0, 27, 4);
+change.addMessage("Common URL fixing will be applied to any images opened.", "en");
+change.addMessage("Links de qualquer imagem aberta serão corrigidos.", "pt");
+
 delete (change);
 
 Changelog.finished();

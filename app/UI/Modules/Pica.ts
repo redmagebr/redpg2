@@ -9,6 +9,7 @@ module UI.Pica {
     }
 
     export function loadImage (url : string) {
+        url = Server.URL.fixURL(url);
         pica.loadImage(url);
         callSelf();
     }
