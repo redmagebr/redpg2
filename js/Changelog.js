@@ -151,6 +151,12 @@ change = new Changelog(0, 27, 2);
 change.addMessage("Fix: Logs will no longer include personal messages.", "en");
 change.addMessage("Fix: Logs não irão mais incluir mensagens pessoais.", "pt");
 
+change = new Changelog(0, 27, 3);
+change.addMessage("Personas with the same name will now correctly maintain their order in th Persona Manager.", "en");
+change.addMessage("Fix: Personas with no avatar will no longer bug out.", "en");
+change.addMessage("Personas com o mesmo nome irão manter uma ordem consistente no gerenciador de personas.", "pt");
+change.addMessage("Fix: Personas sem um link de imagem não vão mais causar erros.", "pt");
+
 delete (change);
 
 Changelog.finished();

@@ -553,7 +553,7 @@ declare class MemoryPica extends TrackerMemory {
     reset(): void;
     getValue(): this;
     isPicaAllowed(): boolean;
-    picaAllowedExport(): number;
+    picaAllowedExport(): 1 | 0;
     picaAllowedStore(isIt: boolean | number): void;
     storeValue(values: Array<any>): void;
     exportAsObject(): Array<any>;
@@ -591,7 +591,7 @@ declare class MemoryCutscene extends TrackerMemory {
     reset(): void;
     storeValue(v: boolean | number): void;
     getValue(): boolean;
-    exportAsObject(): number;
+    exportAsObject(): 1 | 0;
 }
 interface CombatEffectInfo {
     name: string;
