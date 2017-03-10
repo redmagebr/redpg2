@@ -15,3 +15,5 @@ class PicaToolShare extends PicaTool {
     public onHover () {} // Nothing happens on hover
     public updateVisibility () {} // Always visible
 }
+
+PicaToolbar.registerTool(new PicaToolShare());

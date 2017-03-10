@@ -553,7 +553,7 @@ declare class MemoryPica extends TrackerMemory {
     reset(): void;
     getValue(): this;
     isPicaAllowed(): boolean;
-    picaAllowedExport(): 1 | 0;
+    picaAllowedExport(): number;
     picaAllowedStore(isIt: boolean | number): void;
     storeValue(values: Array<any>): void;
     exportAsObject(): Array<any>;
@@ -591,7 +591,7 @@ declare class MemoryCutscene extends TrackerMemory {
     reset(): void;
     storeValue(v: boolean | number): void;
     getValue(): boolean;
-    exportAsObject(): 1 | 0;
+    exportAsObject(): number;
 }
 interface CombatEffectInfo {
     name: string;
@@ -892,17 +892,23 @@ declare class PicaContainer {
     loadImage(url: string): void;
     getHTML(): HTMLElement;
 }
-declare abstract class PicaTool {
-    abstract getHTML(): HTMLElement;
-    abstract onHover(): void;
-    abstract onClick(): void;
-    abstract updateVisibility(isStoryteller: boolean, isPicaDraw: boolean): void;
+declare class PicaTool {
+    protected a: HTMLAnchorElement;
+    protected storytellerOnly: boolean;
+    protected requiresArtPermission: boolean;
+    constructor();
+    getHTML(): HTMLElement;
+    onMouseIn(): void;
+    onMouseOut(): void;
+    onClick(): void;
+    updateVisibility(isStoryteller: boolean, isPicaDraw: boolean): void;
 }
 declare class PicaToolbar {
     private container;
+    private static tools;
     constructor();
     getHTML(): HTMLElement;
-    addTool(): void;
+    static registerTool(tool: PicaTool): void;
 }
 declare class PicaToolShare extends PicaTool {
     private a;

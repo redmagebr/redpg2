@@ -1,5 +1,6 @@
 class PicaToolbar {
     private container : HTMLElement;
+    private static tools : Array<PicaTool> = [];
 
     constructor () {
         this.container = document.createElement("div");
@@ -10,8 +11,9 @@ class PicaToolbar {
         return this.container;
     }
 
-
-    public addTool () {
-
+    public static registerTool (tool : PicaTool) {
+        if (PicaToolbar.tools.indexOf(tool) == -1) {
+            PicaToolbar.tools.push(tool);
+        }
     }
 }

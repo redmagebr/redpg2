@@ -7,4 +7,4 @@
 /// <reference path='PicaContainer.ts' />
 /// <reference path='PicaTool.ts' />
 /// <reference path='PicaToolbar.ts' />
-/// <reference path='PicaToolShare.ts' />
+/// <reference path='PicaTools/PicaToolShare.ts' />

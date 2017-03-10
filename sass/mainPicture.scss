@@ -103,7 +103,7 @@
 
 .picaCanvas {
 
-  &.art {
+  &.draw:hover {
     cursor: crosshair;
 
     &.locked {
@@ -111,7 +111,7 @@
     }
   }
 
-  &.hand {
+  &.move:hover {
     cursor: move;
   }
 }
