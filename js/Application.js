@@ -3690,6 +3690,9 @@ var PicaToolbar = (function () {
     function PicaToolbar() {
         this.container = document.createElement("div");
         this.container.id = "pictureToolsContainer";
+        for (var i = 0; i < PicaToolbar.tools.length; i++) {
+            this.container.appendChild(PicaToolbar.tools[i].getHTML());
+        }
     }
     PicaToolbar.prototype.getHTML = function () {
         return this.container;
@@ -3705,14 +3708,16 @@ var PicaToolbar = (function () {
 var PicaToolShare = (function (_super) {
     __extends(PicaToolShare, _super);
     function PicaToolShare() {
-        _super.apply(this, arguments);
+        _super.call(this);
         this.a = document.createElement("a");
-    }
-    PicaToolShare.prototype.getHTML = function () {
         this.a.classList.add("leftPicaToolButton");
         this.a.classList.add("icons-picaShare");
         UI.Language.addLanguageTitle(this.a, "_PICASHARE_");
         UI.Language.markLanguage(this.a);
+    }
+    PicaToolShare.prototype.getHTML = function () {
+        UI.Language.updateScreen(this.a);
+        return this.a;
     };
     PicaToolShare.prototype.onClick = function () {
     };
@@ -3720,7 +3725,7 @@ var PicaToolShare = (function (_super) {
     PicaToolShare.prototype.updateVisibility = function () { };
     return PicaToolShare;
 }(PicaTool));
-PicaToolbar.registerTool(new PicaToolShare());
+PicaToolbar.registerTool(PicaToolShare);
 var SoundsRow = (function () {
     function SoundsRow(snd, folder) {
         this.folder = folder;

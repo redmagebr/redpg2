@@ -1,11 +1,17 @@
 class PicaToolShare extends PicaTool {
     private a = document.createElement("a");
 
-    public getHTML () : HTMLElement {
+    constructor () {
+        super();
         this.a.classList.add("leftPicaToolButton");
         this.a.classList.add("icons-picaShare");
         UI.Language.addLanguageTitle(this.a, "_PICASHARE_");
         UI.Language.markLanguage(this.a);
+    }
+
+    public getHTML () : HTMLElement {
+        UI.Language.updateScreen(this.a);
+        return this.a;
     }
 
     public onClick () {
@@ -16,4 +22,4 @@ class PicaToolShare extends PicaTool {
     public updateVisibility () {} // Always visible
 }
 
-PicaToolbar.registerTool(new PicaToolShare());
+PicaToolbar.registerTool(PicaToolShare);

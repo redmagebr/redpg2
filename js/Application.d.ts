@@ -912,6 +912,7 @@ declare class PicaToolbar {
 }
 declare class PicaToolShare extends PicaTool {
     private a;
+    constructor();
     getHTML(): HTMLElement;
     onClick(): void;
     onHover(): void;

@@ -5,6 +5,10 @@ class PicaToolbar {
     constructor () {
         this.container = document.createElement("div");
         this.container.id = "pictureToolsContainer";
+
+        for (var i = 0; i < PicaToolbar.tools.length; i++) {
+            this.container.appendChild(PicaToolbar.tools[i].getHTML());
+        }
     }
 
     public getHTML () {
