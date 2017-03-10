@@ -3249,6 +3249,400 @@ var SheetPermRow = (function () {
     };
     return SheetPermRow;
 }());
+var PicaBG = (function () {
+    function PicaBG(board) {
+        this.img = document.createElement("img");
+        this.ratio = 1;
+        this.board = board;
+        this.img.style.zIndex = "1";
+        this.img.style.position = "absolute";
+        this.img.addEventListener("load", {
+            BG: this,
+            handleEvent: function (data) {
+                this.BG.onLoad();
+            }
+        });
+        this.board.getHTML().appendChild(this.img);
+    }
+    PicaBG.prototype.onLoad = function () {
+        if (!this.img.complete || (typeof this.img.naturalHeight === "undefined" || this.img.naturalHeight === 0)) {
+            return;
+        }
+        this.img.style.opacity = "1";
+        this.board.resize();
+        UI.Pica.stopLoading();
+    };
+    PicaBG.prototype.loadImage = function (url) {
+        if (this.img.src === url) {
+            return;
+        }
+        else {
+            this.img.style.opacity = "0";
+            UI.Pica.startLoading();
+            this.img.src = url;
+        }
+    };
+    PicaBG.prototype.resize = function () {
+        var height = this.img.naturalHeight;
+        var width = this.img.naturalWidth;
+        this.ratio = 1;
+        if (this.board.isFit()) {
+            if (!this.board.isStretch()) {
+                if (!(height < this.board.getAvailHeight() && width < this.board.getAvailWidth())) {
+                    var fWidth = this.board.getAvailWidth() / width;
+                    var fHeight = this.board.getAvailHeight() / height;
+                    var factor = fWidth < fHeight ? fWidth : fHeight;
+                    this.ratio = factor;
+                    height = height * factor;
+                    width = width * factor;
+                }
+            }
+            else {
+                var fWidth = this.board.getAvailWidth() / width;
+                var fHeight = this.board.getAvailHeight() / height;
+                var factor = fWidth < fHeight ? fWidth : fHeight;
+                this.ratio = factor;
+                height = height * factor;
+                width = width * factor;
+            }
+        }
+        else {
+            var factor = this.board.getRatio();
+            height = height * factor;
+            width = width * factor;
+            this.ratio = factor;
+        }
+        this.img.height = height;
+        this.img.width = width;
+        if (width < this.board.getAvailWidth()) {
+            this.img.style.left = ((this.board.getAvailWidth() - width) / 2).toString() + "px";
+        }
+        else {
+            this.img.style.left = "";
+        }
+        if (height < this.board.getAvailHeight()) {
+            this.img.style.top = ((this.board.getAvailHeight() - height) / 2).toString() + "px";
+        }
+        else {
+            this.img.style.top = "";
+        }
+    };
+    PicaBG.prototype.exportSizing = function () {
+        return {
+            height: this.img.height,
+            width: this.img.width,
+            left: this.img.style.left,
+            top: this.img.style.top
+        };
+    };
+    return PicaBG;
+}());
+var PicaBoard = (function () {
+    function PicaBoard() {
+        this.board = document.createElement("div");
+        this.background = new PicaBG(this);
+        this.canvas = new PicaCanvas(this);
+        this.imageScaling = PicaBoard._IMAGE_SCALING_FIT_STRETCH;
+        this.imageRatio = 1;
+        this.board.id = "pictureBoard";
+        console.debug("[PicaBoard] Binding on window resize.");
+        var resizer = {
+            board: this,
+            handleEvent: function () {
+                this.board.resize();
+            }
+        };
+        window.addEventListener("resize", resizer);
+    }
+    PicaBoard.prototype.isFit = function () {
+        return this.imageScaling != PicaBoard._IMAGE_SCALING_USE_RATIO;
+    };
+    PicaBoard.prototype.isStretch = function () {
+        return this.imageScaling == PicaBoard._IMAGE_SCALING_FIT_STRETCH;
+    };
+    PicaBoard.prototype.getRatio = function () {
+        return this.imageRatio;
+    };
+    PicaBoard.prototype.getBackground = function () {
+        return this.background;
+    };
+    PicaBoard.prototype.loadImage = function (url) {
+        this.resize();
+        this.background.loadImage(url);
+    };
+    PicaBoard.prototype.getAvailHeight = function () {
+        return this.availHeight;
+    };
+    PicaBoard.prototype.getAvailWidth = function () {
+        return this.availWidth;
+    };
+    PicaBoard.prototype.resize = function () {
+        this.availHeight = this.board.offsetHeight;
+        this.availWidth = this.board.offsetWidth;
+        this.background.resize();
+        this.canvas.resize();
+    };
+    PicaBoard.prototype.getHTML = function () {
+        return this.board;
+    };
+    return PicaBoard;
+}());
+PicaBoard._IMAGE_SCALING_FIT_NO_STRETCH = 0;
+PicaBoard._IMAGE_SCALING_FIT_STRETCH = 1;
+PicaBoard._IMAGE_SCALING_USE_RATIO = 2;
+var PicaCanvas = (function () {
+    function PicaCanvas(board) {
+        this.canvas = document.createElement("canvas");
+        this.artAllowed = Server.Chat.Memory.getConfiguration("Pica");
+        this.locked = false;
+        this.pen = new PicaCanvasPen();
+        this.parent = board;
+        this.canvas.style.zIndex = "2";
+        this.canvas.style.position = "absolute";
+        this.canvas.classList.add("picaCanvas");
+        this.parent.getHTML().appendChild(this.canvas);
+        this.artAllowed.addChangeListener({
+            picaCanvas: this,
+            handleEvent: function (artAllowed) {
+                console.log("Updating canvas to pica allowed change");
+                this.picaCanvas.setLock(artAllowed.isPicaAllowed());
+            }
+        });
+        this.setLock(this.artAllowed.isPicaAllowed());
+        this.bindMouse();
+    }
+    PicaCanvas.prototype.setLock = function (isLocked) {
+        this.locked = isLocked;
+        if (this.locked) {
+            this.canvas.classList.add("locked");
+        }
+        else {
+            this.canvas.classList.remove("locked");
+        }
+    };
+    PicaCanvas.prototype.redraw = function () {
+    };
+    PicaCanvas.prototype.getHeight = function () {
+        return this.height;
+    };
+    PicaCanvas.prototype.getWidth = function () {
+        return this.width;
+    };
+    PicaCanvas.prototype.resize = function () {
+        var sizeObj = this.parent.getBackground().exportSizing();
+        this.height = sizeObj.height;
+        this.width = sizeObj.width;
+        this.canvas.width = sizeObj.width;
+        this.canvas.height = sizeObj.height;
+        this.canvas.style.left = sizeObj.left;
+        this.canvas.style.top = sizeObj.top;
+        this.redraw();
+    };
+    PicaCanvas.prototype.bindMouse = function () {
+        this.canvas.addEventListener("mousedown", {
+            canvas: this,
+            handleEvent: function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+                var point = new PicaCanvasPoint(this.canvas);
+                point.setCoordinates(e.offsetX, e.offsetY);
+                this.canvas.mouseDown(point);
+            }
+        });
+        this.canvas.addEventListener("mouseup", {
+            canvas: this,
+            handleEvent: function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+                var point = new PicaCanvasPoint(this.canvas);
+                point.setCoordinates(e.offsetX, e.offsetY);
+                this.canvas.mouseUp(point);
+            }
+        });
+        this.canvas.addEventListener("mousemove", {
+            canvas: this,
+            handleEvent: function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+                var point = new PicaCanvasPoint(this.canvas);
+                point.setCoordinates(e.offsetX, e.offsetY);
+                this.canvas.mouseMove(point);
+            }
+        });
+        this.canvas.addEventListener("mousewheel", {
+            canvas: this,
+            handleEvent: function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+                var point = new PicaCanvasPoint(this.canvas);
+                point.setCoordinates(e.offsetX, e.offsetY);
+                var up = e.deltaY <= 0;
+                this.canvas.mouseWheel(up, point);
+            }
+        });
+        this.canvas.addEventListener("mouseOut", {
+            canvas: this,
+            handleEvent: function (e) {
+                this.canvas.mouseOut();
+            }
+        });
+    };
+    PicaCanvas.prototype.mouseDown = function (point) {
+        this.pen.mouseDown(point);
+    };
+    PicaCanvas.prototype.mouseUp = function (point) {
+        this.pen.mouseUp(point);
+    };
+    PicaCanvas.prototype.mouseMove = function (point) {
+        this.pen.mouseMove(point);
+    };
+    PicaCanvas.prototype.mouseOut = function () {
+        this.pen.mouseOut();
+    };
+    PicaCanvas.prototype.mouseWheel = function (up, point) {
+        this.pen.mouseWheel(up, point);
+    };
+    return PicaCanvas;
+}());
+var PicaCanvasArt = (function () {
+    function PicaCanvasArt() {
+        this.points = [];
+    }
+    PicaCanvasArt.prototype.setPen = function (pen) {
+        this.pen = pen;
+    };
+    PicaCanvasArt.prototype.setValues = function (values) {
+        this.specialValues = values;
+    };
+    PicaCanvasArt.prototype.setPoints = function (points) {
+        this.points = points;
+    };
+    PicaCanvasArt.prototype.addPoint = function (point) {
+        this.points.push(point);
+    };
+    PicaCanvasArt.prototype.cleanUpPoints = function () {
+        cleanedPoints = [];
+        if (this.points.length > 0) {
+            cleanedPoints.push(this.points[0]);
+            var lastAdded = this.points[0];
+            for (var i = 0; i < this.points.length; i++) {
+                var p1 = this.points[i];
+                if ((i + 1) == this.points.length) {
+                    cleanedPoints.push(p1);
+                }
+                else {
+                    var found = false;
+                    for (var k = this.points.length - 1; k >= 0; k--) {
+                        var p2 = this.points[k];
+                        if (PicaCanvasPoint.isEqual(p1, p2)) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found && PicaCanvasPoint.isTriangle(lastAdded, p1, this.points[i + 1])) {
+                        lastAdded = p1;
+                        cleanedPoints.push(p1);
+                    }
+                }
+            }
+        }
+        this.points = cleanedPoints;
+    };
+    PicaCanvasArt.prototype.update = function (pen, values, points) {
+        this.pen = pen;
+        this.specialValues = values;
+        this.points = points;
+    };
+    return PicaCanvasArt;
+}());
+var PicaCanvasPen = (function () {
+    function PicaCanvasPen() {
+    }
+    PicaCanvasPen.prototype.mouseDown = function (point) {
+        console.log(point.getX() + " - " + point.getY());
+    };
+    PicaCanvasPen.prototype.mouseUp = function (point) {
+    };
+    PicaCanvasPen.prototype.mouseMove = function (point) {
+    };
+    PicaCanvasPen.prototype.mouseOut = function () {
+    };
+    PicaCanvasPen.prototype.mouseWheel = function (up, point) {
+    };
+    return PicaCanvasPen;
+}());
+var PicaCanvasPoint = (function () {
+    function PicaCanvasPoint(canvas) {
+        this.x = 0;
+        this.y = 0;
+        this.canvas = canvas;
+    }
+    PicaCanvasPoint.prototype.setCoordinates = function (offsetX, offsetY) {
+        var width = this.canvas.getWidth();
+        var height = this.canvas.getHeight();
+        this.x = parseInt((offsetX * PicaCanvasPoint.precision) / width);
+        this.y = parseInt((offsetY * PicaCanvasPoint.precision) / height);
+    };
+    PicaCanvasPoint.prototype.setRelativeCoordinates = function (x, y) {
+        this.x = x;
+        this.y = y;
+    };
+    PicaCanvasPoint.prototype.getX = function () {
+        var x = this.x * this.canvas.getWidth() / PicaCanvasPoint.precision;
+        return x;
+    };
+    PicaCanvasPoint.prototype.getY = function () {
+        var y = this.y * this.canvas.getHeight() / PicaCanvasPoint.precision;
+        return y;
+    };
+    PicaCanvasPoint.prototype.distanceTo = function (p2) {
+        var x1 = this.x;
+        var x2 = p2.x;
+        var y1 = this.y;
+        var y2 = p2.y;
+        return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+    };
+    PicaCanvasPoint.isTriangle = function (p1, p2, p3) {
+        var dab = p1.distanceTo(p2);
+        var dbc = p2.distanceTo(p3);
+        var dac = p1.distanceTo(p3);
+        var triangle = !((dab + dbc) <= dac);
+        if (!triangle)
+            return false;
+        var angle = Math.acos(((dab * dab) + (dac * dac) - (dbc * dbc)) / (2 * dac * dab));
+        angle = angle * 180 / Math.PI;
+        if (angle > (180 - PicaCanvasPoint.minCurve)) {
+            return false;
+        }
+        return true;
+    };
+    PicaCanvasPoint.isEqual = function (p1, p2) {
+        return p1.x == p2.x && p1.y == p2.y;
+    };
+    PicaCanvasPoint.encode = function (num) {
+        var maxChars = PicaCanvasPoint.maxEncodedChars;
+        if (num > Math.pow(PicaCanvasPoint.encoding.length, maxChars)) {
+            return NaN;
+        }
+        if (num < 0)
+            return NaN;
+        if (num < PicaCanvasPoint.length) {
+            return PicaCanvasPoint.encoding[0] + PicaCanvasPoint.encoding.charAt(num);
+        }
+        else {
+            var a = parseInt(num / PicaCanvasPoint.encoding.length);
+            var b = num - (a * PicaCanvasPoint.encoding.length);
+            return PicaCanvasPoint.encoding.charAt(a) + PicaCanvasPoint.encoding.charAt(b);
+        }
+    };
+    PicaCanvasPoint.decode = function (str, canvas) {
+    };
+    return PicaCanvasPoint;
+}());
+PicaCanvasPoint.minCurve = 10;
+PicaCanvasPoint.encoding = "0123456789abcdefghijklmnopqrstuvxwyzABCDEFGHIJKLMNOPQRSTUVXWYZ-+_=![]{}()*@/\\:;";
+PicaCanvasPoint.precision = Math.pow(PicaCanvasPoint.encoding.length, 2);
+PicaCanvasPoint.maxEncodedChars = 2;
 var PicaContainer = (function () {
     function PicaContainer(picaWindow) {
         this.tools = new PicaToolbar();
@@ -3285,198 +3679,25 @@ var PicaToolbar = (function () {
     };
     return PicaToolbar;
 }());
-var PicaBoard = (function () {
-    function PicaBoard() {
-        this.board = document.createElement("div");
-        this.background = new PicaBG(this);
-        this.board.id = "pictureBoard";
-        console.debug("[PicaBoard] Binding on window resize.");
-        var resizer = {
-            board: this,
-            handleEvent: function () {
-                this.board.resize();
-            }
-        };
-        window.addEventListener("resize", resizer);
+var PicaToolShare = (function (_super) {
+    __extends(PicaToolShare, _super);
+    function PicaToolShare() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.a = document.createElement("a");
+        return _this;
     }
-    PicaBoard.prototype.getBackground = function () {
-        return this.background;
+    PicaToolShare.prototype.getHTML = function () {
+        this.a.classList.add("leftPicaToolButton");
+        this.a.classList.add("icons-picaShare");
+        UI.Language.addLanguageTitle(this.a, "_PICASHARE_");
+        UI.Language.markLanguage(this.a);
     };
-    PicaBoard.prototype.loadImage = function (url) {
-        this.resize();
-        this.background.loadImage(url);
+    PicaToolShare.prototype.onClick = function () {
     };
-    PicaBoard.prototype.getAvailHeight = function () {
-        return this.availHeight;
-    };
-    PicaBoard.prototype.getAvailWidth = function () {
-        return this.availWidth;
-    };
-    PicaBoard.prototype.resize = function () {
-        this.availHeight = this.board.offsetHeight;
-        this.availWidth = this.board.offsetWidth;
-        this.background.resize();
-    };
-    PicaBoard.prototype.getHTML = function () {
-        return this.board;
-    };
-    return PicaBoard;
-}());
-var PicaCanvas = (function () {
-    function PicaCanvas(board) {
-        this.canvas = document.createElement("canvas");
-        this.artAllowed = Server.Chat.Memory.getConfiguration("Pica");
-        this.locked = false;
-        this.parent = board;
-        this.canvas.style.zIndex = "2";
-        this.canvas.style.position = "absolute";
-        this.canvas.classList.add("picaCanvas");
-        this.parent.getHTML().appendChild(this.canvas);
-        this.artAllowed.addChangeListener({
-            picaCanvas: this,
-            handleEvent: function (artAllowed) {
-                console.log("Updating canvas to pica allowed change");
-                this.picaCanvas.setLock(artAllowed.isPicaAllowed());
-            }
-        });
-        this.setLock(this.artAllowed.isPicaAllowed());
-    }
-    PicaCanvas.prototype.setLock = function (isLocked) {
-        this.locked = isLocked;
-        if (this.locked) {
-            this.canvas.classList.add("locked");
-        }
-        else {
-            this.canvas.classList.remove("locked");
-        }
-    };
-    PicaCanvas.prototype.redraw = function () {
-    };
-    PicaCanvas.prototype.getHeight = function () {
-        return this.height;
-    };
-    PicaCanvas.prototype.getWidth = function () {
-        return this.width;
-    };
-    PicaCanvas.prototype.resize = function () {
-        var sizeObj = this.parent.getBackground().exportSizing();
-        this.height = sizeObj.height;
-        this.width = sizeObj.width;
-        this.canvas.width = sizeObj.width;
-        this.canvas.height = sizeObj.height;
-        this.canvas.style.left = sizeObj.left;
-        this.canvas.style.top = sizeObj.top;
-        this.redraw();
-    };
-    return PicaCanvas;
-}());
-var PicaCanvasPen = (function () {
-    function PicaCanvasPen() {
-    }
-    PicaCanvasPen.prototype.mouseDown = function (e) {
-    };
-    PicaCanvasPen.prototype.mouseUp = function (e) {
-    };
-    PicaCanvasPen.prototype.mouseMove = function (e) {
-    };
-    return PicaCanvasPen;
-}());
-var PicaCanvasPoint = (function () {
-    function PicaCanvasPoint(offsetX, offsetY, canvas) {
-        this.x = 0;
-        this.y = 0;
-        this.x = parseInt((offsetX * PicaCanvasPoint.precision) / width);
-        this.y = parseInt((offsetY * PicaCanvasPoint.precision) / height);
-    }
-    PicaCanvasPoint.prototype.distanceTo = function (p2) {
-        var x1 = this.x;
-        var x2 = p2.x;
-        var y1 = this.y;
-        var y2 = p2.y;
-        return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
-    };
-    PicaCanvasPoint.isTriangle = function (p1, p2, p3) {
-        var dab = p1.distanceTo(p2);
-        var dbc = p2.distanceTo(p3);
-        var dac = p1.distanceTo(p3);
-        var triangle = !((dab + dbc) <= dac);
-        if (!triangle)
-            return false;
-        if (((dab + dbc) - dac) < PicaCanvasPoint.maxCurve) {
-            return false;
-        }
-        var angle = Math.acos(((dab * dab) + (dac * dac) - (dbc * dbc)) / (2 * dac * dab));
-        angle = angle * 180 / Math.PI;
-        if (angle > (180 - PicaCanvasPoint.minCurve)) {
-            return false;
-        }
-        return true;
-    };
-    PicaCanvasPoint.isEqual = function (p1, p2) {
-        return p1.x == p2.x && p1.y == p2.y;
-    };
-    return PicaCanvasPoint;
-}());
-PicaCanvasPoint.minCurve = 10;
-PicaCanvasPoint.encoding = "0123456789abcdefghijklmnopqrstuvxwyzABCDEFGHIJKLMNOPQRSTUVXWYZ-+_=![]{}()*@/\\:;";
-PicaCanvasPoint.precision = Math.pow(PicaCanvasPoint.encoding.length, 2);
-var PicaBG = (function () {
-    function PicaBG(board) {
-        this.img = document.createElement("img");
-        this.board = board;
-        this.img.style.zIndex = "1";
-        this.img.style.position = "absolute";
-        this.img.addEventListener("load", {
-            BG: this,
-            handleEvent: function (data) {
-                this.BG.onLoad();
-            }
-        });
-        this.board.getHTML().appendChild(this.img);
-    }
-    PicaBG.prototype.onLoad = function () {
-        if (!this.img.complete || (typeof this.img.naturalHeight === "undefined" || this.img.naturalHeight === 0)) {
-            return;
-        }
-        this.img.style.opacity = "1";
-        this.board.resize();
-        UI.Pica.stopLoading();
-    };
-    PicaBG.prototype.loadImage = function (url) {
-        if (this.img.src === url) {
-            return;
-        }
-        else {
-            this.img.style.opacity = "0";
-            UI.Pica.startLoading();
-            this.img.src = url;
-        }
-    };
-    PicaBG.prototype.resize = function () {
-        var height = this.img.naturalHeight;
-        var width = this.img.naturalWidth;
-        if (!(height < this.board.getAvailHeight() && width < this.board.getAvailWidth())) {
-            var fWidth = this.board.getAvailWidth() / width;
-            var fHeight = this.board.getAvailHeight() / height;
-            var factor = fWidth < fHeight ? fWidth : fHeight;
-            height = height * factor;
-            width = width * factor;
-        }
-        this.img.height = height;
-        this.img.width = width;
-        this.img.style.left = ((this.board.getAvailWidth() - width) / 2).toString() + "px";
-        this.img.style.top = ((this.board.getAvailHeight() - height) / 2).toString() + "px";
-    };
-    PicaBG.prototype.exportSizing = function () {
-        return {
-            height: this.img.height,
-            width: this.img.width,
-            left: this.img.style.left,
-            top: this.img.style.top
-        };
-    };
-    return PicaBG;
-}());
+    PicaToolShare.prototype.onHover = function () { };
+    PicaToolShare.prototype.updateVisibility = function () { };
+    return PicaToolShare;
+}(PicaTool));
 var SoundsRow = (function () {
     function SoundsRow(snd, folder) {
         this.folder = folder;

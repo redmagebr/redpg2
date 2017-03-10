@@ -1,11 +1,30 @@
 class PicaBoard {
     private board = document.createElement("div");
     private background = new PicaBG(this);
-    // TODO: Enable Canvas
-    //private canvas = new PicaCanvas(this);
+    private canvas = new PicaCanvas(this);
 
     private availHeight : number;
     private availWidth : number;
+
+    public static _IMAGE_SCALING_FIT_NO_STRETCH = 0;
+    public static _IMAGE_SCALING_FIT_STRETCH = 1;
+    public static _IMAGE_SCALING_USE_RATIO = 2;
+
+    //private imageScaling : number = PicaBoard._IMAGE_SCALING_FIT_NO_STRETCH;
+    private imageScaling : number = PicaBoard._IMAGE_SCALING_FIT_STRETCH;
+    private imageRatio : number = 1;
+
+    public isFit () {
+        return this.imageScaling != PicaBoard._IMAGE_SCALING_USE_RATIO;
+    }
+
+    public isStretch () {
+        return this.imageScaling == PicaBoard._IMAGE_SCALING_FIT_STRETCH;
+    }
+
+    public getRatio () {
+        return this.imageRatio;
+    }
 
     constructor () {
         this.board.id = "pictureBoard";
@@ -44,8 +63,7 @@ class PicaBoard {
         this.availWidth = this.board.offsetWidth;
 
         this.background.resize();
-        // TODO: Enable Canvas
-        //this.canvas.resize();
+        this.canvas.resize();
     }
 
     public getHTML () {

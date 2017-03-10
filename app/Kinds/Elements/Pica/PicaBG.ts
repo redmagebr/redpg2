@@ -1,6 +1,7 @@
 class PicaBG  {
     private board : PicaBoard;
     private img : HTMLImageElement = document.createElement("img");
+    private ratio : number = 1;
 
     constructor (board : PicaBoard) {
         this.board = board;
@@ -42,20 +43,47 @@ class PicaBG  {
     public resize () {
         var height = this.img.naturalHeight;
         var width = this.img.naturalWidth;
+        this.ratio = 1;
 
-        if (!(height < this.board.getAvailHeight() && width < this.board.getAvailWidth())) {
-            var fWidth = this.board.getAvailWidth() / width;
-            var fHeight = this.board.getAvailHeight() / height;
-            var factor = fWidth < fHeight ? fWidth : fHeight;
+        if (this.board.isFit()) {
+            if (!this.board.isStretch()) {
+                if (!(height < this.board.getAvailHeight() && width < this.board.getAvailWidth())) {
+                    var fWidth = this.board.getAvailWidth() / width;
+                    var fHeight = this.board.getAvailHeight() / height;
+                    var factor = fWidth < fHeight ? fWidth : fHeight;
 
+                    this.ratio = factor;
+                    height = height * factor;
+                    width = width * factor;
+                }
+            } else {
+                var fWidth = this.board.getAvailWidth() / width;
+                var fHeight = this.board.getAvailHeight() / height;
+                var factor = fWidth < fHeight ? fWidth : fHeight;
 
+                this.ratio = factor;
+                height = height * factor;
+                width = width * factor;
+            }
+        } else {
+            var factor = this.board.getRatio();
             height = height * factor;
             width = width * factor;
+            this.ratio = factor;
         }
+
         this.img.height = height;
         this.img.width = width;
-        this.img.style.left = ((this.board.getAvailWidth() - width) / 2).toString() + "px";
-        this.img.style.top = ((this.board.getAvailHeight() - height) / 2).toString() + "px";
+        if (width < this.board.getAvailWidth()) {
+            this.img.style.left = ((this.board.getAvailWidth() - width) / 2).toString() + "px";
+        } else {
+            this.img.style.left = "";
+        }
+        if (height < this.board.getAvailHeight()) {
+            this.img.style.top = ((this.board.getAvailHeight() - height) / 2).toString() + "px";
+        } else {
+            this.img.style.top = "";
+        }
     }
 
     public exportSizing () {

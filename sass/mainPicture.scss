@@ -39,6 +39,9 @@
   left: 10px;
   right: 10px;
   bottom: 37px; // toolContainerHeight + border + margin
+  overflow: auto;
+
+  @extend .scrollbar;
 }
 
 #pictureToolsContainer {
@@ -99,9 +102,16 @@
 }
 
 .picaCanvas {
-  cursor: crosshair;
 
-  &.locked {
-    cursor: not-allowed;
+  &.art {
+    cursor: crosshair;
+
+    &.locked {
+      cursor: not-allowed;
+    }
+  }
+
+  &.hand {
+    cursor: move;
   }
 }

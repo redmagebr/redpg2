@@ -789,6 +789,101 @@ declare class SheetPermRow {
     constructor(player: any);
     getHTML(): HTMLParagraphElement;
 }
+declare class PicaBG {
+    private board;
+    private img;
+    private ratio;
+    constructor(board: PicaBoard);
+    onLoad(): void;
+    loadImage(url: string): void;
+    resize(): void;
+    exportSizing(): {
+        height: number;
+        width: number;
+        left: string;
+        top: string;
+    };
+}
+declare class PicaBoard {
+    private board;
+    private background;
+    private canvas;
+    private availHeight;
+    private availWidth;
+    static _IMAGE_SCALING_FIT_NO_STRETCH: number;
+    static _IMAGE_SCALING_FIT_STRETCH: number;
+    static _IMAGE_SCALING_USE_RATIO: number;
+    private imageScaling;
+    private imageRatio;
+    isFit(): boolean;
+    isStretch(): boolean;
+    getRatio(): number;
+    constructor();
+    getBackground(): PicaBG;
+    loadImage(url: string): void;
+    getAvailHeight(): number;
+    getAvailWidth(): number;
+    resize(): void;
+    getHTML(): HTMLDivElement;
+}
+declare class PicaCanvas {
+    private parent;
+    private canvas;
+    private artAllowed;
+    private locked;
+    private width;
+    private height;
+    private pen;
+    constructor(board: PicaBoard);
+    setLock(isLocked: boolean): void;
+    redraw(): void;
+    getHeight(): number;
+    getWidth(): number;
+    resize(): void;
+    private bindMouse();
+    mouseDown(point: PicaCanvasPoint): void;
+    mouseUp(point: PicaCanvasPoint): void;
+    mouseMove(point: PicaCanvasPoint): void;
+    mouseOut(): void;
+    mouseWheel(up: boolean, point: PicaCanvasPoint): void;
+}
+declare class PicaCanvasArt {
+    private pen;
+    private specialValues;
+    private points;
+    setPen(pen: typeof PicaCanvasPen): void;
+    setValues(values: Object): void;
+    setPoints(points: Array<PicaCanvasPoint>): void;
+    addPoint(point: PicaCanvasPoint): void;
+    cleanUpPoints(): void;
+    update(pen: typeof PicaCanvasPen, values: Object, points: Array<PicaCanvasPoint>): void;
+}
+declare class PicaCanvasPen {
+    mouseDown(point: PicaCanvasPoint): void;
+    mouseUp(point: PicaCanvasPoint): void;
+    mouseMove(point: PicaCanvasPoint): void;
+    mouseOut(): void;
+    mouseWheel(up: boolean, point: PicaCanvasPoint): void;
+}
+declare class PicaCanvasPoint {
+    private x;
+    private y;
+    private canvas;
+    private static minCurve;
+    private static encoding;
+    private static precision;
+    private static maxEncodedChars;
+    constructor(canvas: PicaCanvas);
+    setCoordinates(offsetX: any, offsetY: any): void;
+    setRelativeCoordinates(x: any, y: any): void;
+    getX(): number;
+    getY(): number;
+    distanceTo(p2: PicaCanvasPoint): number;
+    static isTriangle(p1: PicaCanvasPoint, p2: PicaCanvasPoint, p3: PicaCanvasPoint): boolean;
+    static isEqual(p1: PicaCanvasPoint, p2: PicaCanvasPoint): boolean;
+    static encode(num: number): string;
+    static decode(str: String, canvas: PicaCanvas): void;
+}
 declare class PicaContainer {
     private container;
     private tools;
@@ -809,63 +904,12 @@ declare class PicaToolbar {
     getHTML(): HTMLElement;
     addTool(): void;
 }
-declare class PicaBoard {
-    private board;
-    private background;
-    private availHeight;
-    private availWidth;
-    constructor();
-    getBackground(): PicaBG;
-    loadImage(url: string): void;
-    getAvailHeight(): number;
-    getAvailWidth(): number;
-    resize(): void;
-    getHTML(): HTMLDivElement;
-}
-declare class PicaCanvas {
-    private parent;
-    private canvas;
-    private artAllowed;
-    private locked;
-    private width;
-    private height;
-    constructor(board: PicaBoard);
-    setLock(isLocked: boolean): void;
-    redraw(): void;
-    getHeight(): number;
-    getWidth(): number;
-    resize(): void;
-}
-declare class PicaCanvasPen {
-    mouseDown(e: any): void;
-    mouseUp(e: any): void;
-    mouseMove(e: any): void;
-}
-declare class PicaCanvasPoint {
-    private x;
-    private y;
-    private canvas;
-    private static minCurve;
-    private static encoding;
-    private static precision;
-    constructor(offsetX: any, offsetY: any, canvas: any);
-    distanceTo(p2: PicaCanvasPoint): number;
-    static isTriangle(p1: PicaCanvasPoint, p2: PicaCanvasPoint, p3: PicaCanvasPoint): boolean;
-    static isEqual(p1: PicaCanvasPoint, p2: PicaCanvasPoint): boolean;
-}
-declare class PicaBG {
-    private board;
-    private img;
-    constructor(board: PicaBoard);
-    onLoad(): void;
-    loadImage(url: string): void;
-    resize(): void;
-    exportSizing(): {
-        height: number;
-        width: number;
-        left: string;
-        top: string;
-    };
+declare class PicaToolShare extends PicaTool {
+    private a;
+    getHTML(): HTMLElement;
+    onClick(): void;
+    onHover(): void;
+    updateVisibility(): void;
 }
 declare class SoundsRow {
     private html;
