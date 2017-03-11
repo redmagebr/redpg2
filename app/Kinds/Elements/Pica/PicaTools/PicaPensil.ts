@@ -13,7 +13,14 @@ class PicaPensil extends PicaCanvasPen {
         this.currentArt = new PicaCanvasArt();
         this.currentArt.setPen(this);
         this.currentArt.addPoint(point);
-        this.beginDrawing(point);
+
+        var canvas = UI.Pica.getPica().getBoard().getCanvas();
+        var ctx = canvas.getCanvasContext();
+
+        this.currentArt.setSpecial("width", canvas.getPensSize());
+        this.currentArt.setSpecial("color", canvas.getPensColor());
+
+        this.beginDrawing(point, this.currentArt);
     }
 
     public mouseUp (point : PicaCanvasPoint) {
@@ -41,13 +48,13 @@ class PicaPensil extends PicaCanvasPen {
 
     public selected () : void {}
 
-    public beginDrawing (point : PicaCanvasPoint) {
+    public beginDrawing (point : PicaCanvasPoint, art : PicaCanvasArt) {
         var canvas = UI.Pica.getPica().getBoard().getCanvas();
         var ctx = canvas.getCanvasContext();
         ctx.lineCap = "round";
         ctx.lineJoin = "round";
-        ctx.lineWidth = canvas.getPensSize();
-        ctx.strokeStyle = '#' + canvas.getPensColor();
+        ctx.lineWidth = art.getSpecial("width", 1);
+        ctx.strokeStyle = '#' + art.getSpecial("color", "000000");
         ctx.beginPath();
         ctx.moveTo(point.getX(), point.getY());
         this.lastPoint = point;
@@ -83,15 +90,15 @@ class PicaPensil extends PicaCanvasPen {
     public redraw (art? : PicaCanvasArt) : void {
         if (art != undefined) {
             if (art.points.length >0) {
-                this.beginDrawing(art.points[0]);
+                this.beginDrawing(art.points[0], art);
                 for (var i = 1; i < art.points.length; i++) {
                     this.drawTo(art.points[i]);
                 }
             }
             this.stroke();
         } else {
-            if (this.PicaCanvasArt != null && this.currentArt.points.length > 0) {
-                this.beginDrawing(this.currentArt.points[0]);
+            if (this.currentArt != null && this.currentArt.points.length > 0) {
+                this.beginDrawing(this.currentArt.points[0], this.currentArt);
                 for (var i = 1; i < this.currentArt.points.length; i++) {
                     this.drawTo(this.currentArt.points[i]);
                 }

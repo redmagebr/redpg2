@@ -553,7 +553,7 @@ declare class MemoryPica extends TrackerMemory {
     reset(): void;
     getValue(): this;
     isPicaAllowed(): boolean;
-    picaAllowedExport(): 1 | 0;
+    picaAllowedExport(): number;
     picaAllowedStore(isIt: boolean | number): void;
     storeValue(values: Array<any>): void;
     exportAsObject(): Array<any>;
@@ -591,7 +591,7 @@ declare class MemoryCutscene extends TrackerMemory {
     reset(): void;
     storeValue(v: boolean | number): void;
     getValue(): boolean;
-    exportAsObject(): 1 | 0;
+    exportAsObject(): number;
 }
 interface CombatEffectInfo {
     name: string;
@@ -945,7 +945,7 @@ declare class PicaPensil extends PicaCanvasPen {
     mouseOut(): void;
     mouseWheel(up: boolean, point: PicaCanvasPoint): void;
     selected(): void;
-    beginDrawing(point: PicaCanvasPoint): void;
+    beginDrawing(point: PicaCanvasPoint, art: PicaCanvasArt): void;
     drawTo(point: PicaCanvasPoint): void;
     finishDrawing(): void;
     stroke(): void;

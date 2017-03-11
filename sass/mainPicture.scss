@@ -119,7 +119,12 @@
     }
   }
 
-  &.move:hover {
-    cursor: move;
+  &.move {
+    &:hover {
+      cursor: grab;
+    }
+    &.moving {
+      cursor: grabbing;
+    }
   }
 }
