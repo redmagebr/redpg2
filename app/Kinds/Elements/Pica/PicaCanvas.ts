@@ -1,12 +1,43 @@
 class PicaCanvas {
     private parent : PicaBoard;
     private canvas : HTMLCanvasElement = document.createElement("canvas");
+    private context : CanvasRenderingContext2D = this.canvas.getContext("2d");
     private artAllowed : MemoryPica = <MemoryPica> Server.Chat.Memory.getConfiguration("Pica");
     private locked : boolean = false;
     private width : number;
     private height : number;
 
-    private pen : PicaCanvasPen = new PicaCanvasPen();
+    private pensSize : number = 1;
+    private pensColor : string = "000000";
+
+    private pen : PicaCanvasPen = new PicaPensil();
+
+    private oldArts : Array<PicaCanvasArt> = [];
+
+    public setPensSize (num : number) {
+        this.pensSize = num;
+    }
+
+    public addArt (art : PicaCanvasArt) {
+        this.oldArts.push(art);
+        this.redraw();
+    }
+
+    public getPensSize () {
+        return this.pensSize;
+    }
+
+    public getPensColor () {
+        return this.pensColor;
+    }
+
+    public setPenColor (hexColor : string) {
+        this.pensColor = hexColor;
+    }
+
+    public getCanvasContext () : CanvasRenderingContext2D{
+        return this.context;
+    }
 
     constructor (board : PicaBoard) {
         this.parent = board;
@@ -41,8 +72,11 @@ class PicaCanvas {
 
 
     public redraw () {
-        // TODO: First draw all stored arts
-        // TODO: Then redraw whatever art is being done right now and don't close it
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        for (var i = 0; i < this.oldArts.length; i++) {
+            this.oldArts[i].redraw();
+        }
+        this.pen.redraw();
     }
 
     public getHeight () {
@@ -112,7 +146,7 @@ class PicaCanvas {
             }
         });
 
-        this.canvas.addEventListener("mouseOut", <EventListenerObject> {
+        this.canvas.addEventListener("mouseout", <EventListenerObject> {
             canvas : this,
             handleEvent : function (e : MouseEvent) {
                 this.canvas.mouseOut();

@@ -84,6 +84,8 @@
     function cleanArt (currentArt) {
         var cleanedArt = [currentArt[0], currentArt[1], []];
 
+        var oldLength = (currentArt[2].length);
+
         cleanedArt[2].push(currentArt[2][0]);
         lastAdded = currentArt[2][0];
 
@@ -108,6 +110,8 @@
                 cleanedArt[2].push(p);
             }
         }
+
+        console.log(oldLength + " -> " + cleanedArt[2].length + " = "  + Math.round(cleanedArt[2].length * 100 / oldLength) + "%");
 
         return cleanedArt;
     }

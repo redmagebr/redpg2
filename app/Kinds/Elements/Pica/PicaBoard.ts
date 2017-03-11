@@ -26,6 +26,10 @@ class PicaBoard {
         return this.imageRatio;
     }
 
+    public getCanvas () {
+        return this.canvas;
+    }
+
     constructor () {
         this.board.id = "pictureBoard";
 

@@ -3,6 +3,10 @@ class PicaContainer {
     private tools : PicaToolbar = new PicaToolbar();
     private board : PicaBoard = new PicaBoard();
 
+    public getBoard () : PicaBoard {
+        return this.board;
+    }
+
     constructor (picaWindow : HTMLElement) {
         this.container = document.createElement("div");
         this.container.id = "pictureContainer";

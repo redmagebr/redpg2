@@ -62,6 +62,16 @@ class PicaCanvasPoint {
         return p1.x == p2.x && p1.y == p2.y;
     }
 
+    public exportAsString () {
+        var str = PicaCanvasPoint.encode(this.x) + PicaCanvasPoint.encode(this.y);
+        return str;
+    }
+
+    public updateFromString (str : string) {
+        this.x = PicaCanvasPoint.decode(str.substr(0,2));
+        this.y = PicaCanvasPoint.decode(str.substr(2,2));
+    }
+
     /**
      * Encodes number "num" as a 2-character string.
      * Encodes from 0 to PicaCanvasPoint.encoding.length^PicaCanvasPoint.maxEncodedChars, so about 0 to 6000.
@@ -83,11 +93,13 @@ class PicaCanvasPoint {
     }
 
     /**
-     * Decodes a 4-character encoded string "str" as a new PicaCanvasPoint
+     * Decodes a 2-character encoded string "str" to a number
      * @param str
      */
-    public static decode (str : String, canvas : PicaCanvas) {
-        // str.substr(0,2)
-        // str.substr(2,2)
+    public static decode (str : String) {
+        var a = PicaCanvasPoint.encoding.indexOf(str.charAt(0)) * PicaCanvasPoint.encoding.length;
+        var b = PicaCanvasPoint.encoding.indexOf(str.charAt(1));
+        return a + b;
+        //return (encoding.indexOf(str.charAt(0)) * encoding.length) + encoding.indexOf(str.charAt(1));
     }
 }

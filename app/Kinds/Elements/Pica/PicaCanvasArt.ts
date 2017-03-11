@@ -1,9 +1,32 @@
 class PicaCanvasArt {
-    private pen : typeof PicaCanvasPen;
-    private specialValues : Object; // specialValues is a JSON string generated and read by the Pen
-    private points : Array<PicaCanvasPoint> = [];
+    private pen : PicaCanvasPen;
+    private specialValues : Object = {}; // specialValues is a JSON string generated and read by the Pen
+    public points : Array<PicaCanvasPoint> = [];
 
-    public setPen (pen : typeof PicaCanvasPen) {
+    public setSpecial (index : string, value : any) {
+        this.specialValues[index] = value;
+    }
+
+    public getSpecial (index : string, defValue : any) {
+        if (this.specialValues[index] != undefined) {
+            return this.specialValues[index];
+        }
+        return defValue;
+    }
+
+    public exportAsObject () {
+        var points = "";
+        for (var i = 0; i < this.points.length; i++) {
+            points += this.points[i].exportAsString();
+        }
+        return [
+            this.pen.id,
+            this.specialValues,
+            points
+        ];
+    }
+
+    public setPen (pen : PicaCanvasPen) {
         this.pen = pen;
     }
 
@@ -20,6 +43,7 @@ class PicaCanvasArt {
     }
 
     public cleanUpPoints () {
+        var oldLength = this.points.length;
         cleanedPoints = [];
         if (this.points.length > 0) {
             cleanedPoints.push(this.points[0]);
@@ -32,13 +56,14 @@ class PicaCanvasArt {
                     var found = false;
                     // Remove repeated points
                     for (var k = this.points.length - 1; k >= 0; k--) {
+                        if (k == i) continue;
                         var p2 = this.points[k];
                         if (PicaCanvasPoint.isEqual(p1, p2)) {
                             found = true;
                             break;
                         }
                     }
-                    if (!found && PicaCanvasPoint.isTriangle(lastAdded, p1, this.points[i + 1])) {
+                    if (!found && PicaCanvasPoint.isTriangle(p1, lastAdded, this.points[i + 1])) {
                         lastAdded = p1;
                         cleanedPoints.push(p1);
                     }
@@ -46,6 +71,11 @@ class PicaCanvasArt {
             }
         }
         this.points = cleanedPoints;
+        console.debug(oldLength + " -> " + this.points.length + " = " + Math.round(this.points.length * 100 / oldLength) + "%");
+    }
+
+    public redraw () {
+        this.pen.redraw(this);
     }
 
     public update (pen : typeof PicaCanvasPen, values : Object, points : Array<PicaCanvasPoint>) {

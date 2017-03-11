@@ -553,7 +553,7 @@ declare class MemoryPica extends TrackerMemory {
     reset(): void;
     getValue(): this;
     isPicaAllowed(): boolean;
-    picaAllowedExport(): number;
+    picaAllowedExport(): 1 | 0;
     picaAllowedStore(isIt: boolean | number): void;
     storeValue(values: Array<any>): void;
     exportAsObject(): Array<any>;
@@ -591,7 +591,7 @@ declare class MemoryCutscene extends TrackerMemory {
     reset(): void;
     storeValue(v: boolean | number): void;
     getValue(): boolean;
-    exportAsObject(): number;
+    exportAsObject(): 1 | 0;
 }
 interface CombatEffectInfo {
     name: string;
@@ -818,6 +818,7 @@ declare class PicaBoard {
     isFit(): boolean;
     isStretch(): boolean;
     getRatio(): number;
+    getCanvas(): PicaCanvas;
     constructor();
     getBackground(): PicaBG;
     loadImage(url: string): void;
@@ -829,11 +830,21 @@ declare class PicaBoard {
 declare class PicaCanvas {
     private parent;
     private canvas;
+    private context;
     private artAllowed;
     private locked;
     private width;
     private height;
+    private pensSize;
+    private pensColor;
     private pen;
+    private oldArts;
+    setPensSize(num: number): void;
+    addArt(art: PicaCanvasArt): void;
+    getPensSize(): number;
+    getPensColor(): string;
+    setPenColor(hexColor: string): void;
+    getCanvasContext(): CanvasRenderingContext2D;
     constructor(board: PicaBoard);
     setLock(isLocked: boolean): void;
     redraw(): void;
@@ -850,20 +861,29 @@ declare class PicaCanvas {
 declare class PicaCanvasArt {
     private pen;
     private specialValues;
-    private points;
-    setPen(pen: typeof PicaCanvasPen): void;
+    points: Array<PicaCanvasPoint>;
+    setSpecial(index: string, value: any): void;
+    getSpecial(index: string, defValue: any): any;
+    exportAsObject(): any[];
+    setPen(pen: PicaCanvasPen): void;
     setValues(values: Object): void;
     setPoints(points: Array<PicaCanvasPoint>): void;
     addPoint(point: PicaCanvasPoint): void;
     cleanUpPoints(): void;
+    redraw(): void;
     update(pen: typeof PicaCanvasPen, values: Object, points: Array<PicaCanvasPoint>): void;
 }
 declare class PicaCanvasPen {
+    private static Pens;
     mouseDown(point: PicaCanvasPoint): void;
     mouseUp(point: PicaCanvasPoint): void;
     mouseMove(point: PicaCanvasPoint): void;
     mouseOut(): void;
     mouseWheel(up: boolean, point: PicaCanvasPoint): void;
+    selected(): void;
+    redraw(art: PicaCanvasArt): void;
+    static registerPen(id: string, pen: PicaCanvasPen): void;
+    static getPen(id: string): any;
 }
 declare class PicaCanvasPoint {
     private x;
@@ -881,13 +901,16 @@ declare class PicaCanvasPoint {
     distanceTo(p2: PicaCanvasPoint): number;
     static isTriangle(p1: PicaCanvasPoint, p2: PicaCanvasPoint, p3: PicaCanvasPoint): boolean;
     static isEqual(p1: PicaCanvasPoint, p2: PicaCanvasPoint): boolean;
+    exportAsString(): string;
+    updateFromString(str: string): void;
     static encode(num: number): string;
-    static decode(str: String, canvas: PicaCanvas): void;
+    static decode(str: String): number;
 }
 declare class PicaContainer {
     private container;
     private tools;
     private board;
+    getBoard(): PicaBoard;
     constructor(picaWindow: HTMLElement);
     loadImage(url: string): void;
     getHTML(): HTMLElement;
@@ -905,10 +928,28 @@ declare class PicaTool {
 }
 declare class PicaToolbar {
     private container;
+    private tools;
     private static tools;
     constructor();
     getHTML(): HTMLElement;
-    static registerTool(tool: PicaTool): void;
+    static registerTool(tool: typeof PicaTool): void;
+}
+declare class PicaPensil extends PicaCanvasPen {
+    id: string;
+    private currentArt;
+    private lastPoint;
+    constructor();
+    mouseDown(point: PicaCanvasPoint): void;
+    mouseUp(point: PicaCanvasPoint): void;
+    mouseMove(point: PicaCanvasPoint): void;
+    mouseOut(): void;
+    mouseWheel(up: boolean, point: PicaCanvasPoint): void;
+    selected(): void;
+    beginDrawing(point: PicaCanvasPoint): void;
+    drawTo(point: PicaCanvasPoint): void;
+    finishDrawing(): void;
+    stroke(): void;
+    redraw(art?: PicaCanvasArt): void;
 }
 declare class PicaToolShare extends PicaTool {
     private a;
