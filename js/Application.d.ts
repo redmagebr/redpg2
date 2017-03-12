@@ -553,7 +553,7 @@ declare class MemoryPica extends TrackerMemory {
     reset(): void;
     getValue(): this;
     isPicaAllowed(): boolean;
-    picaAllowedExport(): number;
+    picaAllowedExport(): 1 | 0;
     picaAllowedStore(isIt: boolean | number): void;
     storeValue(values: Array<any>): void;
     exportAsObject(): Array<any>;
@@ -591,7 +591,7 @@ declare class MemoryCutscene extends TrackerMemory {
     reset(): void;
     storeValue(v: boolean | number): void;
     getValue(): boolean;
-    exportAsObject(): number;
+    exportAsObject(): 1 | 0;
 }
 interface CombatEffectInfo {
     name: string;
@@ -788,176 +788,6 @@ declare class SheetPermRow {
     };
     constructor(player: any);
     getHTML(): HTMLParagraphElement;
-}
-declare class PicaBG {
-    private board;
-    private img;
-    private ratio;
-    constructor(board: PicaBoard);
-    onLoad(): void;
-    loadImage(url: string): void;
-    resize(): void;
-    exportSizing(): {
-        height: number;
-        width: number;
-        left: string;
-        top: string;
-    };
-}
-declare class PicaBoard {
-    private board;
-    private background;
-    private canvas;
-    private availHeight;
-    private availWidth;
-    static _IMAGE_SCALING_FIT_NO_STRETCH: number;
-    static _IMAGE_SCALING_FIT_STRETCH: number;
-    static _IMAGE_SCALING_USE_RATIO: number;
-    private imageScaling;
-    private imageRatio;
-    isFit(): boolean;
-    isStretch(): boolean;
-    getRatio(): number;
-    getCanvas(): PicaCanvas;
-    constructor();
-    getBackground(): PicaBG;
-    loadImage(url: string): void;
-    getAvailHeight(): number;
-    getAvailWidth(): number;
-    resize(): void;
-    getHTML(): HTMLDivElement;
-}
-declare class PicaCanvas {
-    private parent;
-    private canvas;
-    private context;
-    private artAllowed;
-    private locked;
-    private width;
-    private height;
-    private pensSize;
-    private pensColor;
-    private pen;
-    private oldArts;
-    setPensSize(num: number): void;
-    addArt(art: PicaCanvasArt): void;
-    getPensSize(): number;
-    getPensColor(): string;
-    setPenColor(hexColor: string): void;
-    getCanvasContext(): CanvasRenderingContext2D;
-    constructor(board: PicaBoard);
-    setLock(isLocked: boolean): void;
-    redraw(): void;
-    getHeight(): number;
-    getWidth(): number;
-    resize(): void;
-    private bindMouse();
-    mouseDown(point: PicaCanvasPoint): void;
-    mouseUp(point: PicaCanvasPoint): void;
-    mouseMove(point: PicaCanvasPoint): void;
-    mouseOut(): void;
-    mouseWheel(up: boolean, point: PicaCanvasPoint): void;
-}
-declare class PicaCanvasArt {
-    private pen;
-    private specialValues;
-    points: Array<PicaCanvasPoint>;
-    setSpecial(index: string, value: any): void;
-    getSpecial(index: string, defValue: any): any;
-    exportAsObject(): any[];
-    setPen(pen: PicaCanvasPen): void;
-    setValues(values: Object): void;
-    setPoints(points: Array<PicaCanvasPoint>): void;
-    addPoint(point: PicaCanvasPoint): void;
-    cleanUpPoints(): void;
-    redraw(): void;
-    update(pen: typeof PicaCanvasPen, values: Object, points: Array<PicaCanvasPoint>): void;
-}
-declare class PicaCanvasPen {
-    private static Pens;
-    mouseDown(point: PicaCanvasPoint): void;
-    mouseUp(point: PicaCanvasPoint): void;
-    mouseMove(point: PicaCanvasPoint): void;
-    mouseOut(): void;
-    mouseWheel(up: boolean, point: PicaCanvasPoint): void;
-    selected(): void;
-    redraw(art: PicaCanvasArt): void;
-    static registerPen(id: string, pen: PicaCanvasPen): void;
-    static getPen(id: string): any;
-}
-declare class PicaCanvasPoint {
-    private x;
-    private y;
-    private canvas;
-    private static minCurve;
-    private static encoding;
-    private static precision;
-    private static maxEncodedChars;
-    constructor(canvas: PicaCanvas);
-    setCoordinates(offsetX: any, offsetY: any): void;
-    setRelativeCoordinates(x: any, y: any): void;
-    getX(): number;
-    getY(): number;
-    distanceTo(p2: PicaCanvasPoint): number;
-    static isTriangle(p1: PicaCanvasPoint, p2: PicaCanvasPoint, p3: PicaCanvasPoint): boolean;
-    static isEqual(p1: PicaCanvasPoint, p2: PicaCanvasPoint): boolean;
-    exportAsString(): string;
-    updateFromString(str: string): void;
-    static encode(num: number): string;
-    static decode(str: String): number;
-}
-declare class PicaContainer {
-    private container;
-    private tools;
-    private board;
-    getBoard(): PicaBoard;
-    constructor(picaWindow: HTMLElement);
-    loadImage(url: string): void;
-    getHTML(): HTMLElement;
-}
-declare class PicaTool {
-    protected a: HTMLAnchorElement;
-    protected storytellerOnly: boolean;
-    protected requiresArtPermission: boolean;
-    constructor();
-    getHTML(): HTMLElement;
-    onMouseIn(): void;
-    onMouseOut(): void;
-    onClick(): void;
-    updateVisibility(isStoryteller: boolean, isPicaDraw: boolean): void;
-}
-declare class PicaToolbar {
-    private container;
-    private tools;
-    private static tools;
-    constructor();
-    getHTML(): HTMLElement;
-    static registerTool(tool: typeof PicaTool): void;
-}
-declare class PicaPensil extends PicaCanvasPen {
-    id: string;
-    private currentArt;
-    private lastPoint;
-    constructor();
-    mouseDown(point: PicaCanvasPoint): void;
-    mouseUp(point: PicaCanvasPoint): void;
-    mouseMove(point: PicaCanvasPoint): void;
-    mouseOut(): void;
-    mouseWheel(up: boolean, point: PicaCanvasPoint): void;
-    selected(): void;
-    beginDrawing(point: PicaCanvasPoint, art: PicaCanvasArt): void;
-    drawTo(point: PicaCanvasPoint): void;
-    finishDrawing(): void;
-    stroke(): void;
-    redraw(art?: PicaCanvasArt): void;
-}
-declare class PicaToolShare extends PicaTool {
-    private a;
-    constructor();
-    getHTML(): HTMLElement;
-    onClick(): void;
-    onHover(): void;
-    updateVisibility(): void;
 }
 declare class SoundsRow {
     private html;
@@ -2265,12 +2095,88 @@ declare module UI.Chat.Filters {
     function updateEffects(): void;
 }
 declare module UI.Pica {
-    function getPica(): PicaContainer;
+    function getPictureWindow(): HTMLElement;
     function loadImage(url: string): void;
     function callSelf(): void;
     function close(): void;
     function startLoading(): void;
     function stopLoading(): void;
+}
+declare class PicaCanvasPoint {
+    private x;
+    private y;
+    private static minCurve;
+    private static encoding;
+    private static precision;
+    private static maxEncodedChars;
+    setCoordinates(offsetX: any, offsetY: any): void;
+    setRelativeCoordinates(x: any, y: any): void;
+    getX(): number;
+    getY(): number;
+    distanceTo(p2: PicaCanvasPoint): number;
+    static isTriangle(p1: PicaCanvasPoint, p2: PicaCanvasPoint, p3: PicaCanvasPoint): boolean;
+    static isEqual(p1: PicaCanvasPoint, p2: PicaCanvasPoint): boolean;
+    exportAsString(): string;
+    updateFromString(str: string): void;
+    static encode(num: number): string;
+    static decode(str: String): number;
+}
+declare module UI.Pica.Board {
+    var _IMAGE_SCALING_FIT_NO_STRETCH: number;
+    var _IMAGE_SCALING_FIT_STRETCH: number;
+    var _IMAGE_SCALING_USE_RATIO: number;
+    function isFit(): boolean;
+    function isStretch(): boolean;
+    function getBoard(): HTMLDivElement;
+    function getImageRatio(): number;
+    function loadImage(url: string): void;
+    function resize(): void;
+    function getAvailHeight(): number;
+    function getAvailWidth(): number;
+    function addResizeListener(f: Function | Listener): void;
+    function addUrlListener(f: Function | Listener): void;
+    function changeRatio(up: boolean): void;
+    function resetRatio(): void;
+}
+declare module UI.Pica.Toolbar {
+    function registerTool(id: string, tool: PicaTool): void;
+}
+declare class PicaTool {
+    protected a: HTMLAnchorElement;
+    protected selected: boolean;
+    protected icon: string;
+    constructor();
+    protected setIcon(icon: string): void;
+    setSelected(selected: boolean): void;
+    protected updateIcon(): void;
+    protected setLeftSide(): void;
+    protected setRightSide(): void;
+    protected setTitleLingo(str: string): void;
+    onClick(): void;
+}
+declare module UI.Pica.Board.Background {
+    function load(url: any): void;
+    function addLoadListener(f: Function | Listener): void;
+    function addSizeListener(f: Function | Listener): void;
+    function onLoad(): void;
+    function resize(): void;
+    function exportSizes(): {
+        height: number;
+        width: number;
+        left: string;
+        top: string;
+    };
+}
+declare module UI.Pica.Board.Canvas {
+    function getHeight(): number;
+    function getWidth(): number;
+    function setLocked(isLocked: boolean): void;
+    function resize(): void;
+    function mouseDown(point: PicaCanvasPoint): void;
+    function mouseUp(point: PicaCanvasPoint): void;
+    function mouseMove(point: PicaCanvasPoint): void;
+    function mouseOut(): void;
+    function mouseWheel(up: boolean, point: PicaCanvasPoint): void;
 }
 declare module UI.Sounds {
     function callSelf(): void;

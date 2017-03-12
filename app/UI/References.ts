@@ -37,6 +37,7 @@
 /// <reference path='Modules/Chat/PersonaDesigner.ts' />
 /// <reference path='Modules/Chat/Filters.ts' />
 /// <reference path='Modules/Pica.ts' />
+/// <reference path='Modules/Pica/References.ts' />
 /// <reference path='Modules/Sounds.ts' />
 /// <reference path='Modules/Styles.ts' />
 /// <reference path='Modules/Styles/StyleDesigner.ts' />

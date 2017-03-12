@@ -4,6 +4,7 @@ class PicaCanvas {
     private context : CanvasRenderingContext2D = this.canvas.getContext("2d");
     private artAllowed : MemoryPica = <MemoryPica> Server.Chat.Memory.getConfiguration("Pica");
     private locked : boolean = false;
+    private lockedTrigger : Trigger = new Trigger();
     private width : number;
     private height : number;
 
@@ -11,11 +12,20 @@ class PicaCanvas {
     private pensColor : string = "000000";
 
     private pen : PicaCanvasPen = new PicaPensil();
+    private penTrigger : Trigger = new Trigger();
 
     private oldArts : Array<PicaCanvasArt> = [];
 
     public setPensSize (num : number) {
         this.pensSize = num;
+    }
+
+    public addPenListener (f : Listener | Function) {
+        this.penTrigger.addListenerIfMissing(f);
+    }
+
+    public triggerPenListener () {
+        this.penTrigger.trigger(this.pen, this.pensSize, this.pensColor);
     }
 
     public addArt (art : PicaCanvasArt) {
@@ -62,14 +72,24 @@ class PicaCanvas {
     }
     
     public setLock (isLocked : boolean) {
-        this.locked = isLocked;
-        if (this.locked) {
-            this.canvas.classList.add("locked");
-        } else {
-            this.canvas.classList.remove("locked");
+        if (isLocked !== this.locked) {
+            this.locked = isLocked;
+            if (this.locked) {
+                this.canvas.classList.add("locked");
+            } else {
+                this.canvas.classList.remove("locked");
+            }
+            this.triggerLockListener();
         }
     }
 
+    public addLockListener (f : Listener | Function) {
+        this.lockedTrigger.addListenerIfMissing(f);
+    }
+
+    public triggerLockListener () {
+        this.lockedTrigger.trigger(this.locked);
+    }
 
     public redraw () {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);

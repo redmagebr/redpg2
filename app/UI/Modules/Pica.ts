@@ -1,16 +1,15 @@
 module UI.Pica {
-    var $pictureWindow = $(document.getElementById("pictureWindow"));
+    var pictureWindow = document.getElementById("pictureWindow");
+    var $pictureWindow = $(pictureWindow);
     var $loadingWindow = $(document.getElementById("pictureLoading"));
 
-    var pica = new PicaContainer(document.getElementById("pictureWindow"));
-
-    export function getPica () : PicaContainer {
-        return pica;
+    export function getPictureWindow () {
+        return pictureWindow;
     }
 
     export function loadImage (url : string) {
         url = Server.URL.fixURL(url);
-        pica.loadImage(url);
+        UI.Pica.Board.loadImage(url);
         callSelf();
     }
 

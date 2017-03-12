@@ -101,14 +101,14 @@
   @extend .picaToolButton;
 }
 
-.picaHr {
-  border: none;
-  display: inline-block;
-  height: 26px;
-  width: 0px;
-  margin: 0px;
-  border-right: solid 1px #666;
-}
+//.picaHr {
+//  border: none;
+//  display: inline-block;
+//  height: 26px;
+//  width: 0px;
+//  margin: 0px;
+//  border-right: solid 1px #666;
+//}
 
 .picaCanvas {
   &.draw:hover {
@@ -119,12 +119,16 @@
     }
   }
 
-  &.move {
-    &:hover {
-      cursor: grab;
-    }
+  &.move:hover {
+    cursor: move;
+    cursor: -moz-grab;
+    cursor: -webkit-grab;
+
     &.moving {
+      cursor: move;
       cursor: grabbing;
+      cursor: -moz-grabbing;
+      cursor: -webkit-grabbing;
     }
   }
 }

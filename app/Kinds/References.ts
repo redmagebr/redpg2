@@ -57,7 +57,6 @@
 /// <reference path='Elements/SheetsRow.ts' />
 /// <reference path='Elements/SheetsFolder.ts' />
 /// <reference path='Elements/SheetPermRow.ts' />
-/// <reference path='Elements/Pica/References.ts' />
 /// <reference path='Elements/SoundsRow.ts' />
 /// <reference path='Elements/SoundsFolder.ts' />
 /// <reference path='Elements/Sheet/SheetTab.ts' />
