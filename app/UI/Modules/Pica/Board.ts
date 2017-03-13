@@ -78,6 +78,12 @@ module UI.Pica.Board {
         triggerSizeChange();
     }
 
+    export function setRatio (ratio : number) {
+        imageRatio = ratio;
+        updateMinRatio();
+        triggerSizeChange();
+    }
+
     export function changeRatio (up : boolean) {
         if (imageScaling != _IMAGE_SCALING_USE_RATIO) {
             if (imageScaling == _IMAGE_SCALING_FIT_STRETCH) {

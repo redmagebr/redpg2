@@ -132,8 +132,9 @@ ptbr.setLingo("", "");
 
 // PICAS
 ptbr.setLingo("_PICASHARE_", "Compartilhar no Chat");
-ptbr.setLingo("", "");
-ptbr.setLingo("", "");
+ptbr.setLingo("_PICASCALEFITNOSTRETCH_", "Encaixar na tela (sem aumentar a imagem)");
+ptbr.setLingo("_PICASCALEFITSTRETCH_", "Encaixar na tela");
+ptbr.setLingo("_PICASCALERATIO1_", "Mostrar no tamanho original");
 ptbr.setLingo("", "");
 
 

@@ -4,6 +4,7 @@ class PicaToolScaling1 extends PicaToolScaling {
     constructor () {
         super();
         this.setIcon("icons-picaToolFit");
+        this.setTitleLingo("_PICASCALEFITSTRETCH_");
     }
 }
 
