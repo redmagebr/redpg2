@@ -161,6 +161,10 @@ change = new Changelog(0, 27, 4);
 change.addMessage("Common URL fixing will be applied to any images opened.", "en");
 change.addMessage("Links de qualquer imagem aberta serão corrigidos.", "pt");
 
+change = new Changelog(0, 28, 0);
+change.addMessage("Art and other tools added to images.", "en");
+change.addMessage("Arte e outras ferramentas adicionadas a imagens.", "pt");
+
 delete (change);
 
 Changelog.finished();
