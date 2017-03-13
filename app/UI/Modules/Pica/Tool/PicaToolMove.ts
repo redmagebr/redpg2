@@ -32,7 +32,24 @@ class PicaToolMove extends PicaToolPen {
     }
 
     public mouseWheel (up : boolean, point : PicaCanvasPoint) {
+        var board = UI.Pica.Board.getBoard();
+        var availScrollTop = board.scrollHeight - UI.Pica.Board.getAvailHeight();
+        if (availScrollTop < 1) availScrollTop = 1;
+        var availScrollLeft = board.scrollWidth - UI.Pica.Board.getAvailWidth();
+        if (availScrollLeft < 1) availScrollLeft = 1;
+
+        var relLeft = board.scrollLeft / availScrollLeft;
+        var relTop = board.scrollTop / availScrollTop;
+
         UI.Pica.Board.changeRatio(up);
+
+        var availScrollTop = board.scrollHeight - UI.Pica.Board.getAvailHeight();
+        if (availScrollTop < 1) availScrollTop = 1;
+        var availScrollLeft = board.scrollWidth - UI.Pica.Board.getAvailWidth();
+        if (availScrollLeft < 1) availScrollLeft = 1;
+
+        board.scrollLeft = availScrollLeft * relLeft;
+        board.scrollTop = availScrollTop * relTop;
     }
 
     public updateCanvasClasses () {

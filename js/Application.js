@@ -6378,6 +6378,129 @@ var MessageBuff = (function (_super) {
     return MessageBuff;
 }(Message));
 MessageFactory.registerMessage(MessageBuff, "buff", []);
+var MessagePica = (function (_super) {
+    __extends(MessagePica, _super);
+    function MessagePica() {
+        var _this = _super.call(this) || this;
+        _this.module = "pica";
+        _this.msgOneArt = "0";
+        _this.msgUpdateArts = "1";
+        _this.msgRequestUpdate = "2";
+        _this.runOnce = false;
+        _this.addUpdatedListener((function () {
+            this.considerAddingToArtManager();
+        }).bind(_this));
+        return _this;
+    }
+    MessagePica.prototype.considerAddingToArtManager = function () {
+        if (this.wasLocalMessage()) {
+            return;
+        }
+        var roomid = this.roomid;
+        var url = this.getUrl();
+        var userLengths = UI.Pica.ArtManager.getLengthByUser(roomid, url);
+        var ownLength = userLengths[Application.getMyId()] != undefined ? userLengths[Application.getMyId()] : 0;
+        if (!this.isMine() || this.getSpecificConfirmation(Application.getMyId()) != ownLength) {
+            if (this.getMsg() == this.msgOneArt) {
+                var art = this.getArt();
+                UI.Pica.ArtManager.includeArt(roomid, url, art);
+                userLengths = UI.Pica.ArtManager.getLengthByUser(roomid, url);
+                var senderLengthLocal = userLengths[this.origin] == undefined ? 0 : userLengths[this.origin];
+                var senderLengthExt = this.getSpecificConfirmation(this.origin);
+                if (senderLengthLocal != senderLengthExt) {
+                    console.log("I don't have all art for " + this.origin);
+                    var msg = new MessagePica();
+                    msg.addDestination(this.getUser());
+                    msg.setUrl(url);
+                    msg.setMsg(this.msgRequestUpdate);
+                    UI.Chat.sendMessage(msg);
+                }
+            }
+            else if (this.getMsg() == this.msgUpdateArts) {
+                var arts = this.getArts();
+                UI.Pica.ArtManager.removeArtFromUser(this.origin, roomid, url);
+                UI.Pica.ArtManager.includeManyArts(roomid, url, arts);
+            }
+            else if (this.getMsg() == this.msgRequestUpdate) {
+                var msg = new MessagePica();
+                msg.addDestination(this.getUser());
+                msg.setUrl(url);
+                msg.setMsg(this.msgRequestUpdate);
+                msg.setArts(UI.Pica.ArtManager.getMyArtsAsString(roomid, url));
+                UI.Chat.sendMessage(msg);
+            }
+        }
+    };
+    MessagePica.prototype.setArt = function (art) {
+        this.setSpecial("art", art.exportAsObject());
+        this.setMsg(this.msgOneArt);
+    };
+    MessagePica.prototype.setArtString = function (art) {
+        this.setSpecial("art", art);
+        this.setMsg(this.msgOneArt);
+    };
+    MessagePica.prototype.getArt = function () {
+        var art = this.getSpecial("art", null);
+        try {
+            if (art != null) {
+                var canvasArt = new PicaCanvasArt();
+                canvasArt.importFromString(art);
+                canvasArt.setUserId(this.origin);
+                return canvasArt;
+            }
+        }
+        catch (e) { }
+        return null;
+    };
+    MessagePica.prototype.setArts = function (arts) {
+        this.setSpecial("arts", arts);
+        this.setMsg(this.msgUpdateArts);
+    };
+    MessagePica.prototype.getArts = function () {
+        var arts = this.getSpecial("arts", null);
+        var instanced = [];
+        if (Array.isArray(arts)) {
+            for (var i = 0; i < arts.length; i++) {
+                try {
+                    var art = arts[i];
+                    var canvasArt = new PicaCanvasArt();
+                    canvasArt.importFromString(art);
+                    canvasArt.setUserId(this.origin);
+                    instanced.push(canvasArt);
+                }
+                catch (e) { }
+                ;
+            }
+        }
+        return instanced;
+    };
+    MessagePica.prototype.setUrl = function (url) {
+        this.setSpecial("url", url);
+    };
+    MessagePica.prototype.getUrl = function () {
+        return this.getSpecial("url", "");
+    };
+    MessagePica.prototype.getSpecificConfirmation = function (userid) {
+        var conf = this.getConfirmation();
+        if (conf[userid] == undefined)
+            return 0;
+        return conf[userid];
+    };
+    MessagePica.prototype.getConfirmation = function () {
+        return this.getSpecial("check", {});
+    };
+    MessagePica.prototype.setConfirmation = function (userList) {
+        this.setSpecial("check", userList);
+    };
+    MessagePica.prototype.getHTML = function () {
+        if (!this.runOnce) {
+            this.runOnce = true;
+        }
+        return null;
+    };
+    return MessagePica;
+}(Message));
+MessageFactory.registerMessage(MessagePica, "pica", []);
 var MessageSystem = (function (_super) {
     __extends(MessageSystem, _super);
     function MessageSystem() {
@@ -8855,6 +8978,16 @@ var Application;
             return defaultValue;
         }
         LocalMemory.getMemory = getMemory;
+        function getMemoryLength(id) {
+            if (Application.Login.isLogged()) {
+                var value = localStorage.getItem(getMemoryName(id));
+                if (value !== null && value !== undefined) {
+                    return value.length;
+                }
+            }
+            return 0;
+        }
+        LocalMemory.getMemoryLength = getMemoryLength;
         function setMemory(id, value) {
             if (Application.Login.isLogged()) {
                 localStorage.setItem(getMemoryName(id), JSON.stringify(value));
@@ -15133,6 +15266,105 @@ PicaCanvasPoint.minCurve = 10;
 PicaCanvasPoint.encoding = "0123456789abcdefghijklmnopqrstuvxwyzABCDEFGHIJKLMNOPQRSTUVXWYZ-+_=![]{}()*@/\\:;";
 PicaCanvasPoint.precision = Math.pow(PicaCanvasPoint.encoding.length, 2);
 PicaCanvasPoint.maxEncodedChars = 2;
+var PicaCanvasArt = (function () {
+    function PicaCanvasArt() {
+        this.userId = 0;
+        this.specialValues = {};
+        this.points = [];
+    }
+    PicaCanvasArt.prototype.draw = function () {
+        this.pen.drawFromArt(this);
+    };
+    PicaCanvasArt.prototype.setUserId = function (id) {
+        this.userId = id;
+    };
+    PicaCanvasArt.prototype.getUserId = function () {
+        return this.userId;
+    };
+    PicaCanvasArt.prototype.setSpecial = function (index, value) {
+        this.specialValues[index] = value;
+    };
+    PicaCanvasArt.prototype.getSpecial = function (index, defValue) {
+        if (this.specialValues[index] != undefined) {
+            return this.specialValues[index];
+        }
+        return defValue;
+    };
+    PicaCanvasArt.prototype.exportAsObject = function () {
+        var points = "";
+        for (var i = 0; i < this.points.length; i++) {
+            points += this.points[i].exportAsString();
+        }
+        return [
+            this.userId,
+            this.pen.id,
+            this.specialValues,
+            points
+        ];
+    };
+    PicaCanvasArt.prototype.importFromString = function (str) {
+        obj = JSON.parse(str);
+        this.setUserId(obj[0]);
+        this.setPen(PicaToolPen.getPen(obj[1]));
+        this.specialValues = obj[2];
+        this.importPointStrings(obj[3].match(/.{4}/g));
+    };
+    PicaCanvasArt.prototype.importPointStrings = function (a) {
+        for (var i = 0; i < a.length; i++) {
+            var point = new PicaCanvasPoint();
+            point.updateFromString(a[i]);
+            this.addPoint(point);
+        }
+    };
+    PicaCanvasArt.prototype.setPen = function (pen) {
+        this.pen = pen;
+    };
+    PicaCanvasArt.prototype.setValues = function (values) {
+        this.specialValues = values;
+    };
+    PicaCanvasArt.prototype.setPoints = function (points) {
+        this.points = points;
+    };
+    PicaCanvasArt.prototype.addPoint = function (point) {
+        this.points.push(point);
+    };
+    PicaCanvasArt.prototype.cleanUpPoints = function () {
+        var oldLength = this.points.length;
+        cleanedPoints = [];
+        if (this.points.length > 0) {
+            cleanedPoints.push(this.points[0]);
+            var lastAdded = this.points[0];
+            for (var i = 0; i < this.points.length; i++) {
+                var p1 = this.points[i];
+                if ((i + 1) == this.points.length) {
+                    cleanedPoints.push(p1);
+                }
+                else {
+                    var found = false;
+                    for (var k = this.points.length - 1; k >= 0; k--) {
+                        if (k == i)
+                            continue;
+                        var p2 = this.points[k];
+                        if (PicaCanvasPoint.isEqual(p1, p2)) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found && PicaCanvasPoint.isTriangle(p1, lastAdded, this.points[i + 1])) {
+                        lastAdded = p1;
+                        cleanedPoints.push(p1);
+                    }
+                }
+            }
+        }
+        this.points = cleanedPoints;
+        console.debug(oldLength + " -> " + this.points.length + " = " + Math.round(this.points.length * 100 / oldLength) + "%");
+    };
+    PicaCanvasArt.prototype.redraw = function () {
+        this.pen.drawFromArt(this);
+    };
+    return PicaCanvasArt;
+}());
 var UI;
 (function (UI) {
     var Pica;
@@ -15171,10 +15403,15 @@ var UI;
             Board.getImageRatio = getImageRatio;
             function loadImage(url) {
                 resize();
+                UI.Pica.Board.Canvas.clearCanvas();
                 currentUrl = url;
                 urlTrigger.trigger(url);
             }
             Board.loadImage = loadImage;
+            function getUrl() {
+                return currentUrl;
+            }
+            Board.getUrl = getUrl;
             function resize() {
                 var oldString = availWidth + "x" + availHeight;
                 availWidth = board.offsetWidth;
@@ -15217,6 +15454,7 @@ var UI;
                     }
                     imageScaling = Board._IMAGE_SCALING_USE_RATIO;
                 }
+                imageRatioRate = UI.Pica.Board.Background.getMinRatio() * 0.1;
                 if (up) {
                     imageRatio += imageRatioRate;
                 }
@@ -15261,8 +15499,16 @@ var UI;
             var container = document.createElement("div");
             container.id = "pictureToolsContainer";
             UI.Pica.getPictureWindow().appendChild(container);
+            var tools = [];
+            function updateVisibility() {
+                for (var i = 0; i < tools.length; i++) {
+                    tools[i].updateVisibility();
+                }
+            }
+            Toolbar.updateVisibility = updateVisibility;
             function registerTool(tool) {
                 container.appendChild(tool.getHTML());
+                tools.push(tool);
             }
             Toolbar.registerTool = registerTool;
         })(Toolbar = Pica.Toolbar || (Pica.Toolbar = {}));
@@ -15299,6 +15545,8 @@ var PicaTool = (function () {
             this.a.classList.remove(this.icon + "Active");
         }
     };
+    PicaTool.prototype.updateVisibility = function () {
+    };
     PicaTool.prototype.setLeftSide = function () {
         this.a.classList.remove("picaToolButton");
         this.a.classList.remove("rightPicaToolButton");
@@ -15323,7 +15571,9 @@ var PicaTool = (function () {
 var PicaToolPen = (function (_super) {
     __extends(PicaToolPen, _super);
     function PicaToolPen() {
-        return _super !== null && _super.apply(this, arguments) || this;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.id = "undefined";
+        return _this;
     }
     PicaToolPen.prototype.mouseDown = function (point) {
         console.log(point.getX() + " - " + point.getY());
@@ -15337,7 +15587,8 @@ var PicaToolPen = (function (_super) {
     PicaToolPen.prototype.mouseWheel = function (up, point) {
     };
     PicaToolPen.prototype.selected = function () { };
-    PicaToolPen.prototype.redraw = function (art) { };
+    PicaToolPen.prototype.redraw = function () { };
+    PicaToolPen.prototype.drawFromArt = function (art) { };
     PicaToolPen.registerPen = function (id, pen) {
         PicaToolPen.Pens[id] = pen;
     };
@@ -15357,9 +15608,132 @@ var PicaToolPen = (function (_super) {
     PicaToolPen.prototype.onClick = function () {
         UI.Pica.Board.Canvas.setPen(this);
     };
+    PicaToolPen.registerPen = function (id, pen) {
+        PicaToolPen.Pens[id] = pen;
+    };
+    PicaToolPen.getPen = function (id) {
+        return PicaToolPen.Pens[id];
+    };
     return PicaToolPen;
 }(PicaTool));
 PicaToolPen.Pens = {};
+var UI;
+(function (UI) {
+    var Pica;
+    (function (Pica) {
+        var ArtManager;
+        (function (ArtManager) {
+            Server.Chat.addRoomListener(function () {
+                UI.Pica.Board.Canvas.redraw();
+            });
+            function getLength(roomid, url) {
+                return Application.LocalMemory.getMemoryLength(createIdString(roomid, url));
+            }
+            ArtManager.getLength = getLength;
+            function getLengthByUser(roomid, url) {
+                var art = getArt(roomid, url);
+                var userArts = {};
+                for (var i = 0; i < art.length; i++) {
+                    if (userArts[art[i].getUserId()] == undefined) {
+                        userArts[art[i].getUserId()] = 0;
+                    }
+                    userArts[art[i].getUserId()] += 1;
+                }
+                return userArts;
+            }
+            ArtManager.getLengthByUser = getLengthByUser;
+            function addArt(art) {
+                var room = Server.Chat.getRoom();
+                var picaMemory = Server.Chat.Memory.getConfiguration("Pica");
+                if (room != null && picaMemory.isPicaAllowed()) {
+                    var roomid = room.id;
+                    var url = UI.Pica.Board.getUrl();
+                    includeArt(roomid, url, art);
+                    var stringified = JSON.stringify(art.exportAsObject());
+                    var msg = new MessagePica();
+                    msg.setArtString(stringified);
+                    msg.setUrl(url);
+                    msg.setConfirmation(getLengthByUser(roomid, url));
+                    UI.Chat.sendMessage(msg);
+                }
+                else {
+                    UI.Pica.Board.Canvas.redraw();
+                }
+            }
+            ArtManager.addArt = addArt;
+            function getMyArtsAsString(roomid, url) {
+                var art = getArt(roomid, url);
+                var artStrings = [];
+                for (var i = 0; i < art.length; i++) {
+                    if (art[i].getUserId() == Application.getMyId()) {
+                        artStrings.push(JSON.stringify(art[i].exportAsObject()));
+                    }
+                }
+                return artStrings;
+            }
+            ArtManager.getMyArtsAsString = getMyArtsAsString;
+            function getArt(roomid, url) {
+                var oldArt = Application.LocalMemory.getMemory(createIdString(roomid, url), []);
+                var instanced = [];
+                for (var i = 0; i < oldArt.length; i++) {
+                    try {
+                        var newArt = new PicaCanvasArt();
+                        newArt.importFromString(oldArt[i]);
+                        instanced.push(newArt);
+                    }
+                    catch (e) {
+                        console.warn("[UI.Pica.ArtManager] Unparsable Art at " + createIdString(roomid, url) + ". Skipping.");
+                    }
+                }
+                return instanced;
+            }
+            ArtManager.getArt = getArt;
+            function removeArtFromUser(userid, roomid, url) {
+                var oldArt = getArt(roomid, url);
+                var newArt = [];
+                for (var i = 0; i < oldArt.length; i++) {
+                    if (oldArt[i].getUserId() != userid) {
+                        newArt.push(oldArt[i]);
+                    }
+                }
+                Application.LocalMemory.setMemory(createIdString(roomid, url), newArt);
+            }
+            ArtManager.removeArtFromUser = removeArtFromUser;
+            function includeManyArts(roomid, url, arts) {
+                var oldArt = Application.LocalMemory.getMemory(createIdString(roomid, url), []);
+                for (var i = 0; i < arts.length; i++) {
+                    var art = arts[i];
+                    var stringified = JSON.stringify(art.exportAsObject());
+                    if (oldArt.indexOf(stringified) == -1) {
+                        oldArt.push(stringified);
+                    }
+                }
+                Application.LocalMemory.setMemory(createIdString(roomid, url), oldArt);
+                var currentUrl = UI.Pica.Board.getUrl();
+                if (currentUrl == url) {
+                    UI.Pica.Board.Canvas.redraw();
+                }
+            }
+            ArtManager.includeManyArts = includeManyArts;
+            function includeArt(roomid, url, art) {
+                var oldArt = Application.LocalMemory.getMemory(createIdString(roomid, url), []);
+                var stringified = JSON.stringify(art.exportAsObject());
+                if (oldArt.indexOf(stringified) == -1) {
+                    oldArt.push(stringified);
+                    Application.LocalMemory.setMemory(createIdString(roomid, url), oldArt);
+                    var currentUrl = UI.Pica.Board.getUrl();
+                    if (currentUrl == url) {
+                        UI.Pica.Board.Canvas.redraw();
+                    }
+                }
+            }
+            ArtManager.includeArt = includeArt;
+            function createIdString(roomid, url) {
+                return "art_" + roomid + "_" + url;
+            }
+        })(ArtManager = Pica.ArtManager || (Pica.ArtManager = {}));
+    })(Pica = UI.Pica || (UI.Pica = {}));
+})(UI || (UI = {}));
 var UI;
 (function (UI) {
     var Pica;
@@ -15485,18 +15859,47 @@ var UI;
                 UI.Pica.Board.getBoard().appendChild(canvas);
                 var context = canvas.getContext("2d");
                 var picaMemory = Server.Chat.Memory.getConfiguration("Pica");
-                picaMemory.addChangeListener(function (picaMemory) { UI.Pica.Board.Canvas.setLocked(picaMemory.isPicaAllowed()); });
+                picaMemory.addChangeListener(function () {
+                    UI.Pica.Board.Canvas.setLocked();
+                });
                 var locked = picaMemory.isPicaAllowed();
                 var lockedTrigger = new Trigger();
                 var height = 0;
                 var width = 0;
                 var pen = new PicaToolPen();
-                function redraw() {
+                var penWidth = 1;
+                var penColor = "000000";
+                var penTrigger = new Trigger();
+                var updatePenFunction = function () { UI.Pica.Toolbar.updateVisibility(); };
+                lockedTrigger.addListenerIfMissing(updatePenFunction);
+                Server.Chat.addRoomListener(updatePenFunction);
+                delete (updatePenFunction);
+                function clearCanvas() {
+                    context.clearRect(0, 0, canvas.width, canvas.height);
                 }
+                Canvas.clearCanvas = clearCanvas;
+                function redraw() {
+                    clearCanvas();
+                    var room = Server.Chat.getRoom();
+                    if (room != null) {
+                        var roomid = room.id;
+                        var url = UI.Pica.Board.getUrl();
+                        var art = UI.Pica.ArtManager.getArt(roomid, url);
+                        for (var i = 0; i < art.length; i++) {
+                            art[i].redraw();
+                        }
+                    }
+                    pen.redraw();
+                }
+                Canvas.redraw = redraw;
                 function getCanvas() {
                     return canvas;
                 }
                 Canvas.getCanvas = getCanvas;
+                function getCanvasContext() {
+                    return context;
+                }
+                Canvas.getCanvasContext = getCanvasContext;
                 function getHeight() {
                     return height;
                 }
@@ -15505,13 +15908,21 @@ var UI;
                     return width;
                 }
                 Canvas.getWidth = getWidth;
-                function setLocked(isLocked) {
-                    if (isLocked != locked) {
-                        locked = isLocked;
-                        lockedTrigger.trigger();
+                function setLocked() {
+                    locked = !picaMemory.isPicaAllowed();
+                    if (locked) {
+                        canvas.classList.add("locked");
                     }
+                    else {
+                        canvas.classList.remove("locked");
+                    }
+                    lockedTrigger.trigger();
                 }
                 Canvas.setLocked = setLocked;
+                function addLockListener(f) {
+                    lockedTrigger.addListenerIfMissing(f);
+                }
+                Canvas.addLockListener = addLockListener;
                 function resize() {
                     var sizeObj = UI.Pica.Board.Background.exportSizes();
                     height = sizeObj.height;
@@ -15549,6 +15960,32 @@ var UI;
                     pen.setSelected(true);
                 }
                 Canvas.setPen = setPen;
+                function addPenListener(f) {
+                    penTrigger.addListenerIfMissing(f);
+                }
+                Canvas.addPenListener = addPenListener;
+                function getPenWidth() {
+                    return penWidth;
+                }
+                Canvas.getPenWidth = getPenWidth;
+                function getPenColor() {
+                    return penColor;
+                }
+                Canvas.getPenColor = getPenColor;
+                function setPenWidth(newWidth) {
+                    if (newWidth != penWidth) {
+                        penWidth = newWidth;
+                        penTrigger.trigger();
+                    }
+                }
+                Canvas.setPenWidth = setPenWidth;
+                function setPenColor(newColor) {
+                    if (newColor != penColor) {
+                        penColor = newColor;
+                        penTrigger.trigger();
+                    }
+                }
+                Canvas.setPenColor = setPenColor;
                 {
                     canvas.addEventListener("mousedown", {
                         handleEvent: function (e) {
@@ -15601,15 +16038,117 @@ var PicaToolPensil = (function (_super) {
     __extends(PicaToolPensil, _super);
     function PicaToolPensil() {
         var _this = _super.call(this) || this;
+        _this.art = null;
+        _this.lastPoint = null;
+        _this.id = "pensil";
         _this.setIcon("icons-picaToolPensil");
         return _this;
     }
+    PicaToolPensil.prototype.mouseDown = function (point) {
+        this.art = new PicaCanvasArt();
+        this.art.setUserId(Application.getMyId());
+        this.art.addPoint(point);
+        this.art.setSpecial("width", UI.Pica.Board.Canvas.getPenWidth());
+        this.art.setSpecial("color", UI.Pica.Board.Canvas.getPenColor());
+        this.art.setPen(this);
+        this.beginDrawing(this.art);
+    };
+    PicaToolPensil.prototype.mouseMove = function (point) {
+        if (this.art != null) {
+            this.art.addPoint(point);
+            this.drawTo(point);
+            this.stroke();
+        }
+    };
+    PicaToolPensil.prototype.mouseUp = function (point) {
+        this.art.addPoint(point);
+        this.mouseOut();
+    };
+    PicaToolPensil.prototype.mouseOut = function () {
+        if (this.art != null) {
+            var art = this.art;
+            this.art = null;
+            art.cleanUpPoints();
+            UI.Pica.ArtManager.addArt(art);
+        }
+    };
+    PicaToolPensil.prototype.beginDrawing = function (art) {
+        var ctx = UI.Pica.Board.Canvas.getCanvasContext();
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.lineWidth = art.getSpecial("width", 1);
+        ctx.strokeStyle = '#' + art.getSpecial("color", "000000");
+        ctx.beginPath();
+        var point = art.points[0];
+        ctx.moveTo(point.getX(), point.getY());
+        this.lastPoint = point;
+    };
+    PicaToolPensil.prototype.drawTo = function (point) {
+        var ctx = UI.Pica.Board.Canvas.getCanvasContext();
+        var x = (point.getX() + this.lastPoint.getX()) / 2;
+        var y = (point.getY() + this.lastPoint.getY()) / 2;
+        ctx.lineTo(point.getX(), point.getY());
+        ctx.moveTo(point.getX(), point.getY());
+        this.lastPoint = point;
+    };
+    PicaToolPensil.prototype.stroke = function () {
+        var ctx = UI.Pica.Board.Canvas.getCanvasContext();
+        ctx.stroke();
+    };
+    PicaToolPensil.prototype.redraw = function () {
+        if (this.art != null) {
+            this.beginDrawing(this.art);
+            for (var i = 1; i < this.art.points.length; i++) {
+                this.drawTo(this.art.points[i]);
+                this.stroke();
+            }
+        }
+    };
+    PicaToolPensil.prototype.drawFromArt = function (art) {
+        this.beginDrawing(art);
+        for (var i = 1; i < art.points.length; i++) {
+            this.drawTo(art.points[i]);
+        }
+        this.stroke();
+    };
+    PicaToolPensil.prototype.updateCanvasClasses = function () {
+        if (this.selected) {
+            UI.Pica.Board.Canvas.getCanvas().classList.add("draw");
+        }
+        else {
+            UI.Pica.Board.Canvas.getCanvas().classList.remove("draw");
+        }
+    };
     return PicaToolPensil;
 }(PicaToolPen));
 var pensil = new PicaToolPensil();
 UI.Pica.Toolbar.registerTool(pensil);
 UI.Pica.Board.Canvas.setPen(pensil);
+PicaToolPen.registerPen("pensil", pensil);
 delete (pensil);
+var PicaToolColor = (function (_super) {
+    __extends(PicaToolColor, _super);
+    function PicaToolColor() {
+        var _this = _super.call(this) || this;
+        _this.a = document.createElement("input");
+        _this.a.id = "colopica";
+        _this.a.type = "color";
+        _this.a.addEventListener("change", function () {
+            UI.Pica.Board.Canvas.setPenColor(this.value.substr(1));
+        });
+        UI.Pica.Board.Canvas.addPenListener({
+            a: _this.a,
+            handleEvent: function () {
+                this.a.value = "#" + UI.Pica.Board.Canvas.getPenColor();
+            }
+        });
+        return _this;
+    }
+    return PicaToolColor;
+}(PicaTool));
+var tool = new PicaToolColor();
+UI.Pica.Toolbar.registerTool(tool);
+delete (tool);
 var PicaToolMove = (function (_super) {
     __extends(PicaToolMove, _super);
     function PicaToolMove() {
@@ -15638,7 +16177,24 @@ var PicaToolMove = (function (_super) {
         UI.Pica.Board.Canvas.getCanvas().classList.remove("moving");
     };
     PicaToolMove.prototype.mouseWheel = function (up, point) {
+        var board = UI.Pica.Board.getBoard();
+        var availScrollTop = board.scrollHeight - UI.Pica.Board.getAvailHeight();
+        if (availScrollTop < 1)
+            availScrollTop = 1;
+        var availScrollLeft = board.scrollWidth - UI.Pica.Board.getAvailWidth();
+        if (availScrollLeft < 1)
+            availScrollLeft = 1;
+        var relLeft = board.scrollLeft / availScrollLeft;
+        var relTop = board.scrollTop / availScrollTop;
         UI.Pica.Board.changeRatio(up);
+        var availScrollTop = board.scrollHeight - UI.Pica.Board.getAvailHeight();
+        if (availScrollTop < 1)
+            availScrollTop = 1;
+        var availScrollLeft = board.scrollWidth - UI.Pica.Board.getAvailWidth();
+        if (availScrollLeft < 1)
+            availScrollLeft = 1;
+        board.scrollLeft = availScrollLeft * relLeft;
+        board.scrollTop = availScrollTop * relTop;
     };
     PicaToolMove.prototype.updateCanvasClasses = function () {
         if (this.selected) {
@@ -15667,6 +16223,42 @@ var PicaToolShare = (function (_super) {
 var share = new PicaToolShare();
 UI.Pica.Toolbar.registerTool(share);
 delete (share);
+var PicaToolLock = (function (_super) {
+    __extends(PicaToolLock, _super);
+    function PicaToolLock() {
+        var _this = _super.call(this) || this;
+        _this.lockedIcon = "icons-picaToolLockLocked";
+        _this.unlockedIcon = "icons-picaToolLockUnlocked";
+        _this.setIcon(_this.lockedIcon);
+        _this.setRightSide();
+        return _this;
+    }
+    PicaToolLock.prototype.updateVisibility = function () {
+        var m = Server.Chat.Memory.getConfiguration("Pica");
+        if (m.isPicaAllowed()) {
+            this.a.classList.add(this.unlockedIcon);
+            this.a.classList.remove(this.lockedIcon);
+        }
+        else {
+            this.a.classList.add(this.lockedIcon);
+            this.a.classList.remove(this.unlockedIcon);
+        }
+    };
+    PicaToolLock.prototype.onClick = function () {
+        var room = Server.Chat.getRoom();
+        if (room != null) {
+            var me = room.getMe();
+            if (me.isStoryteller()) {
+                var m = Server.Chat.Memory.getConfiguration("Pica");
+                m.picaAllowedStore(!m.isPicaAllowed());
+            }
+        }
+    };
+    return PicaToolLock;
+}(PicaTool));
+var tool = new PicaToolLock();
+UI.Pica.Toolbar.registerTool(tool);
+delete (tool);
 var PicaToolScaling = (function (_super) {
     __extends(PicaToolScaling, _super);
     function PicaToolScaling() {

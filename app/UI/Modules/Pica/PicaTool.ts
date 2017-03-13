@@ -35,6 +35,10 @@ class PicaTool {
         }
     }
 
+    public updateVisibility () {
+        // If the icon needs to disappear when something happens (like not being a storyteller) it has to be added here
+    }
+
     protected setLeftSide () {
         this.a.classList.remove("picaToolButton");
         this.a.classList.remove("rightPicaToolButton");

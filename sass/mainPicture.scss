@@ -132,3 +132,32 @@
     }
   }
 }
+
+#colopica {
+  @extend .buttonBehavior;
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  padding: 0px;
+  height: 18px;
+  margin: 3px;
+  outline: none;
+  border: solid 1px #575757;
+
+  &:hover {
+    border-color: #9f9f9f;
+  }
+
+  &:active {
+    border-color: #838383;
+  }
+
+  &::-webkit-color-swatch {
+    border: none;
+  }
+
+  &::-webkit-color-swatch-wrapper {
+    padding: 0;
+  }
+}

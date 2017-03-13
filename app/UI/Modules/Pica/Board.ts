@@ -38,8 +38,13 @@ module UI.Pica.Board {
 
     export function loadImage (url : string) {
         resize();
+        UI.Pica.Board.Canvas.clearCanvas();
         currentUrl = url;
         urlTrigger.trigger(url);
+    }
+
+    export function getUrl () {
+        return currentUrl;
     }
 
     export function resize () {
@@ -83,6 +88,8 @@ module UI.Pica.Board {
             }
             imageScaling = _IMAGE_SCALING_USE_RATIO;
         }
+
+        imageRatioRate = UI.Pica.Board.Background.getMinRatio() * 0.1; // Use rate relative to image size so that it isn't terribly slow for small images
 
         if (up) {
             imageRatio += imageRatioRate;

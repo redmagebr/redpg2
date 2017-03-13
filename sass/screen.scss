@@ -7,10 +7,16 @@ $blueBG : #b2b9cf;
 ** Individual font licenses can be found in /stylesheets/fontface
 ** and /stylesheets/fontface/Lingo.
 */
-@import "jqueryui";
 @import "allFonts";
-@import "compass/utilities/sprites";
 
+
+
+@import "jqueryui";
+
+/*
+** Most Icons are based on Adam Whitcroft's Batch icon set
+ */
+@import "compass/utilities/sprites";
 $icons-layout:smart;
 @import "icons/*.png";
 @include all-icons-sprites;

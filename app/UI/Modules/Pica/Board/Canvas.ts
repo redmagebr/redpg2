@@ -10,7 +10,9 @@ module UI.Pica.Board.Canvas {
 
     var context : CanvasRenderingContext2D = canvas.getContext("2d");
     var picaMemory : MemoryPica = <MemoryPica> Server.Chat.Memory.getConfiguration("Pica");
-    picaMemory.addChangeListener(function (picaMemory : MemoryPica) { UI.Pica.Board.Canvas.setLocked(picaMemory.isPicaAllowed()); });
+    picaMemory.addChangeListener(function () {
+        UI.Pica.Board.Canvas.setLocked();
+    });
 
     var locked : boolean = picaMemory.isPicaAllowed();
     var lockedTrigger : Trigger = new Trigger();
@@ -19,13 +21,42 @@ module UI.Pica.Board.Canvas {
     var width = 0;
 
     var pen : PicaToolPen = new PicaToolPen();
+    var penWidth : number = 1;
+    var penColor : string = "000000";
 
-    function redraw () {
+    var penTrigger = new Trigger();
 
+    var updatePenFunction = function () { UI.Pica.Toolbar.updateVisibility(); };
+    lockedTrigger.addListenerIfMissing(updatePenFunction);
+    Server.Chat.addRoomListener(updatePenFunction);
+    delete (updatePenFunction);
+
+    export function clearCanvas () {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    export function redraw () {
+        clearCanvas();
+
+        var room = Server.Chat.getRoom();
+        if (room != null) {
+            var roomid = room.id;
+            var url = UI.Pica.Board.getUrl();
+            var art = <Array<PicaCanvasArt>> UI.Pica.ArtManager.getArt(roomid, url);
+            for (var i = 0; i < art.length; i++) {
+                art[i].redraw();
+            }
+        }
+
+        pen.redraw();
     }
 
     export function getCanvas () {
         return canvas;
+    }
+
+    export function getCanvasContext () {
+        return context;
     }
 
     export function getHeight () {
@@ -36,11 +67,18 @@ module UI.Pica.Board.Canvas {
         return width;
     }
 
-    export function setLocked (isLocked : boolean) {
-        if (isLocked != locked) {
-            locked = isLocked;
-            lockedTrigger.trigger();
+    export function setLocked () {
+        locked = !picaMemory.isPicaAllowed();
+        if (locked) {
+            canvas.classList.add("locked");
+        } else {
+            canvas.classList.remove("locked");
         }
+        lockedTrigger.trigger();
+    }
+
+    export function addLockListener (f : Listener | Function) {
+        lockedTrigger.addListenerIfMissing(f);
     }
 
     export function resize () {
@@ -80,6 +118,32 @@ module UI.Pica.Board.Canvas {
         pen.setSelected(false);
         pen = newPen;
         pen.setSelected(true);
+    }
+
+    export function addPenListener (f : Function | Listener) {
+        penTrigger.addListenerIfMissing(f);
+    }
+
+    export function getPenWidth () {
+        return penWidth;
+    }
+
+    export function getPenColor () {
+        return penColor;
+    }
+
+    export function setPenWidth (newWidth : number) {
+        if (newWidth != penWidth) {
+            penWidth = newWidth;
+            penTrigger.trigger();
+        }
+    }
+
+    export function setPenColor (newColor : string) {
+        if (newColor != penColor) {
+            penColor = newColor;
+            penTrigger.trigger();
+        }
     }
 
     // Binding Mouse on Canvas

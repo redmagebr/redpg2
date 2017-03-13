@@ -13,6 +13,16 @@ module Application.LocalMemory {
         return defaultValue;
     }
 
+    export function getMemoryLength (id : string) {
+        if (Application.Login.isLogged()) {
+            var value = localStorage.getItem(getMemoryName(id));
+            if (value !== null && value !== undefined) {
+                return value.length;
+            }
+        }
+        return 0;
+    }
+
     export function setMemory (id : string, value : any) {
         if (Application.Login.isLogged()) {
             localStorage.setItem(getMemoryName(id), JSON.stringify(value));

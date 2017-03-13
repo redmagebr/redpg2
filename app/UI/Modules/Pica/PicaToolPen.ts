@@ -1,5 +1,6 @@
 class PicaToolPen extends PicaTool {
     private static Pens = {};
+    public id = "undefined";
 
     public mouseDown (point : PicaCanvasPoint) {
         console.log(point.getX() + " - " + point.getY());
@@ -23,7 +24,9 @@ class PicaToolPen extends PicaTool {
 
     public selected () : void {}
 
-    public redraw (art : PicaCanvasArt) : void {}
+    public redraw () : void {}
+
+    public drawFromArt (art : PicaCanvasArt) : void {}
 
     public static registerPen (id : string, pen : PicaToolPen) {
         PicaToolPen.Pens[id] = pen;
@@ -48,5 +51,13 @@ class PicaToolPen extends PicaTool {
 
     public onClick () {
         UI.Pica.Board.Canvas.setPen(this);
+    }
+
+    public static registerPen (id : string, pen : PicaToolPen) {
+        PicaToolPen.Pens[id] = pen;
+    }
+
+    public static getPen (id : string) {
+        return PicaToolPen.Pens[id];
     }
 }
