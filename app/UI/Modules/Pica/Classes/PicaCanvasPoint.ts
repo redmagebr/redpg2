@@ -36,6 +36,12 @@ class PicaCanvasPoint {
         return Math.sqrt( (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2) );
     }
 
+    public getRealDistanceTo (p2 : PicaCanvasPoint) {
+        var relDist = this.distanceTo(p2);
+        var dist = relDist * UI.Pica.Board.Canvas.getWidth() / PicaCanvasPoint.precision;
+        return dist;
+    }
+
     public static isTriangle (p1 : PicaCanvasPoint, p2 : PicaCanvasPoint, p3 : PicaCanvasPoint) {
         var dab = p1.distanceTo(p2);
         var dbc = p2.distanceTo(p3);

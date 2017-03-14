@@ -5,6 +5,7 @@ class PicaToolMove extends PicaToolPen {
         super();
 
         this.setIcon("icons-picaToolMove");
+        this.setTitleLingo("_PICAMOVE_");
     }
 
     public mouseDown (point : PicaCanvasPoint) {
@@ -64,5 +65,5 @@ class PicaToolMove extends PicaToolPen {
 
 var move = new PicaToolMove();
 UI.Pica.Toolbar.registerTool(move);
-//UI.Pica.Board.Canvas.setPen(move);
+UI.Pica.Board.Canvas.setPen(move);
 delete(move);

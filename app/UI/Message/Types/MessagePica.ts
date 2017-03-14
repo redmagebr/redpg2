@@ -3,6 +3,7 @@ class MessagePica extends Message {
     private msgOneArt = "0";
     private msgUpdateArts = "1";
     private msgRequestUpdate = "2";
+    private msgClearAll = "3";
     private runOnce = false;
 
     constructor () {
@@ -13,13 +14,21 @@ class MessagePica extends Message {
     }
 
     public considerAddingToArtManager () {
-        if (this.wasLocalMessage()) {
-            return;
-        }
         var roomid = this.roomid;
         var url = this.getUrl();
         var userLengths = UI.Pica.ArtManager.getLengthByUser(roomid, url);
         var ownLength = userLengths[Application.getMyId()] != undefined ? userLengths[Application.getMyId()] : 0;
+        if (this.isCleanArts()) {
+            if (this.getUser().isStoryteller()) {
+                UI.Pica.ArtManager.removeAllArts(roomid, url);
+            } else {
+                UI.Pica.ArtManager.removeArtFromUser(this.origin, roomid, url);
+            }
+            return;
+        }
+        if (this.wasLocalMessage()) {
+            return;
+        }
         if (!this.isMine() || this.getSpecificConfirmation(Application.getMyId()) != ownLength) {
             if (this.getMsg() == this.msgOneArt) {
                 var art = this.getArt();
@@ -124,6 +133,16 @@ class MessagePica extends Message {
             //this.considerAddingToArtManager();
         }
         return null;
+    }
+
+    public setCleanArts (isIt : boolean) {
+        if (isIt) {
+            this.setMsg(this.msgClearAll);
+        }
+    }
+
+    public isCleanArts () {
+        return this.getMsg() == this.msgClearAll;
     }
 }
 

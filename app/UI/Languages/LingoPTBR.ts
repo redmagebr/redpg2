@@ -135,6 +135,12 @@ ptbr.setLingo("_PICASHARE_", "Compartilhar no Chat");
 ptbr.setLingo("_PICASCALEFITNOSTRETCH_", "Encaixar na tela (sem aumentar a imagem)");
 ptbr.setLingo("_PICASCALEFITSTRETCH_", "Encaixar na tela");
 ptbr.setLingo("_PICASCALERATIO1_", "Mostrar no tamanho original");
+ptbr.setLingo("_PICAPENSIL_", "Desenho livre");
+ptbr.setLingo("_PICACOLOR_", "Escolher cor de desenhos");
+ptbr.setLingo("_PICAMOVE_", "Mover imagem (use scroll para zoom)");
+ptbr.setLingo("_PICALOCK_", "Trancar/Destrancar desenhos (apenas mestre)");
+ptbr.setLingo("_PICASIRCU_", "Desenho de círculos (clicar e arrastar)");
+ptbr.setLingo("_PICACLEAN_", "Limpar desenhos");
 ptbr.setLingo("", "");
 
 

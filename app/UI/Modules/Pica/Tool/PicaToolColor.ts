@@ -16,6 +16,8 @@ class PicaToolColor extends PicaTool {
                 this.a.value = "#" + UI.Pica.Board.Canvas.getPenColor();
             }
         });
+
+        this.setTitleLingo("_PICACOLOR_");
     }
 }
 

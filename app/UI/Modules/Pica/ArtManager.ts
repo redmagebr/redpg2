@@ -64,15 +64,25 @@ module UI.Pica.ArtManager {
         return instanced;
     }
 
+    export function removeAllArts (roomid : number, url: string) {
+        Application.LocalMemory.unsetMemory(createIdString(roomid, url));
+        if (UI.Pica.Board.getUrl() == url) {
+            UI.Pica.Board.Canvas.redraw();
+        }
+    }
+
     export function removeArtFromUser (userid : number, roomid : number, url : string) {
         var oldArt = getArt(roomid, url);
         var newArt = [];
         for (var i = 0; i < oldArt.length; i++) {
             if (oldArt[i].getUserId() != userid) {
-                newArt.push(oldArt[i]);
+                newArt.push(JSON.stringify(oldArt[i].exportAsObject()));
             }
         }
         Application.LocalMemory.setMemory(createIdString(roomid, url), newArt);
+        if (UI.Pica.Board.getUrl() == url) {
+            UI.Pica.Board.Canvas.redraw();
+        }
     }
 
     export function includeManyArts (roomid : number, url: string, arts : Array<PicaCanvasArt>) {

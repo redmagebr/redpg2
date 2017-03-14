@@ -7,6 +7,7 @@ class PicaToolLock extends PicaTool {
 
         this.setIcon(this.lockedIcon);
         this.setRightSide();
+        this.setTitleLingo("_PICALOCK_");
     }
 
     public updateVisibility () {

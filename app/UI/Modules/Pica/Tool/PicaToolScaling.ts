@@ -23,6 +23,10 @@ class PicaToolScaling extends PicaTool {
 
     public updateEquality () {
         var cS = UI.Pica.Board.getScaling();
-        this.setSelected(cS == this.scaling);
+        if (this.scaling == UI.Pica.Board._IMAGE_SCALING_USE_RATIO && cS == this.scaling) {
+            this.setSelected(UI.Pica.Board.getImageRatio() == this.ratio);
+        } else {
+            this.setSelected(cS == this.scaling);
+        }
     }
 }

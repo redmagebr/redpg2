@@ -1,8 +1,13 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 function startDebugging() {
     console.debug = console.log;
 }
@@ -68,7 +73,7 @@ var Trigger = (function () {
     Trigger.prototype.trigger = function () {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i - 0] = arguments[_i];
+            args[_i] = arguments[_i];
         }
         for (var i = 0; i < this.functions.length; i++) {
             this.functions[i].apply(null, args);
@@ -204,10 +209,10 @@ var Changelog = (function () {
         }
         return p;
     };
-    Changelog.updates = [];
-    Changelog.updatesExternal = null;
     return Changelog;
 }());
+Changelog.updates = [];
+Changelog.updatesExternal = null;
 var ImageRed = (function () {
     function ImageRed() {
     }
@@ -819,7 +824,7 @@ var SheetInstance = (function () {
         this.styleSafe = false;
         this.view = true;
         this.edit = false;
-        this.delete = false;
+        this["delete"] = false;
         this.promote = false;
         this.isPublic = false;
         this.changed = false;
@@ -916,7 +921,7 @@ var SheetInstance = (function () {
         if (typeof obj['visualizar'] !== 'undefined')
             this.view = obj['visualizar'];
         if (typeof obj['deletar'] !== 'undefined')
-            this.delete = obj['deletar'];
+            this["delete"] = obj['deletar'];
         if (typeof obj['editar'] !== 'undefined')
             this.edit = obj['editar'];
         if (typeof obj['promote'] !== 'undefined')
@@ -948,7 +953,7 @@ var SheetInstance = (function () {
         return this.promote;
     };
     SheetInstance.prototype.isDeletable = function () {
-        return this.delete;
+        return this["delete"];
     };
     SheetInstance.prototype.isNPC = function () {
         var player = this.getValue("Player") !== undefined ? this.getValue("Player") :
@@ -1268,9 +1273,9 @@ var PseudoLanguage = (function () {
         }
         return translatedWords.join(" ");
     };
-    PseudoLanguage.languages = {};
     return PseudoLanguage;
 }());
+PseudoLanguage.languages = {};
 var AJAXConfig = (function () {
     function AJAXConfig(url) {
         this._target = 0;
@@ -1389,13 +1394,13 @@ var AJAXConfig = (function () {
     AJAXConfig.prototype.setTargetRightWindow = function () {
         this._target = AJAXConfig.TARGET_RIGHT;
     };
-    AJAXConfig.TARGET_NONE = 0;
-    AJAXConfig.TARGET_GLOBAL = 1;
-    AJAXConfig.TARGET_LEFT = 2;
-    AJAXConfig.TARGET_RIGHT = 3;
-    AJAXConfig.CONDITIONAL_LOADING_TIMEOUT = 150;
     return AJAXConfig;
 }());
+AJAXConfig.TARGET_NONE = 0;
+AJAXConfig.TARGET_GLOBAL = 1;
+AJAXConfig.TARGET_LEFT = 2;
+AJAXConfig.TARGET_RIGHT = 3;
+AJAXConfig.CONDITIONAL_LOADING_TIMEOUT = 150;
 var WebsocketController = (function () {
     function WebsocketController(url) {
         this.socket = null;
@@ -1524,12 +1529,12 @@ var WebsocketController = (function () {
             this.onMessage[i].handleEvent(e);
         }
     };
-    WebsocketController.READYSTATE_CONNECTING = 0;
-    WebsocketController.READYSTATE_OPEN = 1;
-    WebsocketController.READYSTATE_CLOSING = 2;
-    WebsocketController.READYSTATE_CLOSED = 3;
     return WebsocketController;
 }());
+WebsocketController.READYSTATE_CONNECTING = 0;
+WebsocketController.READYSTATE_OPEN = 1;
+WebsocketController.READYSTATE_CLOSING = 2;
+WebsocketController.READYSTATE_CLOSED = 3;
 var ChatWsController = (function () {
     function ChatWsController() {
         this.socket = new WebsocketController(Server.Chat.CHAT_URL);
@@ -1635,10 +1640,10 @@ var Configuration = (function () {
 var NumberConfiguration = (function (_super) {
     __extends(NumberConfiguration, _super);
     function NumberConfiguration(defValue, min, max) {
-        _super.call(this, defValue);
-        this.min = 0;
-        this.max = 100;
-        this.setFunction = function (value) {
+        var _this = _super.call(this, defValue) || this;
+        _this.min = 0;
+        _this.max = 100;
+        _this.setFunction = function (value) {
             if (!isNaN(value)) {
                 value = Number(value);
                 if (value < this.min) {
@@ -1650,19 +1655,20 @@ var NumberConfiguration = (function (_super) {
                 this.value = value;
             }
         };
-        this.getFunction = function () {
+        _this.getFunction = function () {
             return this.value;
         };
-        this.min = min;
-        this.max = max;
+        _this.min = min;
+        _this.max = max;
+        return _this;
     }
     return NumberConfiguration;
 }(Configuration));
 var WsportConfiguration = (function (_super) {
     __extends(WsportConfiguration, _super);
     function WsportConfiguration() {
-        _super.apply(this, arguments);
-        this.setFunction = function (value) {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.setFunction = function (value) {
             if (Server.WEBSOCKET_PORTS.indexOf(value) === -1) {
                 this.value = Server.WEBSOCKET_PORTS[0];
             }
@@ -1670,27 +1676,29 @@ var WsportConfiguration = (function (_super) {
                 this.value = value;
             }
         };
+        return _this;
     }
     return WsportConfiguration;
 }(Configuration));
 var LanguageConfiguration = (function (_super) {
     __extends(LanguageConfiguration, _super);
     function LanguageConfiguration() {
-        _super.call(this, navigator.language);
-        this.setFunction = function (value) {
+        var _this = _super.call(this, navigator.language) || this;
+        _this.setFunction = function (value) {
             if (value.indexOf("_") !== -1) {
                 value = value.replace("_", "-");
             }
             this.value = value;
         };
+        return _this;
     }
     return LanguageConfiguration;
 }(Configuration));
 var BooleanConfiguration = (function (_super) {
     __extends(BooleanConfiguration, _super);
     function BooleanConfiguration(bool) {
-        _super.call(this, bool ? 1 : 0);
-        this.setFunction = function (value) {
+        var _this = _super.call(this, bool ? 1 : 0) || this;
+        _this.setFunction = function (value) {
             if (typeof value !== "string")
                 value = value.toString().toLowerCase();
             var bool = value === "1" || value === "true";
@@ -1699,9 +1707,10 @@ var BooleanConfiguration = (function (_super) {
             else
                 this.value = 0;
         };
-        this.getFunction = function () {
+        _this.getFunction = function () {
             return this.value === 1;
         };
+        return _this;
     }
     return BooleanConfiguration;
 }(Configuration));
@@ -1720,14 +1729,15 @@ var TrackerMemory = (function () {
 var MemoryCombat = (function (_super) {
     __extends(MemoryCombat, _super);
     function MemoryCombat() {
-        _super.apply(this, arguments);
-        this.combatants = [];
-        this.effects = {};
-        this.storedEffects = {};
-        this.round = 0;
-        this.turn = 0;
-        this.targets = [];
-        this.targetTrigger = new Trigger();
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.combatants = [];
+        _this.effects = {};
+        _this.storedEffects = {};
+        _this.round = 0;
+        _this.turn = 0;
+        _this.targets = [];
+        _this.targetTrigger = new Trigger();
+        return _this;
     }
     MemoryCombat.prototype.addTargetListener = function (f) {
         this.targetTrigger.addListener(f);
@@ -2041,8 +2051,9 @@ var MemoryCombat = (function (_super) {
 var MemoryFilter = (function (_super) {
     __extends(MemoryFilter, _super);
     function MemoryFilter() {
-        _super.apply(this, arguments);
-        this.value = 0;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.value = 0;
+        return _this;
     }
     MemoryFilter.prototype.reset = function () {
         this.storeValue(0);
@@ -2065,16 +2076,17 @@ var MemoryFilter = (function (_super) {
     MemoryFilter.prototype.exportAsObject = function () {
         return this.value;
     };
-    MemoryFilter.names = ["none", "night", "noir", "trauma", "gray", "sepia", "evening", "fire"];
     return MemoryFilter;
 }(TrackerMemory));
+MemoryFilter.names = ["none", "night", "noir", "trauma", "gray", "sepia", "evening", "fire"];
 var MemoryPica = (function (_super) {
     __extends(MemoryPica, _super);
     function MemoryPica() {
-        _super.apply(this, arguments);
-        this.picaAllowed = true;
-        this.updateUnderway = false;
-        this.changeDetected = false;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.picaAllowed = true;
+        _this.updateUnderway = false;
+        _this.changeDetected = false;
+        return _this;
     }
     MemoryPica.prototype.reset = function () {
         this.picaAllowed = true;
@@ -2122,15 +2134,16 @@ var MemoryPica = (function (_super) {
         }
         return result;
     };
-    MemoryPica.fieldOrder = ["picaAllowed"];
     return MemoryPica;
 }(TrackerMemory));
+MemoryPica.fieldOrder = ["picaAllowed"];
 var MemoryLingo = (function (_super) {
     __extends(MemoryLingo, _super);
     function MemoryLingo() {
-        _super.apply(this, arguments);
-        this.userLingos = {};
-        this.busy = false;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.userLingos = {};
+        _this.busy = false;
+        return _this;
     }
     MemoryLingo.prototype.getUser = function (id) {
         if (this.userLingos[id] !== undefined) {
@@ -2251,8 +2264,9 @@ var MemoryLingo = (function (_super) {
 var MemoryVersion = (function (_super) {
     __extends(MemoryVersion, _super);
     function MemoryVersion() {
-        _super.apply(this, arguments);
-        this.importVersion = Server.Chat.Memory.version;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.importVersion = Server.Chat.Memory.version;
+        return _this;
     }
     MemoryVersion.prototype.reset = function () {
         this.importVersion = Server.Chat.Memory.version;
@@ -2271,15 +2285,16 @@ var MemoryVersion = (function (_super) {
 var MemoryCutscene = (function (_super) {
     __extends(MemoryCutscene, _super);
     function MemoryCutscene() {
-        _super.call(this);
-        this.chatAllowed = true;
+        var _this = _super.call(this) || this;
+        _this.chatAllowed = true;
         MemoryCutscene.button.addEventListener("click", {
-            cutscene: this,
+            cutscene: _this,
             handleEvent: function (e) {
                 e.preventDefault();
                 this.cutscene.click();
             }
         });
+        return _this;
     }
     MemoryCutscene.prototype.click = function () {
         if (Server.Chat.getRoom().getMe().isStoryteller()) {
@@ -2320,9 +2335,9 @@ var MemoryCutscene = (function (_super) {
     MemoryCutscene.prototype.exportAsObject = function () {
         return this.chatAllowed ? 1 : 0;
     };
-    MemoryCutscene.button = document.getElementById("chatHollywood");
     return MemoryCutscene;
 }(TrackerMemory));
+MemoryCutscene.button = document.getElementById("chatHollywood");
 var CombatEffect = (function () {
     function CombatEffect(combat) {
         this.name = "";
@@ -2786,12 +2801,12 @@ var ChatFormState = (function () {
         this.element.classList.add(stateClass[state]);
         this.state = state;
     };
-    ChatFormState.STATE_NORMAL = 0;
-    ChatFormState.STATE_ACTION = 1;
-    ChatFormState.STATE_STORY = 2;
-    ChatFormState.STATE_OFF = 3;
     return ChatFormState;
 }());
+ChatFormState.STATE_NORMAL = 0;
+ChatFormState.STATE_ACTION = 1;
+ChatFormState.STATE_STORY = 2;
+ChatFormState.STATE_OFF = 3;
 var ChatAvatarChoice = (function () {
     function ChatAvatarChoice(name, avatar) {
         this.avatar = new ChatAvatar();
@@ -2916,7 +2931,7 @@ var ImagesRow = (function () {
         deleteButton.addEventListener("click", {
             row: this,
             handleEvent: function () {
-                this.row.delete();
+                this.row["delete"]();
             }
         });
         var renameButton = document.createElement("a");
@@ -2964,7 +2979,7 @@ var ImagesRow = (function () {
         UI.Chat.PersonaDesigner.createPersona(this.image.getName().replace(/ *\([^)]*\) */, '').trim(), this.image.getLink());
         UI.Chat.PersonaManager.createAndUsePersona(this.image.getName().replace(/ *\([^)]*\) */, '').trim(), this.image.getLink());
     };
-    ImagesRow.prototype.delete = function () {
+    ImagesRow.prototype["delete"] = function () {
         this.html.parentElement.removeChild(this.html);
         this.folder.considerSuicide();
         DB.ImageDB.removeImage(this.image);
@@ -3277,7 +3292,7 @@ var SoundsRow = (function () {
         deleteButton.addEventListener("click", {
             row: this,
             handleEvent: function () {
-                this.row.delete();
+                this.row["delete"]();
             }
         });
         var renameButton = document.createElement("a");
@@ -3330,7 +3345,7 @@ var SoundsRow = (function () {
             MessageSE.shareLink(this.sound.getName(), this.sound.getLink());
         }
     };
-    SoundsRow.prototype.delete = function () {
+    SoundsRow.prototype["delete"] = function () {
         this.html.parentElement.removeChild(this.html);
         this.folder.considerSuicide();
         DB.SoundDB.removeSound(this.sound);
@@ -3854,7 +3869,7 @@ var SheetStyle = (function () {
 var SheetStyleTranslatable = (function (_super) {
     __extends(SheetStyleTranslatable, _super);
     function SheetStyleTranslatable() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     SheetStyleTranslatable.prototype.translateObject = function (obj) {
         for (var key in obj) {
@@ -4475,7 +4490,7 @@ var StyleFactory;
         var SheetStyleAdapted = (function (_super) {
             __extends(SheetStyleAdapted, _super);
             function SheetStyleAdapted() {
-                _super.apply(this, arguments);
+                return _super !== null && _super.apply(this, arguments) || this;
             }
             SheetStyleAdapted.prototype.getCreator = function (kind, type, def) {
                 var name = kind + this.stringToType(type);
@@ -4508,48 +4523,49 @@ var StyleFactory;
 var SheetVariabletext = (function (_super) {
     __extends(SheetVariabletext, _super);
     function SheetVariabletext(parent, style, ele) {
-        _super.call(this, parent, style, ele);
-        this.mouse = false;
-        this.textNode = document.createTextNode(this.defaultValueString === null ? "" : this.defaultValueString);
-        this.defaultValueString = this.defaultValueString === null ? "" : this.defaultValueString;
-        this.empty();
-        this.attachTextNode();
-        if (this.editable) {
+        var _this = _super.call(this, parent, style, ele) || this;
+        _this.mouse = false;
+        _this.textNode = document.createTextNode(_this.defaultValueString === null ? "" : _this.defaultValueString);
+        _this.defaultValueString = _this.defaultValueString === null ? "" : _this.defaultValueString;
+        _this.empty();
+        _this.attachTextNode();
+        if (_this.editable) {
             ele.addEventListener("click", (function (e) {
                 this.click();
-            }).bind(this));
+            }).bind(_this));
             ele.addEventListener("mousedown", (function (e) {
                 this.mousedown();
-            }).bind(this));
+            }).bind(_this));
             ele.addEventListener("focus", (function (e) {
                 this.focus();
-            }).bind(this));
+            }).bind(_this));
             ele.addEventListener("input", {
-                variable: this,
+                variable: _this,
                 handleEvent: function (e) {
                     this.variable.input(e);
                 }
             });
             ele.addEventListener("keyup", {
-                variable: this,
+                variable: _this,
                 handleEvent: function (e) {
                     this.variable.keyup(e);
                 }
             });
             ele.addEventListener("keydown", {
-                variable: this,
+                variable: _this,
                 handleEvent: function (e) {
                     this.variable.keydown(e);
                 }
             });
             ele.addEventListener("blur", {
-                variable: this,
+                variable: _this,
                 handleEvent: function (e) {
                     this.variable.blur();
                 }
             });
-            this.updateContentEditable();
+            _this.updateContentEditable();
         }
+        return _this;
     }
     SheetVariabletext.prototype.attachTextNode = function () {
         this.visible.appendChild(this.textNode);
@@ -4628,53 +4644,54 @@ var SheetVariabletext = (function (_super) {
 var SheetVariablelongtext = (function (_super) {
     __extends(SheetVariablelongtext, _super);
     function SheetVariablelongtext(parent, style, ele) {
-        _super.call(this, parent, style, ele);
-        this.allowEmptyLines = false;
-        this.pClass = null;
-        this.mouse = false;
-        this.empty();
-        this.defaultValueString = this.defaultValueString === null ? "" : this.defaultValueString;
-        this.allowEmptyLines = this.visible.dataset['allowempty'] === undefined ? false :
-            (this.visible.dataset['allowempty'] === "1" ||
-                this.visible.dataset['allowempty'].toLowerCase() === "true");
-        this.pClass = this.visible.dataset['pclass'] === undefined ? null : this.visible.dataset['pclass'];
-        if (this.editable) {
+        var _this = _super.call(this, parent, style, ele) || this;
+        _this.allowEmptyLines = false;
+        _this.pClass = null;
+        _this.mouse = false;
+        _this.empty();
+        _this.defaultValueString = _this.defaultValueString === null ? "" : _this.defaultValueString;
+        _this.allowEmptyLines = _this.visible.dataset['allowempty'] === undefined ? false :
+            (_this.visible.dataset['allowempty'] === "1" ||
+                _this.visible.dataset['allowempty'].toLowerCase() === "true");
+        _this.pClass = _this.visible.dataset['pclass'] === undefined ? null : _this.visible.dataset['pclass'];
+        if (_this.editable) {
             ele.addEventListener("click", (function (e) {
                 this.click();
-            }).bind(this));
+            }).bind(_this));
             ele.addEventListener("mousedown", (function (e) {
                 this.mousedown();
-            }).bind(this));
+            }).bind(_this));
             ele.addEventListener("focus", (function (e) {
                 this.focus();
-            }).bind(this));
+            }).bind(_this));
             ele.addEventListener("input", {
-                variable: this,
+                variable: _this,
                 handleEvent: function (e) {
                     this.variable.input(e);
                 }
             });
             ele.addEventListener("keyup", {
-                variable: this,
+                variable: _this,
                 handleEvent: function (e) {
                     this.variable.keyup(e);
                 }
             });
             ele.addEventListener("keydown", {
-                variable: this,
+                variable: _this,
                 handleEvent: function (e) {
                     this.variable.keydown(e);
                 }
             });
             ele.addEventListener("blur", {
-                variable: this,
+                variable: _this,
                 handleEvent: function (e) {
                     this.variable.blur();
                 }
             });
-            this.updateContentEditable();
+            _this.updateContentEditable();
         }
-        this.updateVisible();
+        _this.updateVisible();
+        return _this;
     }
     SheetVariablelongtext.prototype.mousedown = function () {
         this.mouse = true;
@@ -4749,18 +4766,19 @@ var SheetVariablelongtext = (function (_super) {
 var SheetVariablenumber = (function (_super) {
     __extends(SheetVariablenumber, _super);
     function SheetVariablenumber(parent, style, ele) {
-        _super.call(this, parent, style, ele);
-        if (this.defaultValueString !== null) {
-            this.defaultValue = this.parseString(this.defaultValueString);
-            if (isNaN(this.defaultValue)) {
-                this.defaultValue = 0;
+        var _this = _super.call(this, parent, style, ele) || this;
+        if (_this.defaultValueString !== null) {
+            _this.defaultValue = _this.parseString(_this.defaultValueString);
+            if (isNaN(_this.defaultValue)) {
+                _this.defaultValue = 0;
             }
         }
         else {
-            this.defaultValue = 0;
+            _this.defaultValue = 0;
         }
-        this.value = this.defaultValue;
-        this.updateVisible();
+        _this.value = _this.defaultValue;
+        _this.updateVisible();
+        return _this;
     }
     SheetVariablenumber.prototype.parseString = function (str) {
         return parseFloat(str);
@@ -4817,7 +4835,7 @@ var SheetVariablenumber = (function (_super) {
 var SheetVariableinteger = (function (_super) {
     __extends(SheetVariableinteger, _super);
     function SheetVariableinteger() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     SheetVariableinteger.prototype.isAllowedKey = function (key) {
         return this.isImportantInputKey(key) || !isNaN(key);
@@ -4833,9 +4851,9 @@ var SheetVariableinteger = (function (_super) {
 var SheetVariablemath = (function (_super) {
     __extends(SheetVariablemath, _super);
     function SheetVariablemath(parent, style, ele) {
-        _super.call(this, parent, style, ele);
-        this.changeListener = {
-            math: this,
+        var _this = _super.call(this, parent, style, ele) || this;
+        _this.changeListener = {
+            math: _this,
             counter: -1,
             handleEvent: function (variable, style, counter) {
                 if (this.counter !== counter) {
@@ -4844,8 +4862,9 @@ var SheetVariablemath = (function (_super) {
                 }
             }
         };
-        this.parse();
-        this.style.addCreatorListener(this);
+        _this.parse();
+        _this.style.addCreatorListener(_this);
+        return _this;
     }
     SheetVariablemath.prototype.checkForChange = function () {
         var newValue = this.getValue();
@@ -4973,49 +4992,50 @@ var SheetVariablemath = (function (_super) {
 var SheetVariableimage = (function (_super) {
     __extends(SheetVariableimage, _super);
     function SheetVariableimage(parent, style, element) {
-        _super.call(this, parent, style, element);
-        this.img = document.createElement("img");
-        this.select = document.createElement("select");
-        this.errorUrl = "images/sheetImgError.png";
-        if (this.defaultValueString === null) {
-            this.defaultName = "";
-            this.defaultUrl = "";
+        var _this = _super.call(this, parent, style, element) || this;
+        _this.img = document.createElement("img");
+        _this.select = document.createElement("select");
+        _this.errorUrl = "images/sheetImgError.png";
+        if (_this.defaultValueString === null) {
+            _this.defaultName = "";
+            _this.defaultUrl = "";
         }
         else {
             var obj;
             try {
-                obj = JSON.parse(this.defaultValueString);
+                obj = JSON.parse(_this.defaultValueString);
                 if (Array.isArray(obj) && obj.length === 2) {
-                    this.defaultName = obj[0];
-                    this.defaultUrl = obj[1];
+                    _this.defaultName = obj[0];
+                    _this.defaultUrl = obj[1];
                 }
                 else {
-                    this.defaultName = "";
-                    this.defaultUrl = "";
+                    _this.defaultName = "";
+                    _this.defaultUrl = "";
                 }
             }
             catch (e) {
-                console.log("[SheetVariableImage] Produced invalid Default Value at " + this.id + ":", this.defaultValueString);
-                this.defaultName = "";
-                this.defaultUrl = "";
+                console.log("[SheetVariableImage] Produced invalid Default Value at " + _this.id + ":", _this.defaultValueString);
+                _this.defaultName = "";
+                _this.defaultUrl = "";
             }
         }
-        if (this.visible.dataset['imgclass'] !== undefined) {
-            this.img.classList.add(this.visible.dataset['imgclass']);
+        if (_this.visible.dataset['imgclass'] !== undefined) {
+            _this.img.classList.add(_this.visible.dataset['imgclass']);
         }
-        if (this.visible.dataset['selectclass'] !== undefined) {
-            this.select.classList.add(this.visible.dataset['selectclass']);
+        if (_this.visible.dataset['selectclass'] !== undefined) {
+            _this.select.classList.add(_this.visible.dataset['selectclass']);
         }
-        this.select.addEventListener("blur", (function (e) { this.blur(e); }).bind(this));
-        this.select.addEventListener("change", (function (e) { this.change(e); }).bind(this));
-        this.img.addEventListener("error", (function (e) { this.error(e); }).bind(this));
-        if (this.editable) {
-            this.img.addEventListener("click", (function (e) {
+        _this.select.addEventListener("blur", (function (e) { this.blur(e); }).bind(_this));
+        _this.select.addEventListener("change", (function (e) { this.change(e); }).bind(_this));
+        _this.img.addEventListener("error", (function (e) { this.error(e); }).bind(_this));
+        if (_this.editable) {
+            _this.img.addEventListener("click", (function (e) {
                 this.click(e);
-            }).bind(this));
+            }).bind(_this));
         }
-        this.value = [this.defaultName, this.defaultUrl];
-        this.updateVisible();
+        _this.value = [_this.defaultName, _this.defaultUrl];
+        _this.updateVisible();
+        return _this;
     }
     SheetVariableimage.prototype.reset = function () {
         this.storeValue([this.defaultName, this.defaultUrl]);
@@ -5135,36 +5155,37 @@ var SheetVariableimage = (function (_super) {
 var SheetVariableselect = (function (_super) {
     __extends(SheetVariableselect, _super);
     function SheetVariableselect(parent, style, element) {
-        _super.call(this, parent, style, element);
-        this.select = document.createElement("select");
-        this.values = [""];
-        if (this.visible.dataset['values'] !== undefined) {
-            this.values = this.visible.dataset['values'].split(";");
-            for (var i = 0; i < this.values.length; i++) {
+        var _this = _super.call(this, parent, style, element) || this;
+        _this.select = document.createElement("select");
+        _this.values = [""];
+        if (_this.visible.dataset['values'] !== undefined) {
+            _this.values = _this.visible.dataset['values'].split(";");
+            for (var i = 0; i < _this.values.length; i++) {
                 var opt = document.createElement("option");
-                opt.value = this.values[i];
-                opt.appendChild(document.createTextNode(this.values[i]));
-                this.select.appendChild(opt);
+                opt.value = _this.values[i];
+                opt.appendChild(document.createTextNode(_this.values[i]));
+                _this.select.appendChild(opt);
             }
         }
         else {
-            this.values = [""];
+            _this.values = [""];
         }
-        if (this.visible.dataset['selectclass'] !== undefined) {
-            this.select.classList.add(this.visible.dataset['selectclass']);
+        if (_this.visible.dataset['selectclass'] !== undefined) {
+            _this.select.classList.add(_this.visible.dataset['selectclass']);
         }
-        if (this.editable) {
-            this.select.addEventListener("blur", (function (e) { this.selectBlur(e); }).bind(this));
-            this.select.addEventListener("change", (function (e) { this.selectChange(e); }).bind(this));
+        if (_this.editable) {
+            _this.select.addEventListener("blur", (function (e) { this.selectBlur(e); }).bind(_this));
+            _this.select.addEventListener("change", (function (e) { this.selectChange(e); }).bind(_this));
         }
-        this.select.disabled = !this.editable;
-        if (this.defaultValueString !== null && this.values.indexOf(this.defaultValueString) !== -1) {
-            this.value = this.defaultValueString;
+        _this.select.disabled = !_this.editable;
+        if (_this.defaultValueString !== null && _this.values.indexOf(_this.defaultValueString) !== -1) {
+            _this.value = _this.defaultValueString;
         }
         else {
-            this.value = this.values[0];
+            _this.value = _this.values[0];
         }
-        this.showSelect();
+        _this.showSelect();
+        return _this;
     }
     SheetVariableselect.prototype.reset = function () {
         if (this.defaultValueString !== null && this.values.indexOf(this.defaultValueString) !== -1) {
@@ -5209,19 +5230,20 @@ var SheetVariableselect = (function (_super) {
 var SheetVariableboolean = (function (_super) {
     __extends(SheetVariableboolean, _super);
     function SheetVariableboolean(parent, style, element) {
-        _super.call(this, parent, style, element);
-        if (this.visible.tagName.toLowerCase() !== "input" || this.visible.type !== "checkbox") {
-            console.warn("[SheetVariableBoolean] Must be a checkbox input. Offending id:", this.getId());
-            return;
+        var _this = _super.call(this, parent, style, element) || this;
+        if (_this.visible.tagName.toLowerCase() !== "input" || _this.visible.type !== "checkbox") {
+            console.warn("[SheetVariableBoolean] Must be a checkbox input. Offending id:", _this.getId());
+            return _this;
         }
-        this.defaultState = this.defaultValueString === null ? false :
-            (this.defaultValueString === "1" || this.defaultValueString.toLowerCase() === "true") ?
+        _this.defaultState = _this.defaultValueString === null ? false :
+            (_this.defaultValueString === "1" || _this.defaultValueString.toLowerCase() === "true") ?
                 true : false;
-        this.value = this.defaultState;
-        if (this.editable) {
-            this.visible.addEventListener("change", (function () { this.change(); }).bind(this));
+        _this.value = _this.defaultState;
+        if (_this.editable) {
+            _this.visible.addEventListener("change", (function () { this.change(); }).bind(_this));
         }
-        this.updateVisible();
+        _this.updateVisible();
+        return _this;
     }
     SheetVariableboolean.prototype.change = function () {
         this.storeValue(this.visible.checked);
@@ -5248,49 +5270,50 @@ var SheetVariableboolean = (function (_super) {
 var SheetVariableimageselect = (function (_super) {
     __extends(SheetVariableimageselect, _super);
     function SheetVariableimageselect(parent, style, element) {
-        _super.call(this, parent, style, element);
-        this.select = document.createElement("select");
-        this.errorUrl = "images/sheetImgError.png";
-        while (this.visible.firstChild !== null)
-            this.visible.removeChild(this.visible.firstChild);
-        this.visible.appendChild(this.select);
-        if (this.defaultValueString === null) {
-            this.defaultName = "";
-            this.defaultUrl = "";
+        var _this = _super.call(this, parent, style, element) || this;
+        _this.select = document.createElement("select");
+        _this.errorUrl = "images/sheetImgError.png";
+        while (_this.visible.firstChild !== null)
+            _this.visible.removeChild(_this.visible.firstChild);
+        _this.visible.appendChild(_this.select);
+        if (_this.defaultValueString === null) {
+            _this.defaultName = "";
+            _this.defaultUrl = "";
         }
         else {
             var obj;
             try {
-                obj = JSON.parse(this.defaultValueString);
+                obj = JSON.parse(_this.defaultValueString);
                 if (Array.isArray(obj) && obj.length === 2) {
-                    this.defaultName = obj[0];
-                    this.defaultUrl = obj[1];
+                    _this.defaultName = obj[0];
+                    _this.defaultUrl = obj[1];
                 }
                 else {
-                    this.defaultName = "";
-                    this.defaultUrl = "";
+                    _this.defaultName = "";
+                    _this.defaultUrl = "";
                 }
             }
             catch (e) {
-                console.log("[SheetVariableImageSelect] Produced invalid Default Value at " + this.id + ":", this.defaultValueString);
-                this.defaultName = "";
-                this.defaultUrl = "";
+                console.log("[SheetVariableImageSelect] Produced invalid Default Value at " + _this.id + ":", _this.defaultValueString);
+                _this.defaultName = "";
+                _this.defaultUrl = "";
             }
         }
-        if (this.visible.dataset['selectclass'] !== undefined) {
-            this.select.classList.add(this.visible.dataset['selectclass']);
+        if (_this.visible.dataset['selectclass'] !== undefined) {
+            _this.select.classList.add(_this.visible.dataset['selectclass']);
         }
-        if (this.editable) {
-            this.select.addEventListener("change", (function (e) {
+        if (_this.editable) {
+            _this.select.addEventListener("change", (function (e) {
                 this.change(e);
-            }).bind(this));
-            this.select.addEventListener("click", (function (e) {
+            }).bind(_this));
+            _this.select.addEventListener("click", (function (e) {
                 this.click(e);
-            }).bind(this));
+            }).bind(_this));
         }
-        this.value = [this.defaultName, this.defaultUrl];
-        this.updateOptions();
-        this.updateVisible();
+        _this.value = [_this.defaultName, _this.defaultUrl];
+        _this.updateOptions();
+        _this.updateVisible();
+        return _this;
     }
     SheetVariableimageselect.prototype.createOptions = function (name, arr) {
         var optgroup = document.createElement("optgroup");
@@ -5380,10 +5403,11 @@ var SheetVariableimageselect = (function (_super) {
 var SheetButtonaddrow = (function (_super) {
     __extends(SheetButtonaddrow, _super);
     function SheetButtonaddrow(parent, style, element) {
-        _super.call(this, parent, style, element);
-        this.sheetInstanceChangeListener = (function () { this.updateVisible(); }).bind(this);
-        this.target = this.visible.dataset["target"] === undefined ? "" : this.visible.dataset['target'];
-        style.addSheetInstanceChangeListener(this.sheetInstanceChangeListener);
+        var _this = _super.call(this, parent, style, element) || this;
+        _this.sheetInstanceChangeListener = (function () { this.updateVisible(); }).bind(_this);
+        _this.target = _this.visible.dataset["target"] === undefined ? "" : _this.visible.dataset['target'];
+        style.addSheetInstanceChangeListener(_this.sheetInstanceChangeListener);
+        return _this;
     }
     SheetButtonaddrow.prototype.updateVisible = function () {
         if (this.style.getSheetInstance().isEditable()) {
@@ -5405,9 +5429,10 @@ var SheetButtonaddrow = (function (_super) {
 var SheetButtonremoverow = (function (_super) {
     __extends(SheetButtonremoverow, _super);
     function SheetButtonremoverow(parent, style, element) {
-        _super.call(this, parent, style, element);
-        this.sheetInstanceChangeListener = (function () { this.updateVisible(); }).bind(this);
-        style.addSheetInstanceChangeListener(this.sheetInstanceChangeListener);
+        var _this = _super.call(this, parent, style, element) || this;
+        _this.sheetInstanceChangeListener = (function () { this.updateVisible(); }).bind(_this);
+        style.addSheetInstanceChangeListener(_this.sheetInstanceChangeListener);
+        return _this;
     }
     SheetButtonremoverow.prototype.updateVisible = function () {
         if (this.style.getSheetInstance().isEditable()) {
@@ -5426,12 +5451,13 @@ var SheetButtonremoverow = (function (_super) {
 var SheetButtondice = (function (_super) {
     __extends(SheetButtondice, _super);
     function SheetButtondice(parent, style, element) {
-        _super.call(this, parent, style, element);
-        this.diceAmount = this.visible.dataset['dices'] === undefined ? 0 : parseInt(this.visible.dataset['dices']);
-        this.diceFaces = this.visible.dataset['faces'] === undefined ? 0 : parseInt(this.visible.dataset['faces']);
-        this.modifier = this.visible.dataset['modifier'] === undefined ? "0" : this.visible.dataset['modifier'];
-        this.reason = this.visible.dataset['reason'] === undefined ? null : this.visible.dataset['reason'];
-        this.parse();
+        var _this = _super.call(this, parent, style, element) || this;
+        _this.diceAmount = _this.visible.dataset['dices'] === undefined ? 0 : parseInt(_this.visible.dataset['dices']);
+        _this.diceFaces = _this.visible.dataset['faces'] === undefined ? 0 : parseInt(_this.visible.dataset['faces']);
+        _this.modifier = _this.visible.dataset['modifier'] === undefined ? "0" : _this.visible.dataset['modifier'];
+        _this.reason = _this.visible.dataset['reason'] === undefined ? null : _this.visible.dataset['reason'];
+        _this.parse();
+        return _this;
     }
     SheetButtondice.prototype.getReason = function () {
         return this.reason;
@@ -5534,7 +5560,7 @@ var SheetButtondice = (function (_super) {
 var SheetButtonsort = (function (_super) {
     __extends(SheetButtonsort, _super);
     function SheetButtonsort() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     SheetButtonsort.prototype.click = function (e) {
         e.preventDefault();
@@ -5548,7 +5574,7 @@ var SheetButtonsort = (function (_super) {
 var SheetButtoncommonsroll = (function (_super) {
     __extends(SheetButtoncommonsroll, _super);
     function SheetButtoncommonsroll() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     SheetButtoncommonsroll.prototype.click = function (e) {
         e.preventDefault();
@@ -5790,7 +5816,7 @@ var SlashCommand = (function () {
 var SlashClear = (function (_super) {
     __extends(SlashClear, _super);
     function SlashClear() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     return SlashClear;
 }(SlashCommand));
@@ -5798,7 +5824,7 @@ MessageFactory.registerSlashCommand(SlashClear, ["/clear", "/clr", "/cls"]);
 var SlashReply = (function (_super) {
     __extends(SlashReply, _super);
     function SlashReply() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     return SlashReply;
 }(SlashCommand));
@@ -5806,7 +5832,7 @@ MessageFactory.registerSlashCommand(SlashReply, ["/r", "/reply", "/responder", "
 var SlashImages = (function (_super) {
     __extends(SlashImages, _super);
     function SlashImages() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     SlashImages.prototype.receiveCommand = function (slashCommand, message) {
         var room = Server.Chat.getRoom();
@@ -5836,7 +5862,7 @@ MessageFactory.registerSlashCommand(SlashImages, ["/images", "/imgs", "/imagens"
 var SlashLog = (function (_super) {
     __extends(SlashLog, _super);
     function SlashLog() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     SlashLog.prototype.receiveCommand = function (slashCommand, message) {
         var cbs = {
@@ -5854,7 +5880,7 @@ MessageFactory.registerSlashCommand(SlashLog, ["/log", "/logger"]);
 var SlashLingo = (function (_super) {
     __extends(SlashLingo, _super);
     function SlashLingo() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     SlashLingo.prototype.receiveCommand = function (slashCommand, message) {
         var storyMode = slashCommand.toLowerCase().indexOf("sto") !== -1;
@@ -5957,21 +5983,22 @@ MessageFactory.registerSlashCommand(SlashLingo, ["/lang", "/ling", "/lingo", "/l
 var Message = (function (_super) {
     __extends(Message, _super);
     function Message() {
-        _super.apply(this, arguments);
-        this.id = 0;
-        this.localid = null;
-        this.wasLocal = false;
-        this.roomid = null;
-        this.date = null;
-        this.module = "";
-        this.msg = "";
-        this.special = {};
-        this.sending = null;
-        this.origin = 0;
-        this.destination = null;
-        this.updatedTrigger = new Trigger();
-        this.html = null;
-        this.clone = false;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.id = 0;
+        _this.localid = null;
+        _this.wasLocal = false;
+        _this.roomid = null;
+        _this.date = null;
+        _this.module = "";
+        _this.msg = "";
+        _this.special = {};
+        _this.sending = null;
+        _this.origin = 0;
+        _this.destination = null;
+        _this.updatedTrigger = new Trigger();
+        _this.html = null;
+        _this.clone = false;
+        return _this;
     }
     Message.prototype.getDate = function () {
         if (this.date === "" || this.date === null) {
@@ -6237,9 +6264,10 @@ var Message = (function (_super) {
 var MessageBuff = (function (_super) {
     __extends(MessageBuff, _super);
     function MessageBuff() {
-        _super.apply(this, arguments);
-        this.module = "buff";
-        this.playedBefore = false;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.module = "buff";
+        _this.playedBefore = false;
+        return _this;
     }
     MessageBuff.prototype.onPrint = function () {
         if (this.playedBefore) {
@@ -6353,24 +6381,35 @@ MessageFactory.registerMessage(MessageBuff, "buff", []);
 var MessagePica = (function (_super) {
     __extends(MessagePica, _super);
     function MessagePica() {
-        _super.call(this);
-        this.module = "pica";
-        this.msgOneArt = "0";
-        this.msgUpdateArts = "1";
-        this.msgRequestUpdate = "2";
-        this.runOnce = false;
-        this.addUpdatedListener((function () {
+        var _this = _super.call(this) || this;
+        _this.module = "pica";
+        _this.msgOneArt = "0";
+        _this.msgUpdateArts = "1";
+        _this.msgRequestUpdate = "2";
+        _this.msgClearAll = "3";
+        _this.runOnce = false;
+        _this.addUpdatedListener((function () {
             this.considerAddingToArtManager();
-        }).bind(this));
+        }).bind(_this));
+        return _this;
     }
     MessagePica.prototype.considerAddingToArtManager = function () {
-        if (this.wasLocalMessage()) {
-            return;
-        }
         var roomid = this.roomid;
         var url = this.getUrl();
         var userLengths = UI.Pica.ArtManager.getLengthByUser(roomid, url);
         var ownLength = userLengths[Application.getMyId()] != undefined ? userLengths[Application.getMyId()] : 0;
+        if (this.isCleanArts()) {
+            if (this.getUser().isStoryteller()) {
+                UI.Pica.ArtManager.removeAllArts(roomid, url);
+            }
+            else {
+                UI.Pica.ArtManager.removeArtFromUser(this.origin, roomid, url);
+            }
+            return;
+        }
+        if (this.wasLocalMessage()) {
+            return;
+        }
         if (!this.isMine() || this.getSpecificConfirmation(Application.getMyId()) != ownLength) {
             if (this.getMsg() == this.msgOneArt) {
                 var art = this.getArt();
@@ -6469,14 +6508,23 @@ var MessagePica = (function (_super) {
         }
         return null;
     };
+    MessagePica.prototype.setCleanArts = function (isIt) {
+        if (isIt) {
+            this.setMsg(this.msgClearAll);
+        }
+    };
+    MessagePica.prototype.isCleanArts = function () {
+        return this.getMsg() == this.msgClearAll;
+    };
     return MessagePica;
 }(Message));
 MessageFactory.registerMessage(MessagePica, "pica", []);
 var MessageSystem = (function (_super) {
     __extends(MessageSystem, _super);
     function MessageSystem() {
-        _super.apply(this, arguments);
-        this.module = "system";
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.module = "system";
+        return _this;
     }
     MessageSystem.prototype.createHTML = function () {
         var p = document.createElement("p");
@@ -6494,10 +6542,10 @@ MessageFactory.registerMessage(MessageSystem, "system", []);
 var MessageCountdown = (function (_super) {
     __extends(MessageCountdown, _super);
     function MessageCountdown() {
-        _super.call(this);
-        this.counter = document.createTextNode("99999");
-        this.module = "countdown";
-        this.addUpdatedListener(function (e) {
+        var _this = _super.call(this) || this;
+        _this.counter = document.createTextNode("99999");
+        _this.module = "countdown";
+        _this.addUpdatedListener(function (e) {
             var target = e.getTarget();
             if (target !== null) {
                 var msg = DB.MessageDB.getMessage(target);
@@ -6509,6 +6557,7 @@ var MessageCountdown = (function (_super) {
                 e.updateCounter(parseInt(e.getMsg()));
             }
         });
+        return _this;
     }
     MessageCountdown.prototype.createHTML = function () {
         if (this.getMsg() === "") {
@@ -6595,19 +6644,19 @@ var MessageCountdown = (function (_super) {
             this.counter.nodeValue = e.toString();
         }
     };
-    MessageCountdown.timeout = null;
     return MessageCountdown;
 }(Message));
+MessageCountdown.timeout = null;
 MessageFactory.registerMessage(MessageCountdown, "countdown", ["/countdown", "/count"]);
 var MessageVote = (function (_super) {
     __extends(MessageVote, _super);
     function MessageVote() {
-        _super.call(this);
-        this.module = "vote";
-        this.voters = [];
-        this.voteAmountText = document.createTextNode("0");
-        this.votersText = document.createTextNode("");
-        this.addUpdatedListener({
+        var _this = _super.call(this) || this;
+        _this.module = "vote";
+        _this.voters = [];
+        _this.voteAmountText = document.createTextNode("0");
+        _this.votersText = document.createTextNode("");
+        _this.addUpdatedListener({
             handleEvent: function (e) {
                 if (e.getVoteTarget() !== null) {
                     var target = DB.MessageDB.getMessage(e.getVoteTarget());
@@ -6617,6 +6666,7 @@ var MessageVote = (function (_super) {
                 }
             }
         });
+        return _this;
     }
     MessageVote.prototype.setVoteTarget = function (id) {
         this.setSpecial("castvote", id);
@@ -6691,8 +6741,9 @@ MessageFactory.registerMessage(MessageVote, "vote", ["/vote", "/voto", "/votar",
 var MessageWebm = (function (_super) {
     __extends(MessageWebm, _super);
     function MessageWebm() {
-        _super.apply(this, arguments);
-        this.module = "webm";
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.module = "webm";
+        return _this;
     }
     MessageWebm.prototype.createHTML = function () {
         var p = document.createElement("p");
@@ -6727,8 +6778,9 @@ MessageFactory.registerMessage(MessageWebm, "webm", ["/webm"]);
 var MessageVideo = (function (_super) {
     __extends(MessageVideo, _super);
     function MessageVideo() {
-        _super.apply(this, arguments);
-        this.module = "youtube";
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.module = "youtube";
+        return _this;
     }
     MessageVideo.prototype.createHTML = function () {
         var p = document.createElement("p");
@@ -6763,8 +6815,9 @@ MessageFactory.registerMessage(MessageVideo, "youtube", ["/video", "/youtube"]);
 var MessageQuote = (function (_super) {
     __extends(MessageQuote, _super);
     function MessageQuote() {
-        _super.apply(this, arguments);
-        this.module = "quote";
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.module = "quote";
+        return _this;
     }
     MessageQuote.prototype.createHTML = function () {
         var p = document.createElement("p");
@@ -6806,9 +6859,10 @@ MessageFactory.registerMessage(MessageQuote, "quote", ["/quote", "/citar", "/cit
 var MessageSE = (function (_super) {
     __extends(MessageSE, _super);
     function MessageSE() {
-        _super.apply(this, arguments);
-        this.module = "seplay";
-        this.playedBefore = false;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.module = "seplay";
+        _this.playedBefore = false;
+        return _this;
     }
     MessageSE.prototype.onPrint = function () {
         if (this.playedBefore) {
@@ -6873,9 +6927,10 @@ MessageFactory.registerMessage(MessageSE, "seplay", ["/se", "/seplay", "/soundef
 var MessageImage = (function (_super) {
     __extends(MessageImage, _super);
     function MessageImage() {
-        _super.apply(this, arguments);
-        this.module = "image";
-        this.openedBefore = false;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.module = "image";
+        _this.openedBefore = false;
+        return _this;
     }
     MessageImage.addLastImage = function (msg) {
         if (MessageImage.lastImages[msg.roomid] === undefined) {
@@ -6978,18 +7033,19 @@ var MessageImage = (function (_super) {
         this.msg = msg;
         return true;
     };
-    MessageImage.lastImages = {};
-    MessageImage.maxHistory = 10;
-    MessageImage.noAutomation = false;
     return MessageImage;
 }(Message));
+MessageImage.lastImages = {};
+MessageImage.maxHistory = 10;
+MessageImage.noAutomation = false;
 MessageFactory.registerMessage(MessageImage, "image", ["/image", "/imagem", "/picture", "/figura", "/pic"]);
 var MessageBGM = (function (_super) {
     __extends(MessageBGM, _super);
     function MessageBGM() {
-        _super.apply(this, arguments);
-        this.module = "bgmplay";
-        this.playedBefore = false;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.module = "bgmplay";
+        _this.playedBefore = false;
+        return _this;
     }
     MessageBGM.prototype.onPrint = function () {
         if (this.playedBefore) {
@@ -7054,8 +7110,9 @@ MessageFactory.registerMessage(MessageBGM, "bgmplay", ["/bgm", "/splay", "/bgmpl
 var MessageStream = (function (_super) {
     __extends(MessageStream, _super);
     function MessageStream() {
-        _super.apply(this, arguments);
-        this.module = "stream";
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.module = "stream";
+        return _this;
     }
     MessageStream.prototype.createHTML = function () {
         return null;
@@ -7066,9 +7123,10 @@ MessageFactory.registerMessage(MessageStream, "stream", []);
 var MessageSheetcommand = (function (_super) {
     __extends(MessageSheetcommand, _super);
     function MessageSheetcommand() {
-        _super.apply(this, arguments);
-        this.module = "sheetcmd";
-        this.playedBefore = false;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.module = "sheetcmd";
+        _this.playedBefore = false;
+        return _this;
     }
     MessageSheetcommand.prototype.onPrint = function () {
         if (this.playedBefore) {
@@ -7168,14 +7226,15 @@ MessageFactory.registerMessage(MessageSheetcommand, "sheetcmd", []);
 var MessageWhisper = (function (_super) {
     __extends(MessageWhisper, _super);
     function MessageWhisper() {
-        _super.call(this);
-        this.module = "whisper";
+        var _this = _super.call(this) || this;
+        _this.module = "whisper";
         var list = function (message) {
             if (!message.isMine()) {
                 UI.Chat.Forms.setLastWhisperFrom(message.getUser());
             }
         };
-        this.addUpdatedListener(list);
+        _this.addUpdatedListener(list);
+        return _this;
     }
     MessageWhisper.prototype.onPrint = function () {
         if (!this.isMine() && UI.Chat.doAutomation() && !document.hasFocus()) {
@@ -7270,8 +7329,9 @@ MessageFactory.registerMessage(MessageWhisper, "whisper", ["/whisper", "/whisp",
 var MessageSheetdamage = (function (_super) {
     __extends(MessageSheetdamage, _super);
     function MessageSheetdamage() {
-        _super.apply(this, arguments);
-        this.module = "sheetdm";
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.module = "sheetdm";
+        return _this;
     }
     MessageSheetdamage.prototype.createHTML = function () {
         var p = document.createElement("p");
@@ -7343,9 +7403,10 @@ MessageFactory.registerMessage(MessageSheetdamage, "sheetdm", []);
 var MessageSheetturn = (function (_super) {
     __extends(MessageSheetturn, _super);
     function MessageSheetturn() {
-        _super.apply(this, arguments);
-        this.module = "sheettr";
-        this.playedBefore = false;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.module = "sheettr";
+        _this.playedBefore = false;
+        return _this;
     }
     MessageSheetturn.prototype.createHTML = function () {
         var p = document.createElement("p");
@@ -7415,14 +7476,14 @@ MessageFactory.registerMessage(MessageSheetturn, "sheettr", []);
 var MessageDice = (function (_super) {
     __extends(MessageDice, _super);
     function MessageDice() {
-        _super.call(this);
-        this.module = "dice";
-        this.diceHQTime = 30000;
-        this.initiativeClicker = null;
-        this.customClicker = null;
-        this.playedBefore = false;
-        this.setDice([]);
-        this.addUpdatedListener({
+        var _this = _super.call(this) || this;
+        _this.module = "dice";
+        _this.diceHQTime = 30000;
+        _this.initiativeClicker = null;
+        _this.customClicker = null;
+        _this.playedBefore = false;
+        _this.setDice([]);
+        _this.addUpdatedListener({
             handleEvent: function (e) {
                 if (e.html !== null) {
                     var newHTML = e.createHTML();
@@ -7433,6 +7494,7 @@ var MessageDice = (function (_super) {
                 }
             }
         });
+        return _this;
     }
     MessageDice.prototype.onPrint = function () {
         if (this.getRolls().length === 0 && this.getDice().length !== 0) {
@@ -7778,8 +7840,9 @@ MessageFactory.registerMessage(MessageDice, "dice", []);
 var MessageStory = (function (_super) {
     __extends(MessageStory, _super);
     function MessageStory() {
-        _super.apply(this, arguments);
-        this.module = "story";
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.module = "story";
+        return _this;
     }
     MessageStory.prototype.makeMockUp = function () {
         var list = [];
@@ -7858,8 +7921,9 @@ MessageFactory.registerMessage(MessageStory, "story", ["/story", "/history", "/h
 var MessageAction = (function (_super) {
     __extends(MessageAction, _super);
     function MessageAction() {
-        _super.apply(this, arguments);
-        this.module = "action";
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.module = "action";
+        return _this;
     }
     MessageAction.prototype.findPersona = function () {
         var personaName = UI.Chat.PersonaManager.getPersonaName();
@@ -7880,8 +7944,9 @@ MessageFactory.registerMessage(MessageAction, "action", ["/act", "/me", "/eu", "
 var MessageOff = (function (_super) {
     __extends(MessageOff, _super);
     function MessageOff() {
-        _super.apply(this, arguments);
-        this.module = "offgame";
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.module = "offgame";
+        return _this;
     }
     MessageOff.prototype.createHTML = function () {
         var p = document.createElement("p");
@@ -7898,9 +7963,9 @@ MessageFactory.registerMessage(MessageOff, "offgame", ["/off", "/ooc"]);
 var MessageRoleplay = (function (_super) {
     __extends(MessageRoleplay, _super);
     function MessageRoleplay() {
-        _super.call(this);
-        this.module = "roleplay";
-        this.addUpdatedListener({
+        var _this = _super.call(this) || this;
+        _this.module = "roleplay";
+        _this.addUpdatedListener({
             handleEvent: function (e) {
                 var lingua = e.getSpecial("lingua", null);
                 if (lingua !== null) {
@@ -7909,6 +7974,7 @@ var MessageRoleplay = (function (_super) {
                 }
             }
         });
+        return _this;
     }
     MessageRoleplay.prototype.findPersona = function () {
         var personaName = UI.Chat.PersonaManager.getPersonaName();
@@ -8041,10 +8107,11 @@ MessageFactory.registerMessage(MessageRoleplay, "roleplay", []);
 var MessageSheetup = (function (_super) {
     __extends(MessageSheetup, _super);
     function MessageSheetup() {
-        _super.apply(this, arguments);
-        this.module = "sheetup";
-        this.playedBefore = false;
-        this.clicker = null;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.module = "sheetup";
+        _this.playedBefore = false;
+        _this.clicker = null;
+        return _this;
     }
     MessageSheetup.prototype.onPrint = function () {
         if (this.playedBefore) {
@@ -8105,8 +8172,9 @@ MessageFactory.registerMessage(MessageSheetup, "sheetup", []);
 var MessageUnknown = (function (_super) {
     __extends(MessageUnknown, _super);
     function MessageUnknown() {
-        _super.apply(this, arguments);
-        this.module = "unkn";
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.module = "unkn";
+        return _this;
     }
     MessageUnknown.prototype.createHTML = function () {
         var p = document.createElement("p");
@@ -8123,8 +8191,9 @@ MessageFactory.registerMessage(MessageUnknown, "unkn", []);
 var MessageCutscene = (function (_super) {
     __extends(MessageCutscene, _super);
     function MessageCutscene() {
-        _super.apply(this, arguments);
-        this.module = "csc";
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.module = "csc";
+        return _this;
     }
     MessageCutscene.prototype.createHTML = function () {
         if (!this.getUser().isStoryteller() || this.getUser().getUser().isMe()) {
@@ -9815,7 +9884,7 @@ var Server;
                     var info = {
                         id: array[1],
                         persona: array[2]['persona'] === undefined ? null : array[2]['persona'],
-                        avatar: array[2]['avatar'] === undefined ? null : array[2]['avatar'],
+                        avatar: array[2]['avatar'] === undefined ? null : array[2]['avatar']
                     };
                     UI.Chat.Avatar.updateFromObject([info], false);
                     Server.Chat.triggerPersona(info);
@@ -10553,8 +10622,15 @@ ptbr.setLingo("_IMAGESRENAMEFOLDERPROMPT_", "Digite a nova pasta para \"%a\", at
 ptbr.setLingo("", "");
 ptbr.setLingo("", "");
 ptbr.setLingo("_PICASHARE_", "Compartilhar no Chat");
-ptbr.setLingo("", "");
-ptbr.setLingo("", "");
+ptbr.setLingo("_PICASCALEFITNOSTRETCH_", "Encaixar na tela (sem aumentar a imagem)");
+ptbr.setLingo("_PICASCALEFITSTRETCH_", "Encaixar na tela");
+ptbr.setLingo("_PICASCALERATIO1_", "Mostrar no tamanho original");
+ptbr.setLingo("_PICAPENSIL_", "Desenho livre");
+ptbr.setLingo("_PICACOLOR_", "Escolher cor de desenhos");
+ptbr.setLingo("_PICAMOVE_", "Mover imagem (use scroll para zoom)");
+ptbr.setLingo("_PICALOCK_", "Trancar/Destrancar desenhos (apenas mestre)");
+ptbr.setLingo("_PICASIRCU_", "Desenho de círculos (clicar e arrastar)");
+ptbr.setLingo("_PICACLEAN_", "Limpar desenhos");
 ptbr.setLingo("", "");
 ptbr.setLingo("_LOGGERTITLE_", "Logger");
 ptbr.setLingo("_LOGGEREXP1_", "O excerto a seguir representa as primeiras e as últimas mensagens que irão fazer parte deste log. Você pode alterar o slider abaixo para definir onde começar o log e onde terminar o log. Apenas mensagens públicas (não enviadas a uma pessoa específica) serão guardadas no JSON. Você pode mover com as setas do teclado após clicar nos sliders.");
@@ -11678,7 +11754,7 @@ var UI;
                 },
                 linkType: "preview",
                 multiselect: true,
-                extensions: ['images'],
+                extensions: ['images']
             };
             Dropbox.choose(options);
         }
@@ -12167,7 +12243,7 @@ var UI;
         function markLanguage() {
             var elements = [];
             for (var _i = 0; _i < arguments.length; _i++) {
-                elements[_i - 0] = arguments[_i];
+                elements[_i] = arguments[_i];
             }
             for (var i = 0; i < elements.length; i++) {
                 var element = elements[i];
@@ -15166,6 +15242,11 @@ var PicaCanvasPoint = (function () {
         var y2 = p2.y;
         return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
     };
+    PicaCanvasPoint.prototype.getRealDistanceTo = function (p2) {
+        var relDist = this.distanceTo(p2);
+        var dist = relDist * UI.Pica.Board.Canvas.getWidth() / PicaCanvasPoint.precision;
+        return dist;
+    };
     PicaCanvasPoint.isTriangle = function (p1, p2, p3) {
         var dab = p1.distanceTo(p2);
         var dbc = p2.distanceTo(p3);
@@ -15212,12 +15293,12 @@ var PicaCanvasPoint = (function () {
         var b = PicaCanvasPoint.encoding.indexOf(str.charAt(1));
         return a + b;
     };
-    PicaCanvasPoint.minCurve = 10;
-    PicaCanvasPoint.encoding = "0123456789abcdefghijklmnopqrstuvxwyzABCDEFGHIJKLMNOPQRSTUVXWYZ-+_=![]{}()*@/\\:;";
-    PicaCanvasPoint.precision = Math.pow(PicaCanvasPoint.encoding.length, 2);
-    PicaCanvasPoint.maxEncodedChars = 2;
     return PicaCanvasPoint;
 }());
+PicaCanvasPoint.minCurve = 10;
+PicaCanvasPoint.encoding = "0123456789abcdefghijklmnopqrstuvxwyzABCDEFGHIJKLMNOPQRSTUVXWYZ-+_=![]{}()*@/\\:;";
+PicaCanvasPoint.precision = Math.pow(PicaCanvasPoint.encoding.length, 2);
+PicaCanvasPoint.maxEncodedChars = 2;
 var PicaCanvasArt = (function () {
     function PicaCanvasArt() {
         this.userId = 0;
@@ -15529,8 +15610,9 @@ var PicaTool = (function () {
 var PicaToolPen = (function (_super) {
     __extends(PicaToolPen, _super);
     function PicaToolPen() {
-        _super.apply(this, arguments);
-        this.id = "undefined";
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.id = "undefined";
+        return _this;
     }
     PicaToolPen.prototype.mouseDown = function (point) {
         console.log(point.getX() + " - " + point.getY());
@@ -15571,9 +15653,9 @@ var PicaToolPen = (function (_super) {
     PicaToolPen.getPen = function (id) {
         return PicaToolPen.Pens[id];
     };
-    PicaToolPen.Pens = {};
     return PicaToolPen;
 }(PicaTool));
+PicaToolPen.Pens = {};
 var UI;
 (function (UI) {
     var Pica;
@@ -15645,15 +15727,25 @@ var UI;
                 return instanced;
             }
             ArtManager.getArt = getArt;
+            function removeAllArts(roomid, url) {
+                Application.LocalMemory.unsetMemory(createIdString(roomid, url));
+                if (UI.Pica.Board.getUrl() == url) {
+                    UI.Pica.Board.Canvas.redraw();
+                }
+            }
+            ArtManager.removeAllArts = removeAllArts;
             function removeArtFromUser(userid, roomid, url) {
                 var oldArt = getArt(roomid, url);
                 var newArt = [];
                 for (var i = 0; i < oldArt.length; i++) {
                     if (oldArt[i].getUserId() != userid) {
-                        newArt.push(oldArt[i]);
+                        newArt.push(JSON.stringify(oldArt[i].exportAsObject()));
                     }
                 }
                 Application.LocalMemory.setMemory(createIdString(roomid, url), newArt);
+                if (UI.Pica.Board.getUrl() == url) {
+                    UI.Pica.Board.Canvas.redraw();
+                }
             }
             ArtManager.removeArtFromUser = removeArtFromUser;
             function includeManyArts(roomid, url, arts) {
@@ -15991,14 +16083,79 @@ var UI;
         })(Board = Pica.Board || (Pica.Board = {}));
     })(Pica = UI.Pica || (UI.Pica = {}));
 })(UI || (UI = {}));
+var PicaToolMove = (function (_super) {
+    __extends(PicaToolMove, _super);
+    function PicaToolMove() {
+        var _this = _super.call(this) || this;
+        _this.setIcon("icons-picaToolMove");
+        _this.setTitleLingo("_PICAMOVE_");
+        return _this;
+    }
+    PicaToolMove.prototype.mouseDown = function (point) {
+        UI.Pica.Board.Canvas.getCanvas().classList.add("moving");
+        this.lastPoint = point;
+    };
+    PicaToolMove.prototype.mouseUp = function (point) {
+        this.mouseOut();
+    };
+    PicaToolMove.prototype.mouseMove = function (point) {
+        if (this.lastPoint != null) {
+            var xMovement = this.lastPoint.getX() - point.getX();
+            var yMovement = this.lastPoint.getY() - point.getY();
+            board = UI.Pica.Board.getBoard();
+            board.scrollLeft += xMovement;
+            board.scrollTop += yMovement;
+        }
+    };
+    PicaToolMove.prototype.mouseOut = function () {
+        this.lastPoint = null;
+        UI.Pica.Board.Canvas.getCanvas().classList.remove("moving");
+    };
+    PicaToolMove.prototype.mouseWheel = function (up, point) {
+        var board = UI.Pica.Board.getBoard();
+        var availScrollTop = board.scrollHeight - UI.Pica.Board.getAvailHeight();
+        if (availScrollTop < 1)
+            availScrollTop = 1;
+        var availScrollLeft = board.scrollWidth - UI.Pica.Board.getAvailWidth();
+        if (availScrollLeft < 1)
+            availScrollLeft = 1;
+        var relLeft = board.scrollLeft / availScrollLeft;
+        var relTop = board.scrollTop / availScrollTop;
+        UI.Pica.Board.changeRatio(up);
+        var availScrollTop = board.scrollHeight - UI.Pica.Board.getAvailHeight();
+        if (availScrollTop < 1)
+            availScrollTop = 1;
+        var availScrollLeft = board.scrollWidth - UI.Pica.Board.getAvailWidth();
+        if (availScrollLeft < 1)
+            availScrollLeft = 1;
+        board.scrollLeft = availScrollLeft * relLeft;
+        board.scrollTop = availScrollTop * relTop;
+    };
+    PicaToolMove.prototype.updateCanvasClasses = function () {
+        if (this.selected) {
+            UI.Pica.Board.Canvas.getCanvas().classList.add("move");
+        }
+        else {
+            UI.Pica.Board.Canvas.getCanvas().classList.remove("move");
+            UI.Pica.Board.Canvas.getCanvas().classList.remove("moving");
+        }
+    };
+    return PicaToolMove;
+}(PicaToolPen));
+var move = new PicaToolMove();
+UI.Pica.Toolbar.registerTool(move);
+UI.Pica.Board.Canvas.setPen(move);
+delete (move);
 var PicaToolPensil = (function (_super) {
     __extends(PicaToolPensil, _super);
     function PicaToolPensil() {
-        _super.call(this);
-        this.art = null;
-        this.lastPoint = null;
-        this.id = "pensil";
-        this.setIcon("icons-picaToolPensil");
+        var _this = _super.call(this) || this;
+        _this.art = null;
+        _this.lastPoint = null;
+        _this.id = "pensil";
+        _this.setIcon("icons-picaToolPensil");
+        _this.setTitleLingo("_PICAPENSIL_");
+        return _this;
     }
     PicaToolPensil.prototype.mouseDown = function (point) {
         this.art = new PicaCanvasArt();
@@ -16079,111 +16236,224 @@ var PicaToolPensil = (function (_super) {
 }(PicaToolPen));
 var pensil = new PicaToolPensil();
 UI.Pica.Toolbar.registerTool(pensil);
-UI.Pica.Board.Canvas.setPen(pensil);
 PicaToolPen.registerPen("pensil", pensil);
+delete (pensil);
+var PicaToolSircu = (function (_super) {
+    __extends(PicaToolSircu, _super);
+    function PicaToolSircu() {
+        var _this = _super.call(this) || this;
+        _this.art = null;
+        _this.lastPoint = null;
+        _this.id = "sircu";
+        _this.setIcon("icons-picaToolSircu");
+        _this.setTitleLingo("_PICASIRCU_");
+        return _this;
+    }
+    PicaToolSircu.prototype.mouseDown = function (point) {
+        this.art = new PicaCanvasArt();
+        this.art.setUserId(Application.getMyId());
+        this.art.addPoint(point);
+        this.art.setSpecial("width", UI.Pica.Board.Canvas.getPenWidth());
+        this.art.setSpecial("color", UI.Pica.Board.Canvas.getPenColor());
+        this.art.setPen(this);
+        this.lastPoint = point;
+    };
+    PicaToolSircu.prototype.mouseMove = function (point) {
+        if (this.art != null) {
+            this.lastPoint = point;
+            this.draw(this.art);
+            UI.Pica.Board.Canvas.redraw();
+        }
+    };
+    PicaToolSircu.prototype.mouseUp = function (point) {
+        this.lastPoint = point;
+        this.mouseOut();
+    };
+    PicaToolSircu.prototype.mouseOut = function () {
+        if (this.art != null) {
+            this.art.addPoint(this.lastPoint);
+            var art = this.art;
+            this.art = null;
+            this.lastPoint = null;
+            UI.Pica.ArtManager.addArt(art);
+        }
+    };
+    PicaToolSircu.prototype.draw = function (art) {
+        var p1 = art.points[0];
+        var p2 = art.points.length > 1 ? art.points[1] : this.lastPoint != null ? this.lastPoint : p1;
+        var radius = Math.sqrt(Math.pow((p2.getX() - p1.getX()), 2) + Math.pow((p2.getY() - p1.getY()), 2));
+        var centerX = p1.getX();
+        var centerY = p1.getY();
+        var ctx = UI.Pica.Board.Canvas.getCanvasContext();
+        ctx.lineWidth = art.getSpecial("width", 1);
+        ctx.strokeStyle = '#' + art.getSpecial("color", "000000");
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+        ctx.stroke();
+    };
+    PicaToolSircu.prototype.redraw = function () {
+        if (this.art != null) {
+            this.draw(this.art);
+        }
+    };
+    PicaToolSircu.prototype.drawFromArt = function (art) {
+        this.draw(art);
+    };
+    PicaToolSircu.prototype.updateCanvasClasses = function () {
+        if (this.selected) {
+            UI.Pica.Board.Canvas.getCanvas().classList.add("draw");
+        }
+        else {
+            UI.Pica.Board.Canvas.getCanvas().classList.remove("draw");
+        }
+    };
+    return PicaToolSircu;
+}(PicaToolPen));
+var pensil = new PicaToolSircu();
+UI.Pica.Toolbar.registerTool(pensil);
+PicaToolPen.registerPen("sircu", pensil);
+delete (pensil);
+var PicaToolSqua = (function (_super) {
+    __extends(PicaToolSqua, _super);
+    function PicaToolSqua() {
+        var _this = _super.call(this) || this;
+        _this.art = null;
+        _this.lastPoint = null;
+        _this.id = "squa";
+        _this.setIcon("icons-picaToolSqua");
+        _this.setTitleLingo("_PICASQUA_");
+        return _this;
+    }
+    PicaToolSqua.prototype.mouseDown = function (point) {
+        this.art = new PicaCanvasArt();
+        this.art.setUserId(Application.getMyId());
+        this.art.addPoint(point);
+        this.art.setSpecial("width", UI.Pica.Board.Canvas.getPenWidth());
+        this.art.setSpecial("color", UI.Pica.Board.Canvas.getPenColor());
+        this.art.setPen(this);
+        this.lastPoint = point;
+    };
+    PicaToolSqua.prototype.mouseMove = function (point) {
+        if (this.art != null) {
+            this.lastPoint = point;
+            this.draw(this.art);
+            UI.Pica.Board.Canvas.redraw();
+        }
+    };
+    PicaToolSqua.prototype.mouseUp = function (point) {
+        this.lastPoint = point;
+        this.mouseOut();
+    };
+    PicaToolSqua.prototype.mouseOut = function () {
+        if (this.art != null) {
+            this.art.addPoint(this.lastPoint);
+            var art = this.art;
+            this.art = null;
+            this.lastPoint = null;
+            UI.Pica.ArtManager.addArt(art);
+        }
+    };
+    PicaToolSqua.prototype.draw = function (art) {
+        var p1 = art.points[0];
+        var p2 = art.points.length > 1 ? art.points[1] : this.lastPoint != null ? this.lastPoint : p1;
+        var centerX = p1.getX();
+        var centerY = p1.getY();
+        var distX = Math.abs(p1.getX() - p2.getX());
+        var distY = Math.abs(p1.getY() - p2.getY());
+        var dist = distX > distY ? distX : distY;
+        var ctx = UI.Pica.Board.Canvas.getCanvasContext();
+        ctx.lineWidth = art.getSpecial("width", 1);
+        ctx.strokeStyle = '#' + art.getSpecial("color", "000000");
+        ctx.beginPath();
+        var s1 = [p1.getX() - dist, p1.getY() - dist];
+        var s2 = [p1.getX() + dist, p1.getY() - dist];
+        var s3 = [p1.getX() + dist, p1.getY() + dist];
+        var s4 = [p1.getX() - dist, p1.getY() + dist];
+        var square = [s1, s2, s3, s4];
+        for (var i = 0; i < square.length; i++) {
+            if (i != 0) {
+                ctx.lineTo(square[i][0], square[i][1]);
+            }
+            ctx.moveTo(square[i][0], square[i][1]);
+        }
+        ctx.lineTo(square[0][0], square[0][1]);
+        ctx.stroke();
+    };
+    PicaToolSqua.prototype.redraw = function () {
+        if (this.art != null) {
+            this.draw(this.art);
+        }
+    };
+    PicaToolSqua.prototype.drawFromArt = function (art) {
+        this.draw(art);
+    };
+    PicaToolSqua.prototype.updateCanvasClasses = function () {
+        if (this.selected) {
+            UI.Pica.Board.Canvas.getCanvas().classList.add("draw");
+        }
+        else {
+            UI.Pica.Board.Canvas.getCanvas().classList.remove("draw");
+        }
+    };
+    return PicaToolSqua;
+}(PicaToolPen));
+var pensil = new PicaToolSqua();
+UI.Pica.Toolbar.registerTool(pensil);
+PicaToolPen.registerPen("squa", pensil);
 delete (pensil);
 var PicaToolColor = (function (_super) {
     __extends(PicaToolColor, _super);
     function PicaToolColor() {
-        _super.call(this);
-        this.a = document.createElement("input");
-        this.a.id = "colopica";
-        this.a.type = "color";
-        this.a.addEventListener("change", function () {
+        var _this = _super.call(this) || this;
+        _this.a = document.createElement("input");
+        _this.a.id = "colopica";
+        _this.a.type = "color";
+        _this.a.addEventListener("change", function () {
             UI.Pica.Board.Canvas.setPenColor(this.value.substr(1));
         });
         UI.Pica.Board.Canvas.addPenListener({
-            a: this.a,
+            a: _this.a,
             handleEvent: function () {
                 this.a.value = "#" + UI.Pica.Board.Canvas.getPenColor();
             }
         });
+        _this.setTitleLingo("_PICACOLOR_");
+        return _this;
     }
     return PicaToolColor;
 }(PicaTool));
 var tool = new PicaToolColor();
 UI.Pica.Toolbar.registerTool(tool);
 delete (tool);
-var PicaToolMove = (function (_super) {
-    __extends(PicaToolMove, _super);
-    function PicaToolMove() {
-        _super.call(this);
-        this.setIcon("icons-picaToolMove");
-    }
-    PicaToolMove.prototype.mouseDown = function (point) {
-        UI.Pica.Board.Canvas.getCanvas().classList.add("moving");
-        this.lastPoint = point;
-    };
-    PicaToolMove.prototype.mouseUp = function (point) {
-        this.mouseOut();
-    };
-    PicaToolMove.prototype.mouseMove = function (point) {
-        if (this.lastPoint != null) {
-            var xMovement = this.lastPoint.getX() - point.getX();
-            var yMovement = this.lastPoint.getY() - point.getY();
-            board = UI.Pica.Board.getBoard();
-            board.scrollLeft += xMovement;
-            board.scrollTop += yMovement;
-        }
-    };
-    PicaToolMove.prototype.mouseOut = function () {
-        this.lastPoint = null;
-        UI.Pica.Board.Canvas.getCanvas().classList.remove("moving");
-    };
-    PicaToolMove.prototype.mouseWheel = function (up, point) {
-        var board = UI.Pica.Board.getBoard();
-        var availScrollTop = board.scrollHeight - UI.Pica.Board.getAvailHeight();
-        if (availScrollTop < 1)
-            availScrollTop = 1;
-        var availScrollLeft = board.scrollWidth - UI.Pica.Board.getAvailWidth();
-        if (availScrollLeft < 1)
-            availScrollLeft = 1;
-        var relLeft = board.scrollLeft / availScrollLeft;
-        var relTop = board.scrollTop / availScrollTop;
-        UI.Pica.Board.changeRatio(up);
-        var availScrollTop = board.scrollHeight - UI.Pica.Board.getAvailHeight();
-        if (availScrollTop < 1)
-            availScrollTop = 1;
-        var availScrollLeft = board.scrollWidth - UI.Pica.Board.getAvailWidth();
-        if (availScrollLeft < 1)
-            availScrollLeft = 1;
-        board.scrollLeft = availScrollLeft * relLeft;
-        board.scrollTop = availScrollTop * relTop;
-    };
-    PicaToolMove.prototype.updateCanvasClasses = function () {
-        if (this.selected) {
-            UI.Pica.Board.Canvas.getCanvas().classList.add("move");
-        }
-        else {
-            UI.Pica.Board.Canvas.getCanvas().classList.remove("move");
-            UI.Pica.Board.Canvas.getCanvas().classList.remove("moving");
-        }
-    };
-    return PicaToolMove;
-}(PicaToolPen));
-var move = new PicaToolMove();
-UI.Pica.Toolbar.registerTool(move);
-delete (move);
 var PicaToolShare = (function (_super) {
     __extends(PicaToolShare, _super);
     function PicaToolShare() {
-        _super.call(this);
-        this.setIcon("icons-picaToolShare");
-        this.setLeftSide();
+        var _this = _super.call(this) || this;
+        _this.setIcon("icons-picaToolShare");
+        _this.setLeftSide();
+        _this.setTitleLingo("_PICASHARE_");
+        return _this;
     }
+    PicaToolShare.prototype.onClick = function () {
+        var url = UI.Pica.Board.getUrl();
+        var newImage = new MessageImage();
+        newImage.findPersona();
+        newImage.setName(name);
+        newImage.setMsg(url);
+        UI.Chat.sendMessage(newImage);
+    };
     return PicaToolShare;
 }(PicaTool));
-var share = new PicaToolShare();
-UI.Pica.Toolbar.registerTool(share);
-delete (share);
 var PicaToolLock = (function (_super) {
     __extends(PicaToolLock, _super);
     function PicaToolLock() {
-        _super.call(this);
-        this.lockedIcon = "icons-picaToolLockLocked";
-        this.unlockedIcon = "icons-picaToolLockUnlocked";
-        this.setIcon(this.lockedIcon);
-        this.setRightSide();
+        var _this = _super.call(this) || this;
+        _this.lockedIcon = "icons-picaToolLockLocked";
+        _this.unlockedIcon = "icons-picaToolLockUnlocked";
+        _this.setIcon(_this.lockedIcon);
+        _this.setRightSide();
+        _this.setTitleLingo("_PICALOCK_");
+        return _this;
     }
     PicaToolLock.prototype.updateVisibility = function () {
         var m = Server.Chat.Memory.getConfiguration("Pica");
@@ -16211,18 +16481,40 @@ var PicaToolLock = (function (_super) {
 var tool = new PicaToolLock();
 UI.Pica.Toolbar.registerTool(tool);
 delete (tool);
+var PicaToolClean = (function (_super) {
+    __extends(PicaToolClean, _super);
+    function PicaToolClean() {
+        var _this = _super.call(this) || this;
+        _this.setIcon("icons-picaToolClean");
+        _this.setRightSide();
+        _this.setTitleLingo("_PICACLEAN_");
+        return _this;
+    }
+    PicaToolClean.prototype.onClick = function () {
+        var msg = new MessagePica();
+        var url = UI.Pica.Board.getUrl();
+        msg.setUrl(url);
+        msg.setCleanArts(true);
+        UI.Chat.sendMessage(msg);
+    };
+    return PicaToolClean;
+}(PicaTool));
+var tool = new PicaToolClean();
+UI.Pica.Toolbar.registerTool(tool);
+delete (tool);
 var PicaToolScaling = (function (_super) {
     __extends(PicaToolScaling, _super);
     function PicaToolScaling() {
-        _super.call(this);
-        this.scaling = -1;
-        this.ratio = 1;
+        var _this = _super.call(this) || this;
+        _this.scaling = -1;
+        _this.ratio = 1;
         UI.Pica.Board.addResizeListener({
-            scaler: this,
+            scaler: _this,
             handleEvent: function () {
                 this.scaler.updateEquality();
             }
         });
+        return _this;
     }
     PicaToolScaling.prototype.onClick = function () {
         UI.Pica.Board.setImageScaling(this.scaling);
@@ -16232,17 +16524,23 @@ var PicaToolScaling = (function (_super) {
     };
     PicaToolScaling.prototype.updateEquality = function () {
         var cS = UI.Pica.Board.getScaling();
-        this.setSelected(cS == this.scaling);
+        if (this.scaling == UI.Pica.Board._IMAGE_SCALING_USE_RATIO && cS == this.scaling) {
+            this.setSelected(UI.Pica.Board.getImageRatio() == this.ratio);
+        }
+        else {
+            this.setSelected(cS == this.scaling);
+        }
     };
     return PicaToolScaling;
 }(PicaTool));
 var PicaToolScaling0 = (function (_super) {
     __extends(PicaToolScaling0, _super);
     function PicaToolScaling0() {
-        _super.call(this);
-        this.scaling = UI.Pica.Board._IMAGE_SCALING_FIT_NO_STRETCH;
-        this.setIcon("icons-picaToolRatio1Fit");
-        this.setTitleLingo("_PICASCALEFITNOSTRETCH_");
+        var _this = _super.call(this) || this;
+        _this.scaling = UI.Pica.Board._IMAGE_SCALING_FIT_NO_STRETCH;
+        _this.setIcon("icons-picaToolRatio1Fit");
+        _this.setTitleLingo("_PICASCALEFITNOSTRETCH_");
+        return _this;
     }
     return PicaToolScaling0;
 }(PicaToolScaling));
@@ -16252,14 +16550,30 @@ delete (tool);
 var PicaToolScaling1 = (function (_super) {
     __extends(PicaToolScaling1, _super);
     function PicaToolScaling1() {
-        _super.call(this);
-        this.scaling = UI.Pica.Board._IMAGE_SCALING_FIT_STRETCH;
-        this.setIcon("icons-picaToolFit");
-        this.setTitleLingo("_PICASCALEFITSTRETCH_");
+        var _this = _super.call(this) || this;
+        _this.scaling = UI.Pica.Board._IMAGE_SCALING_FIT_STRETCH;
+        _this.setIcon("icons-picaToolFit");
+        _this.setTitleLingo("_PICASCALEFITSTRETCH_");
+        return _this;
     }
     return PicaToolScaling1;
 }(PicaToolScaling));
 var tool = new PicaToolScaling1();
+UI.Pica.Toolbar.registerTool(tool);
+delete (tool);
+var PicaToolScaling2 = (function (_super) {
+    __extends(PicaToolScaling2, _super);
+    function PicaToolScaling2() {
+        var _this = _super.call(this) || this;
+        _this.scaling = UI.Pica.Board._IMAGE_SCALING_USE_RATIO;
+        _this.ratio = 1;
+        _this.setIcon("icons-picaToolRatio1");
+        _this.setTitleLingo("_PICASCALERATIO1_");
+        return _this;
+    }
+    return PicaToolScaling2;
+}(PicaToolScaling));
+var tool = new PicaToolScaling2();
 UI.Pica.Toolbar.registerTool(tool);
 delete (tool);
 var UI;
@@ -16326,7 +16640,7 @@ var UI;
                 },
                 linkType: "preview",
                 multiselect: true,
-                extensions: ['.MP3', '.MP4', '.M4A', '.AAC', '.OGG', '.WAV', '.WAVE', '.OPUS'],
+                extensions: ['.MP3', '.MP4', '.M4A', '.AAC', '.OGG', '.WAV', '.WAVE', '.OPUS']
             };
             Dropbox.choose(options);
         }

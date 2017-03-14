@@ -6,6 +6,7 @@ class PicaToolPensil extends PicaToolPen {
     constructor () {
         super();
         this.setIcon("icons-picaToolPensil");
+        this.setTitleLingo("_PICAPENSIL_");
     }
 
     public mouseDown (point : PicaCanvasPoint) {
@@ -98,6 +99,5 @@ class PicaToolPensil extends PicaToolPen {
 
 var pensil = new PicaToolPensil();
 UI.Pica.Toolbar.registerTool(pensil);
-UI.Pica.Board.Canvas.setPen(pensil);
 PicaToolPen.registerPen("pensil", pensil);
 delete(pensil);
