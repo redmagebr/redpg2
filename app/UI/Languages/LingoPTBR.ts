@@ -141,6 +141,8 @@ ptbr.setLingo("_PICAMOVE_", "Mover imagem (use scroll para zoom)");
 ptbr.setLingo("_PICALOCK_", "Trancar/Destrancar desenhos (apenas mestre)");
 ptbr.setLingo("_PICASIRCU_", "Desenho de círculos (clicar e arrastar)");
 ptbr.setLingo("_PICACLEAN_", "Limpar desenhos");
+ptbr.setLingo("_PICACONU_", "Desenho de triângulos (clicar e arrastar)");
+ptbr.setLingo("", "");
 ptbr.setLingo("", "");
 ptbr.setLingo("_SLASHPICANONAME_", "Quadro sem nome");
 
@@ -450,6 +452,12 @@ ptbr.setLingo("_CONFIGCHATSCREENEFFECTS_", "(Chat) Efeitos de Tela");
 ptbr.setLingo("_CONFIGCHATEFFECTSNO_", "Não aceitar efeitos");
 ptbr.setLingo("_CONFIGCHATEFFECTSYES_", "Aceitar efeitos");
 ptbr.setLingo("_CONFIGCHATEFFECTSEXP_", "Um mestre pode definir efeitos de tela para tentar atingir um \"clima\" em sua sessão. Aqui você pode definir se esses efeitos de tela são aceitáveis ou não.");
+
+
+
+
+// -------------------------------------------------------------------------
+ptbr.setLingo("_PICARINE_", "Desenhar linha  (clicar e arrastar)"); // RINE ENDS HERE
 
 // Lingolist
 LingoList.storeLingo(ptbr);

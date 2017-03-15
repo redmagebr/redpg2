@@ -1,12 +1,12 @@
-class PicaToolSqua extends PicaToolPen {
+class PicaToolRINE extends PicaToolPen {
     private art = null;
     private lastPoint = null;
-    public id = "squa";
+    public id = "rine";
 
     constructor () {
         super();
-        this.setIcon("icons-picaToolSqua");
-        this.setTitleLingo("_PICASQUA_");
+        this.setIcon("icons-picaToolRine");
+        this.setTitleLingo("_PICARINE_");
     }
 
     public mouseDown (point : PicaCanvasPoint) {
@@ -46,33 +46,34 @@ class PicaToolSqua extends PicaToolPen {
         var p1 = art.points[0];
         var p2 = art.points.length > 1 ? art.points[1] : this.lastPoint != null ? this.lastPoint : p1;
 
-        var centerX = p1.getX();
-        var centerY = p1.getY();
-        var distX = Math.abs(p1.getX() - p2.getX());
-        var distY = Math.abs(p1.getY() - p2.getY());
-        var dist = distX > distY ? distX : distY;
 
         var ctx = UI.Pica.Board.Canvas.getCanvasContext();
         ctx.lineWidth = art.getSpecial("width", 1);
         ctx.strokeStyle = '#' + art.getSpecial("color", "000000");
         ctx.beginPath();
-
-        var s1 = [p1.getX() - dist, p1.getY() - dist];
-        var s2 = [p1.getX() + dist, p1.getY() - dist];
-        var s3 = [p1.getX() + dist, p1.getY() + dist];
-        var s4 = [p1.getX() - dist, p1.getY() + dist];
-        var square = [s1,s2,s3,s4];
-
-        for (var i = 0; i < square.length; i++) {
-            if (i == 0) {
-                ctx.moveTo(square[i][0], square[i][1]);
-            } else {
-                ctx.lineTo(square[i][0], square[i][1]);
-            }
-        }
-        ctx.lineTo(square[0][0], square[0][1]);
-
+        ctx.moveTo(p1.getX(), p1.getY());
+        ctx.lineTo(p2.getX(), p2.getY());
         ctx.stroke();
+
+        ctx.beginPath();
+        var angle = Math.atan2(p2.getY() - p1.getY(), p2.getX() - p1.getX());
+        ctx.moveTo(p2.getX(), p2.getY());
+        var headlen = 10; // length of head in pixels
+        ctx.lineTo(p2.getX() - headlen * Math.cos(angle-Math.PI/7), p2.getY() - headlen * Math.sin(angle-Math.PI/7));
+
+        //path from the side point of the arrow, to the other side point
+        ctx.lineTo(p2.getX() - headlen * Math.cos(angle+Math.PI/7), p2.getY() - headlen * Math.sin(angle+Math.PI/7));
+
+        //path from the side point back to the tip of the arrow, and then again to the opposite side point
+        ctx.lineTo(p2.getX(), p2.getY());
+        ctx.lineTo(p2.getX() - headlen*Math.cos(angle-Math.PI/7), p2.getY() -headlen*Math.sin(angle-Math.PI/7));
+
+        // Draws arrows and fills them
+        ctx.lineWidth =  art.getSpecial("width", 1);
+        ctx.strokeStyle = '#' + art.getSpecial("color", "000000");
+        ctx.fillStyle = '#' + art.getSpecial("color", "000000");
+        ctx.stroke();
+        ctx.fill();
     }
 
     public redraw () {
@@ -94,7 +95,7 @@ class PicaToolSqua extends PicaToolPen {
     }
 }
 
-var pensil = new PicaToolSqua();
+var pensil = new PicaToolRINE();
 UI.Pica.Toolbar.registerTool(pensil);
-PicaToolPen.registerPen("squa", pensil);
+PicaToolPen.registerPen("rine", pensil);
 delete(pensil);

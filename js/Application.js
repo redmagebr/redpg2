@@ -10662,6 +10662,8 @@ ptbr.setLingo("_PICAMOVE_", "Mover imagem (use scroll para zoom)");
 ptbr.setLingo("_PICALOCK_", "Trancar/Destrancar desenhos (apenas mestre)");
 ptbr.setLingo("_PICASIRCU_", "Desenho de círculos (clicar e arrastar)");
 ptbr.setLingo("_PICACLEAN_", "Limpar desenhos");
+ptbr.setLingo("_PICACONU_", "Desenho de triângulos (clicar e arrastar)");
+ptbr.setLingo("", "");
 ptbr.setLingo("", "");
 ptbr.setLingo("_SLASHPICANONAME_", "Quadro sem nome");
 ptbr.setLingo("_LOGGERTITLE_", "Logger");
@@ -10941,6 +10943,7 @@ ptbr.setLingo("_CONFIGCHATSCREENEFFECTS_", "(Chat) Efeitos de Tela");
 ptbr.setLingo("_CONFIGCHATEFFECTSNO_", "Não aceitar efeitos");
 ptbr.setLingo("_CONFIGCHATEFFECTSYES_", "Aceitar efeitos");
 ptbr.setLingo("_CONFIGCHATEFFECTSEXP_", "Um mestre pode definir efeitos de tela para tentar atingir um \"clima\" em sua sessão. Aqui você pode definir se esses efeitos de tela são aceitáveis ou não.");
+ptbr.setLingo("_PICARINE_", "Desenhar linha  (clicar e arrastar)");
 LingoList.storeLingo(ptbr);
 delete (ptbr);
 var UI;
@@ -16275,6 +16278,92 @@ var pensil = new PicaToolPensil();
 UI.Pica.Toolbar.registerTool(pensil);
 PicaToolPen.registerPen("pensil", pensil);
 delete (pensil);
+var PicaToolRINE = (function (_super) {
+    __extends(PicaToolRINE, _super);
+    function PicaToolRINE() {
+        var _this = _super.call(this) || this;
+        _this.art = null;
+        _this.lastPoint = null;
+        _this.id = "rine";
+        _this.setIcon("icons-picaToolRine");
+        _this.setTitleLingo("_PICARINE_");
+        return _this;
+    }
+    PicaToolRINE.prototype.mouseDown = function (point) {
+        this.art = new PicaCanvasArt();
+        this.art.setUserId(Application.getMyId());
+        this.art.addPoint(point);
+        this.art.setSpecial("width", UI.Pica.Board.Canvas.getPenWidth());
+        this.art.setSpecial("color", UI.Pica.Board.Canvas.getPenColor());
+        this.art.setPen(this);
+        this.lastPoint = point;
+    };
+    PicaToolRINE.prototype.mouseMove = function (point) {
+        if (this.art != null) {
+            this.lastPoint = point;
+            this.draw(this.art);
+            UI.Pica.Board.Canvas.redraw();
+        }
+    };
+    PicaToolRINE.prototype.mouseUp = function (point) {
+        this.lastPoint = point;
+        this.mouseOut();
+    };
+    PicaToolRINE.prototype.mouseOut = function () {
+        if (this.art != null) {
+            this.art.addPoint(this.lastPoint);
+            var art = this.art;
+            this.art = null;
+            this.lastPoint = null;
+            UI.Pica.ArtManager.addArt(art);
+        }
+    };
+    PicaToolRINE.prototype.draw = function (art) {
+        var p1 = art.points[0];
+        var p2 = art.points.length > 1 ? art.points[1] : this.lastPoint != null ? this.lastPoint : p1;
+        var ctx = UI.Pica.Board.Canvas.getCanvasContext();
+        ctx.lineWidth = art.getSpecial("width", 1);
+        ctx.strokeStyle = '#' + art.getSpecial("color", "000000");
+        ctx.beginPath();
+        ctx.moveTo(p1.getX(), p1.getY());
+        ctx.lineTo(p2.getX(), p2.getY());
+        ctx.stroke();
+        ctx.beginPath();
+        var angle = Math.atan2(p2.getY() - p1.getY(), p2.getX() - p1.getX());
+        ctx.moveTo(p2.getX(), p2.getY());
+        var headlen = 10;
+        ctx.lineTo(p2.getX() - headlen * Math.cos(angle - Math.PI / 7), p2.getY() - headlen * Math.sin(angle - Math.PI / 7));
+        ctx.lineTo(p2.getX() - headlen * Math.cos(angle + Math.PI / 7), p2.getY() - headlen * Math.sin(angle + Math.PI / 7));
+        ctx.lineTo(p2.getX(), p2.getY());
+        ctx.lineTo(p2.getX() - headlen * Math.cos(angle - Math.PI / 7), p2.getY() - headlen * Math.sin(angle - Math.PI / 7));
+        ctx.lineWidth = art.getSpecial("width", 1);
+        ctx.strokeStyle = '#' + art.getSpecial("color", "000000");
+        ctx.fillStyle = '#' + art.getSpecial("color", "000000");
+        ctx.stroke();
+        ctx.fill();
+    };
+    PicaToolRINE.prototype.redraw = function () {
+        if (this.art != null) {
+            this.draw(this.art);
+        }
+    };
+    PicaToolRINE.prototype.drawFromArt = function (art) {
+        this.draw(art);
+    };
+    PicaToolRINE.prototype.updateCanvasClasses = function () {
+        if (this.selected) {
+            UI.Pica.Board.Canvas.getCanvas().classList.add("draw");
+        }
+        else {
+            UI.Pica.Board.Canvas.getCanvas().classList.remove("draw");
+        }
+    };
+    return PicaToolRINE;
+}(PicaToolPen));
+var pensil = new PicaToolRINE();
+UI.Pica.Toolbar.registerTool(pensil);
+PicaToolPen.registerPen("rine", pensil);
+delete (pensil);
 var PicaToolSircu = (function (_super) {
     __extends(PicaToolSircu, _super);
     function PicaToolSircu() {
@@ -16408,10 +16497,12 @@ var PicaToolSqua = (function (_super) {
         var s4 = [p1.getX() - dist, p1.getY() + dist];
         var square = [s1, s2, s3, s4];
         for (var i = 0; i < square.length; i++) {
-            if (i != 0) {
+            if (i == 0) {
+                ctx.moveTo(square[i][0], square[i][1]);
+            }
+            else {
                 ctx.lineTo(square[i][0], square[i][1]);
             }
-            ctx.moveTo(square[i][0], square[i][1]);
         }
         ctx.lineTo(square[0][0], square[0][1]);
         ctx.stroke();

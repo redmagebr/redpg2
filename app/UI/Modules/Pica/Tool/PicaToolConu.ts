@@ -1,12 +1,12 @@
-class PicaToolSqua extends PicaToolPen {
+class PicaToolConu extends PicaToolPen {
     private art = null;
     private lastPoint = null;
-    public id = "squa";
+    public id = "conu";
 
     constructor () {
         super();
-        this.setIcon("icons-picaToolSqua");
-        this.setTitleLingo("_PICASQUA_");
+        this.setIcon("icons-picaToolConu");
+        this.setTitleLingo("_PICACONU_");
     }
 
     public mouseDown (point : PicaCanvasPoint) {
@@ -94,7 +94,7 @@ class PicaToolSqua extends PicaToolPen {
     }
 }
 
-var pensil = new PicaToolSqua();
+var pensil = new PicaToolConu();
 UI.Pica.Toolbar.registerTool(pensil);
-PicaToolPen.registerPen("squa", pensil);
+PicaToolPen.registerPen("conu", pensil);
 delete(pensil);

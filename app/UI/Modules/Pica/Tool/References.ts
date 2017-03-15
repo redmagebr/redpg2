@@ -2,6 +2,7 @@
 /// <reference path='../PicaToolPen.ts' />
 /// <reference path='PicaToolMove.ts' />
 /// <reference path='PicaToolPensil.ts' />
+/// <reference path='PicaToolRINE.ts' />
 /// <reference path='PicaToolSircu.ts' />
 /// <reference path='PicaToolSqua.ts' />
 /// <reference path='PicaToolColor.ts' />
