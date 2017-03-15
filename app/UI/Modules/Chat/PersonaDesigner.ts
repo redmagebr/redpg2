@@ -52,7 +52,7 @@ module UI.Chat.PersonaDesigner {
         loadMemory();
 
         for (var i = 0; i < lastMemory.length; i++) {
-            createPersona(lastMemory[i].name, lastMemory[i].avatar);
+            createPersona(lastMemory[i].name, lastMemory[i].avatar, false);
         }
     }
 
@@ -61,7 +61,7 @@ module UI.Chat.PersonaDesigner {
         personaChoices = {};
     }
 
-    export function createPersona (name? : string, avatar? : String) {
+    export function createPersona (name? : string, avatar? : String, savePersona? : boolean = true) {
         var name = name === undefined ? personaName.value.trim() : name;
         var avatar = avatar === undefined ? personaAvatar.value.trim() : avatar;
         personaName.value =  "";
@@ -85,7 +85,9 @@ module UI.Chat.PersonaDesigner {
                 name : choice.nameStr,
                 avatar : choice.avatarStr
             });
-            saveMemory();
+            if (savePersona) {
+                saveMemory();
+            }
         }
     }
 

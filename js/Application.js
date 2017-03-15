@@ -11567,6 +11567,9 @@ change.addMessage("Circles and Squares added.", "en");
 change.addMessage("/board added. It's used to create boards for art.", "en");
 change.addMessage("Círculos e quadrados adicionados.", "pt");
 change.addMessage("/quadro adicionado. Pode ser utilizado para criar quadros para desenhos.", "pt");
+change = new Changelog(0, 28, 2);
+change.addMessage("Fix: loading a LOT of personas will no longer slow down RedPG.", "en");
+change.addMessage("Fix: carregar MUITAS personas não vai mais acontecer devagar.", "pt");
 delete (change);
 Changelog.finished();
 var UI;
@@ -15055,7 +15058,7 @@ var UI;
                 emptyOut();
                 loadMemory();
                 for (var i = 0; i < lastMemory.length; i++) {
-                    createPersona(lastMemory[i].name, lastMemory[i].avatar);
+                    createPersona(lastMemory[i].name, lastMemory[i].avatar, false);
                 }
             }
             PersonaDesigner.fillOut = fillOut;
@@ -15065,7 +15068,8 @@ var UI;
                 personaChoices = {};
             }
             PersonaDesigner.emptyOut = emptyOut;
-            function createPersona(name, avatar) {
+            function createPersona(name, avatar, savePersona) {
+                if (savePersona === void 0) { savePersona = true; }
                 var name = name === undefined ? personaName.value.trim() : name;
                 var avatar = avatar === undefined ? personaAvatar.value.trim() : avatar;
                 personaName.value = "";
@@ -15085,7 +15089,9 @@ var UI;
                         name: choice.nameStr,
                         avatar: choice.avatarStr
                     });
-                    saveMemory();
+                    if (savePersona) {
+                        saveMemory();
+                    }
                 }
             }
             PersonaDesigner.createPersona = createPersona;
