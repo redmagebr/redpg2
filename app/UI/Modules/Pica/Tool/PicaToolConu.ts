@@ -46,31 +46,20 @@ class PicaToolConu extends PicaToolPen {
         var p1 = art.points[0];
         var p2 = art.points.length > 1 ? art.points[1] : this.lastPoint != null ? this.lastPoint : p1;
 
-        var centerX = p1.getX();
-        var centerY = p1.getY();
-        var distX = Math.abs(p1.getX() - p2.getX());
-        var distY = Math.abs(p1.getY() - p2.getY());
-        var dist = distX > distY ? distX : distY;
-
         var ctx = UI.Pica.Board.Canvas.getCanvasContext();
         ctx.lineWidth = art.getSpecial("width", 1);
         ctx.strokeStyle = '#' + art.getSpecial("color", "000000");
         ctx.beginPath();
 
-        var s1 = [p1.getX() - dist, p1.getY() - dist];
-        var s2 = [p1.getX() + dist, p1.getY() - dist];
-        var s3 = [p1.getX() + dist, p1.getY() + dist];
-        var s4 = [p1.getX() - dist, p1.getY() + dist];
-        var square = [s1,s2,s3,s4];
+        // Draw triangle
+        var triangleHeight = p1.getRealDistanceTo(p2);
+        var sideLength = (triangleHeight * 2) / Math.sqrt(3);
+        var angle = Math.atan2(p1.getY() - p2.getY(), p1.getX() - p2.getX());
 
-        for (var i = 0; i < square.length; i++) {
-            if (i == 0) {
-                ctx.moveTo(square[i][0], square[i][1]);
-            } else {
-                ctx.lineTo(square[i][0], square[i][1]);
-            }
-        }
-        ctx.lineTo(square[0][0], square[0][1]);
+        ctx.moveTo(p1.getX(), p1.getY());
+        ctx.lineTo(p1.getX() - sideLength * Math.cos(angle-Math.PI/6), p1.getY() - sideLength * Math.sin(angle-Math.PI/6));
+        ctx.lineTo(p1.getX() - sideLength * Math.cos(angle+Math.PI/6), p1.getY() - sideLength * Math.sin(angle+Math.PI/6));
+        ctx.lineTo(p1.getX(), p1.getY());
 
         ctx.stroke();
     }

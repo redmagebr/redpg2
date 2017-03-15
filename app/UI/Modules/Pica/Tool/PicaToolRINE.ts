@@ -59,14 +59,28 @@ class PicaToolRINE extends PicaToolPen {
         var angle = Math.atan2(p2.getY() - p1.getY(), p2.getX() - p1.getX());
         ctx.moveTo(p2.getX(), p2.getY());
         var headlen = 10; // length of head in pixels
-        ctx.lineTo(p2.getX() - headlen * Math.cos(angle-Math.PI/7), p2.getY() - headlen * Math.sin(angle-Math.PI/7));
+        ctx.lineTo(
+            p2.getX() - headlen * Math.cos(angle-Math.PI/7),
+            p2.getY() - headlen * Math.sin(angle-Math.PI/7)
+        );
 
         //path from the side point of the arrow, to the other side point
-        ctx.lineTo(p2.getX() - headlen * Math.cos(angle+Math.PI/7), p2.getY() - headlen * Math.sin(angle+Math.PI/7));
+        ctx.lineTo(
+            p2.getX() - headlen * Math.cos(angle+Math.PI/7),
+            p2.getY() - headlen * Math.sin(angle+Math.PI/7)
+        );
 
         //path from the side point back to the tip of the arrow, and then again to the opposite side point
-        ctx.lineTo(p2.getX(), p2.getY());
-        ctx.lineTo(p2.getX() - headlen*Math.cos(angle-Math.PI/7), p2.getY() -headlen*Math.sin(angle-Math.PI/7));
+        ctx.lineTo(
+            p2.getX(),
+            p2.getY()
+        );
+
+        // the fuck is this?
+        ctx.lineTo(
+            p2.getX() - headlen * Math.cos(angle-Math.PI/7),
+            p2.getY() - headlen * Math.sin(angle-Math.PI/7)
+        );
 
         // Draws arrows and fills them
         ctx.lineWidth =  art.getSpecial("width", 1);

@@ -5,6 +5,7 @@
 /// <reference path='PicaToolRINE.ts' />
 /// <reference path='PicaToolSircu.ts' />
 /// <reference path='PicaToolSqua.ts' />
+/// <reference path='PicaToolConu.ts' />
 /// <reference path='PicaToolColor.ts' />
 /// <reference path='PicaToolShare.ts' />
 /// <reference path='PicaToolLock.ts' />
