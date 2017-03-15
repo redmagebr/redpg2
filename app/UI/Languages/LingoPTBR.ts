@@ -142,6 +142,7 @@ ptbr.setLingo("_PICALOCK_", "Trancar/Destrancar desenhos (apenas mestre)");
 ptbr.setLingo("_PICASIRCU_", "Desenho de círculos (clicar e arrastar)");
 ptbr.setLingo("_PICACLEAN_", "Limpar desenhos");
 ptbr.setLingo("", "");
+ptbr.setLingo("_SLASHPICANONAME_", "Quadro sem nome");
 
 
 // LOGGER

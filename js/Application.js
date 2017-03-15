@@ -5980,6 +5980,34 @@ var SlashLingo = (function (_super) {
     return SlashLingo;
 }(SlashCommand));
 MessageFactory.registerSlashCommand(SlashLingo, ["/lang", "/ling", "/lingo", "/language", "/lingua"]);
+var SlashPica = (function (_super) {
+    __extends(SlashPica, _super);
+    function SlashPica() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    SlashPica.prototype.receiveCommand = function (slashCommand, message) {
+        var room = Server.Chat.getRoom();
+        if (room === null)
+            return false;
+        var link = "images/GreatBigPica.png?code=";
+        message = message.trim();
+        var code = message;
+        if (code == "") {
+            code = 'xxxxxxxxxxxxxxxxxx'.replace(/[x]/g, function (c) {
+                var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+        link += encodeURIComponent(code);
+        if (message == "") {
+            message = UI.Language.getLanguage().getLingo("_SLASHPICANONAME_");
+        }
+        MessageImage.shareLink(message, link);
+        return true;
+    };
+    return SlashPica;
+}(SlashCommand));
+MessageFactory.registerSlashCommand(SlashPica, ["/pica", "/quadro", "/board", "/desenho", "/drawing"]);
 var Message = (function (_super) {
     __extends(Message, _super);
     function Message() {
@@ -9614,6 +9642,9 @@ var Server;
     (function (URL) {
         function fixURL(url) {
             url = url.trim();
+            if (url.indexOf("images/") == 0) {
+                return url;
+            }
             if (url.indexOf("://") === -1) {
                 url = "http://" + url;
             }
@@ -10632,6 +10663,7 @@ ptbr.setLingo("_PICALOCK_", "Trancar/Destrancar desenhos (apenas mestre)");
 ptbr.setLingo("_PICASIRCU_", "Desenho de círculos (clicar e arrastar)");
 ptbr.setLingo("_PICACLEAN_", "Limpar desenhos");
 ptbr.setLingo("", "");
+ptbr.setLingo("_SLASHPICANONAME_", "Quadro sem nome");
 ptbr.setLingo("_LOGGERTITLE_", "Logger");
 ptbr.setLingo("_LOGGEREXP1_", "O excerto a seguir representa as primeiras e as últimas mensagens que irão fazer parte deste log. Você pode alterar o slider abaixo para definir onde começar o log e onde terminar o log. Apenas mensagens públicas (não enviadas a uma pessoa específica) serão guardadas no JSON. Você pode mover com as setas do teclado após clicar nos sliders.");
 ptbr.setLingo("_LOGGEREXP2_", "Aqui você pode definir quais tipos de mensagens não serão salvas. Lembrando que apenas mensagens públicas (visível a todos) serão salvas no log.");
@@ -11527,6 +11559,11 @@ change.addMessage("Links de qualquer imagem aberta serão corrigidos.", "pt");
 change = new Changelog(0, 28, 0);
 change.addMessage("Art and other tools added to images.", "en");
 change.addMessage("Arte e outras ferramentas adicionadas a imagens.", "pt");
+change = new Changelog(0, 28, 1);
+change.addMessage("Circles and Squares added.", "en");
+change.addMessage("/board added. It's used to create boards for art.", "en");
+change.addMessage("Círculos e quadrados adicionados.", "pt");
+change.addMessage("/quadro adicionado. Pode ser utilizado para criar quadros para desenhos.", "pt");
 delete (change);
 Changelog.finished();
 var UI;

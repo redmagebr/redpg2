@@ -2,6 +2,11 @@ module Server.URL {
     export function fixURL (url : string) {
         url = url.trim();
 
+        // Don't ruin relative links
+        if (url.indexOf("images/") == 0) {
+            return url;
+        }
+
         if (url.indexOf("://") === -1) {
             url = "http://" + url;
         }

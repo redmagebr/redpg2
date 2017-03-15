@@ -165,6 +165,12 @@ change = new Changelog(0, 28, 0);
 change.addMessage("Art and other tools added to images.", "en");
 change.addMessage("Arte e outras ferramentas adicionadas a imagens.", "pt");
 
+change = new Changelog(0, 28, 1);
+change.addMessage("Circles and Squares added.", "en");
+change.addMessage("/board added. It's used to create boards for art.", "en");
+change.addMessage("Círculos e quadrados adicionados.", "pt");
+change.addMessage("/quadro adicionado. Pode ser utilizado para criar quadros para desenhos.", "pt");
+
 delete (change);
 
 Changelog.finished();
