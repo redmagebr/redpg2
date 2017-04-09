@@ -230,6 +230,8 @@ var ImageRed = (function () {
 }());
 var ImageLink = (function () {
     function ImageLink(name, url, folder) {
+        this.tokenWidth = null;
+        this.tokenHeight = null;
         this.name = name;
         this.url = url;
         this.folder = folder;
@@ -256,12 +258,23 @@ var ImageLink = (function () {
             DB.ImageDB.considerSaving();
         }
     };
+    ImageLink.prototype.updateFromObject = function (obj) {
+        if (obj['tokenWidth'] != undefined && obj['tokenHeight'] != undefined) {
+            this.tokenWidth = obj['tokenWidth'];
+            this.tokenHeight = obj['tokenHeight'];
+        }
+    };
     ImageLink.prototype.exportAsObject = function () {
-        return {
+        var obj = {
             name: this.name,
             url: this.url,
             folder: this.folder
         };
+        if (this.tokenWidth != null && this.tokenHeight != null) {
+            obj['tokenWidth'] = this.tokenWidth;
+            obj['tokenHeight'] = this.tokenHeight;
+        }
+        return obj;
     };
     return ImageLink;
 }());
@@ -8645,7 +8658,9 @@ var DB;
             var line;
             for (var i = 0; i < obj.length; i++) {
                 line = obj[i];
-                images.push(new ImageLink(line['name'], line['url'], line['folder']));
+                var newImage = new ImageLink(line['name'], line['url'], line['folder']);
+                newImage.updateFromObject(line);
+                images.push(newImage);
             }
             images.sort(function (a, b) {
                 if (a.getFolder() < b.getFolder())
@@ -10663,7 +10678,7 @@ ptbr.setLingo("_PICALOCK_", "Trancar/Destrancar desenhos (apenas mestre)");
 ptbr.setLingo("_PICASIRCU_", "Desenho de círculos (clicar e arrastar)");
 ptbr.setLingo("_PICACLEAN_", "Limpar desenhos");
 ptbr.setLingo("_PICACONU_", "Desenho de triângulos (clicar e arrastar)");
-ptbr.setLingo("", "");
+ptbr.setLingo("_PICASQUA_", "Desenho de quadrados (clicar e arrastar)");
 ptbr.setLingo("", "");
 ptbr.setLingo("_SLASHPICANONAME_", "Quadro sem nome");
 ptbr.setLingo("_LOGGERTITLE_", "Logger");
@@ -15950,8 +15965,6 @@ var UI;
             (function (Canvas) {
                 UI.Pica.Board.Background.addSizeListener(function () { UI.Pica.Board.Canvas.resize(); });
                 var canvas = document.createElement("canvas");
-                canvas.style.zIndex = "2";
-                canvas.style.position = "absolute";
                 canvas.classList.add("picaCanvas");
                 UI.Pica.Board.getBoard().appendChild(canvas);
                 var context = canvas.getContext("2d");
@@ -16222,8 +16235,10 @@ var PicaToolPensil = (function (_super) {
         }
     };
     PicaToolPensil.prototype.mouseUp = function (point) {
-        this.art.addPoint(point);
-        this.mouseOut();
+        if (this.art != null) {
+            this.art.addPoint(point);
+            this.mouseOut();
+        }
     };
     PicaToolPensil.prototype.mouseOut = function () {
         if (this.art != null) {

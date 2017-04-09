@@ -8719,21 +8719,27 @@ body {
   margin-right: 0px;
 }
 
-/* line 114, ../sass/mainPicture.scss */
-.picaCanvas.draw:hover {
-  cursor: crosshair;
+/* line 113, ../sass/mainPicture.scss */
+.picaCanvas {
+  position: absolute;
+  z-index: 2;
 }
 /* line 117, ../sass/mainPicture.scss */
+.picaCanvas.draw:hover {
+  cursor: crosshair;
+  z-index: 4;
+}
+/* line 121, ../sass/mainPicture.scss */
 .picaCanvas.draw:hover.locked {
   cursor: not-allowed;
 }
-/* line 122, ../sass/mainPicture.scss */
+/* line 126, ../sass/mainPicture.scss */
 .picaCanvas.move:hover {
   cursor: move;
   cursor: -moz-grab;
   cursor: -webkit-grab;
 }
-/* line 127, ../sass/mainPicture.scss */
+/* line 131, ../sass/mainPicture.scss */
 .picaCanvas.move:hover.moving {
   cursor: move;
   cursor: grabbing;
@@ -8741,7 +8747,7 @@ body {
   cursor: -webkit-grabbing;
 }
 
-/* line 136, ../sass/mainPicture.scss */
+/* line 140, ../sass/mainPicture.scss */
 #colopica {
   appearance: none;
   -moz-appearance: none;
@@ -8753,19 +8759,19 @@ body {
   outline: none;
   border: solid 1px #575757;
 }
-/* line 148, ../sass/mainPicture.scss */
+/* line 152, ../sass/mainPicture.scss */
 #colopica:hover {
   border-color: #9f9f9f;
 }
-/* line 152, ../sass/mainPicture.scss */
+/* line 156, ../sass/mainPicture.scss */
 #colopica:active {
   border-color: #838383;
 }
-/* line 156, ../sass/mainPicture.scss */
+/* line 160, ../sass/mainPicture.scss */
 #colopica::-webkit-color-swatch {
   border: none;
 }
-/* line 160, ../sass/mainPicture.scss */
+/* line 164, ../sass/mainPicture.scss */
 #colopica::-webkit-color-swatch-wrapper {
   padding: 0;
 }

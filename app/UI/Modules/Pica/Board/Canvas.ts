@@ -3,8 +3,6 @@ module UI.Pica.Board.Canvas {
     UI.Pica.Board.Background.addSizeListener(function () { UI.Pica.Board.Canvas.resize(); });
 
     var canvas : HTMLCanvasElement = document.createElement("canvas");
-    canvas.style.zIndex = "2";
-    canvas.style.position = "absolute";
     canvas.classList.add("picaCanvas");
     UI.Pica.Board.getBoard().appendChild(canvas);
 

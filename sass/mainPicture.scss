@@ -111,8 +111,12 @@
 //}
 
 .picaCanvas {
+  position: absolute;
+  z-index: 2;
+
   &.draw:hover {
     cursor: crosshair;
+    z-index: 4;
 
     &.locked {
       cursor: not-allowed;

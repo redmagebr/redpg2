@@ -28,8 +28,10 @@ class PicaToolPensil extends PicaToolPen {
     }
 
     public mouseUp (point : PicaCanvasPoint) {
-        this.art.addPoint(point);
-        this.mouseOut();
+        if (this.art != null) {
+            this.art.addPoint(point);
+            this.mouseOut();
+        }
     }
 
     public mouseOut () {
