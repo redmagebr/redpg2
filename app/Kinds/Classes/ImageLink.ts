@@ -2,6 +2,8 @@ class ImageLink {
     private name :string;
     private url : string;
     private folder : string;
+    private tokenWidth : number = null;
+    private tokenHeight : number = null;
 
     public getFolder () {
         return this.folder;
@@ -36,11 +38,25 @@ class ImageLink {
         this.folder = folder;
     }
 
+    public updateFromObject (obj) {
+        if (obj['tokenWidth'] != undefined && obj['tokenHeight'] != undefined) {
+            this.tokenWidth = obj['tokenWidth'];
+            this.tokenHeight = obj['tokenHeight'];
+        }
+    }
+
     public exportAsObject () {
-        return {
+        var obj = {
             name : this.name,
             url : this.url,
             folder : this.folder
         };
+
+        if (this.tokenWidth != null && this.tokenHeight != null) {
+            obj['tokenWidth'] = this.tokenWidth;
+            obj['tokenHeight'] = this.tokenHeight;
+        }
+
+        return obj;
     }
 }

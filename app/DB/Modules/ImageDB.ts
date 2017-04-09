@@ -95,7 +95,9 @@ module DB.ImageDB {
         var line;
         for (var i = 0; i < obj.length; i++) {
             line = obj[i];
-            images.push(new ImageLink(line['name'], line['url'], line['folder']));
+            var newImage = new ImageLink(line['name'], line['url'], line['folder']);
+            newImage.updateFromObject(line);
+            images.push(newImage);
         }
         images.sort(function (a : ImageLink, b : ImageLink) {
             if (a.getFolder() < b.getFolder()) return -1;
