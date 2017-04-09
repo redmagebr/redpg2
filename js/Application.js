@@ -6139,7 +6139,7 @@ var Message = (function (_super) {
         }
     };
     Message.prototype.hasDestination = function () {
-        return this.destination !== null;
+        return this.destination !== null && this.destination !== 0;
     };
     Message.prototype.makeMockUp = function () {
         this.msg = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent volutpat orci nulla, et dictum turpis commodo a. Duis iaculis neque lectus, ac sodales diam varius id.";

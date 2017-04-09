@@ -141,7 +141,7 @@ class Message extends SlashCommand {
      * @return boolean
      */
     public hasDestination () {
-        return this.destination !== null;
+        return this.destination !== null && this.destination !== 0;
     }
 
     /**
