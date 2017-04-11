@@ -1662,7 +1662,7 @@ var NumberConfiguration = (function (_super) {
                 if (value < this.min) {
                     value = this.min;
                 }
-                if (value > this.max) {
+                if (value > this.max && this.max != 0) {
                     value = this.max;
                 }
                 this.value = value;
@@ -10983,7 +10983,7 @@ var UI;
     UI.idImages = "imagesSideWindow";
     UI.idSounds = "soundsSideWindow";
     UI.idSheetPerm = "sheetPermSideWindow";
-    Application.Config.registerConfiguration("chatMaxMessages", new NumberConfiguration(120, 60, 10000));
+    Application.Config.registerConfiguration("chatMaxMessages", new NumberConfiguration(120, 60, 0));
     Application.Config.registerConfiguration("chatshowhelp", new BooleanConfiguration(true));
     Application.Config.registerConfiguration("chatfontsize", new NumberConfiguration(16, 12, 32));
     Application.Config.registerConfiguration("chatfontfamily", new Configuration("caudex"));
@@ -13450,6 +13450,14 @@ var UI;
 (function (UI) {
     var SoundController;
     (function (SoundController) {
+        var trackNameContainer = document.getElementById("musicPlayerTrackName");
+        while (trackNameContainer.firstChild)
+            trackNameContainer.removeChild(trackNameContainer.firstChild);
+        var trackNameMarquee = document.createElement("p");
+        trackNameMarquee.classList.add("marquee");
+        var trackName = document.createTextNode("");
+        trackNameMarquee.appendChild(trackName);
+        trackNameContainer.appendChild(trackNameMarquee);
         var diceSound = document.getElementById("soundDiceRoll");
         var alertSound = document.getElementById("soundAlert");
         var bgmSound = document.getElementById("soundPlayerBGM");
@@ -13540,6 +13548,8 @@ var UI;
             var found = false;
             var isLink = url.indexOf("://") !== -1;
             url = Server.URL.fixURL(url);
+            var filename = decodeURI(url.substring(url.lastIndexOf('/') + 1));
+            trackName.nodeValue = filename;
             bgmSound.src = url;
         }
         SoundController.playBGM = playBGM;

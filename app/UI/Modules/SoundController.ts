@@ -1,4 +1,11 @@
 module UI.SoundController {
+    var trackNameContainer = <HTMLElement> document.getElementById("musicPlayerTrackName");
+    while (trackNameContainer.firstChild) trackNameContainer.removeChild(trackNameContainer.firstChild);
+    var trackNameMarquee = document.createElement("p");
+    trackNameMarquee.classList.add("marquee");
+    var trackName = document.createTextNode("");
+    trackNameMarquee.appendChild(trackName);
+    trackNameContainer.appendChild(trackNameMarquee);
     var diceSound = <HTMLAudioElement> document.getElementById("soundDiceRoll");
     var alertSound = <HTMLAudioElement> document.getElementById("soundAlert");
     var bgmSound = <HTMLAudioElement> document.getElementById("soundPlayerBGM");
@@ -98,6 +105,9 @@ module UI.SoundController {
         var found = false;
         var isLink = url.indexOf("://") !== -1;
         url = Server.URL.fixURL(url);
+
+        var filename = decodeURI(url.substring(url.lastIndexOf('/')+1));
+        trackName.nodeValue = filename;
 
         bgmSound.src = url;
     }

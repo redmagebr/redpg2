@@ -5,6 +5,10 @@
   z-index: 3;
   top: auto;
   bottom: 0px;
+
+  &:hover {
+    padding-right: 100px;
+  }
 }
 
 #musicPlayerLocal {
@@ -32,7 +36,7 @@
   left: 10px;
   bottom: 40px;
   width: auto;
-  height: 40px;
+  height: 60px;
   border: solid 1px #363636;
 }
 
@@ -70,4 +74,33 @@
   height: 30px;
   display: block;
   float: left;
+}
+
+#musicPlayerTrackName {
+  height: 20px;
+  width: 120px;
+  line-height: 20px;
+  display: block;
+  box-sizing: border-box;
+  background-color: #343434;
+  color: white;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.marquee {
+  font-family: $mainFont;
+  font-weight: bold;
+  height: 20px;
+  line-height: 20px;
+  display: inline-block;
+  padding: 0px;
+  margin: 0px;
+  padding-left: 100%;
+  animation: marquee 8s linear infinite;
+}
+
+@keyframes marquee {
+  0%   { transform: translate(0, 0); }
+  100% { transform: translate(-100%, 0); }
 }
