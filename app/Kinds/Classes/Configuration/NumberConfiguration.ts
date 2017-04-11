@@ -14,7 +14,8 @@ class NumberConfiguration extends Configuration {
             if (value < this.min) {
                 value = this.min;
             }
-            if (value > this.max) {
+
+            if (value > this.max && this.max != 0) {
                 value = this.max;
             }
 
