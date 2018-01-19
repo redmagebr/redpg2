@@ -1,13 +1,3 @@
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 function startDebugging() {
     console.debug = console.log;
 }
@@ -31,12 +21,12 @@ function allReady() {
         onReady[i].handleEvent();
     }
 }
-var Trigger = (function () {
-    function Trigger() {
+class Trigger {
+    constructor() {
         this.functions = [];
         this.objects = [];
     }
-    Trigger.prototype.removeListener = function (f) {
+    removeListener(f) {
         if (typeof f === "function") {
             var i = this.functions.indexOf(f);
             if (i !== -1) {
@@ -49,16 +39,16 @@ var Trigger = (function () {
                 this.objects.splice(i, 1);
             }
         }
-    };
-    Trigger.prototype.addListener = function (f) {
+    }
+    addListener(f) {
         if (typeof f === "function") {
             this.functions.push(f);
         }
         else {
             this.objects.push(f);
         }
-    };
-    Trigger.prototype.addListenerIfMissing = function (f) {
+    }
+    addListenerIfMissing(f) {
         if (typeof f === "function") {
             if (this.functions.indexOf(f) === -1) {
                 this.functions.push(f);
@@ -69,38 +59,33 @@ var Trigger = (function () {
                 this.objects.push(f);
             }
         }
-    };
-    Trigger.prototype.trigger = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
+    }
+    trigger(...args) {
         for (var i = 0; i < this.functions.length; i++) {
             this.functions[i].apply(null, args);
         }
         for (var i = 0; i < this.objects.length; i++) {
             this.objects[i].handleEvent.apply(this.objects[i], args);
         }
-    };
-    return Trigger;
-}());
-var Changelog = (function () {
-    function Changelog(major, minor, release) {
+    }
+}
+class Changelog {
+    constructor(major, minor, release) {
         this.messages = {};
         this.release = release;
         this.minor = minor;
         this.major = major;
         Changelog.addToUpdates(this);
     }
-    Changelog.addToUpdates = function (change) {
+    static addToUpdates(change) {
         if (Changelog.updatesExternal === null) {
             Changelog.updates.push(change);
         }
         else {
             Changelog.updatesExternal.push(change);
         }
-    };
-    Changelog.sort = function () {
+    }
+    static sort() {
         Changelog.updates.sort(function (a, b) {
             if (a.major !== b.major)
                 return a.major - b.major;
@@ -121,20 +106,20 @@ var Changelog = (function () {
                 return 0;
             });
         }
-    };
-    Changelog.getMostRecentLocalUpdate = function () {
+    }
+    static getMostRecentLocalUpdate() {
         return Changelog.updates[0];
-    };
-    Changelog.getMostRecentExternalUpdate = function () {
+    }
+    static getMostRecentExternalUpdate() {
         if (Changelog.updatesExternal !== null) {
             return Changelog.updatesExternal[0];
         }
         return null;
-    };
-    Changelog.getUpdates = function () {
+    }
+    static getUpdates() {
         return Changelog.updates;
-    };
-    Changelog.getMissingUpdates = function () {
+    }
+    static getMissingUpdates() {
         if (Changelog.updatesExternal === null)
             return [];
         var updates = [];
@@ -142,8 +127,8 @@ var Changelog = (function () {
             updates.push(Changelog.updatesExternal[i]);
         }
         return updates;
-    };
-    Changelog.finished = function () {
+    }
+    static finished() {
         if (Changelog.updatesExternal === null) {
             Changelog.sort();
             Changelog.updatesExternal = [];
@@ -152,28 +137,28 @@ var Changelog = (function () {
             Changelog.sort();
             UI.ChangelogManager.print();
         }
-    };
-    Changelog.getLocalVersion = function () {
+    }
+    static getLocalVersion() {
         return Changelog.updates[Changelog.updates.length - 1].getVersion();
-    };
-    Changelog.getExternalVersion = function () {
+    }
+    static getExternalVersion() {
         if (Changelog.updatesExternal === null || Changelog.updatesExternal.length === 0) {
             return null;
         }
         return Changelog.updatesExternal[Changelog.updatesExternal.length - 1].getVersion();
-    };
-    Changelog.prototype.getVersion = function () {
+    }
+    getVersion() {
         return [this.major, this.minor, this.release];
-    };
-    Changelog.prototype.addMessage = function (msg, lingo) {
+    }
+    addMessage(msg, lingo) {
         if (this.messages[lingo] === undefined) {
             this.messages[lingo] = [msg];
         }
         else {
             this.messages[lingo].push(msg);
         }
-    };
-    Changelog.prototype.getMessages = function () {
+    }
+    getMessages() {
         var lingo = UI.Language.getLanguage();
         for (var i = 0; i < lingo.ids.length; i++) {
             if (this.messages[lingo.ids[i]] !== undefined) {
@@ -186,8 +171,8 @@ var Changelog = (function () {
             return this.messages[key];
         }
         return ["Changelog contains no messages."];
-    };
-    Changelog.prototype.getHTML = function (missing) {
+    }
+    getHTML(missing) {
         var p = document.createElement("p");
         p.classList.add("mainWindowParagraph");
         if (missing) {
@@ -208,63 +193,59 @@ var Changelog = (function () {
             p.appendChild(span);
         }
         return p;
-    };
-    return Changelog;
-}());
+    }
+}
 Changelog.updates = [];
 Changelog.updatesExternal = null;
-var ImageRed = (function () {
-    function ImageRed() {
-    }
-    ImageRed.prototype.getLink = function () {
+class ImageRed {
+    getLink() {
         var url = Server.IMAGE_URL + this.uploader + "_" + this.uuid;
         return url;
-    };
-    ImageRed.prototype.getName = function () {
+    }
+    getName() {
         return this.name;
-    };
-    ImageRed.prototype.getId = function () {
+    }
+    getId() {
         return this.uuid;
-    };
-    return ImageRed;
-}());
-var ImageLink = (function () {
-    function ImageLink(name, url, folder) {
+    }
+}
+class ImageLink {
+    constructor(name, url, folder) {
         this.tokenWidth = null;
         this.tokenHeight = null;
         this.name = name;
         this.url = url;
         this.folder = folder;
     }
-    ImageLink.prototype.getFolder = function () {
+    getFolder() {
         return this.folder;
-    };
-    ImageLink.prototype.setFolder = function (name) {
+    }
+    setFolder(name) {
         UI.Images.stayInFolder(this.folder);
         this.folder = name;
         UI.Images.printImages();
         DB.ImageDB.considerSaving();
-    };
-    ImageLink.prototype.getLink = function () {
+    }
+    getLink() {
         return Server.URL.fixURL(this.url);
-    };
-    ImageLink.prototype.getName = function () {
+    }
+    getName() {
         return this.name;
-    };
-    ImageLink.prototype.setName = function (name) {
+    }
+    setName(name) {
         if (this.name !== name) {
             this.name = name;
             DB.ImageDB.triggerChange(this);
             DB.ImageDB.considerSaving();
         }
-    };
-    ImageLink.prototype.updateFromObject = function (obj) {
+    }
+    updateFromObject(obj) {
         if (obj['tokenWidth'] != undefined && obj['tokenHeight'] != undefined) {
             this.tokenWidth = obj['tokenWidth'];
             this.tokenHeight = obj['tokenHeight'];
         }
-    };
-    ImageLink.prototype.exportAsObject = function () {
+    }
+    exportAsObject() {
         var obj = {
             name: this.name,
             url: this.url,
@@ -275,11 +256,10 @@ var ImageLink = (function () {
             obj['tokenHeight'] = this.tokenHeight;
         }
         return obj;
-    };
-    return ImageLink;
-}());
-var User = (function () {
-    function User() {
+    }
+}
+class User {
+    constructor() {
         this.nickname = "Undefined";
         this.nicknamesufix = "????";
         this.id = null;
@@ -288,13 +268,13 @@ var User = (function () {
         this.roomContexts = {};
         this.changedTrigger = new Trigger();
     }
-    User.prototype.isMe = function () {
+    isMe() {
         return this.id === Application.getMyId();
-    };
-    User.prototype.isAdmin = function () {
+    }
+    isAdmin() {
         return this.level >= 9;
-    };
-    User.prototype.exportAsLog = function () {
+    }
+    exportAsLog() {
         var obj = {
             id: this.id,
             nickname: this.nickname,
@@ -304,32 +284,32 @@ var User = (function () {
             roomid: 0
         };
         return obj;
-    };
-    User.prototype.getGameContext = function (id) {
+    }
+    getGameContext(id) {
         if (this.gameContexts[id] === undefined) {
             return null;
         }
         return this.gameContexts[id];
-    };
-    User.prototype.releaseGameContext = function (id) {
+    }
+    releaseGameContext(id) {
         delete (this.gameContexts[id]);
-    };
-    User.prototype.getRoomContext = function (id) {
+    }
+    getRoomContext(id) {
         if (this.roomContexts[id] === undefined) {
             return null;
         }
         return this.roomContexts[id];
-    };
-    User.prototype.releaseRoomContext = function (id) {
+    }
+    releaseRoomContext(id) {
         delete (this.roomContexts[id]);
-    };
-    User.prototype.getFullNickname = function () {
+    }
+    getFullNickname() {
         return this.nickname + "#" + this.nicknamesufix;
-    };
-    User.prototype.getShortNickname = function () {
+    }
+    getShortNickname() {
         return this.nickname;
-    };
-    User.prototype.updateFromObject = function (user) {
+    }
+    updateFromObject(user) {
         if (typeof user['id'] === "string") {
             user['id'] = parseInt(user['id']);
         }
@@ -356,11 +336,10 @@ var User = (function () {
             context.updateFromObject(user);
         }
         this.changedTrigger.trigger(this);
-    };
-    return User;
-}());
-var UserGameContext = (function () {
-    function UserGameContext(user) {
+    }
+}
+class UserGameContext {
+    constructor(user) {
         this.gameid = 0;
         this.createRoom = false;
         this.createSheet = false;
@@ -371,53 +350,52 @@ var UserGameContext = (function () {
         this.promote = false;
         this.user = user;
     }
-    UserGameContext.prototype.getUser = function () {
+    getUser() {
         return this.user;
-    };
-    UserGameContext.prototype.updateFromObject = function (obj) {
+    }
+    updateFromObject(obj) {
         for (var id in this) {
             if (obj[id] !== undefined) {
                 this[id] = obj[id];
             }
         }
-    };
-    UserGameContext.prototype.isCreateRoom = function () {
+    }
+    isCreateRoom() {
         return this.createRoom;
-    };
-    UserGameContext.prototype.isCreateSheet = function () {
+    }
+    isCreateSheet() {
         return this.createSheet;
-    };
-    return UserGameContext;
-}());
-var UserRoomContext = (function () {
-    function UserRoomContext(user) {
+    }
+}
+class UserRoomContext {
+    constructor(user) {
         this.logger = false;
         this.cleaner = false;
         this.storyteller = false;
         this.user = user;
     }
-    UserRoomContext.prototype.getRoom = function () {
+    getRoom() {
         if (DB.RoomDB.hasRoom(this.roomid))
             return DB.RoomDB.getRoom(this.roomid);
         return new Room();
-    };
-    UserRoomContext.prototype.getUser = function () {
+    }
+    getUser() {
         return this.user;
-    };
-    UserRoomContext.prototype.isStoryteller = function () {
+    }
+    isStoryteller() {
         return this.storyteller;
-    };
-    UserRoomContext.prototype.isCleaner = function () {
+    }
+    isCleaner() {
         return this.cleaner;
-    };
-    UserRoomContext.prototype.updateFromObject = function (user) {
+    }
+    updateFromObject(user) {
         for (var id in this) {
             if (user[id] === undefined)
                 continue;
             this[id] = user[id];
         }
-    };
-    UserRoomContext.prototype.getUniqueNickname = function () {
+    }
+    getUniqueNickname() {
         var users = this.getRoom().getOrderedUsers();
         for (var i = 0; i < users.length; i++) {
             if (users[i].id === this.getUser().id)
@@ -427,11 +405,10 @@ var UserRoomContext = (function () {
             }
         }
         return this.user.getShortNickname();
-    };
-    return UserRoomContext;
-}());
-var Room = (function () {
-    function Room() {
+    }
+}
+class Room {
+    constructor() {
         this.gameid = null;
         this.id = null;
         this.description = null;
@@ -443,7 +420,7 @@ var Room = (function () {
         this.users = {};
         this.messages = {};
     }
-    Room.prototype.exportAsLog = function (messages) {
+    exportAsLog(messages) {
         var obj = {
             gameid: this.gameid,
             id: 0,
@@ -462,15 +439,15 @@ var Room = (function () {
         }
         obj['messages'] = msgObj;
         return obj;
-    };
-    Room.prototype.getMessages = function () {
+    }
+    getMessages() {
         var list = [];
         for (var id in this.messages) {
             list.push(this.messages[id]);
         }
         return list;
-    };
-    Room.prototype.getOrderedMessages = function () {
+    }
+    getOrderedMessages() {
         var list = [];
         for (var id in this.messages) {
             list.push(this.messages[id]);
@@ -479,8 +456,8 @@ var Room = (function () {
             return a.id - b.id;
         });
         return list;
-    };
-    Room.prototype.getOrderedUsers = function () {
+    }
+    getOrderedUsers() {
         var list = [];
         for (var id in this.users) {
             list.push(this.users[id]);
@@ -501,8 +478,8 @@ var Room = (function () {
             return 0;
         });
         return list;
-    };
-    Room.prototype.getOrderedUserContexts = function () {
+    }
+    getOrderedUserContexts() {
         var list = [];
         for (var id in this.users) {
             list.push(this.users[id].getRoomContext(this.id));
@@ -523,8 +500,8 @@ var Room = (function () {
             return 0;
         });
         return list;
-    };
-    Room.prototype.getStorytellers = function () {
+    }
+    getStorytellers() {
         var storytellers = [];
         for (var id in this.users) {
             var rc = this.users[id].getRoomContext(this.id);
@@ -533,17 +510,17 @@ var Room = (function () {
             }
         }
         return storytellers;
-    };
-    Room.prototype.getMe = function () {
+    }
+    getMe() {
         return this.getUser(Application.getMyId());
-    };
-    Room.prototype.getUser = function (id) {
+    }
+    getUser(id) {
         if (this.users[id] === undefined) {
             return null;
         }
         return this.users[id].getRoomContext(this.id);
-    };
-    Room.prototype.getUsersByName = function (str) {
+    }
+    getUsersByName(str) {
         var list = [];
         str = str.toLowerCase();
         for (var id in this.users) {
@@ -552,11 +529,11 @@ var Room = (function () {
             }
         }
         return list;
-    };
-    Room.prototype.getGame = function () {
+    }
+    getGame() {
         return DB.GameDB.getGame(this.gameid);
-    };
-    Room.prototype.exportAsNewRoom = function () {
+    }
+    exportAsNewRoom() {
         var obj = {
             name: this.name,
             description: this.description,
@@ -566,8 +543,8 @@ var Room = (function () {
             gameid: this.gameid
         };
         return obj;
-    };
-    Room.prototype.updateFromObject = function (room, cleanup) {
+    }
+    updateFromObject(room, cleanup) {
         for (var id in this) {
             if (room[id] === undefined || id === "users" || id === 'messages')
                 continue;
@@ -625,11 +602,10 @@ var Room = (function () {
                 }
             }
         }
-    };
-    return Room;
-}());
-var Game = (function () {
-    function Game() {
+    }
+}
+class Game {
+    constructor() {
         this.users = {};
         this.rooms = {};
         this.sheets = {};
@@ -641,7 +617,7 @@ var Game = (function () {
         this.creatornick = null;
         this.creatorsufix = null;
     }
-    Game.prototype.exportAsLog = function (roomid, messages) {
+    exportAsLog(roomid, messages) {
         var obj = {
             description: this.description,
             name: this.name,
@@ -653,41 +629,41 @@ var Game = (function () {
         };
         obj['rooms'] = [DB.RoomDB.getRoom(roomid).exportAsLog(messages)];
         return obj;
-    };
-    Game.prototype.getId = function () {
+    }
+    getId() {
         return this.id;
-    };
-    Game.prototype.getName = function () {
+    }
+    getName() {
         return this.name;
-    };
-    Game.prototype.getCreatorFullNickname = function () {
+    }
+    getCreatorFullNickname() {
         return this.creatornick + "#" + this.creatorsufix;
-    };
-    Game.prototype.isMyCreation = function () {
+    }
+    isMyCreation() {
         return Application.isMe(this.creatorid);
-    };
-    Game.prototype.getMe = function () {
+    }
+    getMe() {
         return this.getUser(Application.getMyId());
-    };
-    Game.prototype.getUser = function (id) {
+    }
+    getUser(id) {
         if (this.users[id] === undefined) {
             return null;
         }
         return this.users[id].getGameContext(this.id);
-    };
-    Game.prototype.getRoom = function (id) {
+    }
+    getRoom(id) {
         if (this.rooms[id] === undefined) {
             return null;
         }
         return this.rooms[id];
-    };
-    Game.prototype.getSheet = function (id) {
+    }
+    getSheet(id) {
         if (this.sheets[id] === undefined) {
             return null;
         }
         return this.sheets[id];
-    };
-    Game.prototype.getOrderedRoomList = function () {
+    }
+    getOrderedRoomList() {
         var list = [];
         for (var id in this.rooms) {
             list.push(this.rooms[id]);
@@ -702,8 +678,8 @@ var Game = (function () {
             return 0;
         });
         return list;
-    };
-    Game.prototype.getOrderedSheetList = function () {
+    }
+    getOrderedSheetList() {
         var list = [];
         for (var id in this.sheets) {
             list.push(this.sheets[id]);
@@ -724,8 +700,8 @@ var Game = (function () {
             return 0;
         });
         return list;
-    };
-    Game.prototype.exportAsObject = function () {
+    }
+    exportAsObject() {
         var obj = {
             desc: this.description,
             name: this.name,
@@ -735,8 +711,8 @@ var Game = (function () {
             obj['id'] = this.id;
         }
         return obj;
-    };
-    Game.prototype.updateFromObject = function (game, cleanup) {
+    }
+    updateFromObject(game, cleanup) {
         for (var id in this) {
             if (game[id] === undefined || id === "users" || id === "rooms" || id === "sheets")
                 continue;
@@ -816,11 +792,10 @@ var Game = (function () {
                 }
             }
         }
-    };
-    return Game;
-}());
-var SheetInstance = (function () {
-    function SheetInstance() {
+    }
+}
+class SheetInstance {
+    constructor() {
         this.tab = null;
         this.id = 0;
         this.gameid = 0;
@@ -837,69 +812,69 @@ var SheetInstance = (function () {
         this.styleSafe = false;
         this.view = true;
         this.edit = false;
-        this["delete"] = false;
+        this.delete = false;
         this.promote = false;
         this.isPublic = false;
         this.changed = false;
         this.loaded = false;
         this.changeTrigger = new Trigger();
     }
-    SheetInstance.prototype.getStyleId = function () {
+    getStyleId() {
         return this.styleId;
-    };
-    SheetInstance.prototype.getStyle = function () {
+    }
+    getStyle() {
         return DB.StyleDB.getStyle(this.styleId);
-    };
-    SheetInstance.prototype.getTab = function () {
+    }
+    getTab() {
         if (this.tab === null) {
             this.tab = new SheetTab(this);
         }
         return this.tab;
-    };
-    SheetInstance.prototype.getGameid = function () {
+    }
+    getGameid() {
         return this.gameid;
-    };
-    SheetInstance.prototype.getGame = function () {
+    }
+    getGame() {
         return DB.GameDB.getGame(this.gameid);
-    };
-    SheetInstance.prototype.getFolder = function () {
+    }
+    getFolder() {
         return this.folder;
-    };
-    SheetInstance.prototype.getId = function () {
+    }
+    getId() {
         return this.id;
-    };
-    SheetInstance.prototype.removeChangeListener = function (list) {
+    }
+    removeChangeListener(list) {
         this.changeTrigger.removeListener(list);
-    };
-    SheetInstance.prototype.addChangeListener = function (list) {
+    }
+    addChangeListener(list) {
         this.changeTrigger.addListenerIfMissing(list);
-    };
-    SheetInstance.prototype.triggerChanged = function () {
+    }
+    triggerChanged() {
         this.changeTrigger.trigger(this);
         DB.SheetDB.triggerChanged(this);
-    };
-    SheetInstance.prototype.getMemoryId = function () {
+    }
+    getMemoryId() {
         return "sheetBackup_" + this.id;
-    };
-    SheetInstance.prototype.setSaved = function () {
+    }
+    setSaved() {
         this.changed = false;
         Application.LocalMemory.unsetMemory(this.getMemoryId());
         this.triggerChanged();
-    };
-    SheetInstance.prototype.setName = function (name) {
+    }
+    setName(name) {
         if (name !== this.name) {
             this.changed = true;
             this.name = name;
             this.triggerChanged();
         }
-    };
-    SheetInstance.prototype.getName = function () {
+    }
+    getName() {
         return this.name;
-    };
-    SheetInstance.prototype.getValues = function () {
+    }
+    getValues() {
         return this.values;
-    };
-    SheetInstance.prototype.setValues = function (values, local) {
+    }
+    setValues(values, local) {
         var newJson = JSON.stringify(values);
         if (newJson !== this.lastValues) {
             this.values = values;
@@ -915,8 +890,8 @@ var SheetInstance = (function () {
             }
             this.triggerChanged();
         }
-    };
-    SheetInstance.prototype.updateFromObject = function (obj) {
+    }
+    updateFromObject(obj) {
         if (typeof obj['id'] !== 'undefined')
             this.id = obj['id'];
         if (typeof obj['gameid'] !== 'undefined')
@@ -934,7 +909,7 @@ var SheetInstance = (function () {
         if (typeof obj['visualizar'] !== 'undefined')
             this.view = obj['visualizar'];
         if (typeof obj['deletar'] !== 'undefined')
-            this["delete"] = obj['deletar'];
+            this.delete = obj['deletar'];
         if (typeof obj['editar'] !== 'undefined')
             this.edit = obj['editar'];
         if (typeof obj['promote'] !== 'undefined')
@@ -953,22 +928,22 @@ var SheetInstance = (function () {
             this.loaded = true;
             this.setValues(obj['values'], false);
         }
-    };
-    SheetInstance.prototype.getValue = function (id) {
+    }
+    getValue(id) {
         if (typeof this.values === 'object') {
             return this.values[id];
         }
-    };
-    SheetInstance.prototype.isEditable = function () {
+    }
+    isEditable() {
         return this.edit;
-    };
-    SheetInstance.prototype.isPromotable = function () {
+    }
+    isPromotable() {
         return this.promote;
-    };
-    SheetInstance.prototype.isDeletable = function () {
-        return this["delete"];
-    };
-    SheetInstance.prototype.isNPC = function () {
+    }
+    isDeletable() {
+        return this.delete;
+    }
+    isNPC() {
         var player = this.getValue("Player") !== undefined ? this.getValue("Player") :
             this.getValue("Jogador") !== undefined ? this.getValue("Jogador") :
                 this.getValue("Owner") !== undefined ? this.getValue("Owner") :
@@ -978,14 +953,13 @@ var SheetInstance = (function () {
             return true;
         }
         return false;
-    };
-    SheetInstance.prototype.considerEditable = function () {
+    }
+    considerEditable() {
         this.triggerChanged();
-    };
-    return SheetInstance;
-}());
-var StyleInstance = (function () {
-    function StyleInstance() {
+    }
+}
+class StyleInstance {
+    constructor() {
         this.id = 0;
         this.gameid = 0;
         this.name = "";
@@ -995,82 +969,79 @@ var StyleInstance = (function () {
         this.css = null;
         this.publicStyle = false;
     }
-    StyleInstance.prototype.getId = function () {
+    getId() {
         return this.id;
-    };
-    StyleInstance.prototype.getName = function () {
+    }
+    getName() {
         return this.name;
-    };
-    StyleInstance.prototype.isLoaded = function () {
+    }
+    isLoaded() {
         return this.html !== null;
-    };
-    StyleInstance.prototype.updateFromObject = function (obj) {
+    }
+    updateFromObject(obj) {
         for (var id in this) {
             if (obj[id] !== undefined) {
                 this[id] = obj[id];
             }
         }
-    };
-    return StyleInstance;
-}());
-var SoundLink = (function () {
-    function SoundLink(name, url, folder, bgm) {
-        this.name = name;
-        this.url = url;
-        this.folder = folder;
-        this.bgm = bgm;
     }
-    SoundLink.prototype.getFolder = function () {
+}
+class SoundLink {
+    getFolder() {
         return this.folder;
-    };
-    SoundLink.prototype.isBgm = function () {
+    }
+    isBgm() {
         return this.bgm;
-    };
-    SoundLink.prototype.setFolder = function (name) {
+    }
+    setFolder(name) {
         this.folder = name;
         DB.SoundDB.considerSaving();
-    };
-    SoundLink.prototype.getLink = function () {
+    }
+    getLink() {
         return Server.URL.fixURL(this.url);
-    };
-    SoundLink.prototype.getName = function () {
+    }
+    getName() {
         return this.name;
-    };
-    SoundLink.prototype.setName = function (name) {
+    }
+    setName(name) {
         if (this.name !== name) {
             this.name = name;
             DB.SoundDB.triggerChange(this);
             DB.SoundDB.considerSaving();
         }
-    };
-    SoundLink.prototype.exportAsObject = function () {
+    }
+    constructor(name, url, folder, bgm) {
+        this.name = name;
+        this.url = url;
+        this.folder = folder;
+        this.bgm = bgm;
+    }
+    exportAsObject() {
         return {
             name: this.name,
             url: this.url,
             folder: this.folder,
             bgm: this.bgm
         };
-    };
-    return SoundLink;
-}());
-var PseudoWord = (function () {
-    function PseudoWord(word) {
+    }
+}
+class PseudoWord {
+    constructor(word) {
         this.translatedWord = null;
         this.originalWord = word;
     }
-    PseudoWord.prototype.addTranslation = function (word) {
+    addTranslation(word) {
         this.translatedWord = word;
-    };
-    PseudoWord.prototype.getOriginal = function () {
+    }
+    getOriginal() {
         return this.originalWord;
-    };
-    PseudoWord.prototype.getTranslation = function () {
+    }
+    getTranslation() {
         return this.translatedWord === null ? this.originalWord : this.translatedWord;
-    };
-    return PseudoWord;
-}());
-var PseudoLanguage = (function () {
-    function PseudoLanguage(id) {
+    }
+}
+class PseudoLanguage {
+    constructor(id) {
         this.singleLetters = [];
         this.shortWords = [];
         this.syllabi = [];
@@ -1085,67 +1056,67 @@ var PseudoLanguage = (function () {
         this.usedSyllable = [];
         PseudoLanguage.languages[id] = this;
     }
-    PseudoLanguage.getLanguageNames = function () {
+    static getLanguageNames() {
         var names = [];
         for (var id in PseudoLanguage.languages) {
             names.push(id);
         }
         names.sort();
         return names;
-    };
-    PseudoLanguage.getLanguage = function (id) {
+    }
+    static getLanguage(id) {
         if (PseudoLanguage.languages[id] !== undefined) {
             return PseudoLanguage.languages[id];
         }
         return null;
-    };
-    PseudoLanguage.prototype.addStaticWord = function (words, translation) {
+    }
+    addStaticWord(words, translation) {
         for (var i = 0; i < words.length; i++) {
             this.staticWords[words[i]] = translation;
         }
         return this;
-    };
-    PseudoLanguage.prototype.addLetters = function (as) {
+    }
+    addLetters(as) {
         this.singleLetters = as;
         return this;
-    };
-    PseudoLanguage.prototype.addShortWords = function (as) {
+    }
+    addShortWords(as) {
         this.shortWords = as;
         return this;
-    };
-    PseudoLanguage.prototype.addNumbers = function (as) {
+    }
+    addNumbers(as) {
         this.numbers = as;
         return this;
-    };
-    PseudoLanguage.prototype.setRandomizeNumbers = function (rn) {
+    }
+    setRandomizeNumbers(rn) {
         this.randomizeNumbers = rn;
         return this;
-    };
-    PseudoLanguage.prototype.setLowerCase = function (lc) {
+    }
+    setLowerCase(lc) {
         this.lowerCaseOnly = lc;
         return this;
-    };
-    PseudoLanguage.prototype.setAllowPoints = function (ap) {
+    }
+    setAllowPoints(ap) {
         this.allowPoints = ap;
         return this;
-    };
-    PseudoLanguage.prototype.addSyllabi = function (syllabi) {
+    }
+    addSyllabi(syllabi) {
         this.syllabi = syllabi;
         return this;
-    };
-    PseudoLanguage.prototype.getLastWord = function () {
+    }
+    getLastWord() {
         return this.words[this.index - 1];
-    };
-    PseudoLanguage.prototype.getCurrentWord = function () {
+    }
+    getCurrentWord() {
         return this.words[this.index];
-    };
-    PseudoLanguage.prototype.getNextWord = function () {
+    }
+    getNextWord() {
         return this.words[this.index + 1];
-    };
-    PseudoLanguage.prototype.getSyllableCustom = function () {
+    }
+    getSyllableCustom() {
         return null;
-    };
-    PseudoLanguage.prototype.getSyllable = function () {
+    }
+    getSyllable() {
         var syllable = this.getSyllableCustom();
         if (syllable !== null) {
             this.lastSyllable = syllable;
@@ -1163,14 +1134,14 @@ var PseudoLanguage = (function () {
             this.usedSyllable.push(syllable);
         }
         return syllable;
-    };
-    PseudoLanguage.prototype.chance = function (chance) {
+    }
+    chance(chance) {
         return (this.rng() * 100) > (100 - chance);
-    };
-    PseudoLanguage.prototype.increaseCurrentTranslation = function () {
+    }
+    increaseCurrentTranslation() {
         this.currentTranslation += this.getSyllable();
-    };
-    PseudoLanguage.prototype.isAcceptable = function () {
+    }
+    isAcceptable() {
         if (this.currentTranslation.length === this.currentWord.length && (this.rng() * 100) > 10) {
             return true;
         }
@@ -1181,14 +1152,14 @@ var PseudoLanguage = (function () {
             return false;
         }
         return true;
-    };
-    PseudoLanguage.prototype.getSingleLetter = function () {
+    }
+    getSingleLetter() {
         return this.singleLetters[Math.floor(this.rng() * this.singleLetters.length)];
-    };
-    PseudoLanguage.prototype.getShortWord = function () {
+    }
+    getShortWord() {
         return this.shortWords[Math.floor(this.rng() * this.shortWords.length)];
-    };
-    PseudoLanguage.prototype.translateWord = function (pseudo) {
+    }
+    translateWord(pseudo) {
         this.currentTranslation = "";
         var word = pseudo.getOriginal();
         if (word === "") {
@@ -1269,8 +1240,8 @@ var PseudoLanguage = (function () {
             this.currentTranslation = corrected;
         }
         pseudo.addTranslation(this.currentTranslation);
-    };
-    PseudoLanguage.prototype.translate = function (phrase) {
+    }
+    translate(phrase) {
         var words = phrase.split(" ");
         this.words = [];
         for (var i = 0; i < words.length; i++) {
@@ -1285,12 +1256,11 @@ var PseudoLanguage = (function () {
             translatedWords.push(this.words[i].getTranslation());
         }
         return translatedWords.join(" ");
-    };
-    return PseudoLanguage;
-}());
+    }
+}
 PseudoLanguage.languages = {};
-var AJAXConfig = (function () {
-    function AJAXConfig(url) {
+class AJAXConfig {
+    constructor(url) {
         this._target = 0;
         this._url = "";
         this._timeout = 15000;
@@ -1300,10 +1270,10 @@ var AJAXConfig = (function () {
         this.instantLoading = false;
         this._url = url;
     }
-    AJAXConfig.prototype.forceLoading = function () {
+    forceLoading() {
         this.instantLoading = true;
-    };
-    AJAXConfig.prototype.startConditionalLoading = function () {
+    }
+    startConditionalLoading() {
         if (this.target != AJAXConfig.TARGET_NONE) {
             if (this.target === AJAXConfig.TARGET_GLOBAL) {
                 UI.Loading.startLoading();
@@ -1315,8 +1285,8 @@ var AJAXConfig = (function () {
                 UI.Loading.blockRight();
             }
         }
-    };
-    AJAXConfig.prototype.finishConditionalLoading = function () {
+    }
+    finishConditionalLoading() {
         if (this.loadingTimeout !== null) {
             window.clearTimeout(this.loadingTimeout);
             this.loadingTimeout = null;
@@ -1332,90 +1302,69 @@ var AJAXConfig = (function () {
                 UI.Loading.unblockRight();
             }
         }
-    };
-    Object.defineProperty(AJAXConfig.prototype, "target", {
-        get: function () {
-            return this._target;
-        },
-        set: function (value) {
-            this._target = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(AJAXConfig.prototype, "url", {
-        get: function () {
-            return this._url;
-        },
-        set: function (value) {
-            this._url = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(AJAXConfig.prototype, "timeout", {
-        get: function () {
-            return this._timeout;
-        },
-        set: function (value) {
-            this._timeout = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(AJAXConfig.prototype, "responseType", {
-        get: function () {
-            return this._responseType;
-        },
-        set: function (value) {
-            this._responseType = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(AJAXConfig.prototype, "data", {
-        get: function () {
-            return this._data;
-        },
-        set: function (value) {
-            this._data = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    AJAXConfig.prototype.setData = function (id, value) {
+    }
+    get target() {
+        return this._target;
+    }
+    set target(value) {
+        this._target = value;
+    }
+    get url() {
+        return this._url;
+    }
+    set url(value) {
+        this._url = value;
+    }
+    get timeout() {
+        return this._timeout;
+    }
+    set timeout(value) {
+        this._timeout = value;
+    }
+    get responseType() {
+        return this._responseType;
+    }
+    set responseType(value) {
+        this._responseType = value;
+    }
+    get data() {
+        return this._data;
+    }
+    set data(value) {
+        this._data = value;
+    }
+    setData(id, value) {
         if (this.data === null) {
             this.data = {};
         }
         this.data[id] = value;
-    };
-    AJAXConfig.prototype.setResponseTypeJSON = function () {
+    }
+    setResponseTypeJSON() {
         this._responseType = "json";
-    };
-    AJAXConfig.prototype.setResponseTypeText = function () {
+    }
+    setResponseTypeText() {
         this._responseType = "text";
-    };
-    AJAXConfig.prototype.setTargetNone = function () {
+    }
+    setTargetNone() {
         this._target = AJAXConfig.TARGET_NONE;
-    };
-    AJAXConfig.prototype.setTargetGlobal = function () {
+    }
+    setTargetGlobal() {
         this._target = AJAXConfig.TARGET_GLOBAL;
-    };
-    AJAXConfig.prototype.setTargetLeftWindow = function () {
+    }
+    setTargetLeftWindow() {
         this._target = AJAXConfig.TARGET_LEFT;
-    };
-    AJAXConfig.prototype.setTargetRightWindow = function () {
+    }
+    setTargetRightWindow() {
         this._target = AJAXConfig.TARGET_RIGHT;
-    };
-    return AJAXConfig;
-}());
+    }
+}
 AJAXConfig.TARGET_NONE = 0;
 AJAXConfig.TARGET_GLOBAL = 1;
 AJAXConfig.TARGET_LEFT = 2;
 AJAXConfig.TARGET_RIGHT = 3;
 AJAXConfig.CONDITIONAL_LOADING_TIMEOUT = 150;
-var WebsocketController = (function () {
-    function WebsocketController(url) {
+class WebsocketController {
+    constructor(url) {
         this.socket = null;
         this.keepAlive = true;
         this.keepAliveTime = 15 * 1000;
@@ -1426,7 +1375,7 @@ var WebsocketController = (function () {
         this.onError = [];
         this.url = url;
     }
-    WebsocketController.prototype.connect = function () {
+    connect() {
         if (this.isReady()) {
             console.warn("[WEBSOCKET] Attempt to connect a WebSocket that was already connected. Disconnecting first.");
             this.close();
@@ -1467,11 +1416,11 @@ var WebsocketController = (function () {
                 console.warn("[WEBSOCKET] " + this.controller.url + ": Closed.", e);
             }
         });
-    };
-    WebsocketController.prototype.isReady = function () {
+    }
+    isReady() {
         return this.socket !== null && this.socket.readyState === WebsocketController.READYSTATE_OPEN;
-    };
-    WebsocketController.prototype.resetInterval = function () {
+    }
+    resetInterval() {
         if (this.keepAlive) {
             if (this.keepAliveInterval !== null) {
                 clearInterval(this.keepAliveInterval);
@@ -1481,17 +1430,17 @@ var WebsocketController = (function () {
             };
             this.keepAliveInterval = setInterval(interval.bind(null, this), this.keepAliveTime);
         }
-    };
-    WebsocketController.prototype.disableInterval = function () {
+    }
+    disableInterval() {
         if (this.keepAliveInterval !== null) {
             clearInterval(this.keepAliveInterval);
             this.keepAliveInterval = null;
         }
-    };
-    WebsocketController.prototype.doKeepAlive = function () {
+    }
+    doKeepAlive() {
         this.socket.send("0");
-    };
-    WebsocketController.prototype.send = function (action, obj) {
+    }
+    send(action, obj) {
         if (this.isReady()) {
             if (typeof obj !== "string") {
                 obj = JSON.stringify(obj);
@@ -1503,19 +1452,19 @@ var WebsocketController = (function () {
         else {
             console.warn("[WEBSOCKET] Attempt to send messages through a WebSocket that isn't ready. Ignoring. Offending message: ", action, obj);
         }
-    };
-    WebsocketController.prototype.close = function () {
+    }
+    close() {
         if (this.socket !== null && (this.socket.readyState === WebsocketController.READYSTATE_CONNECTING || this.socket.readyState === WebsocketController.READYSTATE_OPEN)) {
             this.socket.close();
         }
-    };
-    WebsocketController.prototype.addCloseListener = function (obj) {
+    }
+    addCloseListener(obj) {
         this.onClose.push(obj);
-    };
-    WebsocketController.prototype.addOpenListener = function (obj) {
+    }
+    addOpenListener(obj) {
         this.onOpen.push(obj);
-    };
-    WebsocketController.prototype.addMessageListener = function (type, obj) {
+    }
+    addMessageListener(type, obj) {
         this.onMessage.push({
             type: type,
             obj: obj,
@@ -1526,30 +1475,29 @@ var WebsocketController = (function () {
                 }
             }
         });
-    };
-    WebsocketController.prototype.triggerOpen = function () {
+    }
+    triggerOpen() {
         for (var i = 0; i < this.onOpen.length; i++) {
             this.onOpen[i].handleEvent();
         }
-    };
-    WebsocketController.prototype.triggerClose = function () {
+    }
+    triggerClose() {
         for (var i = 0; i < this.onClose.length; i++) {
             this.onClose[i].handleEvent();
         }
-    };
-    WebsocketController.prototype.triggerMessage = function (e) {
+    }
+    triggerMessage(e) {
         for (var i = 0; i < this.onMessage.length; i++) {
             this.onMessage[i].handleEvent(e);
         }
-    };
-    return WebsocketController;
-}());
+    }
+}
 WebsocketController.READYSTATE_CONNECTING = 0;
 WebsocketController.READYSTATE_OPEN = 1;
 WebsocketController.READYSTATE_CLOSING = 2;
 WebsocketController.READYSTATE_CLOSED = 3;
-var ChatWsController = (function () {
-    function ChatWsController() {
+class ChatWsController {
+    constructor() {
         this.socket = new WebsocketController(Server.Chat.CHAT_URL);
         this.currentRoom = null;
         this.onReady = null;
@@ -1563,53 +1511,52 @@ var ChatWsController = (function () {
             }
         });
     }
-    ChatWsController.prototype.isReady = function () {
+    isReady() {
         return this.socket.isReady();
-    };
-    ChatWsController.prototype.start = function () {
+    }
+    start() {
         this.socket.connect();
-    };
-    ChatWsController.prototype.end = function () {
+    }
+    end() {
         this.currentRoom = null;
         this.socket.close();
-    };
-    ChatWsController.prototype.enterRoom = function (id) {
+    }
+    enterRoom(id) {
         this.socket.send("room", id);
         this.currentRoom = id;
-    };
-    ChatWsController.prototype.sendStatus = function (info) {
+    }
+    sendStatus(info) {
         var status = [];
         status.push(info.typing ? "1" : "0");
         status.push(info.afk ? "1" : "0");
         status.push(info.focused ? "1" : "0");
         this.socket.send("status", status.join(","));
-    };
-    ChatWsController.prototype.sendPersona = function (info) {
+    }
+    sendPersona(info) {
         var persona = {
             persona: info.persona,
             avatar: info.avatar
         };
         this.socket.send("persona", JSON.stringify(persona));
-    };
-    ChatWsController.prototype.sendMessage = function (message) {
+    }
+    sendMessage(message) {
         this.socket.send("message", message.exportAsObject());
-    };
-    ChatWsController.prototype.saveMemory = function (memory) {
+    }
+    saveMemory(memory) {
         this.socket.send("memory", memory);
-    };
-    ChatWsController.prototype.addCloseListener = function (obj) {
+    }
+    addCloseListener(obj) {
         this.socket.addCloseListener(obj);
-    };
-    ChatWsController.prototype.addOpenListener = function (obj) {
+    }
+    addOpenListener(obj) {
         this.socket.addOpenListener(obj);
-    };
-    ChatWsController.prototype.addMessageListener = function (type, obj) {
+    }
+    addMessageListener(type, obj) {
         this.socket.addMessageListener(type, obj);
-    };
-    return ChatWsController;
-}());
-var Configuration = (function () {
-    function Configuration(defV) {
+    }
+}
+class Configuration {
+    constructor(defV) {
         this.changeTrigger = new Trigger();
         this.value = null;
         this.defValue = null;
@@ -1618,16 +1565,16 @@ var Configuration = (function () {
         this.defValue = defV;
         this.value = defV;
     }
-    Configuration.prototype.getDefault = function () {
+    getDefault() {
         return this.defValue;
-    };
-    Configuration.prototype.reset = function () {
+    }
+    reset() {
         this.storeValue(this.defValue);
-    };
-    Configuration.prototype.addChangeListener = function (listener) {
+    }
+    addChangeListener(listener) {
         this.changeTrigger.addListener(listener);
-    };
-    Configuration.prototype.storeValue = function (value) {
+    }
+    storeValue(value) {
         var oldValue = JSON.stringify(this.value);
         if (this.setFunction !== null) {
             this.setFunction(value);
@@ -1641,22 +1588,20 @@ var Configuration = (function () {
             return true;
         }
         return false;
-    };
-    Configuration.prototype.getValue = function () {
+    }
+    getValue() {
         if (this.getFunction !== null) {
             return this.getFunction();
         }
         return this.value;
-    };
-    return Configuration;
-}());
-var NumberConfiguration = (function (_super) {
-    __extends(NumberConfiguration, _super);
-    function NumberConfiguration(defValue, min, max) {
-        var _this = _super.call(this, defValue) || this;
-        _this.min = 0;
-        _this.max = 100;
-        _this.setFunction = function (value) {
+    }
+}
+class NumberConfiguration extends Configuration {
+    constructor(defValue, min, max) {
+        super(defValue);
+        this.min = 0;
+        this.max = 100;
+        this.setFunction = function (value) {
             if (!isNaN(value)) {
                 value = Number(value);
                 if (value < this.min) {
@@ -1668,20 +1613,17 @@ var NumberConfiguration = (function (_super) {
                 this.value = value;
             }
         };
-        _this.getFunction = function () {
+        this.getFunction = function () {
             return this.value;
         };
-        _this.min = min;
-        _this.max = max;
-        return _this;
+        this.min = min;
+        this.max = max;
     }
-    return NumberConfiguration;
-}(Configuration));
-var WsportConfiguration = (function (_super) {
-    __extends(WsportConfiguration, _super);
-    function WsportConfiguration() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.setFunction = function (value) {
+}
+class WsportConfiguration extends Configuration {
+    constructor() {
+        super(...arguments);
+        this.setFunction = function (value) {
             if (Server.WEBSOCKET_PORTS.indexOf(value) === -1) {
                 this.value = Server.WEBSOCKET_PORTS[0];
             }
@@ -1689,29 +1631,23 @@ var WsportConfiguration = (function (_super) {
                 this.value = value;
             }
         };
-        return _this;
     }
-    return WsportConfiguration;
-}(Configuration));
-var LanguageConfiguration = (function (_super) {
-    __extends(LanguageConfiguration, _super);
-    function LanguageConfiguration() {
-        var _this = _super.call(this, navigator.language) || this;
-        _this.setFunction = function (value) {
+}
+class LanguageConfiguration extends Configuration {
+    constructor() {
+        super(navigator.language);
+        this.setFunction = function (value) {
             if (value.indexOf("_") !== -1) {
                 value = value.replace("_", "-");
             }
             this.value = value;
         };
-        return _this;
     }
-    return LanguageConfiguration;
-}(Configuration));
-var BooleanConfiguration = (function (_super) {
-    __extends(BooleanConfiguration, _super);
-    function BooleanConfiguration(bool) {
-        var _this = _super.call(this, bool ? 1 : 0) || this;
-        _this.setFunction = function (value) {
+}
+class BooleanConfiguration extends Configuration {
+    constructor(bool) {
+        super(bool ? 1 : 0);
+        this.setFunction = function (value) {
             if (typeof value !== "string")
                 value = value.toString().toLowerCase();
             var bool = value === "1" || value === "true";
@@ -1720,63 +1656,58 @@ var BooleanConfiguration = (function (_super) {
             else
                 this.value = 0;
         };
-        _this.getFunction = function () {
+        this.getFunction = function () {
             return this.value === 1;
         };
-        return _this;
     }
-    return BooleanConfiguration;
-}(Configuration));
-var TrackerMemory = (function () {
-    function TrackerMemory() {
+}
+class TrackerMemory {
+    constructor() {
         this.changeTrigger = new Trigger();
     }
-    TrackerMemory.prototype.addChangeListener = function (listener) {
+    addChangeListener(listener) {
         this.changeTrigger.addListener(listener);
-    };
-    TrackerMemory.prototype.triggerChange = function () {
-        this.changeTrigger.trigger(this);
-    };
-    return TrackerMemory;
-}());
-var MemoryCombat = (function (_super) {
-    __extends(MemoryCombat, _super);
-    function MemoryCombat() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.combatants = [];
-        _this.effects = {};
-        _this.storedEffects = {};
-        _this.round = 0;
-        _this.turn = 0;
-        _this.targets = [];
-        _this.targetTrigger = new Trigger();
-        return _this;
     }
-    MemoryCombat.prototype.addTargetListener = function (f) {
+    triggerChange() {
+        this.changeTrigger.trigger(this);
+    }
+}
+class MemoryCombat extends TrackerMemory {
+    constructor() {
+        super(...arguments);
+        this.combatants = [];
+        this.effects = {};
+        this.storedEffects = {};
+        this.round = 0;
+        this.turn = 0;
+        this.targets = [];
+        this.targetTrigger = new Trigger();
+    }
+    addTargetListener(f) {
         this.targetTrigger.addListener(f);
-    };
-    MemoryCombat.prototype.removeTargetListener = function (f) {
+    }
+    removeTargetListener(f) {
         this.targetTrigger.removeListener(f);
-    };
-    MemoryCombat.prototype.triggerTarget = function () {
+    }
+    triggerTarget() {
         this.targetTrigger.trigger(this.targets);
-    };
-    MemoryCombat.prototype.getCurrentTurnOwner = function () {
+    }
+    getCurrentTurnOwner() {
         if (this.combatants[this.turn] !== undefined) {
             return this.combatants[this.turn];
         }
         return null;
-    };
-    MemoryCombat.prototype.getEffects = function () {
+    }
+    getEffects() {
         return this.effects;
-    };
-    MemoryCombat.prototype.getEffectsOn = function (id) {
+    }
+    getEffectsOn(id) {
         if (this.effects[id] !== undefined) {
             return this.effects[id];
         }
         return [];
-    };
-    MemoryCombat.prototype.removeEffect = function (ce) {
+    }
+    removeEffect(ce) {
         if (this.effects[ce.target] !== undefined) {
             this.effects[ce.target].splice(this.effects[ce.target].indexOf(ce), 1);
             var msg = new ChatSystemMessage(true);
@@ -1786,8 +1717,8 @@ var MemoryCombat = (function (_super) {
             UI.Chat.printElement(msg.getElement());
             this.triggerChange();
         }
-    };
-    MemoryCombat.prototype.addCombatEffect = function (effect) {
+    }
+    addCombatEffect(effect) {
         if (this.effects[effect.target] === undefined) {
             this.effects[effect.target] = [effect];
         }
@@ -1795,8 +1726,8 @@ var MemoryCombat = (function (_super) {
             this.effects[effect.target].push(effect);
         }
         this.triggerChange();
-    };
-    MemoryCombat.prototype.addEffect = function (ce) {
+    }
+    addEffect(ce) {
         var effect = new CombatEffect(this);
         effect.name = ce.name;
         effect.target = ce.target;
@@ -1805,8 +1736,8 @@ var MemoryCombat = (function (_super) {
         effect.endOnStart = ce.endOnStart;
         effect.customString = ce.customString === undefined ? null : ce.customString;
         this.addCombatEffect(effect);
-    };
-    MemoryCombat.prototype.cleanTargets = function () {
+    }
+    cleanTargets() {
         var goodTargets = [];
         for (var i = 0; i < this.targets.length; i++) {
             var target = this.targets[i];
@@ -1818,11 +1749,11 @@ var MemoryCombat = (function (_super) {
             }
         }
         this.targets = goodTargets;
-    };
-    MemoryCombat.prototype.getTargets = function () {
+    }
+    getTargets() {
         return this.targets;
-    };
-    MemoryCombat.prototype.getTargetCombatants = function () {
+    }
+    getTargetCombatants() {
         var targets = [];
         for (var i = 0; i < this.targets.length; i++) {
             for (var k = 0; k < this.combatants.length; k++) {
@@ -1832,11 +1763,11 @@ var MemoryCombat = (function (_super) {
             }
         }
         return targets;
-    };
-    MemoryCombat.prototype.isTarget = function (id) {
+    }
+    isTarget(id) {
         return this.targets.indexOf(id) !== -1;
-    };
-    MemoryCombat.prototype.setTarget = function (id) {
+    }
+    setTarget(id) {
         var idx = this.targets.indexOf(id);
         if (idx === -1) {
             this.targets.push(id);
@@ -1845,8 +1776,8 @@ var MemoryCombat = (function (_super) {
             this.targets.splice(idx, 1);
         }
         this.triggerTarget();
-    };
-    MemoryCombat.prototype.endCombat = function () {
+    }
+    endCombat() {
         this.round = 0;
         this.turn = 0;
         var remove = [];
@@ -1860,25 +1791,25 @@ var MemoryCombat = (function (_super) {
         }
         this.effects = {};
         this.triggerChange();
-    };
-    MemoryCombat.prototype.getRound = function () {
+    }
+    getRound() {
         return this.round;
-    };
-    MemoryCombat.prototype.getTurn = function () {
+    }
+    getTurn() {
         return this.turn;
-    };
-    MemoryCombat.prototype.getRoundFor = function (id) {
+    }
+    getRoundFor(id) {
         for (var i = 0; i < this.combatants.length; i++) {
             if (this.combatants[i].id === id) {
                 return i;
             }
         }
         return null;
-    };
-    MemoryCombat.prototype.getCombatants = function () {
+    }
+    getCombatants() {
         return this.combatants;
-    };
-    MemoryCombat.prototype.getMyCombatants = function () {
+    }
+    getMyCombatants() {
         var combatants = [];
         for (var i = 0; i < this.combatants.length; i++) {
             if (Application.isMe(this.combatants[i].owner) && combatants.indexOf(this.combatants[i]) === -1) {
@@ -1886,26 +1817,26 @@ var MemoryCombat = (function (_super) {
             }
         }
         return combatants;
-    };
-    MemoryCombat.prototype.reset = function () {
+    }
+    reset() {
         this.combatants = [];
         this.round = 0;
         this.turn = 0;
         this.triggerChange();
-    };
-    MemoryCombat.prototype.removeParticipant = function (c) {
+    }
+    removeParticipant(c) {
         var idx = this.combatants.indexOf(c);
         if (idx !== -1) {
             this.combatants.splice(idx, 1);
             this.triggerChange();
         }
-    };
-    MemoryCombat.prototype.reorderCombatants = function () {
+    }
+    reorderCombatants() {
         this.combatants.sort(function (a, b) {
             return b.initiative - a.initiative;
         });
-    };
-    MemoryCombat.prototype.addParticipant = function (sheet, owner) {
+    }
+    addParticipant(sheet, owner) {
         var combatant = new CombatParticipant();
         combatant.setSheet(sheet);
         if (owner !== undefined) {
@@ -1914,28 +1845,28 @@ var MemoryCombat = (function (_super) {
         this.combatants.push(combatant);
         this.reorderCombatants();
         this.triggerChange();
-    };
-    MemoryCombat.prototype.incrementRound = function () {
+    }
+    incrementRound() {
         this.round++;
         this.turn = 0;
         this.triggerChange();
-    };
-    MemoryCombat.prototype.considerEndingEffects = function () {
+    }
+    considerEndingEffects() {
         for (var id in this.effects) {
             for (var i = this.effects[id].length - 1; i >= 0; i--) {
                 this.effects[id][i].considerEnding();
             }
         }
-    };
-    MemoryCombat.prototype.setTurn = function (combatant) {
+    }
+    setTurn(combatant) {
         var idx = this.combatants.indexOf(combatant);
         if (idx !== -1 && idx !== this.turn) {
             this.turn = idx;
             this.considerEndingEffects();
             this.triggerChange();
         }
-    };
-    MemoryCombat.prototype.incrementTurn = function () {
+    }
+    incrementTurn() {
         this.turn++;
         if ((this.turn + 1) > this.combatants.length) {
             this.turn = 0;
@@ -1943,8 +1874,8 @@ var MemoryCombat = (function (_super) {
         }
         this.considerEndingEffects();
         this.triggerChange();
-    };
-    MemoryCombat.prototype.exportAsObject = function () {
+    }
+    exportAsObject() {
         var arr = [this.round, this.turn];
         var combatants = [];
         for (var i = 0; i < this.combatants.length; i++) {
@@ -1961,8 +1892,8 @@ var MemoryCombat = (function (_super) {
         }
         arr.push(effects);
         return arr;
-    };
-    MemoryCombat.prototype.storeEffectNames = function () {
+    }
+    storeEffectNames() {
         this.storedEffects = {};
         for (var id in this.effects) {
             this.storedEffects[id] = [];
@@ -1970,8 +1901,8 @@ var MemoryCombat = (function (_super) {
                 this.storedEffects[id].push(this.effects[id][k].name);
             }
         }
-    };
-    MemoryCombat.prototype.announceEffectEnding = function () {
+    }
+    announceEffectEnding() {
         var room = Server.Chat.getRoom();
         if (room !== null && !room.getMe().isStoryteller()) {
             var mySheets = this.getMyCombatants();
@@ -1995,8 +1926,8 @@ var MemoryCombat = (function (_super) {
                 }
             }
         }
-    };
-    MemoryCombat.prototype.storeValue = function (obj) {
+    }
+    storeValue(obj) {
         if (!Array.isArray(obj)) {
             this.reset();
         }
@@ -2034,8 +1965,8 @@ var MemoryCombat = (function (_super) {
                 this.triggerChange();
             }
         }
-    };
-    MemoryCombat.prototype.applyInitiative = function (id, initiative) {
+    }
+    applyInitiative(id, initiative) {
         var foundOne = false;
         for (var i = 0; i < this.combatants.length; i++) {
             if (this.combatants[i].id === id) {
@@ -2047,37 +1978,34 @@ var MemoryCombat = (function (_super) {
             this.reorderCombatants();
             this.triggerChange();
         }
-    };
-    MemoryCombat.prototype.setInitiative = function (combatant, initiative) {
+    }
+    setInitiative(combatant, initiative) {
         var idx = this.combatants.indexOf(combatant);
         if (idx !== -1) {
             combatant.setInitiative(initiative);
             this.reorderCombatants();
             this.triggerChange();
         }
-    };
-    MemoryCombat.prototype.getValue = function () {
-        return null;
-    };
-    return MemoryCombat;
-}(TrackerMemory));
-var MemoryFilter = (function (_super) {
-    __extends(MemoryFilter, _super);
-    function MemoryFilter() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.value = 0;
-        return _this;
     }
-    MemoryFilter.prototype.reset = function () {
+    getValue() {
+        return null;
+    }
+}
+class MemoryFilter extends TrackerMemory {
+    constructor() {
+        super(...arguments);
+        this.value = 0;
+    }
+    reset() {
         this.storeValue(0);
-    };
-    MemoryFilter.prototype.getValue = function () {
+    }
+    getValue() {
         return MemoryFilter.names[this.value];
-    };
-    MemoryFilter.prototype.storeName = function (name) {
+    }
+    storeName(name) {
         this.storeValue(MemoryFilter.names.indexOf(name));
-    };
-    MemoryFilter.prototype.storeValue = function (i) {
+    }
+    storeValue(i) {
         if (i < 0 || i >= MemoryFilter.names.length) {
             i = 0;
         }
@@ -2085,35 +2013,32 @@ var MemoryFilter = (function (_super) {
             this.value = i;
             this.triggerChange();
         }
-    };
-    MemoryFilter.prototype.exportAsObject = function () {
-        return this.value;
-    };
-    return MemoryFilter;
-}(TrackerMemory));
-MemoryFilter.names = ["none", "night", "noir", "trauma", "gray", "sepia", "evening", "fire"];
-var MemoryPica = (function (_super) {
-    __extends(MemoryPica, _super);
-    function MemoryPica() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.picaAllowed = true;
-        _this.updateUnderway = false;
-        _this.changeDetected = false;
-        return _this;
     }
-    MemoryPica.prototype.reset = function () {
+    exportAsObject() {
+        return this.value;
+    }
+}
+MemoryFilter.names = ["none", "night", "noir", "trauma", "gray", "sepia", "evening", "fire"];
+class MemoryPica extends TrackerMemory {
+    constructor() {
+        super(...arguments);
         this.picaAllowed = true;
-    };
-    MemoryPica.prototype.getValue = function () {
+        this.updateUnderway = false;
+        this.changeDetected = false;
+    }
+    reset() {
+        this.picaAllowed = true;
+    }
+    getValue() {
         return this;
-    };
-    MemoryPica.prototype.isPicaAllowed = function () {
+    }
+    isPicaAllowed() {
         return this.picaAllowed;
-    };
-    MemoryPica.prototype.picaAllowedExport = function () {
+    }
+    picaAllowedExport() {
         return this.picaAllowed ? 1 : 0;
-    };
-    MemoryPica.prototype.picaAllowedStore = function (isIt) {
+    }
+    picaAllowedStore(isIt) {
         isIt = isIt === true || isIt === 1;
         if (isIt !== this.picaAllowed) {
             this.picaAllowed = isIt;
@@ -2124,8 +2049,8 @@ var MemoryPica = (function (_super) {
                 this.triggerChange();
             }
         }
-    };
-    MemoryPica.prototype.storeValue = function (values) {
+    }
+    storeValue(values) {
         if (!Array.isArray(values) || values.length < MemoryPica.fieldOrder.length) {
             console.warn("[ROOMMEMMORY] [MemoryPica] Invalid store operation requested. Ignoring.");
             return;
@@ -2139,49 +2064,46 @@ var MemoryPica = (function (_super) {
             this.triggerChange();
         }
         this.updateUnderway = false;
-    };
-    MemoryPica.prototype.exportAsObject = function () {
+    }
+    exportAsObject() {
         var result = [];
         for (var i = 0; i < MemoryPica.fieldOrder.length; i++) {
             result.push(this[MemoryPica.fieldOrder[i] + "Export"]());
         }
         return result;
-    };
-    return MemoryPica;
-}(TrackerMemory));
-MemoryPica.fieldOrder = ["picaAllowed"];
-var MemoryLingo = (function (_super) {
-    __extends(MemoryLingo, _super);
-    function MemoryLingo() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.userLingos = {};
-        _this.busy = false;
-        return _this;
     }
-    MemoryLingo.prototype.getUser = function (id) {
+}
+MemoryPica.fieldOrder = ["picaAllowed"];
+class MemoryLingo extends TrackerMemory {
+    constructor() {
+        super(...arguments);
+        this.userLingos = {};
+        this.busy = false;
+    }
+    getUser(id) {
         if (this.userLingos[id] !== undefined) {
             return this.userLingos[id];
         }
         return [];
-    };
-    MemoryLingo.prototype.clean = function () {
+    }
+    clean() {
         for (var id in this.userLingos) {
             var user = Server.Chat.getRoom().getUser(parseInt(id));
             if (user === null || user.isStoryteller() || this.userLingos[id].length < 1) {
                 delete (this.userLingos[id]);
             }
         }
-    };
-    MemoryLingo.prototype.getUsers = function () {
+    }
+    getUsers() {
         return this.userLingos;
-    };
-    MemoryLingo.prototype.reset = function () {
+    }
+    reset() {
         this.userLingos = {};
-    };
-    MemoryLingo.prototype.getValue = function () {
+    }
+    getValue() {
         return this;
-    };
-    MemoryLingo.prototype.addUserLingo = function (id, lingo) {
+    }
+    addUserLingo(id, lingo) {
         if (this.userLingos[id] === undefined) {
             this.userLingos[id] = [lingo];
             if (!this.busy) {
@@ -2197,8 +2119,8 @@ var MemoryLingo = (function (_super) {
                 }
             }
         }
-    };
-    MemoryLingo.prototype.removeUserLingo = function (id, lingo) {
+    }
+    removeUserLingo(id, lingo) {
         if (this.userLingos[id] !== undefined) {
             var idx = this.userLingos[id].indexOf(lingo);
             if (idx !== -1) {
@@ -2209,15 +2131,15 @@ var MemoryLingo = (function (_super) {
                 }
             }
         }
-    };
-    MemoryLingo.prototype.isSpeaker = function (id, lingo) {
+    }
+    isSpeaker(id, lingo) {
         var user = this.getUser(id);
         if (user === null) {
             return false;
         }
         return user.indexOf(lingo) !== -1;
-    };
-    MemoryLingo.prototype.getSpeakers = function (lingo) {
+    }
+    getSpeakers(lingo) {
         var speakers = [];
         if (Server.Chat.getRoom() === null) {
             return speakers;
@@ -2228,8 +2150,8 @@ var MemoryLingo = (function (_super) {
             }
         }
         return speakers;
-    };
-    MemoryLingo.prototype.getSpeakerArray = function (lingo) {
+    }
+    getSpeakerArray(lingo) {
         var speakers = [];
         if (Server.Chat.getRoom() === null) {
             return speakers;
@@ -2240,8 +2162,8 @@ var MemoryLingo = (function (_super) {
             }
         }
         return speakers;
-    };
-    MemoryLingo.prototype.storeValue = function (values) {
+    }
+    storeValue(values) {
         if (!Array.isArray(values)) {
             console.warn("[ROOMMEMMORY] [MemoryLingo] Invalid store operation requested. Ignoring.");
             return;
@@ -2263,53 +2185,47 @@ var MemoryLingo = (function (_super) {
         if (oldJson !== newJson) {
             this.triggerChange();
         }
-    };
-    MemoryLingo.prototype.exportAsObject = function () {
+    }
+    exportAsObject() {
         var values = [];
         for (var id in this.userLingos) {
             values.push(parseInt(id));
             values.push(this.userLingos[id].join(";"));
         }
         return values;
-    };
-    return MemoryLingo;
-}(TrackerMemory));
-var MemoryVersion = (function (_super) {
-    __extends(MemoryVersion, _super);
-    function MemoryVersion() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.importVersion = Server.Chat.Memory.version;
-        return _this;
     }
-    MemoryVersion.prototype.reset = function () {
+}
+class MemoryVersion extends TrackerMemory {
+    constructor() {
+        super(...arguments);
         this.importVersion = Server.Chat.Memory.version;
-    };
-    MemoryVersion.prototype.storeValue = function (v) {
+    }
+    reset() {
+        this.importVersion = Server.Chat.Memory.version;
+    }
+    storeValue(v) {
         this.importVersion = v;
-    };
-    MemoryVersion.prototype.getValue = function () {
+    }
+    getValue() {
         return this.importVersion;
-    };
-    MemoryVersion.prototype.exportAsObject = function () {
+    }
+    exportAsObject() {
         return Server.Chat.Memory.version;
-    };
-    return MemoryVersion;
-}(TrackerMemory));
-var MemoryCutscene = (function (_super) {
-    __extends(MemoryCutscene, _super);
-    function MemoryCutscene() {
-        var _this = _super.call(this) || this;
-        _this.chatAllowed = true;
+    }
+}
+class MemoryCutscene extends TrackerMemory {
+    constructor() {
+        super();
+        this.chatAllowed = true;
         MemoryCutscene.button.addEventListener("click", {
-            cutscene: _this,
+            cutscene: this,
             handleEvent: function (e) {
                 e.preventDefault();
                 this.cutscene.click();
             }
         });
-        return _this;
     }
-    MemoryCutscene.prototype.click = function () {
+    click() {
         if (Server.Chat.getRoom().getMe().isStoryteller()) {
             this.storeValue(!this.getValue());
             if (!this.getValue()) {
@@ -2323,11 +2239,11 @@ var MemoryCutscene = (function (_super) {
                 UI.Chat.printElement(msg.getElement());
             }
         }
-    };
-    MemoryCutscene.prototype.reset = function () {
+    }
+    reset() {
         this.chatAllowed = true;
-    };
-    MemoryCutscene.prototype.storeValue = function (v) {
+    }
+    storeValue(v) {
         var allowed = v === true || v === 1;
         if (allowed !== this.chatAllowed) {
             this.chatAllowed = allowed;
@@ -2341,18 +2257,17 @@ var MemoryCutscene = (function (_super) {
                 MemoryCutscene.button.classList.add("icons-chatHollywoodOff");
             }
         }
-    };
-    MemoryCutscene.prototype.getValue = function () {
+    }
+    getValue() {
         return this.chatAllowed;
-    };
-    MemoryCutscene.prototype.exportAsObject = function () {
+    }
+    exportAsObject() {
         return this.chatAllowed ? 1 : 0;
-    };
-    return MemoryCutscene;
-}(TrackerMemory));
+    }
+}
 MemoryCutscene.button = document.getElementById("chatHollywood");
-var CombatEffect = (function () {
-    function CombatEffect(combat) {
+class CombatEffect {
+    constructor(combat) {
         this.name = "";
         this.target = 0;
         this.roundEnd = 0;
@@ -2361,7 +2276,7 @@ var CombatEffect = (function () {
         this.customString = null;
         this.combat = combat;
     }
-    CombatEffect.prototype.getTargetName = function () {
+    getTargetName() {
         var sheet = DB.SheetDB.getSheet(this.target);
         if (sheet !== null) {
             return sheet.getName();
@@ -2373,8 +2288,8 @@ var CombatEffect = (function () {
             }
         }
         return "???";
-    };
-    CombatEffect.prototype.considerEnding = function () {
+    }
+    considerEnding() {
         if (this.combat.getRound() > this.roundEnd) {
             this.combat.removeEffect(this);
         }
@@ -2388,18 +2303,18 @@ var CombatEffect = (function () {
                 this.combat.removeEffect(this);
             }
         }
-    };
-    CombatEffect.prototype.reset = function () {
+    }
+    reset() {
         this.name = UI.Language.getLanguage().getLingo("_TRACKERUNKNOWNEFFECT_");
-    };
-    CombatEffect.prototype.exportAsObject = function () {
+    }
+    exportAsObject() {
         var arr = [this.name, this.roundEnd, this.turnEnd, this.endOnStart ? 1 : 0];
         if (this.customString !== null) {
             arr.push(this.customString);
         }
         return arr;
-    };
-    CombatEffect.prototype.updateFromObject = function (array) {
+    }
+    updateFromObject(array) {
         if (!Array.isArray(array)) {
             this.reset();
         }
@@ -2412,48 +2327,46 @@ var CombatEffect = (function () {
                 this.customString = array[4];
             }
         }
-    };
-    return CombatEffect;
-}());
-var CombatParticipant = (function () {
-    function CombatParticipant() {
+    }
+}
+class CombatParticipant {
+    constructor() {
         this.id = 0;
         this.name = "";
         this.initiative = 0;
         this.owner = 0;
     }
-    CombatParticipant.prototype.setSheet = function (sheet) {
+    setSheet(sheet) {
         this.id = sheet.getId();
         this.name = sheet.getName();
-    };
-    CombatParticipant.prototype.setSheetId = function (id) {
+    }
+    setSheetId(id) {
         this.id = id;
-    };
-    CombatParticipant.prototype.setName = function (name) {
+    }
+    setName(name) {
         this.name = name;
-    };
-    CombatParticipant.prototype.setInitiative = function (init) {
+    }
+    setInitiative(init) {
         this.initiative = init;
-    };
-    CombatParticipant.prototype.setOwner = function (id) {
+    }
+    setOwner(id) {
         this.owner = id;
-    };
-    CombatParticipant.prototype.updateFromObject = function (obj) {
+    }
+    updateFromObject(obj) {
         if (Array.isArray(obj) && obj.length === 4) {
             this.id = obj[0];
             this.name = obj[1];
             this.initiative = obj[2];
             this.owner = obj[3];
         }
-    };
-    CombatParticipant.prototype.exportAsObject = function () {
+    }
+    exportAsObject() {
         var participant = [this.id, this.name, this.initiative, this.owner];
         return participant;
-    };
-    return CombatParticipant;
-}());
-var ChatCombatRow = (function () {
-    function ChatCombatRow(combatant, currentTurn, currentTarget, isStoryteller) {
+    }
+}
+class ChatCombatRow {
+    constructor(combatant, currentTurn, currentTarget, isStoryteller) {
         this.visible = document.createElement("div");
         this.combatant = combatant;
         this.visible.classList.add("combatRow");
@@ -2514,10 +2427,10 @@ var ChatCombatRow = (function () {
         }
         UI.Language.updateScreen(this.visible);
     }
-    ChatCombatRow.prototype.getHTML = function () {
+    getHTML() {
         return this.visible;
-    };
-    ChatCombatRow.prototype.change = function () {
+    }
+    change() {
         var value = Number(this.input.value);
         if (!isNaN(value)) {
             var memory = Server.Chat.Memory.getConfiguration("Combat");
@@ -2526,27 +2439,26 @@ var ChatCombatRow = (function () {
         else {
             UI.Chat.Combat.update();
         }
-    };
-    ChatCombatRow.prototype.remove = function () {
+    }
+    remove() {
         var memory = Server.Chat.Memory.getConfiguration("Combat");
         memory.removeParticipant(this.combatant);
-    };
-    ChatCombatRow.prototype.setTurn = function () {
+    }
+    setTurn() {
         var memory = Server.Chat.Memory.getConfiguration("Combat");
         memory.setTurn(this.combatant);
         UI.Chat.Combat.announceTurn();
-    };
-    ChatCombatRow.prototype.setTarget = function () {
+    }
+    setTarget() {
         var memory = Server.Chat.Memory.getConfiguration("Combat");
         memory.setTarget(this.combatant.id);
-    };
-    ChatCombatRow.prototype.openSheet = function () {
+    }
+    openSheet() {
         UI.Sheets.SheetManager.openSheetId(this.combatant.id);
-    };
-    return ChatCombatRow;
-}());
-var ChatInfo = (function () {
-    function ChatInfo(floater) {
+    }
+}
+class ChatInfo {
+    constructor(floater) {
         this.textNode = document.createTextNode("null");
         this.senderBold = document.createElement("b");
         this.senderTextNode = document.createTextNode("_CHATSENDER_");
@@ -2561,7 +2473,7 @@ var ChatInfo = (function () {
         this.floater.appendChild(this.textNode);
         UI.Language.markLanguage(this.senderBold);
     }
-    ChatInfo.prototype.showFor = function ($element, message) {
+    showFor($element, message) {
         this.floater.style.display = "";
         var offset = $element.offset().top;
         var height = window.innerHeight;
@@ -2574,11 +2486,11 @@ var ChatInfo = (function () {
                 UI.Language.markLanguage(this.senderBold);
             }
         }
-    };
-    ChatInfo.prototype.hide = function () {
+    }
+    hide() {
         this.floater.style.display = "none";
-    };
-    ChatInfo.prototype.bindMessage = function (message, element) {
+    }
+    bindMessage(message, element) {
         if (message instanceof MessageSystem) {
             return;
         }
@@ -2604,11 +2516,10 @@ var ChatInfo = (function () {
                 this.chatInfo.hide();
             }
         });
-    };
-    return ChatInfo;
-}());
-var ChatAvatar = (function () {
-    function ChatAvatar() {
+    }
+}
+class ChatAvatar {
+    constructor() {
         this.element = document.createElement("div");
         this.img = document.createElement("img");
         this.typing = document.createElement("a");
@@ -2641,13 +2552,13 @@ var ChatAvatar = (function () {
             }
         });
     }
-    ChatAvatar.prototype.getHTML = function () {
+    getHTML() {
         return this.element;
-    };
-    ChatAvatar.prototype.getUser = function () {
+    }
+    getUser() {
         return this.user;
-    };
-    ChatAvatar.prototype.setOnline = function (online) {
+    }
+    setOnline(online) {
         if (online) {
             this.element.style.display = "";
         }
@@ -2658,17 +2569,17 @@ var ChatAvatar = (function () {
             this.changedOnline = true;
             this.online = online;
         }
-    };
-    ChatAvatar.prototype.reset = function () {
+    }
+    reset() {
         this.setOnline(false);
         this.changedOnline = false;
-    };
-    ChatAvatar.prototype.isChangedOnline = function () {
+    }
+    isChangedOnline() {
         var is = this.changedOnline;
         this.changedOnline = false;
         return is;
-    };
-    ChatAvatar.prototype.setImg = function (img) {
+    }
+    setImg(img) {
         if (img === null) {
             this.img.style.display = "none";
             this.element.classList.add("icons-chatAnon");
@@ -2680,35 +2591,35 @@ var ChatAvatar = (function () {
             this.element.classList.remove("icons-chatAnonError");
             this.img.src = img;
         }
-    };
-    ChatAvatar.prototype.setName = function (name) {
+    }
+    setName(name) {
         this.name.nodeValue = name;
-    };
-    ChatAvatar.prototype.setFocus = function (focus) {
+    }
+    setFocus(focus) {
         if (!focus) {
             this.element.style.opacity = "0.7";
         }
         else {
             this.element.style.opacity = "1";
         }
-    };
-    ChatAvatar.prototype.setTyping = function (typing) {
+    }
+    setTyping(typing) {
         if (typing) {
             this.typing.style.display = "";
         }
         else {
             this.typing.style.display = "none";
         }
-    };
-    ChatAvatar.prototype.setAfk = function (afk) {
+    }
+    setAfk(afk) {
         if (afk) {
             this.afk.style.display = "";
         }
         else {
             this.afk.style.display = "none";
         }
-    };
-    ChatAvatar.prototype.updateName = function () {
+    }
+    updateName() {
         if (this.persona === null) {
             if (this.user !== null)
                 this.setName(this.user.getFullNickname());
@@ -2725,8 +2636,8 @@ var ChatAvatar = (function () {
         else {
             this.element.removeAttribute("title");
         }
-    };
-    ChatAvatar.prototype.updateFromObject = function (obj) {
+    }
+    updateFromObject(obj) {
         if (obj['id'] !== undefined) {
             this.user = DB.UserDB.getUser(obj['id']);
         }
@@ -2743,11 +2654,10 @@ var ChatAvatar = (function () {
         if (obj['avatar'] !== undefined)
             this.setImg(obj['avatar']);
         this.updateName();
-    };
-    return ChatAvatar;
-}());
-var ChatNotificationIcon = (function () {
-    function ChatNotificationIcon(icon, hasLanguage) {
+    }
+}
+class ChatNotificationIcon {
+    constructor(icon, hasLanguage) {
         this.element = document.createElement("div");
         this.hoverInfo = document.createElement("div");
         this.language = hasLanguage === undefined ? true : hasLanguage;
@@ -2759,53 +2669,52 @@ var ChatNotificationIcon = (function () {
         }
         this.element.style.display = "none";
     }
-    ChatNotificationIcon.prototype.addText = function (text) {
+    addText(text) {
         this.hoverInfo.appendChild(document.createTextNode(text));
-    };
-    ChatNotificationIcon.prototype.getElement = function () {
+    }
+    getElement() {
         if (this.language) {
             UI.Language.markLanguage(this.hoverInfo);
         }
         return this.element;
-    };
-    ChatNotificationIcon.prototype.show = function () {
+    }
+    show() {
         if (this.element.style.display === "") {
             return false;
         }
         this.element.style.display = "";
         return true;
-    };
-    ChatNotificationIcon.prototype.hide = function () {
+    }
+    hide() {
         if (this.element.style.display === "none") {
             return false;
         }
         this.element.style.display = "none";
         return true;
-    };
-    return ChatNotificationIcon;
-}());
-var ChatFormState = (function () {
-    function ChatFormState(element) {
+    }
+}
+class ChatFormState {
+    constructor(element) {
         this.state = -1;
         this.element = element;
         this.setState(ChatFormState.STATE_NORMAL);
     }
-    ChatFormState.prototype.getState = function () {
+    getState() {
         return this.state;
-    };
-    ChatFormState.prototype.isNormal = function () {
+    }
+    isNormal() {
         return this.state === ChatFormState.STATE_NORMAL;
-    };
-    ChatFormState.prototype.isAction = function () {
+    }
+    isAction() {
         return this.state === ChatFormState.STATE_ACTION;
-    };
-    ChatFormState.prototype.isStory = function () {
+    }
+    isStory() {
         return this.state === ChatFormState.STATE_STORY;
-    };
-    ChatFormState.prototype.isOff = function () {
+    }
+    isOff() {
         return this.state === ChatFormState.STATE_OFF;
-    };
-    ChatFormState.prototype.setState = function (state) {
+    }
+    setState(state) {
         if (this.state === state) {
             return;
         }
@@ -2813,15 +2722,14 @@ var ChatFormState = (function () {
         this.element.classList.remove(stateClass[this.state]);
         this.element.classList.add(stateClass[state]);
         this.state = state;
-    };
-    return ChatFormState;
-}());
+    }
+}
 ChatFormState.STATE_NORMAL = 0;
 ChatFormState.STATE_ACTION = 1;
 ChatFormState.STATE_STORY = 2;
 ChatFormState.STATE_OFF = 3;
-var ChatAvatarChoice = (function () {
-    function ChatAvatarChoice(name, avatar) {
+class ChatAvatarChoice {
+    constructor(name, avatar) {
         this.avatar = new ChatAvatar();
         this.box = document.createElement("div");
         this.useButton = document.createElement("a");
@@ -2857,21 +2765,20 @@ var ChatAvatarChoice = (function () {
         this.nameStr = name;
         this.avatarStr = avatar;
     }
-    ChatAvatarChoice.prototype.getHTML = function () {
+    getHTML() {
         return this.box;
-    };
-    return ChatAvatarChoice;
-}());
-var ChatSystemMessage = (function () {
-    function ChatSystemMessage(hasLanguage) {
+    }
+}
+class ChatSystemMessage {
+    constructor(hasLanguage) {
         this.element = document.createElement("p");
         this.element.classList.add("chatMessageNotification");
         this.hasLanguage = hasLanguage;
     }
-    ChatSystemMessage.prototype.addLangVar = function (id, value) {
+    addLangVar(id, value) {
         UI.Language.addLanguageVariable(this.element, id, value);
-    };
-    ChatSystemMessage.createTextLink = function (text, hasLanguage, click) {
+    }
+    static createTextLink(text, hasLanguage, click) {
         var a = document.createElement("a");
         a.classList.add("textLink");
         a.appendChild(document.createTextNode(text));
@@ -2880,29 +2787,58 @@ var ChatSystemMessage = (function () {
         }
         a.addEventListener("click", click);
         return a;
-    };
-    ChatSystemMessage.prototype.addTextLink = function (text, hasLanguage, click) {
+    }
+    addTextLink(text, hasLanguage, click) {
         this.element.appendChild(ChatSystemMessage.createTextLink(text, hasLanguage, click));
-    };
-    ChatSystemMessage.prototype.addText = function (text) {
+    }
+    addText(text) {
         this.element.appendChild(document.createTextNode(text));
-    };
-    ChatSystemMessage.prototype.addLingoVariable = function (id, value) {
+    }
+    addLingoVariable(id, value) {
         UI.Language.addLanguageVariable(this.element, id, value);
-    };
-    ChatSystemMessage.prototype.addElement = function (ele) {
+    }
+    addElement(ele) {
         this.element.appendChild(ele);
-    };
-    ChatSystemMessage.prototype.getElement = function () {
+    }
+    getElement() {
         if (this.hasLanguage) {
             UI.Language.markLanguage(this.element);
         }
         return this.element;
-    };
-    return ChatSystemMessage;
-}());
-var ImagesRow = (function () {
-    function ImagesRow(image, folder) {
+    }
+}
+class ImagesRow {
+    view() {
+        UI.Pica.loadImage(this.image.getLink());
+    }
+    share() {
+        MessageImage.shareLink(this.image.getName(), this.image.getLink());
+    }
+    usePersona() {
+        UI.Chat.PersonaDesigner.createPersona(this.image.getName().replace(/ *\([^)]*\) */, '').trim(), this.image.getLink());
+        UI.Chat.PersonaManager.createAndUsePersona(this.image.getName().replace(/ *\([^)]*\) */, '').trim(), this.image.getLink());
+    }
+    delete() {
+        this.html.parentElement.removeChild(this.html);
+        this.folder.considerSuicide();
+        DB.ImageDB.removeImage(this.image);
+    }
+    renameFolder() {
+        var newName = prompt(UI.Language.getLanguage().getLingo("_IMAGESRENAMEFOLDERPROMPT_", { languagea: this.image.getName(), languageb: this.image.getFolder() }));
+        if (newName === null) {
+            return;
+        }
+        this.image.setFolder(newName.trim());
+    }
+    rename() {
+        var newName = prompt(UI.Language.getLanguage().getLingo("_IMAGESRENAMEPROMPT_", { languagea: this.image.getName() }));
+        if (newName === null || newName === "") {
+            return;
+        }
+        this.image.setName(newName);
+        this.nameNode.nodeValue = this.image.getName();
+    }
+    constructor(image, folder) {
         this.folder = folder;
         this.image = image;
         var imageContainer = document.createElement("div");
@@ -2944,7 +2880,7 @@ var ImagesRow = (function () {
         deleteButton.addEventListener("click", {
             row: this,
             handleEvent: function () {
-                this.row["delete"]();
+                this.row.delete();
             }
         });
         var renameButton = document.createElement("a");
@@ -2982,43 +2918,12 @@ var ImagesRow = (function () {
         imageContainer.appendChild(imageTitle);
         this.html = imageContainer;
     }
-    ImagesRow.prototype.view = function () {
-        UI.Pica.loadImage(this.image.getLink());
-    };
-    ImagesRow.prototype.share = function () {
-        MessageImage.shareLink(this.image.getName(), this.image.getLink());
-    };
-    ImagesRow.prototype.usePersona = function () {
-        UI.Chat.PersonaDesigner.createPersona(this.image.getName().replace(/ *\([^)]*\) */, '').trim(), this.image.getLink());
-        UI.Chat.PersonaManager.createAndUsePersona(this.image.getName().replace(/ *\([^)]*\) */, '').trim(), this.image.getLink());
-    };
-    ImagesRow.prototype["delete"] = function () {
-        this.html.parentElement.removeChild(this.html);
-        this.folder.considerSuicide();
-        DB.ImageDB.removeImage(this.image);
-    };
-    ImagesRow.prototype.renameFolder = function () {
-        var newName = prompt(UI.Language.getLanguage().getLingo("_IMAGESRENAMEFOLDERPROMPT_", { languagea: this.image.getName(), languageb: this.image.getFolder() }));
-        if (newName === null) {
-            return;
-        }
-        this.image.setFolder(newName.trim());
-    };
-    ImagesRow.prototype.rename = function () {
-        var newName = prompt(UI.Language.getLanguage().getLingo("_IMAGESRENAMEPROMPT_", { languagea: this.image.getName() }));
-        if (newName === null || newName === "") {
-            return;
-        }
-        this.image.setName(newName);
-        this.nameNode.nodeValue = this.image.getName();
-    };
-    ImagesRow.prototype.getHTML = function () {
+    getHTML() {
         return this.html;
-    };
-    return ImagesRow;
-}());
-var ImagesFolder = (function () {
-    function ImagesFolder(images) {
+    }
+}
+class ImagesFolder {
+    constructor(images) {
         var folderName = images[0].getFolder();
         this.name = folderName;
         if (folderName === "") {
@@ -3046,30 +2951,67 @@ var ImagesFolder = (function () {
         }
         this.html = folderContainer;
     }
-    ImagesFolder.prototype.getName = function () {
+    getName() {
         return this.name;
-    };
-    ImagesFolder.prototype.open = function () {
+    }
+    open() {
         this.folderContainer.classList.add("folderOpen");
-    };
-    ImagesFolder.prototype.toggle = function () {
+    }
+    toggle() {
         this.folderContainer.classList.toggle("folderOpen");
         if (this.folderContainer.classList.contains("folderOpen")) {
             UI.Images.stayInFolder(this.name);
         }
-    };
-    ImagesFolder.prototype.getHTML = function () {
+    }
+    getHTML() {
         return this.html;
-    };
-    ImagesFolder.prototype.considerSuicide = function () {
+    }
+    considerSuicide() {
         if (this.html.children.length <= 2) {
             this.html.parentElement.removeChild(this.html);
         }
-    };
-    return ImagesFolder;
-}());
-var SheetsRow = (function () {
-    function SheetsRow(sheet) {
+    }
+}
+class SheetsRow {
+    open(e) {
+        UI.Sheets.SheetManager.openSheet(this.sheet, false, false, !e.ctrlKey);
+    }
+    deleteSheet() {
+        if (confirm(UI.Language.getLanguage().getLingo("_SHEETCONFIRMDELETE_", { languagea: this.sheet.getName() }))) {
+            var cbs = {
+                sheet: this.sheet,
+                oldFolder: this.sheet.getFolder(),
+                handleEvent: function () {
+                    UI.Sheets.keepOpen(this.oldFolder, this.sheet.getGameid());
+                    UI.Sheets.callSelf();
+                }
+            };
+            Server.Sheets.deleteSheet(this.sheet, cbs);
+        }
+    }
+    editPerm() {
+        UI.Sheets.SheetPermissionDesigner.callSelf(this.sheet);
+    }
+    editFolder() {
+        var oldFolder = this.sheet.getFolder();
+        var newName = prompt(UI.Language.getLanguage().getLingo("_SHEETSRENAMEFOLDERPROMPT_", { languagea: this.sheet.getName(), languageb: this.sheet.folder }));
+        if (newName === null) {
+            return;
+        }
+        this.sheet.folder = newName.trim();
+        if (this.sheet.getFolder() !== oldFolder) {
+            var cbs = {
+                sheet: this.sheet,
+                oldFolder: oldFolder,
+                handleEvent: function () {
+                    UI.Sheets.keepOpen(this.oldFolder, this.sheet.getGameid());
+                    UI.Sheets.callSelf();
+                }
+            };
+            Server.Sheets.sendFolder(this.sheet, cbs);
+        }
+    }
+    constructor(sheet) {
         this.sheet = sheet;
         this.html = document.createElement("p");
         this.html.classList.add("sheetListSheet");
@@ -3131,51 +3073,12 @@ var SheetsRow = (function () {
             });
         }
     }
-    SheetsRow.prototype.open = function (e) {
-        UI.Sheets.SheetManager.openSheet(this.sheet, false, false, !e.ctrlKey);
-    };
-    SheetsRow.prototype.deleteSheet = function () {
-        if (confirm(UI.Language.getLanguage().getLingo("_SHEETCONFIRMDELETE_", { languagea: this.sheet.getName() }))) {
-            var cbs = {
-                sheet: this.sheet,
-                oldFolder: this.sheet.getFolder(),
-                handleEvent: function () {
-                    UI.Sheets.keepOpen(this.oldFolder, this.sheet.getGameid());
-                    UI.Sheets.callSelf();
-                }
-            };
-            Server.Sheets.deleteSheet(this.sheet, cbs);
-        }
-    };
-    SheetsRow.prototype.editPerm = function () {
-        UI.Sheets.SheetPermissionDesigner.callSelf(this.sheet);
-    };
-    SheetsRow.prototype.editFolder = function () {
-        var oldFolder = this.sheet.getFolder();
-        var newName = prompt(UI.Language.getLanguage().getLingo("_SHEETSRENAMEFOLDERPROMPT_", { languagea: this.sheet.getName(), languageb: this.sheet.folder }));
-        if (newName === null) {
-            return;
-        }
-        this.sheet.folder = newName.trim();
-        if (this.sheet.getFolder() !== oldFolder) {
-            var cbs = {
-                sheet: this.sheet,
-                oldFolder: oldFolder,
-                handleEvent: function () {
-                    UI.Sheets.keepOpen(this.oldFolder, this.sheet.getGameid());
-                    UI.Sheets.callSelf();
-                }
-            };
-            Server.Sheets.sendFolder(this.sheet, cbs);
-        }
-    };
-    SheetsRow.prototype.getHTML = function () {
+    getHTML() {
         return this.html;
-    };
-    return SheetsRow;
-}());
-var SheetsFolder = (function () {
-    function SheetsFolder(sheets, open) {
+    }
+}
+class SheetsFolder {
+    constructor(sheets, open) {
         var folderName = sheets[0].folder;
         if (folderName === "") {
             folderName = UI.Language.getLanguage().getLingo("_SHEETSNOFOLDERNAME_");
@@ -3199,13 +3102,12 @@ var SheetsFolder = (function () {
             this.html.appendChild(sheet.getHTML());
         }
     }
-    SheetsFolder.prototype.getHTML = function () {
+    getHTML() {
         return this.html;
-    };
-    return SheetsFolder;
-}());
-var SheetPermRow = (function () {
-    function SheetPermRow(player) {
+    }
+}
+class SheetPermRow {
+    constructor(player) {
         this.deleteSheet = false;
         this.editSheet = false;
         this.viewSheet = false;
@@ -3231,7 +3133,7 @@ var SheetPermRow = (function () {
         this.viewInput.type = "checkbox";
         this.viewInput.checked = this.viewSheet;
     }
-    SheetPermRow.prototype.exportPrivileges = function () {
+    exportPrivileges() {
         var obj = {
             userid: this.userId,
             deletar: this.deleteInput.checked,
@@ -3240,8 +3142,8 @@ var SheetPermRow = (function () {
             promote: this.promoteInput.checked
         };
         return obj;
-    };
-    SheetPermRow.prototype.getHTML = function () {
+    }
+    getHTML() {
         var p = document.createElement("p");
         p.classList.add("sheetPermRow");
         p.appendChild(document.createTextNode(this.nickname + "#" + this.nicknamesufix));
@@ -3259,11 +3161,48 @@ var SheetPermRow = (function () {
         p.appendChild(editLabel);
         UI.Language.updateScreen(p);
         return p;
-    };
-    return SheetPermRow;
-}());
-var SoundsRow = (function () {
-    function SoundsRow(snd, folder) {
+    }
+}
+class SoundsRow {
+    play() {
+        if (this.sound.isBgm()) {
+            UI.SoundController.playBGM(this.sound.getLink());
+        }
+        else {
+            UI.SoundController.playSE(this.sound.getLink());
+        }
+    }
+    share() {
+        if (this.sound.isBgm()) {
+            MessageBGM.shareLink(this.sound.getName(), this.sound.getLink());
+        }
+        else {
+            MessageSE.shareLink(this.sound.getName(), this.sound.getLink());
+        }
+    }
+    delete() {
+        this.html.parentElement.removeChild(this.html);
+        this.folder.considerSuicide();
+        DB.SoundDB.removeSound(this.sound);
+    }
+    renameFolder() {
+        UI.Sounds.stayInFolder(this.sound.getFolder());
+        var newName = prompt(UI.Language.getLanguage().getLingo("_SOUNDSRENAMEFOLDERPROMPT_", { languagea: this.sound.getName(), languageb: this.sound.getFolder() }));
+        if (newName === null) {
+            return;
+        }
+        this.sound.setFolder(newName.trim());
+        UI.Sounds.printSounds();
+    }
+    rename() {
+        var newName = prompt(UI.Language.getLanguage().getLingo("_SOUNDSRENAMEPROMPT_", { languagea: this.sound.getName() }));
+        if (newName === null || newName === "") {
+            return;
+        }
+        this.sound.setName(newName);
+        this.nameNode.nodeValue = this.sound.getName();
+    }
+    constructor(snd, folder) {
         this.folder = folder;
         this.sound = snd;
         var soundContainer = document.createElement("div");
@@ -3305,7 +3244,7 @@ var SoundsRow = (function () {
         deleteButton.addEventListener("click", {
             row: this,
             handleEvent: function () {
-                this.row["delete"]();
+                this.row.delete();
             }
         });
         var renameButton = document.createElement("a");
@@ -3342,51 +3281,12 @@ var SoundsRow = (function () {
         soundContainer.appendChild(imageTitle);
         this.html = soundContainer;
     }
-    SoundsRow.prototype.play = function () {
-        if (this.sound.isBgm()) {
-            UI.SoundController.playBGM(this.sound.getLink());
-        }
-        else {
-            UI.SoundController.playSE(this.sound.getLink());
-        }
-    };
-    SoundsRow.prototype.share = function () {
-        if (this.sound.isBgm()) {
-            MessageBGM.shareLink(this.sound.getName(), this.sound.getLink());
-        }
-        else {
-            MessageSE.shareLink(this.sound.getName(), this.sound.getLink());
-        }
-    };
-    SoundsRow.prototype["delete"] = function () {
-        this.html.parentElement.removeChild(this.html);
-        this.folder.considerSuicide();
-        DB.SoundDB.removeSound(this.sound);
-    };
-    SoundsRow.prototype.renameFolder = function () {
-        UI.Sounds.stayInFolder(this.sound.getFolder());
-        var newName = prompt(UI.Language.getLanguage().getLingo("_SOUNDSRENAMEFOLDERPROMPT_", { languagea: this.sound.getName(), languageb: this.sound.getFolder() }));
-        if (newName === null) {
-            return;
-        }
-        this.sound.setFolder(newName.trim());
-        UI.Sounds.printSounds();
-    };
-    SoundsRow.prototype.rename = function () {
-        var newName = prompt(UI.Language.getLanguage().getLingo("_SOUNDSRENAMEPROMPT_", { languagea: this.sound.getName() }));
-        if (newName === null || newName === "") {
-            return;
-        }
-        this.sound.setName(newName);
-        this.nameNode.nodeValue = this.sound.getName();
-    };
-    SoundsRow.prototype.getHTML = function () {
+    getHTML() {
         return this.html;
-    };
-    return SoundsRow;
-}());
-var SoundsFolder = (function () {
-    function SoundsFolder(sounds) {
+    }
+}
+class SoundsFolder {
+    constructor(sounds) {
         var folderName = sounds[0].getFolder();
         this.name = folderName;
         if (folderName === "") {
@@ -3414,30 +3314,29 @@ var SoundsFolder = (function () {
         }
         this.html = folderContainer;
     }
-    SoundsFolder.prototype.getName = function () {
+    getName() {
         return this.name;
-    };
-    SoundsFolder.prototype.open = function () {
+    }
+    open() {
         this.folderContainer.classList.add("folderOpen");
-    };
-    SoundsFolder.prototype.toggle = function () {
+    }
+    toggle() {
         this.folderContainer.classList.toggle("folderOpen");
         if (this.folderContainer.classList.contains("folderOpen")) {
             UI.Images.stayInFolder(this.name);
         }
-    };
-    SoundsFolder.prototype.getHTML = function () {
+    }
+    getHTML() {
         return this.html;
-    };
-    SoundsFolder.prototype.considerSuicide = function () {
+    }
+    considerSuicide() {
         if (this.html.children.length <= 2) {
             this.html.parentElement.removeChild(this.html);
         }
-    };
-    return SoundsFolder;
-}());
-var SheetTab = (function () {
-    function SheetTab(sheet) {
+    }
+}
+class SheetTab {
+    constructor(sheet) {
         this.div = document.createElement("div");
         this.text = document.createTextNode("");
         this.sheet = sheet;
@@ -3460,37 +3359,36 @@ var SheetTab = (function () {
         this.checkNPCStatus();
         this.updateName();
     }
-    SheetTab.prototype.updateName = function () {
+    updateName() {
         this.text.nodeValue = this.sheet.getName();
-    };
-    SheetTab.prototype.checkNPCStatus = function () {
+    }
+    checkNPCStatus() {
         if (this.sheet.isNPC()) {
             this.toggleNpc();
         }
         else {
             this.toggleCharacter();
         }
-    };
-    SheetTab.prototype.getHTML = function () {
+    }
+    getHTML() {
         return this.div;
-    };
-    SheetTab.prototype.toggleNpc = function () {
+    }
+    toggleNpc() {
         this.div.classList.remove("character");
-    };
-    SheetTab.prototype.toggleCharacter = function () {
+    }
+    toggleCharacter() {
         this.div.classList.add("character");
-    };
-    SheetTab.prototype.toggleOn = function () {
+    }
+    toggleOn() {
         this.div.classList.add("toggled");
-    };
-    SheetTab.prototype.toggleOff = function () {
+    }
+    toggleOff() {
         this.div.classList.remove("toggled");
-    };
-    SheetTab.prototype.click = function () {
+    }
+    click() {
         UI.Sheets.SheetManager.openSheet(this.sheet);
-    };
-    return SheetTab;
-}());
+    }
+}
 (new PseudoLanguage("Ancient"))
     .addSyllabi(["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"])
     .addNumbers(['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'])
@@ -3693,8 +3591,8 @@ var SheetTab = (function () {
     .setRandomizeNumbers(false)
     .setAllowPoints(true)
     .setLowerCase(false);
-var SheetStyle = (function () {
-    function SheetStyle(style) {
+class SheetStyle {
+    constructor(style) {
         this.css = document.createElement("style");
         this.visible = document.createElement("div");
         this.$visible = $(this.visible);
@@ -3725,42 +3623,42 @@ var SheetStyle = (function () {
         var _endTime = (new Date()).getTime();
         console.debug("[SheetStyle] " + this.getName() + "'s processing took " + (_endTime - _startTime) + "ms to process.");
     }
-    SheetStyle.prototype.addSheetInstanceChangeListener = function (f) {
+    addSheetInstanceChangeListener(f) {
         this.sheetInstanceChangeTrigger.addListenerIfMissing(f);
-    };
-    SheetStyle.prototype.stringToType = function (str) {
+    }
+    stringToType(str) {
         return str.replace(/[^A-Za-z0-9]/g, "").toLowerCase();
-    };
-    SheetStyle.prototype.isEditable = function () {
+    }
+    isEditable() {
         return this.sheetInstance !== null && this.sheetInstance.isEditable();
-    };
-    SheetStyle.prototype.getCreator = function (kind, type, def) {
+    }
+    getCreator(kind, type, def) {
         var name = kind + this.stringToType(type);
         if (eval("typeof " + name) === "function") {
             return eval(name);
         }
         return eval(kind + def);
-    };
-    SheetStyle.prototype.getSheet = function () {
+    }
+    getSheet() {
         return this.sheet;
-    };
-    SheetStyle.prototype.addCreatorListener = function (obj) {
+    }
+    addCreatorListener(obj) {
         this.creatorListeners.push(obj);
-    };
-    SheetStyle.prototype.triggerCreatorListeners = function () {
+    }
+    triggerCreatorListeners() {
         this.creatorListeners.forEach(function (creator) {
             creator.complete();
         });
-    };
-    SheetStyle.prototype.addSheetInstance = function (sheet) {
+    }
+    addSheetInstance(sheet) {
         if (this.sheetInstance !== null) {
             this.unbindSheetInstance();
         }
         this.sheetInstance = sheet;
         this.bindSheetInstance();
         this.reloadSheetInstance();
-    };
-    SheetStyle.prototype.reloadSheetInstance = function () {
+    }
+    reloadSheetInstance() {
         this.loading = true;
         if (this.nameVariable !== null) {
             this.nameVariable.storeValue(this.sheetInstance.getName());
@@ -3770,8 +3668,8 @@ var SheetStyle = (function () {
         this.checkNPC();
         this.loading = false;
         this.sheetInstanceChangeTrigger.trigger();
-    };
-    SheetStyle.prototype.checkNPC = function () {
+    }
+    checkNPC() {
         if (this.sheetInstance !== null && this.sheetInstance.isNPC()) {
             this.visible.classList.add("npctype");
             this.visible.classList.remove("charactertype");
@@ -3780,15 +3678,15 @@ var SheetStyle = (function () {
             this.visible.classList.remove("npctype");
             this.visible.classList.add("charactertype");
         }
-    };
-    SheetStyle.prototype.triggerAllVariables = function () {
+    }
+    triggerAllVariables() {
         var counter = this.getCounter();
         for (var i = 0; i < this.triggeredVariables.length; i++) {
             this.triggeredVariables[i].triggerChange(counter);
         }
         this.triggeredVariables = [];
-    };
-    SheetStyle.prototype.triggerVariableChange = function (variable) {
+    }
+    triggerVariableChange(variable) {
         if (this.loading) {
             if (this.triggeredVariables.indexOf(variable) === -1) {
                 this.triggeredVariables.push(variable);
@@ -3797,17 +3695,17 @@ var SheetStyle = (function () {
         else {
             variable.triggerChange(this.getCounter());
         }
-    };
-    SheetStyle.prototype.getCounter = function () {
+    }
+    getCounter() {
         return this.counter++;
-    };
-    SheetStyle.prototype.bindSheetInstance = function () {
+    }
+    bindSheetInstance() {
         this.sheetInstance.addChangeListener(this.sheetInstanceChangeListener);
-    };
-    SheetStyle.prototype.unbindSheetInstance = function () {
+    }
+    unbindSheetInstance() {
         this.sheetInstance.removeChangeListener(this.sheetInstanceChangeListener);
-    };
-    SheetStyle.prototype.bindSheet = function () {
+    }
+    bindSheet() {
         var changeListener = {
             counter: -1,
             handleEvent: function (sheet, style, counter) {
@@ -3818,11 +3716,11 @@ var SheetStyle = (function () {
             }
         };
         this.sheet.addChangeListener(changeListener);
-    };
-    SheetStyle.prototype.getSheetInstance = function () {
+    }
+    getSheetInstance() {
         return this.sheetInstance;
-    };
-    SheetStyle.prototype.updateSheetInstance = function () {
+    }
+    updateSheetInstance() {
         if (!this.loading) {
             if (this.nameVariable !== null) {
                 this.sheetInstance.setName(this.nameVariable.getValue());
@@ -3830,40 +3728,40 @@ var SheetStyle = (function () {
             this.sheetInstance.setValues(this.sheet.exportAsObject(), true);
             this.checkNPC();
         }
-    };
-    SheetStyle.prototype.createSheet = function () {
+    }
+    createSheet() {
         this.sheet = new Sheet(this, this, this.visible.childNodes);
         this.triggerCreatorListeners();
-    };
-    SheetStyle.prototype.fillElements = function () {
+    }
+    fillElements() {
         this.visible.innerHTML = this.styleInstance.html;
         this.css.innerHTML = this.styleInstance.css;
-    };
-    SheetStyle.prototype.getStyleInstance = function () {
+    }
+    getStyleInstance() {
         return this.styleInstance;
-    };
-    SheetStyle.prototype.getId = function () {
+    }
+    getId() {
         return this.styleInstance.getId();
-    };
-    SheetStyle.prototype.getName = function () {
+    }
+    getName() {
         return this.styleInstance.getName();
-    };
-    SheetStyle.prototype.doDiceCustom = function (dice) {
+    }
+    doDiceCustom(dice) {
         var msg = new ChatSystemMessage(true);
         msg.addText("_CHATMESSAGEDICECUSTOMSTYLENOCUSTOM_");
         UI.Chat.printElement(msg.getElement());
         return false;
-    };
-    SheetStyle.prototype.processCommand = function (msg) {
+    }
+    processCommand(msg) {
         return false;
-    };
-    SheetStyle.prototype.getCSS = function () {
+    }
+    getCSS() {
         return this.css;
-    };
-    SheetStyle.prototype.getHTML = function () {
+    }
+    getHTML() {
         return this.visible;
-    };
-    SheetStyle.prototype.createNameVariable = function (sheet, element) {
+    }
+    createNameVariable(sheet, element) {
         this.nameVariable = new SheetVariabletext(sheet, this, element);
         this.nameVariable.addChangeListener({
             counter: -1,
@@ -3873,18 +3771,13 @@ var SheetStyle = (function () {
                 }
             }
         });
-    };
-    SheetStyle.prototype.die = function () {
-        this.unbindSheetInstance();
-    };
-    return SheetStyle;
-}());
-var SheetStyleTranslatable = (function (_super) {
-    __extends(SheetStyleTranslatable, _super);
-    function SheetStyleTranslatable() {
-        return _super !== null && _super.apply(this, arguments) || this;
     }
-    SheetStyleTranslatable.prototype.translateObject = function (obj) {
+    die() {
+        this.unbindSheetInstance();
+    }
+}
+class SheetStyleTranslatable extends SheetStyle {
+    translateObject(obj) {
         for (var key in obj) {
             if (typeof obj[key] === "string" && obj[key].charAt(0) === "_") {
                 obj[key] = UI.Language.getLanguage().getLingo(obj[key]);
@@ -3894,8 +3787,8 @@ var SheetStyleTranslatable = (function (_super) {
             }
         }
         return obj;
-    };
-    SheetStyleTranslatable.prototype.translateSheet = function () {
+    }
+    translateSheet() {
         var variables = this.visible.getElementsByClassName("sheetVariable");
         for (var i = 0; i < variables.length; i++) {
             if (variables[i].dataset["placeholder"] !== undefined && variables[i].dataset['placeholder'].charAt(0) === "_") {
@@ -3927,16 +3820,15 @@ var SheetStyleTranslatable = (function (_super) {
             }
         }
         UI.Language.updateScreen(this.visible);
-    };
-    SheetStyleTranslatable.prototype.fillElements = function () {
+    }
+    fillElements() {
         this.visible.innerHTML = this.styleInstance.html;
         this.css.innerHTML = this.styleInstance.css;
         this.translateSheet();
-    };
-    return SheetStyleTranslatable;
-}(SheetStyle));
-var Sheet = (function () {
-    function Sheet(parent, style, elements) {
+    }
+}
+class Sheet {
+    constructor(parent, style, elements) {
         this.parent = null;
         this.style = null;
         this.elements = [];
@@ -3965,23 +3857,23 @@ var Sheet = (function () {
             }
         }
     }
-    Sheet.prototype.getField = function (id) {
+    getField(id) {
         if (this.values[id] === undefined) {
             return null;
         }
         return this.values[id];
-    };
-    Sheet.prototype.findField = function (id) {
+    }
+    findField(id) {
         var simplified = Sheet.simplifyString(id);
         if (this.valuesSimplified[simplified] === undefined) {
             return null;
         }
         return this.valuesSimplified[simplified];
-    };
-    Sheet.prototype.getLists = function () {
+    }
+    getLists() {
         return this.indexedLists;
-    };
-    Sheet.prototype.getValueFor = function (id) {
+    }
+    getValueFor(id) {
         var simplified = Sheet.simplifyString(id);
         if (this.valuesSimplified[simplified] === undefined) {
             for (var i = 0; i < this.indexedLists.length; i++) {
@@ -3996,26 +3888,26 @@ var Sheet = (function () {
         else {
             return this.valuesSimplified[simplified].getValue();
         }
-    };
-    Sheet.simplifyString = function (str) {
+    }
+    static simplifyString(str) {
         return str.latinise().toLowerCase().replace(/ /g, '');
-    };
-    Sheet.prototype.getElements = function () {
+    }
+    getElements() {
         return this.elements;
-    };
-    Sheet.prototype.getUniqueID = function () {
+    }
+    getUniqueID() {
         return "Var" + (++this.idCounter).toString();
-    };
-    Sheet.prototype.isRoot = function () {
+    }
+    isRoot() {
         return this.parent === this.style;
-    };
-    Sheet.prototype.getParent = function () {
+    }
+    getParent() {
         return this.parent;
-    };
-    Sheet.prototype.reset = function () {
+    }
+    reset() {
         this.updateFromObject({});
-    };
-    Sheet.prototype.updateFromObject = function (obj) {
+    }
+    updateFromObject(obj) {
         for (var id in this.values) {
             if (obj[id] === undefined) {
                 var aliases = this.values[id].getAliases();
@@ -4036,8 +3928,8 @@ var Sheet = (function () {
                 this.values[id].updateFromObject(obj[id]);
             }
         }
-    };
-    Sheet.prototype.exportAsObject = function () {
+    }
+    exportAsObject() {
         var obj = {};
         var value;
         for (var id in this.values) {
@@ -4047,8 +3939,8 @@ var Sheet = (function () {
             }
         }
         return obj;
-    };
-    Sheet.prototype.processElement = function (element) {
+    }
+    processElement(element) {
         if (element.classList.contains("sheetList")) {
             this.createList(element);
         }
@@ -4086,8 +3978,8 @@ var Sheet = (function () {
                 this.createButton(buttons[i]);
             }
         }
-    };
-    Sheet.prototype.createList = function (element) {
+    }
+    createList(element) {
         var constructor;
         var list;
         var type = element.dataset['type'] === undefined ? "" : element.dataset['type'];
@@ -4103,8 +3995,8 @@ var Sheet = (function () {
             this.indexedLists.push(list);
         }
         list.addChangeListener(this.changeListener);
-    };
-    Sheet.prototype.createVariable = function (element) {
+    }
+    createVariable(element) {
         var constructor;
         var variable;
         var type = element.dataset['type'] === undefined ? "text" : element.dataset['type'];
@@ -4123,34 +4015,33 @@ var Sheet = (function () {
             this.valuesSimplified[Sheet.simplifyString(aliases[i])] = variable;
         }
         variable.addChangeListener(this.changeListener);
-    };
-    Sheet.prototype.createButton = function (element) {
+    }
+    createButton(element) {
         var constructor;
         var button;
         var type = element.dataset['type'] === undefined ? "" : element.dataset['type'];
         constructor = this.style.getCreator("SheetButton", type, "");
         button = new constructor(this, this.style, element);
         this.buttons[button.getId()] = button;
-    };
-    Sheet.prototype.addChangeListener = function (f) {
+    }
+    addChangeListener(f) {
         this.changeTrigger.addListener(f);
-    };
-    Sheet.prototype.addChangeListenerIfMissing = function (f) {
+    }
+    addChangeListenerIfMissing(f) {
         this.changeTrigger.addListenerIfMissing(f);
-    };
-    Sheet.prototype.removeChangeListener = function (f) {
+    }
+    removeChangeListener(f) {
         this.changeTrigger.removeListener(f);
-    };
-    Sheet.prototype.considerTriggering = function () {
+    }
+    considerTriggering() {
         this.style.triggerVariableChange(this);
-    };
-    Sheet.prototype.triggerChange = function (counter) {
+    }
+    triggerChange(counter) {
         this.changeTrigger.trigger(this, this.style, counter);
-    };
-    return Sheet;
-}());
-var SheetButton = (function () {
-    function SheetButton(parent, style, element) {
+    }
+}
+class SheetButton {
+    constructor(parent, style, element) {
         this.clickFunction = (function (e) {
             this.click(e);
         }).bind(this);
@@ -4160,15 +4051,14 @@ var SheetButton = (function () {
         this.id = this.visible.dataset['id'] === undefined ? this.parent.getUniqueID() : this.visible.dataset['id'];
         this.visible.addEventListener("click", this.clickFunction);
     }
-    SheetButton.prototype.click = function (e) { };
+    click(e) { }
     ;
-    SheetButton.prototype.getId = function () {
+    getId() {
         return this.id;
-    };
-    return SheetButton;
-}());
-var SheetList = (function () {
-    function SheetList(parent, style, element) {
+    }
+}
+class SheetList {
+    constructor(parent, style, element) {
         this.rows = [];
         this.detachedRows = [];
         this.sheetElements = [];
@@ -4217,17 +4107,17 @@ var SheetList = (function () {
             }
         }
     }
-    SheetList.prototype.getParent = function () {
+    getParent() {
         return this.parent;
-    };
-    SheetList.prototype.getAliases = function () {
+    }
+    getAliases() {
         return this.aliases;
-    };
-    SheetList.prototype.getRows = function () {
+    }
+    getRows() {
         return this.rows;
-    };
-    SheetList.prototype.breakIn = function (sheet) { };
-    SheetList.prototype.addRow = function () {
+    }
+    breakIn(sheet) { }
+    addRow() {
         var newRow;
         if (this.detachedRows.length > 0) {
             newRow = this.detachedRows.pop();
@@ -4248,32 +4138,32 @@ var SheetList = (function () {
         if (!this.busy) {
             this.considerTriggering();
         }
-    };
-    SheetList.prototype.empty = function () {
+    }
+    empty() {
         while (this.visible.firstChild !== null) {
             this.visible.removeChild(this.visible.firstChild);
         }
-    };
-    SheetList.prototype.reattachRows = function () {
+    }
+    reattachRows() {
         this.empty();
         for (var i = 0; i < this.rows.length; i++) {
             this.appendRow(this.rows[i]);
         }
-    };
-    SheetList.prototype.appendRow = function (newRow) {
+    }
+    appendRow(newRow) {
         for (var i = 0; i < newRow.getElements().length; i++) {
             this.visible.appendChild(newRow.getElements()[i]);
         }
-    };
-    SheetList.prototype.detachRow = function (oldRow) {
+    }
+    detachRow(oldRow) {
         for (var i = 0; i < oldRow.getElements().length; i++) {
             var element = oldRow.getElements()[i];
             if (element.parentNode !== null) {
                 element.parentNode.removeChild(element);
             }
         }
-    };
-    SheetList.prototype.removeRow = function (row) {
+    }
+    removeRow(row) {
         var idx = this.rows.indexOf(row);
         if (idx !== -1) {
             var oldRow = this.rows.splice(idx, 1)[0];
@@ -4283,22 +4173,22 @@ var SheetList = (function () {
         if (!this.busy) {
             this.considerTriggering();
         }
-    };
-    SheetList.prototype.removeLastRow = function () {
+    }
+    removeLastRow() {
         if (this.rows.length > 0) {
             this.removeRow(this.rows[this.rows.length - 1]);
         }
-    };
-    SheetList.prototype.isIndexed = function () {
+    }
+    isIndexed() {
         return (this.tableIndex !== null && this.tableValue !== null);
-    };
-    SheetList.prototype.getId = function () {
+    }
+    getId() {
         return this.id;
-    };
-    SheetList.prototype.reset = function () {
+    }
+    reset() {
         this.updateFromObject(this.defaultValue);
-    };
-    SheetList.prototype.updateFromObject = function (obj) {
+    }
+    updateFromObject(obj) {
         this.busy = true;
         if (this.rows.length !== obj.length) {
             while (this.rows.length < obj.length) {
@@ -4312,11 +4202,11 @@ var SheetList = (function () {
             this.rows[i].updateFromObject(obj[i]);
         }
         this.busy = false;
-    };
-    SheetList.prototype.getTableIndex = function () {
+    }
+    getTableIndex() {
         return this.tableIndex;
-    };
-    SheetList.prototype.sort = function () {
+    }
+    sort() {
         if (this.tableIndex !== null) {
             this.rows.sort(function (a, b) {
                 var na = a.findField(a.getParent().getTableIndex()).getValue();
@@ -4338,8 +4228,8 @@ var SheetList = (function () {
             this.reattachRows();
             this.considerTriggering();
         }
-    };
-    SheetList.prototype.getRowIndex = function (id) {
+    }
+    getRowIndex(id) {
         id = Sheet.simplifyString(id);
         if (this.tableIndex !== null && this.tableValue !== null) {
             for (var i = 0; i < this.rows.length; i++) {
@@ -4356,8 +4246,8 @@ var SheetList = (function () {
             }
         }
         return null;
-    };
-    SheetList.prototype.getValueFor = function (id) {
+    }
+    getValueFor(id) {
         if (this.tableIndex !== null && this.tableValue !== null) {
             for (var i = 0; i < this.rows.length; i++) {
                 var name = this.rows[i].getValueFor(this.tableIndex);
@@ -4373,8 +4263,8 @@ var SheetList = (function () {
             }
         }
         return NaN;
-    };
-    SheetList.prototype.getValue = function () {
+    }
+    getValue() {
         if (this.tableValue !== null) {
             var values = [];
             for (var i = 0; i < this.rows.length; i++) {
@@ -4385,33 +4275,32 @@ var SheetList = (function () {
         else {
             return [NaN];
         }
-    };
-    SheetList.prototype.exportAsObject = function () {
+    }
+    exportAsObject() {
         var arr = [];
         for (var i = 0; i < this.rows.length; i++) {
             arr.push(this.rows[i].exportAsObject());
         }
         return arr;
-    };
-    SheetList.prototype.addChangeListener = function (f) {
+    }
+    addChangeListener(f) {
         this.changeTrigger.addListener(f);
-    };
-    SheetList.prototype.addChangeListenerIfMissing = function (f) {
+    }
+    addChangeListenerIfMissing(f) {
         this.changeTrigger.addListenerIfMissing(f);
-    };
-    SheetList.prototype.removeChangeListener = function (f) {
+    }
+    removeChangeListener(f) {
         this.changeTrigger.removeListener(f);
-    };
-    SheetList.prototype.considerTriggering = function () {
+    }
+    considerTriggering() {
         this.style.triggerVariableChange(this);
-    };
-    SheetList.prototype.triggerChange = function (counter) {
+    }
+    triggerChange(counter) {
         this.changeTrigger.trigger(this, this.style, counter);
-    };
-    return SheetList;
-}());
-var SheetVariable = (function () {
-    function SheetVariable(parent, style, element) {
+    }
+}
+class SheetVariable {
+    constructor(parent, style, element) {
         this.value = null;
         this.defaultValueString = null;
         this.aliases = [];
@@ -4434,58 +4323,57 @@ var SheetVariable = (function () {
             }
         }
     }
-    SheetVariable.prototype.getAliases = function () {
+    getAliases() {
         return this.aliases;
-    };
-    SheetVariable.prototype.updateVisible = function () { };
-    SheetVariable.prototype.empty = function () {
+    }
+    updateVisible() { }
+    empty() {
         while (this.visible.firstChild !== null)
             this.visible.removeChild(this.visible.firstChild);
-    };
-    SheetVariable.prototype.storeValue = function (obj) {
+    }
+    storeValue(obj) {
         if (this.editable && obj !== this.value) {
             this.value = obj;
             this.updateVisible();
             this.considerTriggering();
         }
-    };
-    SheetVariable.prototype.reset = function () {
+    }
+    reset() {
         this.storeValue(this.defaultValueString);
-    };
-    SheetVariable.prototype.getValue = function () {
+    }
+    getValue() {
         return this.value;
-    };
-    SheetVariable.prototype.updateFromObject = function (obj) {
+    }
+    updateFromObject(obj) {
         this.storeValue(obj);
-    };
-    SheetVariable.prototype.exportAsObject = function () {
+    }
+    exportAsObject() {
         if (this.editable) {
             return this.value;
         }
         else {
             return null;
         }
-    };
-    SheetVariable.prototype.getId = function () {
+    }
+    getId() {
         return this.id;
-    };
-    SheetVariable.prototype.addChangeListener = function (f) {
+    }
+    addChangeListener(f) {
         this.changeTrigger.addListener(f);
-    };
-    SheetVariable.prototype.addChangeListenerIfMissing = function (f) {
+    }
+    addChangeListenerIfMissing(f) {
         this.changeTrigger.addListenerIfMissing(f);
-    };
-    SheetVariable.prototype.removeChangeListener = function (f) {
+    }
+    removeChangeListener(f) {
         this.changeTrigger.removeListener(f);
-    };
-    SheetVariable.prototype.considerTriggering = function () {
+    }
+    considerTriggering() {
         this.style.triggerVariableChange(this);
-    };
-    SheetVariable.prototype.triggerChange = function (counter) {
+    }
+    triggerChange(counter) {
         this.changeTrigger.trigger(this, this.style, counter);
-    };
-    return SheetVariable;
-}());
+    }
+}
 var StyleFactory;
 (function (StyleFactory) {
     var styles = {};
@@ -4500,20 +4388,15 @@ var StyleFactory;
             console.warn(e);
             creator = SheetStyle;
         }
-        var SheetStyleAdapted = (function (_super) {
-            __extends(SheetStyleAdapted, _super);
-            function SheetStyleAdapted() {
-                return _super !== null && _super.apply(this, arguments) || this;
-            }
-            SheetStyleAdapted.prototype.getCreator = function (kind, type, def) {
+        class SheetStyleAdapted extends creator {
+            getCreator(kind, type, def) {
                 var name = kind + this.stringToType(type);
                 if (eval("typeof " + name) === "function") {
                     return eval(name);
                 }
                 return eval(kind + def);
-            };
-            return SheetStyleAdapted;
-        }(creator));
+            }
+        }
         var _endTime = (new Date()).getTime();
         console.debug("[StyleFactory] " + style.name + "'s Creator took " + (_endTime - _startTime) + "ms to process.");
         return SheetStyleAdapted;
@@ -4533,75 +4416,73 @@ var StyleFactory;
     }
     StyleFactory.getSheetStyle = getSheetStyle;
 })(StyleFactory || (StyleFactory = {}));
-var SheetVariabletext = (function (_super) {
-    __extends(SheetVariabletext, _super);
-    function SheetVariabletext(parent, style, ele) {
-        var _this = _super.call(this, parent, style, ele) || this;
-        _this.mouse = false;
-        _this.textNode = document.createTextNode(_this.defaultValueString === null ? "" : _this.defaultValueString);
-        _this.defaultValueString = _this.defaultValueString === null ? "" : _this.defaultValueString;
-        _this.empty();
-        _this.attachTextNode();
-        if (_this.editable) {
+class SheetVariabletext extends SheetVariable {
+    constructor(parent, style, ele) {
+        super(parent, style, ele);
+        this.mouse = false;
+        this.textNode = document.createTextNode(this.defaultValueString === null ? "" : this.defaultValueString);
+        this.defaultValueString = this.defaultValueString === null ? "" : this.defaultValueString;
+        this.empty();
+        this.attachTextNode();
+        if (this.editable) {
             ele.addEventListener("click", (function (e) {
                 this.click();
-            }).bind(_this));
+            }).bind(this));
             ele.addEventListener("mousedown", (function (e) {
                 this.mousedown();
-            }).bind(_this));
+            }).bind(this));
             ele.addEventListener("focus", (function (e) {
                 this.focus();
-            }).bind(_this));
+            }).bind(this));
             ele.addEventListener("input", {
-                variable: _this,
+                variable: this,
                 handleEvent: function (e) {
                     this.variable.input(e);
                 }
             });
             ele.addEventListener("keyup", {
-                variable: _this,
+                variable: this,
                 handleEvent: function (e) {
                     this.variable.keyup(e);
                 }
             });
             ele.addEventListener("keydown", {
-                variable: _this,
+                variable: this,
                 handleEvent: function (e) {
                     this.variable.keydown(e);
                 }
             });
             ele.addEventListener("blur", {
-                variable: _this,
+                variable: this,
                 handleEvent: function (e) {
                     this.variable.blur();
                 }
             });
-            _this.updateContentEditable();
+            this.updateContentEditable();
         }
-        return _this;
     }
-    SheetVariabletext.prototype.attachTextNode = function () {
+    attachTextNode() {
         this.visible.appendChild(this.textNode);
-    };
-    SheetVariabletext.prototype.click = function (e) {
-    };
-    SheetVariabletext.prototype.mousedown = function () {
+    }
+    click(e) {
+    }
+    mousedown() {
         this.mouse = true;
-    };
-    SheetVariabletext.prototype.input = function (e) {
-    };
-    SheetVariabletext.prototype.keyup = function (e) {
-    };
-    SheetVariabletext.prototype.isAllowedKey = function (key) {
+    }
+    input(e) {
+    }
+    keyup(e) {
+    }
+    isAllowedKey(key) {
         return true;
-    };
-    SheetVariabletext.prototype.keydown = function (e) {
+    }
+    keydown(e) {
         if (e.key === "Enter" || !this.isAllowedKey(e.key)) {
             e.preventDefault();
             e.stopPropagation();
         }
-    };
-    SheetVariabletext.prototype.focus = function () {
+    }
+    focus() {
         if (!this.mouse) {
             var selection = window.getSelection();
             var range = document.createRange();
@@ -4610,16 +4491,16 @@ var SheetVariabletext = (function (_super) {
             selection.addRange(range);
         }
         this.mouse = false;
-    };
-    SheetVariabletext.prototype.blur = function () {
+    }
+    blur() {
         var value = this.visible.innerText.trim();
         if (this.visible.childNodes.length !== 1 || this.textNode.parentElement !== this.visible) {
             this.empty();
             this.attachTextNode();
         }
         this.storeValue(value);
-    };
-    SheetVariabletext.prototype.updateContentEditable = function () {
+    }
+    updateContentEditable() {
         this.visible.contentEditable = (this.editable && (this.style.getSheetInstance() === null || this.style.getSheetInstance().isEditable())) ? "true" : "false";
         if (this.visible.contentEditable === "true") {
             this.visible.classList.add("contenteditable");
@@ -4627,8 +4508,8 @@ var SheetVariabletext = (function (_super) {
         else {
             this.visible.classList.remove("contenteditable");
         }
-    };
-    SheetVariabletext.prototype.storeValue = function (value) {
+    }
+    storeValue(value) {
         if (this.editable) {
             if (value === null || typeof value === "undefined") {
                 value = this.value;
@@ -4643,81 +4524,78 @@ var SheetVariabletext = (function (_super) {
             this.updateVisible();
             this.updateContentEditable();
         }
-    };
-    SheetVariabletext.prototype.updateVisible = function () {
+    }
+    updateVisible() {
         if (this.value !== null) {
             this.textNode.nodeValue = this.value;
         }
         else {
             this.textNode.nodeValue = this.defaultValueString === null ? "" : this.defaultValueString;
         }
-    };
-    return SheetVariabletext;
-}(SheetVariable));
-var SheetVariablelongtext = (function (_super) {
-    __extends(SheetVariablelongtext, _super);
-    function SheetVariablelongtext(parent, style, ele) {
-        var _this = _super.call(this, parent, style, ele) || this;
-        _this.allowEmptyLines = false;
-        _this.pClass = null;
-        _this.mouse = false;
-        _this.empty();
-        _this.defaultValueString = _this.defaultValueString === null ? "" : _this.defaultValueString;
-        _this.allowEmptyLines = _this.visible.dataset['allowempty'] === undefined ? false :
-            (_this.visible.dataset['allowempty'] === "1" ||
-                _this.visible.dataset['allowempty'].toLowerCase() === "true");
-        _this.pClass = _this.visible.dataset['pclass'] === undefined ? null : _this.visible.dataset['pclass'];
-        if (_this.editable) {
+    }
+}
+class SheetVariablelongtext extends SheetVariable {
+    constructor(parent, style, ele) {
+        super(parent, style, ele);
+        this.allowEmptyLines = false;
+        this.pClass = null;
+        this.mouse = false;
+        this.empty();
+        this.defaultValueString = this.defaultValueString === null ? "" : this.defaultValueString;
+        this.allowEmptyLines = this.visible.dataset['allowempty'] === undefined ? false :
+            (this.visible.dataset['allowempty'] === "1" ||
+                this.visible.dataset['allowempty'].toLowerCase() === "true");
+        this.pClass = this.visible.dataset['pclass'] === undefined ? null : this.visible.dataset['pclass'];
+        if (this.editable) {
             ele.addEventListener("click", (function (e) {
                 this.click();
-            }).bind(_this));
+            }).bind(this));
             ele.addEventListener("mousedown", (function (e) {
                 this.mousedown();
-            }).bind(_this));
+            }).bind(this));
             ele.addEventListener("focus", (function (e) {
                 this.focus();
-            }).bind(_this));
+            }).bind(this));
             ele.addEventListener("input", {
-                variable: _this,
+                variable: this,
                 handleEvent: function (e) {
                     this.variable.input(e);
                 }
             });
             ele.addEventListener("keyup", {
-                variable: _this,
+                variable: this,
                 handleEvent: function (e) {
                     this.variable.keyup(e);
                 }
             });
             ele.addEventListener("keydown", {
-                variable: _this,
+                variable: this,
                 handleEvent: function (e) {
                     this.variable.keydown(e);
                 }
             });
             ele.addEventListener("blur", {
-                variable: _this,
+                variable: this,
                 handleEvent: function (e) {
                     this.variable.blur();
                 }
             });
-            _this.updateContentEditable();
+            this.updateContentEditable();
         }
-        _this.updateVisible();
-        return _this;
+        this.updateVisible();
     }
-    SheetVariablelongtext.prototype.mousedown = function () {
+    mousedown() {
         this.mouse = true;
-    };
-    SheetVariablelongtext.prototype.click = function (e) {
-    };
-    SheetVariablelongtext.prototype.input = function (e) {
-    };
-    SheetVariablelongtext.prototype.keyup = function (e) {
-    };
-    SheetVariablelongtext.prototype.keydown = function (e) {
-    };
-    SheetVariablelongtext.prototype.focus = function () {
+    }
+    click(e) {
+    }
+    input(e) {
+    }
+    keyup(e) {
+    }
+    keydown(e) {
+    }
+    focus() {
         if (!this.mouse) {
             var selection = window.getSelection();
             var range = document.createRange();
@@ -4726,8 +4604,8 @@ var SheetVariablelongtext = (function (_super) {
             selection.addRange(range);
         }
         this.mouse = false;
-    };
-    SheetVariablelongtext.prototype.blur = function () {
+    }
+    blur() {
         var lines = [];
         for (var i = 0; i < this.visible.children.length; i++) {
             var line = this.visible.children[i].innerText;
@@ -4742,8 +4620,8 @@ var SheetVariablelongtext = (function (_super) {
             }
         }
         this.storeValue(lines.join("\n"));
-    };
-    SheetVariablelongtext.prototype.updateContentEditable = function () {
+    }
+    updateContentEditable() {
         this.visible.contentEditable = (this.editable && (this.style.getSheetInstance() === null || this.style.getSheetInstance().isEditable())) ? "true" : "false";
         if (this.visible.contentEditable === "true") {
             this.visible.classList.add("contenteditable");
@@ -4751,8 +4629,8 @@ var SheetVariablelongtext = (function (_super) {
         else {
             this.visible.classList.remove("contenteditable");
         }
-    };
-    SheetVariablelongtext.prototype.storeValue = function (value) {
+    }
+    storeValue(value) {
         if (this.editable) {
             if (typeof value === "string" && value !== this.value) {
                 this.value = value;
@@ -4761,8 +4639,8 @@ var SheetVariablelongtext = (function (_super) {
             this.updateVisible();
             this.updateContentEditable();
         }
-    };
-    SheetVariablelongtext.prototype.updateVisible = function () {
+    }
+    updateVisible() {
         this.empty();
         var curValue = this.value !== null ? this.value : this.defaultValueString !== null ? this.defaultValueString : "";
         var lines = curValue.split("\n");
@@ -4773,36 +4651,33 @@ var SheetVariablelongtext = (function (_super) {
             p.appendChild(document.createTextNode(lines[i]));
             this.visible.appendChild(p);
         }
-    };
-    return SheetVariablelongtext;
-}(SheetVariable));
-var SheetVariablenumber = (function (_super) {
-    __extends(SheetVariablenumber, _super);
-    function SheetVariablenumber(parent, style, ele) {
-        var _this = _super.call(this, parent, style, ele) || this;
-        if (_this.defaultValueString !== null) {
-            _this.defaultValue = _this.parseString(_this.defaultValueString);
-            if (isNaN(_this.defaultValue)) {
-                _this.defaultValue = 0;
+    }
+}
+class SheetVariablenumber extends SheetVariabletext {
+    parseString(str) {
+        return parseFloat(str);
+    }
+    parseNumber(n) {
+        return +(n.toFixed(2));
+    }
+    reset() {
+        this.storeValue(this.defaultValue);
+    }
+    constructor(parent, style, ele) {
+        super(parent, style, ele);
+        if (this.defaultValueString !== null) {
+            this.defaultValue = this.parseString(this.defaultValueString);
+            if (isNaN(this.defaultValue)) {
+                this.defaultValue = 0;
             }
         }
         else {
-            _this.defaultValue = 0;
+            this.defaultValue = 0;
         }
-        _this.value = _this.defaultValue;
-        _this.updateVisible();
-        return _this;
+        this.value = this.defaultValue;
+        this.updateVisible();
     }
-    SheetVariablenumber.prototype.parseString = function (str) {
-        return parseFloat(str);
-    };
-    SheetVariablenumber.prototype.parseNumber = function (n) {
-        return +(n.toFixed(2));
-    };
-    SheetVariablenumber.prototype.reset = function () {
-        this.storeValue(this.defaultValue);
-    };
-    SheetVariablenumber.prototype.storeValue = function (value) {
+    storeValue(value) {
         if (this.editable) {
             if (typeof value !== "number") {
                 if (typeof value === "string") {
@@ -4821,14 +4696,14 @@ var SheetVariablenumber = (function (_super) {
             this.updateVisible();
             this.updateContentEditable();
         }
-    };
-    SheetVariablenumber.prototype.isImportantInputKey = function (key) {
+    }
+    isImportantInputKey(key) {
         return key === "Tab" || key === "Backspace" || key === "Delete" || key === "ArrowLeft" || key === "ArrowRight" || key === "-" || key === "+";
-    };
-    SheetVariablenumber.prototype.isAllowedKey = function (key) {
+    }
+    isAllowedKey(key) {
         return this.isImportantInputKey(key) || key === "." || key === "," || !isNaN(key);
-    };
-    SheetVariablenumber.prototype.updateVisible = function () {
+    }
+    updateVisible() {
         if (this.value !== null) {
             this.textNode.nodeValue = this.value.toString();
         }
@@ -4842,31 +4717,24 @@ var SheetVariablenumber = (function (_super) {
         else if (this.value > 0) {
             this.visible.classList.add("positive");
         }
-    };
-    return SheetVariablenumber;
-}(SheetVariabletext));
-var SheetVariableinteger = (function (_super) {
-    __extends(SheetVariableinteger, _super);
-    function SheetVariableinteger() {
-        return _super !== null && _super.apply(this, arguments) || this;
     }
-    SheetVariableinteger.prototype.isAllowedKey = function (key) {
+}
+class SheetVariableinteger extends SheetVariablenumber {
+    isAllowedKey(key) {
         return this.isImportantInputKey(key) || !isNaN(key);
-    };
-    SheetVariableinteger.prototype.parseString = function (str) {
+    }
+    parseString(str) {
         return parseInt(str);
-    };
-    SheetVariableinteger.prototype.parseNumber = function (n) {
+    }
+    parseNumber(n) {
         return Math.floor(n);
-    };
-    return SheetVariableinteger;
-}(SheetVariablenumber));
-var SheetVariablemath = (function (_super) {
-    __extends(SheetVariablemath, _super);
-    function SheetVariablemath(parent, style, ele) {
-        var _this = _super.call(this, parent, style, ele) || this;
-        _this.changeListener = {
-            math: _this,
+    }
+}
+class SheetVariablemath extends SheetVariabletext {
+    constructor(parent, style, ele) {
+        super(parent, style, ele);
+        this.changeListener = {
+            math: this,
             counter: -1,
             handleEvent: function (variable, style, counter) {
                 if (this.counter !== counter) {
@@ -4875,19 +4743,18 @@ var SheetVariablemath = (function (_super) {
                 }
             }
         };
-        _this.parse();
-        _this.style.addCreatorListener(_this);
-        return _this;
+        this.parse();
+        this.style.addCreatorListener(this);
     }
-    SheetVariablemath.prototype.checkForChange = function () {
+    checkForChange() {
         var newValue = this.getValue();
         if (this.lastValue !== newValue && !(isNaN(newValue) && isNaN(this.lastValue))) {
             this.lastValue = newValue;
             this.updateVisible();
             this.considerTriggering();
         }
-    };
-    SheetVariablemath.prototype.parse = function () {
+    }
+    parse() {
         var expr = this.value === null ? this.defaultValueString === null ? "0" : this.defaultValueString : this.value;
         expr = Sheet.simplifyString(expr);
         try {
@@ -4901,8 +4768,8 @@ var SheetVariablemath = (function (_super) {
         }
         this.symbols = this.getSymbols();
         this.scope = this.getScope(this.symbols);
-    };
-    SheetVariablemath.prototype.getSymbols = function () {
+    }
+    getSymbols() {
         var symbols = [];
         var nodes = this.parsed.filter(function (node) {
             return node.type == 'SymbolNode';
@@ -4911,15 +4778,15 @@ var SheetVariablemath = (function (_super) {
             symbols.push(nodes[i].name);
         }
         return symbols;
-    };
-    SheetVariablemath.prototype.getScope = function (symbols) {
+    }
+    getScope(symbols) {
         var scope = {};
         for (var i = 0; i < symbols.length; i++) {
             scope[symbols[i]] = 0;
         }
         return scope;
-    };
-    SheetVariablemath.prototype.complete = function () {
+    }
+    complete() {
         if (this.editable) {
             this.style.getSheet().addChangeListener(this.changeListener);
         }
@@ -4941,8 +4808,8 @@ var SheetVariablemath = (function (_super) {
             }
         }
         this.updateVisible();
-    };
-    SheetVariablemath.prototype.focus = function () {
+    }
+    focus() {
         this.updateVisible();
         this.visible.focus();
         if (!this.mouse) {
@@ -4953,8 +4820,8 @@ var SheetVariablemath = (function (_super) {
             selection.addRange(range);
         }
         this.mouse = false;
-    };
-    SheetVariablemath.prototype.storeValue = function (value) {
+    }
+    storeValue(value) {
         if (this.editable) {
             if (typeof value === "string" && value !== this.value) {
                 this.value = value;
@@ -4964,8 +4831,8 @@ var SheetVariablemath = (function (_super) {
             this.updateVisible();
             this.updateContentEditable();
         }
-    };
-    SheetVariablemath.prototype.getValue = function () {
+    }
+    getValue() {
         for (var i = 0; i < this.symbols.length; i++) {
             this.scope[this.symbols[i]] = this.style.getSheet().getValueFor(this.symbols[i]);
         }
@@ -4977,8 +4844,8 @@ var SheetVariablemath = (function (_super) {
             console.warn("[SheetVariableMath] Evaluation error", e);
             return NaN;
         }
-    };
-    SheetVariablemath.prototype.updateVisible = function () {
+    }
+    updateVisible() {
         this.visible.classList.remove("negative", "positive");
         if (document.activeElement === this.visible) {
             this.textNode.nodeValue = this.value === null ? this.defaultValueString === null ? "0" : this.defaultValueString : this.value;
@@ -4999,61 +4866,58 @@ var SheetVariablemath = (function (_super) {
                 this.visible.classList.add("positive");
             }
         }
-    };
-    return SheetVariablemath;
-}(SheetVariabletext));
-var SheetVariableimage = (function (_super) {
-    __extends(SheetVariableimage, _super);
-    function SheetVariableimage(parent, style, element) {
-        var _this = _super.call(this, parent, style, element) || this;
-        _this.img = document.createElement("img");
-        _this.select = document.createElement("select");
-        _this.errorUrl = "images/sheetImgError.png";
-        if (_this.defaultValueString === null) {
-            _this.defaultName = "";
-            _this.defaultUrl = "";
+    }
+}
+class SheetVariableimage extends SheetVariable {
+    constructor(parent, style, element) {
+        super(parent, style, element);
+        this.img = document.createElement("img");
+        this.select = document.createElement("select");
+        this.errorUrl = "images/sheetImgError.png";
+        if (this.defaultValueString === null) {
+            this.defaultName = "";
+            this.defaultUrl = "";
         }
         else {
             var obj;
             try {
-                obj = JSON.parse(_this.defaultValueString);
+                obj = JSON.parse(this.defaultValueString);
                 if (Array.isArray(obj) && obj.length === 2) {
-                    _this.defaultName = obj[0];
-                    _this.defaultUrl = obj[1];
+                    this.defaultName = obj[0];
+                    this.defaultUrl = obj[1];
                 }
                 else {
-                    _this.defaultName = "";
-                    _this.defaultUrl = "";
+                    this.defaultName = "";
+                    this.defaultUrl = "";
                 }
             }
             catch (e) {
-                console.log("[SheetVariableImage] Produced invalid Default Value at " + _this.id + ":", _this.defaultValueString);
-                _this.defaultName = "";
-                _this.defaultUrl = "";
+                console.log("[SheetVariableImage] Produced invalid Default Value at " + this.id + ":", this.defaultValueString);
+                this.defaultName = "";
+                this.defaultUrl = "";
             }
         }
-        if (_this.visible.dataset['imgclass'] !== undefined) {
-            _this.img.classList.add(_this.visible.dataset['imgclass']);
+        if (this.visible.dataset['imgclass'] !== undefined) {
+            this.img.classList.add(this.visible.dataset['imgclass']);
         }
-        if (_this.visible.dataset['selectclass'] !== undefined) {
-            _this.select.classList.add(_this.visible.dataset['selectclass']);
+        if (this.visible.dataset['selectclass'] !== undefined) {
+            this.select.classList.add(this.visible.dataset['selectclass']);
         }
-        _this.select.addEventListener("blur", (function (e) { this.blur(e); }).bind(_this));
-        _this.select.addEventListener("change", (function (e) { this.change(e); }).bind(_this));
-        _this.img.addEventListener("error", (function (e) { this.error(e); }).bind(_this));
-        if (_this.editable) {
-            _this.img.addEventListener("click", (function (e) {
+        this.select.addEventListener("blur", (function (e) { this.blur(e); }).bind(this));
+        this.select.addEventListener("change", (function (e) { this.change(e); }).bind(this));
+        this.img.addEventListener("error", (function (e) { this.error(e); }).bind(this));
+        if (this.editable) {
+            this.img.addEventListener("click", (function (e) {
                 this.click(e);
-            }).bind(_this));
+            }).bind(this));
         }
-        _this.value = [_this.defaultName, _this.defaultUrl];
-        _this.updateVisible();
-        return _this;
+        this.value = [this.defaultName, this.defaultUrl];
+        this.updateVisible();
     }
-    SheetVariableimage.prototype.reset = function () {
+    reset() {
         this.storeValue([this.defaultName, this.defaultUrl]);
-    };
-    SheetVariableimage.prototype.blur = function () {
+    }
+    blur() {
         this.empty();
         this.visible.appendChild(this.img);
         var obj;
@@ -5068,34 +4932,34 @@ var SheetVariableimage = (function (_super) {
             this.storeValue([this.defaultName, this.defaultUrl]);
         }
         this.updateVisible();
-    };
-    SheetVariableimage.prototype.change = function () {
-    };
-    SheetVariableimage.prototype.click = function (e) {
+    }
+    change() {
+    }
+    click(e) {
         e.preventDefault();
         if (this.style.getSheetInstance().isEditable()) {
             this.showSelect();
         }
-    };
-    SheetVariableimage.prototype.error = function (e) {
+    }
+    error(e) {
         e.preventDefault();
         this.img.src = this.errorUrl;
-    };
-    SheetVariableimage.prototype.createOptions = function (name, arr) {
+    }
+    createOptions(name, arr) {
         var optgroup = document.createElement("optgroup");
         optgroup.label = name;
         for (var i = 0; i < arr.length; i++) {
             optgroup.appendChild(this.createOption(arr[i][0], arr[i][1]));
         }
         return optgroup;
-    };
-    SheetVariableimage.prototype.createOption = function (name, url) {
+    }
+    createOption(name, url) {
         var option = document.createElement("option");
         option.value = JSON.stringify([name, url]);
         option.appendChild(document.createTextNode(name));
         return option;
-    };
-    SheetVariableimage.prototype.showSelect = function () {
+    }
+    showSelect() {
         this.empty();
         this.visible.appendChild(this.select);
         while (this.select.firstChild !== null)
@@ -5137,8 +5001,8 @@ var SheetVariableimage = (function (_super) {
         this.select.value = JSON.stringify(this.value);
         this.select.focus();
         this.select.click();
-    };
-    SheetVariableimage.prototype.storeValue = function (arr) {
+    }
+    storeValue(arr) {
         if (!Array.isArray(arr) || arr.length !== 2) {
             arr = [this.defaultName, this.defaultUrl];
         }
@@ -5147,8 +5011,8 @@ var SheetVariableimage = (function (_super) {
             this.considerTriggering();
         }
         this.updateVisible();
-    };
-    SheetVariableimage.prototype.updateVisible = function () {
+    }
+    updateVisible() {
         if (this.editable) {
             if (this.style.getSheetInstance() !== null && this.style.getSheetInstance().isEditable()) {
                 this.img.classList.add("editable");
@@ -5162,67 +5026,64 @@ var SheetVariableimage = (function (_super) {
             this.visible.appendChild(this.img);
         }
         this.img.src = this.value[1];
-    };
-    return SheetVariableimage;
-}(SheetVariable));
-var SheetVariableselect = (function (_super) {
-    __extends(SheetVariableselect, _super);
-    function SheetVariableselect(parent, style, element) {
-        var _this = _super.call(this, parent, style, element) || this;
-        _this.select = document.createElement("select");
-        _this.values = [""];
-        if (_this.visible.dataset['values'] !== undefined) {
-            _this.values = _this.visible.dataset['values'].split(";");
-            for (var i = 0; i < _this.values.length; i++) {
+    }
+}
+class SheetVariableselect extends SheetVariable {
+    constructor(parent, style, element) {
+        super(parent, style, element);
+        this.select = document.createElement("select");
+        this.values = [""];
+        if (this.visible.dataset['values'] !== undefined) {
+            this.values = this.visible.dataset['values'].split(";");
+            for (var i = 0; i < this.values.length; i++) {
                 var opt = document.createElement("option");
-                opt.value = _this.values[i];
-                opt.appendChild(document.createTextNode(_this.values[i]));
-                _this.select.appendChild(opt);
+                opt.value = this.values[i];
+                opt.appendChild(document.createTextNode(this.values[i]));
+                this.select.appendChild(opt);
             }
         }
         else {
-            _this.values = [""];
+            this.values = [""];
         }
-        if (_this.visible.dataset['selectclass'] !== undefined) {
-            _this.select.classList.add(_this.visible.dataset['selectclass']);
+        if (this.visible.dataset['selectclass'] !== undefined) {
+            this.select.classList.add(this.visible.dataset['selectclass']);
         }
-        if (_this.editable) {
-            _this.select.addEventListener("blur", (function (e) { this.selectBlur(e); }).bind(_this));
-            _this.select.addEventListener("change", (function (e) { this.selectChange(e); }).bind(_this));
+        if (this.editable) {
+            this.select.addEventListener("blur", (function (e) { this.selectBlur(e); }).bind(this));
+            this.select.addEventListener("change", (function (e) { this.selectChange(e); }).bind(this));
         }
-        _this.select.disabled = !_this.editable;
-        if (_this.defaultValueString !== null && _this.values.indexOf(_this.defaultValueString) !== -1) {
-            _this.value = _this.defaultValueString;
+        this.select.disabled = !this.editable;
+        if (this.defaultValueString !== null && this.values.indexOf(this.defaultValueString) !== -1) {
+            this.value = this.defaultValueString;
         }
         else {
-            _this.value = _this.values[0];
+            this.value = this.values[0];
         }
-        _this.showSelect();
-        return _this;
+        this.showSelect();
     }
-    SheetVariableselect.prototype.reset = function () {
+    reset() {
         if (this.defaultValueString !== null && this.values.indexOf(this.defaultValueString) !== -1) {
             this.storeValue(this.defaultValueString);
         }
         else {
             this.storeValue(this.values[0]);
         }
-    };
-    SheetVariableselect.prototype.blur = function () { };
-    SheetVariableselect.prototype.focus = function () {
-    };
-    SheetVariableselect.prototype.selectBlur = function (e) {
+    }
+    blur() { }
+    focus() {
+    }
+    selectBlur(e) {
         this.storeValue(this.select.value);
-    };
-    SheetVariableselect.prototype.selectChange = function (e) {
+    }
+    selectChange(e) {
         this.storeValue(this.select.value);
-    };
-    SheetVariableselect.prototype.showSelect = function () {
+    }
+    showSelect() {
         this.empty();
         this.visible.appendChild(this.select);
         this.select.value = this.value === null ? this.values[0] : this.value;
-    };
-    SheetVariableselect.prototype.storeValue = function (value) {
+    }
+    storeValue(value) {
         if (this.editable) {
             if (typeof value === "string" && value !== this.value) {
                 if (this.values.indexOf(value) === -1) {
@@ -5233,38 +5094,35 @@ var SheetVariableselect = (function (_super) {
             }
             this.updateVisible();
         }
-    };
-    SheetVariableselect.prototype.updateVisible = function () {
+    }
+    updateVisible() {
         this.select.value = this.value === null ? this.values[0] : this.value;
         this.select.disabled = (!this.editable || (this.style.getSheetInstance() !== null && !this.style.getSheetInstance().isEditable()));
-    };
-    return SheetVariableselect;
-}(SheetVariable));
-var SheetVariableboolean = (function (_super) {
-    __extends(SheetVariableboolean, _super);
-    function SheetVariableboolean(parent, style, element) {
-        var _this = _super.call(this, parent, style, element) || this;
-        if (_this.visible.tagName.toLowerCase() !== "input" || _this.visible.type !== "checkbox") {
-            console.warn("[SheetVariableBoolean] Must be a checkbox input. Offending id:", _this.getId());
-            return _this;
-        }
-        _this.defaultState = _this.defaultValueString === null ? false :
-            (_this.defaultValueString === "1" || _this.defaultValueString.toLowerCase() === "true") ?
-                true : false;
-        _this.value = _this.defaultState;
-        if (_this.editable) {
-            _this.visible.addEventListener("change", (function () { this.change(); }).bind(_this));
-        }
-        _this.updateVisible();
-        return _this;
     }
-    SheetVariableboolean.prototype.change = function () {
+}
+class SheetVariableboolean extends SheetVariable {
+    constructor(parent, style, element) {
+        super(parent, style, element);
+        if (this.visible.tagName.toLowerCase() !== "input" || this.visible.type !== "checkbox") {
+            console.warn("[SheetVariableBoolean] Must be a checkbox input. Offending id:", this.getId());
+            return;
+        }
+        this.defaultState = this.defaultValueString === null ? false :
+            (this.defaultValueString === "1" || this.defaultValueString.toLowerCase() === "true") ?
+                true : false;
+        this.value = this.defaultState;
+        if (this.editable) {
+            this.visible.addEventListener("change", (function () { this.change(); }).bind(this));
+        }
+        this.updateVisible();
+    }
+    change() {
         this.storeValue(this.visible.checked);
-    };
-    SheetVariableboolean.prototype.reset = function () {
+    }
+    reset() {
         this.storeValue(this.defaultState);
-    };
-    SheetVariableboolean.prototype.storeValue = function (state) {
+    }
+    storeValue(state) {
         if (this.editable) {
             state = state === true;
             if (state !== this.value) {
@@ -5273,76 +5131,73 @@ var SheetVariableboolean = (function (_super) {
             }
         }
         this.updateVisible();
-    };
-    SheetVariableboolean.prototype.updateVisible = function () {
+    }
+    updateVisible() {
         this.visible.checked = this.value;
         this.visible.disabled = !(this.editable && (this.style.getSheetInstance() === null || this.style.getSheetInstance().isEditable()));
-    };
-    return SheetVariableboolean;
-}(SheetVariable));
-var SheetVariableimageselect = (function (_super) {
-    __extends(SheetVariableimageselect, _super);
-    function SheetVariableimageselect(parent, style, element) {
-        var _this = _super.call(this, parent, style, element) || this;
-        _this.select = document.createElement("select");
-        _this.errorUrl = "images/sheetImgError.png";
-        while (_this.visible.firstChild !== null)
-            _this.visible.removeChild(_this.visible.firstChild);
-        _this.visible.appendChild(_this.select);
-        if (_this.defaultValueString === null) {
-            _this.defaultName = "";
-            _this.defaultUrl = "";
+    }
+}
+class SheetVariableimageselect extends SheetVariable {
+    constructor(parent, style, element) {
+        super(parent, style, element);
+        this.select = document.createElement("select");
+        this.errorUrl = "images/sheetImgError.png";
+        while (this.visible.firstChild !== null)
+            this.visible.removeChild(this.visible.firstChild);
+        this.visible.appendChild(this.select);
+        if (this.defaultValueString === null) {
+            this.defaultName = "";
+            this.defaultUrl = "";
         }
         else {
             var obj;
             try {
-                obj = JSON.parse(_this.defaultValueString);
+                obj = JSON.parse(this.defaultValueString);
                 if (Array.isArray(obj) && obj.length === 2) {
-                    _this.defaultName = obj[0];
-                    _this.defaultUrl = obj[1];
+                    this.defaultName = obj[0];
+                    this.defaultUrl = obj[1];
                 }
                 else {
-                    _this.defaultName = "";
-                    _this.defaultUrl = "";
+                    this.defaultName = "";
+                    this.defaultUrl = "";
                 }
             }
             catch (e) {
-                console.log("[SheetVariableImageSelect] Produced invalid Default Value at " + _this.id + ":", _this.defaultValueString);
-                _this.defaultName = "";
-                _this.defaultUrl = "";
+                console.log("[SheetVariableImageSelect] Produced invalid Default Value at " + this.id + ":", this.defaultValueString);
+                this.defaultName = "";
+                this.defaultUrl = "";
             }
         }
-        if (_this.visible.dataset['selectclass'] !== undefined) {
-            _this.select.classList.add(_this.visible.dataset['selectclass']);
+        if (this.visible.dataset['selectclass'] !== undefined) {
+            this.select.classList.add(this.visible.dataset['selectclass']);
         }
-        if (_this.editable) {
-            _this.select.addEventListener("change", (function (e) {
+        if (this.editable) {
+            this.select.addEventListener("change", (function (e) {
                 this.change(e);
-            }).bind(_this));
-            _this.select.addEventListener("click", (function (e) {
+            }).bind(this));
+            this.select.addEventListener("click", (function (e) {
                 this.click(e);
-            }).bind(_this));
+            }).bind(this));
         }
-        _this.value = [_this.defaultName, _this.defaultUrl];
-        _this.updateOptions();
-        _this.updateVisible();
-        return _this;
+        this.value = [this.defaultName, this.defaultUrl];
+        this.updateOptions();
+        this.updateVisible();
     }
-    SheetVariableimageselect.prototype.createOptions = function (name, arr) {
+    createOptions(name, arr) {
         var optgroup = document.createElement("optgroup");
         optgroup.label = name;
         for (var i = 0; i < arr.length; i++) {
             optgroup.appendChild(this.createOption(arr[i][0], arr[i][1]));
         }
         return optgroup;
-    };
-    SheetVariableimageselect.prototype.createOption = function (name, url) {
+    }
+    createOption(name, url) {
         var option = document.createElement("option");
         option.value = JSON.stringify([name, url]);
         option.appendChild(document.createTextNode(name));
         return option;
-    };
-    SheetVariableimageselect.prototype.updateOptions = function () {
+    }
+    updateOptions() {
         while (this.select.firstChild !== null)
             this.select.removeChild(this.select.firstChild);
         if (this.value !== null && this.value[0] !== "" && this.value[1] !== "") {
@@ -5380,8 +5235,8 @@ var SheetVariableimageselect = (function (_super) {
             }
         }
         this.select.value = JSON.stringify(this.value);
-    };
-    SheetVariableimageselect.prototype.storeValue = function (arr) {
+    }
+    storeValue(arr) {
         if (!Array.isArray(arr) || arr.length !== 2) {
             arr = [this.defaultName, this.defaultUrl];
         }
@@ -5390,12 +5245,12 @@ var SheetVariableimageselect = (function (_super) {
             this.considerTriggering();
         }
         this.updateVisible();
-    };
-    SheetVariableimageselect.prototype.updateVisible = function () {
+    }
+    updateVisible() {
         this.updateOptions();
         this.select.disabled = (!this.editable || (this.style.getSheetInstance() !== null && !this.style.getSheetInstance().isEditable()));
-    };
-    SheetVariableimageselect.prototype.change = function (e) {
+    }
+    change(e) {
         var obj;
         try {
             obj = JSON.parse(this.select.value);
@@ -5407,82 +5262,73 @@ var SheetVariableimageselect = (function (_super) {
             console.log("[SheetVariableImageSelect] Produced invalid Array at " + this.id + ":", this.select.value, e);
             this.storeValue([this.defaultName, this.defaultUrl]);
         }
-    };
-    SheetVariableimageselect.prototype.click = function (e) {
-        this.updateOptions();
-    };
-    return SheetVariableimageselect;
-}(SheetVariable));
-var SheetButtonaddrow = (function (_super) {
-    __extends(SheetButtonaddrow, _super);
-    function SheetButtonaddrow(parent, style, element) {
-        var _this = _super.call(this, parent, style, element) || this;
-        _this.sheetInstanceChangeListener = (function () { this.updateVisible(); }).bind(_this);
-        _this.target = _this.visible.dataset["target"] === undefined ? "" : _this.visible.dataset['target'];
-        style.addSheetInstanceChangeListener(_this.sheetInstanceChangeListener);
-        return _this;
     }
-    SheetButtonaddrow.prototype.updateVisible = function () {
+    click(e) {
+        this.updateOptions();
+    }
+}
+class SheetButtonaddrow extends SheetButton {
+    constructor(parent, style, element) {
+        super(parent, style, element);
+        this.sheetInstanceChangeListener = (function () { this.updateVisible(); }).bind(this);
+        this.target = this.visible.dataset["target"] === undefined ? "" : this.visible.dataset['target'];
+        style.addSheetInstanceChangeListener(this.sheetInstanceChangeListener);
+    }
+    updateVisible() {
         if (this.style.getSheetInstance().isEditable()) {
             this.visible.style.display = "";
         }
         else {
             this.visible.style.display = "none";
         }
-    };
-    SheetButtonaddrow.prototype.click = function (e) {
+    }
+    click(e) {
         e.preventDefault();
         var list = this.parent.getField(this.target);
         if (list !== null) {
             list.addRow();
         }
-    };
-    return SheetButtonaddrow;
-}(SheetButton));
-var SheetButtonremoverow = (function (_super) {
-    __extends(SheetButtonremoverow, _super);
-    function SheetButtonremoverow(parent, style, element) {
-        var _this = _super.call(this, parent, style, element) || this;
-        _this.sheetInstanceChangeListener = (function () { this.updateVisible(); }).bind(_this);
-        style.addSheetInstanceChangeListener(_this.sheetInstanceChangeListener);
-        return _this;
     }
-    SheetButtonremoverow.prototype.updateVisible = function () {
+}
+class SheetButtonremoverow extends SheetButton {
+    constructor(parent, style, element) {
+        super(parent, style, element);
+        this.sheetInstanceChangeListener = (function () { this.updateVisible(); }).bind(this);
+        style.addSheetInstanceChangeListener(this.sheetInstanceChangeListener);
+    }
+    updateVisible() {
         if (this.style.getSheetInstance().isEditable()) {
             this.visible.style.display = "";
         }
         else {
             this.visible.style.display = "none";
         }
-    };
-    SheetButtonremoverow.prototype.click = function (e) {
+    }
+    click(e) {
         e.preventDefault();
         this.parent.getParent().removeRow(this.parent);
-    };
-    return SheetButtonremoverow;
-}(SheetButton));
-var SheetButtondice = (function (_super) {
-    __extends(SheetButtondice, _super);
-    function SheetButtondice(parent, style, element) {
-        var _this = _super.call(this, parent, style, element) || this;
-        _this.diceAmount = _this.visible.dataset['dices'] === undefined ? 0 : parseInt(_this.visible.dataset['dices']);
-        _this.diceFaces = _this.visible.dataset['faces'] === undefined ? 0 : parseInt(_this.visible.dataset['faces']);
-        _this.modifier = _this.visible.dataset['modifier'] === undefined ? "0" : _this.visible.dataset['modifier'];
-        _this.reason = _this.visible.dataset['reason'] === undefined ? null : _this.visible.dataset['reason'];
-        _this.parse();
-        return _this;
     }
-    SheetButtondice.prototype.getReason = function () {
+}
+class SheetButtondice extends SheetButton {
+    constructor(parent, style, element) {
+        super(parent, style, element);
+        this.diceAmount = this.visible.dataset['dices'] === undefined ? 0 : parseInt(this.visible.dataset['dices']);
+        this.diceFaces = this.visible.dataset['faces'] === undefined ? 0 : parseInt(this.visible.dataset['faces']);
+        this.modifier = this.visible.dataset['modifier'] === undefined ? "0" : this.visible.dataset['modifier'];
+        this.reason = this.visible.dataset['reason'] === undefined ? null : this.visible.dataset['reason'];
+        this.parse();
+    }
+    getReason() {
         return this.reason;
-    };
-    SheetButtondice.prototype.click = function (e) {
+    }
+    click(e) {
         e.preventDefault();
         if (UI.Chat.getRoom() !== null) {
             var dice = this.createMessage();
             UI.Chat.sendMessage(dice);
         }
-    };
-    SheetButtondice.prototype.createMessage = function () {
+    }
+    createMessage() {
         var dice = new MessageDice();
         dice.setPersona(this.style.getSheetInstance().getName());
         var value = this.getValue();
@@ -5494,8 +5340,8 @@ var SheetButtondice = (function (_super) {
             dice.addDestinationStorytellers(UI.Chat.getRoom());
         }
         return dice;
-    };
-    SheetButtondice.prototype.createReason = function (value) {
+    }
+    createReason(value) {
         var reason = this.diceAmount !== 0 && this.diceFaces !== 0 ? this.diceAmount.toString() + "d" + this.diceFaces.toString() : "";
         if (value.toString() === this.modifier) {
             if (value === 0 && reason === "") {
@@ -5522,8 +5368,8 @@ var SheetButtondice = (function (_super) {
             reason += ". " + this.reason;
         }
         return reason;
-    };
-    SheetButtondice.prototype.parse = function () {
+    }
+    parse() {
         var expr = this.modifier;
         expr = Sheet.simplifyString(expr);
         try {
@@ -5537,8 +5383,8 @@ var SheetButtondice = (function (_super) {
         }
         this.symbols = this.getSymbols();
         this.scope = this.getScope(this.symbols);
-    };
-    SheetButtondice.prototype.getSymbols = function () {
+    }
+    getSymbols() {
         var symbols = [];
         var nodes = this.parsed.filter(function (node) {
             return node.type == 'SymbolNode';
@@ -5547,15 +5393,15 @@ var SheetButtondice = (function (_super) {
             symbols.push(nodes[i].name);
         }
         return symbols;
-    };
-    SheetButtondice.prototype.getScope = function (symbols) {
+    }
+    getScope(symbols) {
         var scope = {};
         for (var i = 0; i < symbols.length; i++) {
             scope[symbols[i]] = 0;
         }
         return scope;
-    };
-    SheetButtondice.prototype.getValue = function () {
+    }
+    getValue() {
         for (var i = 0; i < this.symbols.length; i++) {
             this.scope[this.symbols[i]] = this.style.getSheet().getValueFor(this.symbols[i]);
         }
@@ -5567,29 +5413,19 @@ var SheetButtondice = (function (_super) {
             console.warn("[SheetButtonDice] Evaluation error", e);
             return NaN;
         }
-    };
-    return SheetButtondice;
-}(SheetButton));
-var SheetButtonsort = (function (_super) {
-    __extends(SheetButtonsort, _super);
-    function SheetButtonsort() {
-        return _super !== null && _super.apply(this, arguments) || this;
     }
-    SheetButtonsort.prototype.click = function (e) {
+}
+class SheetButtonsort extends SheetButtonaddrow {
+    click(e) {
         e.preventDefault();
         var list = this.parent.getField(this.target);
         if (list !== null) {
             list.sort();
         }
-    };
-    return SheetButtonsort;
-}(SheetButtonaddrow));
-var SheetButtoncommonsroll = (function (_super) {
-    __extends(SheetButtoncommonsroll, _super);
-    function SheetButtoncommonsroll() {
-        return _super !== null && _super.apply(this, arguments) || this;
     }
-    SheetButtoncommonsroll.prototype.click = function (e) {
+}
+class SheetButtoncommonsroll extends SheetButton {
+    click(e) {
         e.preventDefault();
         var diceAmount = Number(this.parent.getValueFor("Dice Amount"));
         var diceFaces = Number(this.parent.getValueFor("Dice Faces"));
@@ -5661,8 +5497,8 @@ var SheetButtoncommonsroll = (function (_super) {
             }
             UI.Chat.sendMessage(dice);
         }
-    };
-    SheetButtoncommonsroll.prototype.getSymbols = function () {
+    }
+    getSymbols() {
         var symbols = [];
         var nodes = this.parsed.filter(function (node) {
             return node.type == 'SymbolNode';
@@ -5671,15 +5507,15 @@ var SheetButtoncommonsroll = (function (_super) {
             symbols.push(nodes[i].name);
         }
         return symbols;
-    };
-    SheetButtoncommonsroll.prototype.getScope = function (symbols) {
+    }
+    getScope(symbols) {
         var scope = {};
         for (var i = 0; i < symbols.length; i++) {
             scope[symbols[i]] = 0;
         }
         return scope;
-    };
-    SheetButtoncommonsroll.prototype.parse = function (expr) {
+    }
+    parse(expr) {
         expr = Sheet.simplifyString(expr);
         try {
             this.parsed = math.parse(expr);
@@ -5692,8 +5528,8 @@ var SheetButtoncommonsroll = (function (_super) {
         }
         this.symbols = this.getSymbols();
         this.scope = this.getScope(this.symbols);
-    };
-    SheetButtoncommonsroll.prototype.getValue = function () {
+    }
+    getValue() {
         for (var i = 0; i < this.symbols.length; i++) {
             this.scope[this.symbols[i]] = this.style.getSheet().getValueFor(this.symbols[i]);
         }
@@ -5705,9 +5541,8 @@ var SheetButtoncommonsroll = (function (_super) {
             console.warn("[SheetButtonCommonsRoll] Evaluation error", e);
             return NaN;
         }
-    };
-    return SheetButtoncommonsroll;
-}(SheetButton));
+    }
+}
 var MessageFactory;
 (function (MessageFactory) {
     var messageClasses = {};
@@ -5811,43 +5646,26 @@ var MessageFactory;
     }
     MessageFactory.createFromText = createFromText;
 })(MessageFactory || (MessageFactory = {}));
-var SlashCommand = (function () {
-    function SlashCommand() {
-    }
-    SlashCommand.prototype.receiveCommand = function (slashCommand, message) {
+class SlashCommand {
+    receiveCommand(slashCommand, message) {
         console.error("SlashCommand.receiveCommand is abstract. Offending class:", this.constructor['name'], this);
         return false;
-    };
-    SlashCommand.prototype.isMessage = function () {
+    }
+    isMessage() {
         return this instanceof Message;
-    };
-    SlashCommand.prototype.getInvalidHTML = function (slashCommand, msg) {
+    }
+    getInvalidHTML(slashCommand, msg) {
         return null;
-    };
-    return SlashCommand;
-}());
-var SlashClear = (function (_super) {
-    __extends(SlashClear, _super);
-    function SlashClear() {
-        return _super !== null && _super.apply(this, arguments) || this;
     }
-    return SlashClear;
-}(SlashCommand));
+}
+class SlashClear extends SlashCommand {
+}
 MessageFactory.registerSlashCommand(SlashClear, ["/clear", "/clr", "/cls"]);
-var SlashReply = (function (_super) {
-    __extends(SlashReply, _super);
-    function SlashReply() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    return SlashReply;
-}(SlashCommand));
+class SlashReply extends SlashCommand {
+}
 MessageFactory.registerSlashCommand(SlashReply, ["/r", "/reply", "/responder", "/resposta"]);
-var SlashImages = (function (_super) {
-    __extends(SlashImages, _super);
-    function SlashImages() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    SlashImages.prototype.receiveCommand = function (slashCommand, message) {
+class SlashImages extends SlashCommand {
+    receiveCommand(slashCommand, message) {
         var room = Server.Chat.getRoom();
         if (room === null)
             return false;
@@ -5868,16 +5686,11 @@ var SlashImages = (function (_super) {
             UI.Chat.printElement(msg.getElement());
         }
         return true;
-    };
-    return SlashImages;
-}(SlashCommand));
-MessageFactory.registerSlashCommand(SlashImages, ["/images", "/imgs", "/imagens", "/fotos", "/picas"]);
-var SlashLog = (function (_super) {
-    __extends(SlashLog, _super);
-    function SlashLog() {
-        return _super !== null && _super.apply(this, arguments) || this;
     }
-    SlashLog.prototype.receiveCommand = function (slashCommand, message) {
+}
+MessageFactory.registerSlashCommand(SlashImages, ["/images", "/imgs", "/imagens", "/fotos", "/picas"]);
+class SlashLog extends SlashCommand {
+    receiveCommand(slashCommand, message) {
         var cbs = {
             room: Server.Chat.getRoom(),
             handleEvent: function () {
@@ -5886,16 +5699,11 @@ var SlashLog = (function (_super) {
         };
         Server.Chat.getAllMessages(Server.Chat.getRoom().id, cbs);
         return true;
-    };
-    return SlashLog;
-}(SlashCommand));
-MessageFactory.registerSlashCommand(SlashLog, ["/log", "/logger"]);
-var SlashLingo = (function (_super) {
-    __extends(SlashLingo, _super);
-    function SlashLingo() {
-        return _super !== null && _super.apply(this, arguments) || this;
     }
-    SlashLingo.prototype.receiveCommand = function (slashCommand, message) {
+}
+MessageFactory.registerSlashCommand(SlashLog, ["/log", "/logger"]);
+class SlashLingo extends SlashCommand {
+    receiveCommand(slashCommand, message) {
         var storyMode = slashCommand.toLowerCase().indexOf("sto") !== -1;
         if (storyMode && !Server.Chat.getRoom().getMe().isStoryteller()) {
             return false;
@@ -5968,8 +5776,8 @@ var SlashLingo = (function (_super) {
         UI.Chat.sendMessage(translatedMsg);
         UI.Chat.sendMessage(pseudoMsg);
         return true;
-    };
-    SlashLingo.prototype.getInvalidHTML = function (slashCommand, message) {
+    }
+    getInvalidHTML(slashCommand, message) {
         var smsg = new ChatSystemMessage(true);
         if (slashCommand.toLowerCase().indexOf("sto") !== -1 && !Server.Chat.getRoom().getMe().isStoryteller()) {
             smsg.addText("_SLASHLINGOINVALIDONLYGM_");
@@ -5989,16 +5797,11 @@ var SlashLingo = (function (_super) {
             }
         }
         return smsg.getElement();
-    };
-    return SlashLingo;
-}(SlashCommand));
-MessageFactory.registerSlashCommand(SlashLingo, ["/lang", "/ling", "/lingo", "/language", "/lingua"]);
-var SlashPica = (function (_super) {
-    __extends(SlashPica, _super);
-    function SlashPica() {
-        return _super !== null && _super.apply(this, arguments) || this;
     }
-    SlashPica.prototype.receiveCommand = function (slashCommand, message) {
+}
+MessageFactory.registerSlashCommand(SlashLingo, ["/lang", "/ling", "/lingo", "/language", "/lingua"]);
+class SlashPica extends SlashCommand {
+    receiveCommand(slashCommand, message) {
         var room = Server.Chat.getRoom();
         if (room === null)
             return false;
@@ -6017,54 +5820,51 @@ var SlashPica = (function (_super) {
         }
         MessageImage.shareLink(message, link);
         return true;
-    };
-    return SlashPica;
-}(SlashCommand));
-MessageFactory.registerSlashCommand(SlashPica, ["/pica", "/quadro", "/board", "/desenho", "/drawing"]);
-var Message = (function (_super) {
-    __extends(Message, _super);
-    function Message() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.id = 0;
-        _this.localid = null;
-        _this.wasLocal = false;
-        _this.roomid = null;
-        _this.date = null;
-        _this.module = "";
-        _this.msg = "";
-        _this.special = {};
-        _this.sending = null;
-        _this.origin = 0;
-        _this.destination = null;
-        _this.updatedTrigger = new Trigger();
-        _this.html = null;
-        _this.clone = false;
-        return _this;
     }
-    Message.prototype.getDate = function () {
+}
+MessageFactory.registerSlashCommand(SlashPica, ["/pica", "/quadro", "/board", "/desenho", "/drawing"]);
+class Message extends SlashCommand {
+    constructor() {
+        super(...arguments);
+        this.id = 0;
+        this.localid = null;
+        this.wasLocal = false;
+        this.roomid = null;
+        this.date = null;
+        this.module = "";
+        this.msg = "";
+        this.special = {};
+        this.sending = null;
+        this.origin = 0;
+        this.destination = null;
+        this.updatedTrigger = new Trigger();
+        this.html = null;
+        this.clone = false;
+    }
+    getDate() {
         if (this.date === "" || this.date === null) {
             return null;
         }
         return this.date;
-    };
-    Message.prototype.onPrint = function () { };
+    }
+    onPrint() { }
     ;
-    Message.prototype.setPersona = function (name) {
+    setPersona(name) {
         this.setSpecial("persona", name);
-    };
-    Message.prototype.getPersona = function () {
+    }
+    getPersona() {
         return this.getSpecial("persona", "???");
-    };
-    Message.prototype.findPersona = function () { };
-    Message.prototype.getLocalId = function () {
+    }
+    findPersona() { }
+    getLocalId() {
         if (this.localid === null)
             DB.MessageDB.registerLocally(this);
         this.wasLocal = true;
-    };
-    Message.prototype.wasLocalMessage = function () {
+    }
+    wasLocalMessage() {
         return this.wasLocal;
-    };
-    Message.prototype.getUser = function () {
+    }
+    getUser() {
         var user = DB.UserDB.getAUser(this.origin);
         var context = user.getRoomContext(this.roomid);
         if (context === null) {
@@ -6075,8 +5875,8 @@ var Message = (function (_super) {
             }
         }
         return context;
-    };
-    Message.prototype.addDestinationStorytellers = function (room) {
+    }
+    addDestinationStorytellers(room) {
         if (room === null) {
             return;
         }
@@ -6084,8 +5884,8 @@ var Message = (function (_super) {
         for (var i = 0; i < storytellers.length; i++) {
             this.addDestination(storytellers[i].getUser());
         }
-    };
-    Message.prototype.addDestination = function (user) {
+    }
+    addDestination(user) {
         if (this.destination === null) {
             this.destination = [user.id];
         }
@@ -6098,8 +5898,8 @@ var Message = (function (_super) {
         else {
             console.warn("[MESSAGE] Attempt to add user to unknown destination type? What gives? Offending user and message:", user, this);
         }
-    };
-    Message.prototype.getDestinationArray = function () {
+    }
+    getDestinationArray() {
         if (!Array.isArray(this.destination)) {
             if (this.destination !== undefined && this.destination !== null) {
                 return [this.destination];
@@ -6111,8 +5911,8 @@ var Message = (function (_super) {
         else {
             return this.destination;
         }
-    };
-    Message.prototype.getDestinations = function () {
+    }
+    getDestinations() {
         if (Array.isArray(this.destination)) {
             var users = [];
             for (var i = 0; i < this.destination.length; i++) {
@@ -6137,36 +5937,36 @@ var Message = (function (_super) {
             }
             return [context];
         }
-    };
-    Message.prototype.hasDestination = function () {
+    }
+    hasDestination() {
         return this.destination !== null && this.destination !== 0;
-    };
-    Message.prototype.makeMockUp = function () {
+    }
+    makeMockUp() {
         this.msg = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent volutpat orci nulla, et dictum turpis commodo a. Duis iaculis neque lectus, ac sodales diam varius id.";
         return [this];
-    };
-    Message.prototype.isWhisper = function () {
+    }
+    isWhisper() {
         if (Array.isArray(this.destination)) {
             return this.destination.length > 0;
         }
         return this.destination !== null && this.destination !== 0;
-    };
-    Message.prototype.isMine = function () {
+    }
+    isMine() {
         return this.origin === Application.getMyId();
-    };
-    Message.prototype.createHTML = function () {
+    }
+    createHTML() {
         var p = document.createElement("p");
         p.appendChild(document.createTextNode("_CHATMESSAGEUNKNOWNTYPE_"));
         p.dataset['a'] = this.msg;
         return p;
-    };
-    Message.prototype.getHTML = function () {
+    }
+    getHTML() {
         if (this.html === null) {
             this.html = this.createHTML();
         }
         return this.html;
-    };
-    Message.prototype.prepareSending = function () {
+    }
+    prepareSending() {
         this.origin = Application.getMyId();
         this.getLocalId();
         var html = this.getHTML();
@@ -6206,8 +6006,8 @@ var Message = (function (_super) {
             }).bind(null, this);
             this.sending = setTimeout(timeoutFunction, 8000);
         }
-    };
-    Message.prototype.getSpecial = function (id, defaultValue) {
+    }
+    getSpecial(id, defaultValue) {
         if (this.special[id] !== undefined) {
             return this.special[id];
         }
@@ -6215,11 +6015,11 @@ var Message = (function (_super) {
             return defaultValue;
         }
         return null;
-    };
-    Message.prototype.setSpecial = function (id, value) {
+    }
+    setSpecial(id, value) {
         this.special[id] = value;
-    };
-    Message.prototype.updateFromObject = function (obj) {
+    }
+    updateFromObject(obj) {
         for (var id in this) {
             if (obj[id] === undefined)
                 continue;
@@ -6231,16 +6031,16 @@ var Message = (function (_super) {
             this.special = JSON.parse(this.special);
         }
         this.triggerUpdated();
-    };
-    Message.prototype.exportAsLog = function () {
+    }
+    exportAsLog() {
         var obj = this.exportAsObject();
         obj['roomid'] = 0;
         obj['id'] = this.id;
         obj['msg'] = obj['message'];
         delete (obj['message']);
         return obj;
-    };
-    Message.prototype.exportAsObject = function () {
+    }
+    exportAsObject() {
         var result = {};
         var attributes = [
             'destination', 'module', 'origin', 'roomid', 'date', "clone", 'localid', 'special'
@@ -6261,27 +6061,27 @@ var Message = (function (_super) {
         }
         result["message"] = this.msg;
         return result;
-    };
-    Message.prototype.receiveCommand = function (slashCommand, msg) {
+    }
+    receiveCommand(slashCommand, msg) {
         this.msg = msg;
         return true;
-    };
-    Message.prototype.setMsg = function (str) {
+    }
+    setMsg(str) {
         this.msg = str;
-    };
-    Message.prototype.getMsg = function () {
+    }
+    getMsg() {
         if (this.msg === null) {
             return "";
         }
         return this.msg;
-    };
-    Message.prototype.unsetSpecial = function (id) {
+    }
+    unsetSpecial(id) {
         delete (this.special[id]);
-    };
-    Message.prototype.addUpdatedListener = function (list) {
+    }
+    addUpdatedListener(list) {
         this.updatedTrigger.addListener(list);
-    };
-    Message.prototype.triggerUpdated = function () {
+    }
+    triggerUpdated() {
         this.updatedTrigger.trigger(this);
         if (this.sending !== null) {
             clearTimeout(this.sending);
@@ -6293,24 +6093,21 @@ var Message = (function (_super) {
         if (this.localid !== null) {
             DB.MessageDB.releaseLocalMessage(this.localid);
         }
-    };
-    Message.prototype.doNotPrint = function () {
+    }
+    doNotPrint() {
         if (this.clone && this.destination !== null) {
             return true;
         }
         return false;
-    };
-    return Message;
-}(SlashCommand));
-var MessageBuff = (function (_super) {
-    __extends(MessageBuff, _super);
-    function MessageBuff() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.module = "buff";
-        _this.playedBefore = false;
-        return _this;
     }
-    MessageBuff.prototype.onPrint = function () {
+}
+class MessageBuff extends Message {
+    constructor() {
+        super(...arguments);
+        this.module = "buff";
+        this.playedBefore = false;
+    }
+    onPrint() {
         if (this.playedBefore) {
             return;
         }
@@ -6320,14 +6117,14 @@ var MessageBuff = (function (_super) {
                 this.playedBefore = true;
             }
         }
-    };
-    MessageBuff.prototype.customAutomationPossible = function () {
+    }
+    customAutomationPossible() {
         if (Server.Chat.getRoom() === null || !Server.Chat.getRoom().getMe().isStoryteller() || !UI.Chat.doAutomation()) {
             return false;
         }
         return true;
-    };
-    MessageBuff.prototype.createHTML = function () {
+    }
+    createHTML() {
         var msg = new ChatSystemMessage(true);
         if (Application.isMe(this.origin) && (Server.Chat.getRoom() === null || !Server.Chat.getRoom().getMe().isStoryteller())) {
             msg.addText("_CHATCOMBATBUFFREQUESTED_");
@@ -6354,8 +6151,8 @@ var MessageBuff = (function (_super) {
             }
         }
         return msg.getElement();
-    };
-    MessageBuff.prototype.applyBuff = function () {
+    }
+    applyBuff() {
         var ce = {
             name: this.getEffectName(),
             target: this.getSheetId(),
@@ -6373,68 +6170,65 @@ var MessageBuff = (function (_super) {
             }
             this.html = null;
         }
-    };
-    MessageBuff.prototype.setSheetId = function (id) {
-        this.setSpecial("sheetid", id);
-    };
-    MessageBuff.prototype.getSheetId = function () {
-        return this.getSpecial("sheetid", 0);
-    };
-    MessageBuff.prototype.setSheetName = function (name) {
-        this.msg = name;
-    };
-    MessageBuff.prototype.getSheetName = function () {
-        return this.msg;
-    };
-    MessageBuff.prototype.setEffectName = function (name) {
-        this.setSpecial("effectName", name);
-    };
-    MessageBuff.prototype.getEffectName = function () {
-        return this.getSpecial("effectName", "Unknown");
-    };
-    MessageBuff.prototype.setEffectRoundEnd = function (round) {
-        this.setSpecial("effectRoundEnd", round);
-    };
-    MessageBuff.prototype.getEffectRoundEnd = function () {
-        return this.getSpecial("effectRoundEnd", 0);
-    };
-    MessageBuff.prototype.setEffectTurnEnd = function (turn) {
-        this.setSpecial("effectTurnEnd", 0);
-    };
-    MessageBuff.prototype.getEffectTurnEnd = function () {
-        return this.getSpecial("effectTurnEnd", 0);
-    };
-    MessageBuff.prototype.setEffectEndOnStart = function (endonstart) {
-        this.setSpecial("effectEndOnStart", endonstart);
-    };
-    MessageBuff.prototype.getEffectEndOnStart = function () {
-        return this.getSpecial("effectEndOnStart", false);
-    };
-    MessageBuff.prototype.setEffectCustomString = function (customString) {
-        this.setSpecial("effectCustomString", customString);
-    };
-    MessageBuff.prototype.getEffectCustomString = function () {
-        return this.getSpecial("effectCustomString", null);
-    };
-    return MessageBuff;
-}(Message));
-MessageFactory.registerMessage(MessageBuff, "buff", []);
-var MessagePica = (function (_super) {
-    __extends(MessagePica, _super);
-    function MessagePica() {
-        var _this = _super.call(this) || this;
-        _this.module = "pica";
-        _this.msgOneArt = "0";
-        _this.msgUpdateArts = "1";
-        _this.msgRequestUpdate = "2";
-        _this.msgClearAll = "3";
-        _this.runOnce = false;
-        _this.addUpdatedListener((function () {
-            this.considerAddingToArtManager();
-        }).bind(_this));
-        return _this;
     }
-    MessagePica.prototype.considerAddingToArtManager = function () {
+    setSheetId(id) {
+        this.setSpecial("sheetid", id);
+    }
+    getSheetId() {
+        return this.getSpecial("sheetid", 0);
+    }
+    setSheetName(name) {
+        this.msg = name;
+    }
+    getSheetName() {
+        return this.msg;
+    }
+    setEffectName(name) {
+        this.setSpecial("effectName", name);
+    }
+    getEffectName() {
+        return this.getSpecial("effectName", "Unknown");
+    }
+    setEffectRoundEnd(round) {
+        this.setSpecial("effectRoundEnd", round);
+    }
+    getEffectRoundEnd() {
+        return this.getSpecial("effectRoundEnd", 0);
+    }
+    setEffectTurnEnd(turn) {
+        this.setSpecial("effectTurnEnd", 0);
+    }
+    getEffectTurnEnd() {
+        return this.getSpecial("effectTurnEnd", 0);
+    }
+    setEffectEndOnStart(endonstart) {
+        this.setSpecial("effectEndOnStart", endonstart);
+    }
+    getEffectEndOnStart() {
+        return this.getSpecial("effectEndOnStart", false);
+    }
+    setEffectCustomString(customString) {
+        this.setSpecial("effectCustomString", customString);
+    }
+    getEffectCustomString() {
+        return this.getSpecial("effectCustomString", null);
+    }
+}
+MessageFactory.registerMessage(MessageBuff, "buff", []);
+class MessagePica extends Message {
+    constructor() {
+        super();
+        this.module = "pica";
+        this.msgOneArt = "0";
+        this.msgUpdateArts = "1";
+        this.msgRequestUpdate = "2";
+        this.msgClearAll = "3";
+        this.runOnce = false;
+        this.addUpdatedListener((function () {
+            this.considerAddingToArtManager();
+        }).bind(this));
+    }
+    considerAddingToArtManager() {
         var roomid = this.roomid;
         var url = this.getUrl();
         var userLengths = UI.Pica.ArtManager.getLengthByUser(roomid, url);
@@ -6481,16 +6275,16 @@ var MessagePica = (function (_super) {
                 UI.Chat.sendMessage(msg);
             }
         }
-    };
-    MessagePica.prototype.setArt = function (art) {
+    }
+    setArt(art) {
         this.setSpecial("art", art.exportAsObject());
         this.setMsg(this.msgOneArt);
-    };
-    MessagePica.prototype.setArtString = function (art) {
+    }
+    setArtString(art) {
         this.setSpecial("art", art);
         this.setMsg(this.msgOneArt);
-    };
-    MessagePica.prototype.getArt = function () {
+    }
+    getArt() {
         var art = this.getSpecial("art", null);
         try {
             if (art != null) {
@@ -6502,12 +6296,12 @@ var MessagePica = (function (_super) {
         }
         catch (e) { }
         return null;
-    };
-    MessagePica.prototype.setArts = function (arts) {
+    }
+    setArts(arts) {
         this.setSpecial("arts", arts);
         this.setMsg(this.msgUpdateArts);
-    };
-    MessagePica.prototype.getArts = function () {
+    }
+    getArts() {
         var arts = this.getSpecial("arts", null);
         var instanced = [];
         if (Array.isArray(arts)) {
@@ -6524,50 +6318,47 @@ var MessagePica = (function (_super) {
             }
         }
         return instanced;
-    };
-    MessagePica.prototype.setUrl = function (url) {
+    }
+    setUrl(url) {
         this.setSpecial("url", url);
-    };
-    MessagePica.prototype.getUrl = function () {
+    }
+    getUrl() {
         return this.getSpecial("url", "");
-    };
-    MessagePica.prototype.getSpecificConfirmation = function (userid) {
+    }
+    getSpecificConfirmation(userid) {
         var conf = this.getConfirmation();
         if (conf[userid] == undefined)
             return 0;
         return conf[userid];
-    };
-    MessagePica.prototype.getConfirmation = function () {
+    }
+    getConfirmation() {
         return this.getSpecial("check", {});
-    };
-    MessagePica.prototype.setConfirmation = function (userList) {
+    }
+    setConfirmation(userList) {
         this.setSpecial("check", userList);
-    };
-    MessagePica.prototype.getHTML = function () {
+    }
+    getHTML() {
         if (!this.runOnce) {
             this.runOnce = true;
         }
         return null;
-    };
-    MessagePica.prototype.setCleanArts = function (isIt) {
+    }
+    setCleanArts(isIt) {
         if (isIt) {
             this.setMsg(this.msgClearAll);
         }
-    };
-    MessagePica.prototype.isCleanArts = function () {
-        return this.getMsg() == this.msgClearAll;
-    };
-    return MessagePica;
-}(Message));
-MessageFactory.registerMessage(MessagePica, "pica", []);
-var MessageSystem = (function (_super) {
-    __extends(MessageSystem, _super);
-    function MessageSystem() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.module = "system";
-        return _this;
     }
-    MessageSystem.prototype.createHTML = function () {
+    isCleanArts() {
+        return this.getMsg() == this.msgClearAll;
+    }
+}
+MessageFactory.registerMessage(MessagePica, "pica", []);
+class MessageSystem extends Message {
+    constructor() {
+        super(...arguments);
+        this.module = "system";
+    }
+    createHTML() {
         var p = document.createElement("p");
         p.classList.add("chatMessageSystem");
         var b = document.createElement("b");
@@ -6576,17 +6367,15 @@ var MessageSystem = (function (_super) {
         p.appendChild(b);
         p.appendChild(document.createTextNode(": " + this.getMsg()));
         return p;
-    };
-    return MessageSystem;
-}(Message));
+    }
+}
 MessageFactory.registerMessage(MessageSystem, "system", []);
-var MessageCountdown = (function (_super) {
-    __extends(MessageCountdown, _super);
-    function MessageCountdown() {
-        var _this = _super.call(this) || this;
-        _this.counter = document.createTextNode("99999");
-        _this.module = "countdown";
-        _this.addUpdatedListener(function (e) {
+class MessageCountdown extends Message {
+    constructor() {
+        super();
+        this.counter = document.createTextNode("99999");
+        this.module = "countdown";
+        this.addUpdatedListener(function (e) {
             var target = e.getTarget();
             if (target !== null) {
                 var msg = DB.MessageDB.getMessage(target);
@@ -6598,9 +6387,8 @@ var MessageCountdown = (function (_super) {
                 e.updateCounter(parseInt(e.getMsg()));
             }
         });
-        return _this;
     }
-    MessageCountdown.prototype.createHTML = function () {
+    createHTML() {
         if (this.getMsg() === "") {
             return null;
         }
@@ -6619,8 +6407,8 @@ var MessageCountdown = (function (_super) {
         }
         p.appendChild(span);
         return p;
-    };
-    MessageCountdown.prototype.receiveCommand = function (slash, msg) {
+    }
+    receiveCommand(slash, msg) {
         if (MessageCountdown.timeout !== null) {
             clearTimeout(MessageCountdown.timeout);
             MessageCountdown.timeout = null;
@@ -6666,38 +6454,36 @@ var MessageCountdown = (function (_super) {
         MessageCountdown.lastTimeout = this;
         MessageCountdown.timeout = setTimeout(counterObj['func'], 1000);
         return true;
-    };
-    MessageCountdown.prototype.getTarget = function () {
+    }
+    getTarget() {
         return this.getSpecial("target", null);
-    };
-    MessageCountdown.prototype.setTarget = function (id) {
+    }
+    setTarget(id) {
         this.setSpecial("target", id);
-    };
-    MessageCountdown.prototype.setCounter = function (e) {
+    }
+    setCounter(e) {
         this.setSpecial("counter", e);
-    };
-    MessageCountdown.prototype.getCounter = function () {
+    }
+    getCounter() {
         return this.getSpecial("counter", 0);
-    };
-    MessageCountdown.prototype.updateCounter = function (e) {
+    }
+    updateCounter(e) {
         var curr = parseInt(this.counter.nodeValue);
         if (e < curr) {
             this.counter.nodeValue = e.toString();
         }
-    };
-    return MessageCountdown;
-}(Message));
+    }
+}
 MessageCountdown.timeout = null;
 MessageFactory.registerMessage(MessageCountdown, "countdown", ["/countdown", "/count"]);
-var MessageVote = (function (_super) {
-    __extends(MessageVote, _super);
-    function MessageVote() {
-        var _this = _super.call(this) || this;
-        _this.module = "vote";
-        _this.voters = [];
-        _this.voteAmountText = document.createTextNode("0");
-        _this.votersText = document.createTextNode("");
-        _this.addUpdatedListener({
+class MessageVote extends Message {
+    constructor() {
+        super();
+        this.module = "vote";
+        this.voters = [];
+        this.voteAmountText = document.createTextNode("0");
+        this.votersText = document.createTextNode("");
+        this.addUpdatedListener({
             handleEvent: function (e) {
                 if (e.getVoteTarget() !== null) {
                     var target = DB.MessageDB.getMessage(e.getVoteTarget());
@@ -6707,15 +6493,14 @@ var MessageVote = (function (_super) {
                 }
             }
         });
-        return _this;
     }
-    MessageVote.prototype.setVoteTarget = function (id) {
+    setVoteTarget(id) {
         this.setSpecial("castvote", id);
-    };
-    MessageVote.prototype.getVoteTarget = function () {
+    }
+    getVoteTarget() {
         return this.getSpecial("castvote", null);
-    };
-    MessageVote.prototype.createHTML = function () {
+    }
+    createHTML() {
         if (this.getVoteTarget() !== null) {
             return null;
         }
@@ -6746,8 +6531,8 @@ var MessageVote = (function (_super) {
         };
         a.addEventListener("click", clickObj);
         return p;
-    };
-    MessageVote.prototype.updateVoters = function () {
+    }
+    updateVoters() {
         this.voteAmountText.nodeValue = this.voters.length.toString();
         var voterNames = [];
         for (var i = 0; i < this.voters.length; i++) {
@@ -6759,8 +6544,8 @@ var MessageVote = (function (_super) {
         else {
             this.votersText.nodeValue = "";
         }
-    };
-    MessageVote.prototype.addVote = function (user) {
+    }
+    addVote(user) {
         if (this.voters.indexOf(user) === -1) {
             this.voters.push(user);
             this.updateVoters();
@@ -6768,25 +6553,22 @@ var MessageVote = (function (_super) {
         else {
             this.removeVote(user);
         }
-    };
-    MessageVote.prototype.removeVote = function (user) {
+    }
+    removeVote(user) {
         var index = this.voters.indexOf(user);
         if (index !== -1) {
             this.voters.splice(index, 1);
             this.updateVoters();
         }
-    };
-    return MessageVote;
-}(Message));
+    }
+}
 MessageFactory.registerMessage(MessageVote, "vote", ["/vote", "/voto", "/votar", "/vota"]);
-var MessageWebm = (function (_super) {
-    __extends(MessageWebm, _super);
-    function MessageWebm() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.module = "webm";
-        return _this;
+class MessageWebm extends Message {
+    constructor() {
+        super(...arguments);
+        this.module = "webm";
     }
-    MessageWebm.prototype.createHTML = function () {
+    createHTML() {
         var p = document.createElement("p");
         p.classList.add("chatMessageShare");
         p.appendChild(document.createTextNode(this.getUser().getUniqueNickname() + " "));
@@ -6806,24 +6588,21 @@ var MessageWebm = (function (_super) {
         UI.Language.markLanguage(a);
         p.appendChild(a);
         return p;
-    };
-    MessageWebm.prototype.getName = function () {
+    }
+    getName() {
         return this.getSpecial("name", null);
-    };
-    MessageWebm.prototype.setName = function (name) {
+    }
+    setName(name) {
         this.setSpecial("name", name);
-    };
-    return MessageWebm;
-}(Message));
+    }
+}
 MessageFactory.registerMessage(MessageWebm, "webm", ["/webm"]);
-var MessageVideo = (function (_super) {
-    __extends(MessageVideo, _super);
-    function MessageVideo() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.module = "youtube";
-        return _this;
+class MessageVideo extends Message {
+    constructor() {
+        super(...arguments);
+        this.module = "youtube";
     }
-    MessageVideo.prototype.createHTML = function () {
+    createHTML() {
         var p = document.createElement("p");
         p.classList.add("chatMessageShare");
         p.appendChild(document.createTextNode(this.getUser().getUniqueNickname() + " "));
@@ -6843,24 +6622,21 @@ var MessageVideo = (function (_super) {
         UI.Language.markLanguage(a);
         p.appendChild(a);
         return p;
-    };
-    MessageVideo.prototype.getName = function () {
-        return this.getSpecial("name", null);
-    };
-    MessageVideo.prototype.setName = function (name) {
-        this.setSpecial("name", name);
-    };
-    return MessageVideo;
-}(Message));
-MessageFactory.registerMessage(MessageVideo, "youtube", ["/video", "/youtube"]);
-var MessageQuote = (function (_super) {
-    __extends(MessageQuote, _super);
-    function MessageQuote() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.module = "quote";
-        return _this;
     }
-    MessageQuote.prototype.createHTML = function () {
+    getName() {
+        return this.getSpecial("name", null);
+    }
+    setName(name) {
+        this.setSpecial("name", name);
+    }
+}
+MessageFactory.registerMessage(MessageVideo, "youtube", ["/video", "/youtube"]);
+class MessageQuote extends Message {
+    constructor() {
+        super(...arguments);
+        this.module = "quote";
+    }
+    createHTML() {
         var p = document.createElement("p");
         p.classList.add("chatMessageQuoteParagraph");
         p.appendChild(document.createTextNode('"' + this.getMsg() + '"'));
@@ -6872,14 +6648,14 @@ var MessageQuote = (function (_super) {
             p.appendChild(b);
         }
         return p;
-    };
-    MessageQuote.prototype.setQuoted = function (name) {
+    }
+    setQuoted(name) {
         this.setSpecial("name", name);
-    };
-    MessageQuote.prototype.getQuoted = function () {
+    }
+    getQuoted() {
         return this.getSpecial("name", null);
-    };
-    MessageQuote.prototype.receiveCommand = function (slashCommand, message) {
+    }
+    receiveCommand(slashCommand, message) {
         var name;
         var idx = message.indexOf(",");
         if (idx === -1) {
@@ -6893,19 +6669,16 @@ var MessageQuote = (function (_super) {
         this.setQuoted(name);
         this.setMsg(message);
         return true;
-    };
-    return MessageQuote;
-}(Message));
-MessageFactory.registerMessage(MessageQuote, "quote", ["/quote", "/citar", "/citação", "/citaçao", "/citacao"]);
-var MessageSE = (function (_super) {
-    __extends(MessageSE, _super);
-    function MessageSE() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.module = "seplay";
-        _this.playedBefore = false;
-        return _this;
     }
-    MessageSE.prototype.onPrint = function () {
+}
+MessageFactory.registerMessage(MessageQuote, "quote", ["/quote", "/citar", "/citação", "/citaçao", "/citacao"]);
+class MessageSE extends Message {
+    constructor() {
+        super(...arguments);
+        this.module = "seplay";
+        this.playedBefore = false;
+    }
+    onPrint() {
         if (this.playedBefore) {
             return;
         }
@@ -6918,8 +6691,8 @@ var MessageSE = (function (_super) {
                 this.playedBefore = true;
             }
         }
-    };
-    MessageSE.prototype.createHTML = function () {
+    }
+    createHTML() {
         if (Application.Config.getConfig("hideMessages").getValue()) {
             return null;
         }
@@ -6948,32 +6721,29 @@ var MessageSE = (function (_super) {
         UI.Language.markLanguage(a);
         p.appendChild(a);
         return p;
-    };
-    MessageSE.prototype.getName = function () {
+    }
+    getName() {
         return this.getSpecial("name", null);
-    };
-    MessageSE.prototype.setName = function (name) {
+    }
+    setName(name) {
         this.setSpecial("name", name);
-    };
-    MessageSE.shareLink = function (name, url) {
+    }
+    static shareLink(name, url) {
         var msg = new MessageSE();
         msg.findPersona();
         msg.setName(name);
         msg.setMsg(url);
         UI.Chat.sendMessage(msg);
-    };
-    return MessageSE;
-}(Message));
-MessageFactory.registerMessage(MessageSE, "seplay", ["/se", "/seplay", "/soundeffect", "/sound"]);
-var MessageImage = (function (_super) {
-    __extends(MessageImage, _super);
-    function MessageImage() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.module = "image";
-        _this.openedBefore = false;
-        return _this;
     }
-    MessageImage.addLastImage = function (msg) {
+}
+MessageFactory.registerMessage(MessageSE, "seplay", ["/se", "/seplay", "/soundeffect", "/sound"]);
+class MessageImage extends Message {
+    constructor() {
+        super(...arguments);
+        this.module = "image";
+        this.openedBefore = false;
+    }
+    static addLastImage(msg) {
         if (MessageImage.lastImages[msg.roomid] === undefined) {
             MessageImage.lastImages[msg.roomid] = [msg];
         }
@@ -6990,22 +6760,22 @@ var MessageImage = (function (_super) {
                 MessageImage.lastImages[msg.roomid].splice(0, 1);
             }
         }
-    };
-    MessageImage.getLastImages = function (roomid) {
+    }
+    static getLastImages(roomid) {
         if (typeof MessageImage.lastImages[roomid] !== "undefined") {
             return MessageImage.lastImages[roomid];
         }
         else {
             return [];
         }
-    };
-    MessageImage.stopAutomation = function () {
+    }
+    static stopAutomation() {
         MessageImage.noAutomation = true;
-    };
-    MessageImage.resumeAutomation = function () {
+    }
+    static resumeAutomation() {
         MessageImage.noAutomation = false;
-    };
-    MessageImage.prototype.onPrint = function () {
+    }
+    onPrint() {
         if (this.openedBefore || MessageImage.noAutomation)
             return;
         if (UI.Chat.doAutomation()) {
@@ -7018,8 +6788,8 @@ var MessageImage = (function (_super) {
             }
         }
         MessageImage.addLastImage(this);
-    };
-    MessageImage.prototype.createHTML = function () {
+    }
+    createHTML() {
         if (Application.Config.getConfig("hideMessages").getValue() && !MessageImage.noAutomation) {
             return null;
         }
@@ -7050,45 +6820,42 @@ var MessageImage = (function (_super) {
         UI.Language.markLanguage(a);
         p.appendChild(a);
         return p;
-    };
-    MessageImage.prototype.clickLink = function () {
+    }
+    clickLink() {
         UI.Pica.loadImage(this.getMsg());
-    };
-    MessageImage.prototype.getName = function () {
+    }
+    getName() {
         return this.getSpecial("name", null);
-    };
-    MessageImage.prototype.setName = function (name) {
+    }
+    setName(name) {
         this.setSpecial("name", name);
-    };
-    MessageImage.shareLink = function (name, url) {
+    }
+    static shareLink(name, url) {
         var newImage = new MessageImage();
         newImage.findPersona();
         newImage.setName(name);
         newImage.setMsg(url);
         UI.Chat.sendMessage(newImage);
-    };
-    MessageImage.prototype.receiveCommand = function (slashCommand, msg) {
+    }
+    receiveCommand(slashCommand, msg) {
         if (msg === "") {
             return false;
         }
         this.msg = msg;
         return true;
-    };
-    return MessageImage;
-}(Message));
+    }
+}
 MessageImage.lastImages = {};
 MessageImage.maxHistory = 10;
 MessageImage.noAutomation = false;
 MessageFactory.registerMessage(MessageImage, "image", ["/image", "/imagem", "/picture", "/figura", "/pic"]);
-var MessageBGM = (function (_super) {
-    __extends(MessageBGM, _super);
-    function MessageBGM() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.module = "bgmplay";
-        _this.playedBefore = false;
-        return _this;
+class MessageBGM extends Message {
+    constructor() {
+        super(...arguments);
+        this.module = "bgmplay";
+        this.playedBefore = false;
     }
-    MessageBGM.prototype.onPrint = function () {
+    onPrint() {
         if (this.playedBefore) {
             return;
         }
@@ -7101,8 +6868,8 @@ var MessageBGM = (function (_super) {
                 this.playedBefore = true;
             }
         }
-    };
-    MessageBGM.prototype.createHTML = function () {
+    }
+    createHTML() {
         if (Application.Config.getConfig("hideMessages").getValue()) {
             return null;
         }
@@ -7131,45 +6898,39 @@ var MessageBGM = (function (_super) {
         UI.Language.markLanguage(a);
         p.appendChild(a);
         return p;
-    };
-    MessageBGM.prototype.getName = function () {
+    }
+    getName() {
         return this.getSpecial("name", null);
-    };
-    MessageBGM.prototype.setName = function (name) {
+    }
+    setName(name) {
         this.setSpecial("name", name);
-    };
-    MessageBGM.shareLink = function (name, url) {
+    }
+    static shareLink(name, url) {
         var msg = new MessageBGM();
         msg.findPersona();
         msg.setName(name);
         msg.setMsg(url);
         UI.Chat.sendMessage(msg);
-    };
-    return MessageBGM;
-}(Message));
+    }
+}
 MessageFactory.registerMessage(MessageBGM, "bgmplay", ["/bgm", "/splay", "/bgmplay", "/musica"]);
-var MessageStream = (function (_super) {
-    __extends(MessageStream, _super);
-    function MessageStream() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.module = "stream";
-        return _this;
+class MessageStream extends Message {
+    constructor() {
+        super(...arguments);
+        this.module = "stream";
     }
-    MessageStream.prototype.createHTML = function () {
+    createHTML() {
         return null;
-    };
-    return MessageStream;
-}(Message));
-MessageFactory.registerMessage(MessageStream, "stream", []);
-var MessageSheetcommand = (function (_super) {
-    __extends(MessageSheetcommand, _super);
-    function MessageSheetcommand() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.module = "sheetcmd";
-        _this.playedBefore = false;
-        return _this;
     }
-    MessageSheetcommand.prototype.onPrint = function () {
+}
+MessageFactory.registerMessage(MessageStream, "stream", []);
+class MessageSheetcommand extends Message {
+    constructor() {
+        super(...arguments);
+        this.module = "sheetcmd";
+        this.playedBefore = false;
+    }
+    onPrint() {
         if (this.playedBefore) {
             return;
         }
@@ -7179,14 +6940,14 @@ var MessageSheetcommand = (function (_super) {
                 this.playedBefore = true;
             }
         }
-    };
-    MessageSheetcommand.prototype.customAutomationPossible = function () {
+    }
+    customAutomationPossible() {
         if (Server.Chat.getRoom() === null || !Server.Chat.getRoom().getMe().isStoryteller() || !UI.Chat.doAutomation()) {
             return false;
         }
         return true;
-    };
-    MessageSheetcommand.prototype.createHTML = function () {
+    }
+    createHTML() {
         var msg = new ChatSystemMessage(true);
         if (Application.isMe(this.origin) && (Server.Chat.getRoom() === null || !Server.Chat.getRoom().getMe().isStoryteller())) {
             msg.addText("_CHATCOMMANDREQUESTED_");
@@ -7212,8 +6973,8 @@ var MessageSheetcommand = (function (_super) {
             }
         }
         return msg.getElement();
-    };
-    MessageSheetcommand.prototype.applyCommand = function () {
+    }
+    applyCommand() {
         var sheet = DB.SheetDB.getSheet(this.getSheetId());
         if (sheet === null || !sheet.loaded) {
             var msg = new ChatSystemMessage(true);
@@ -7242,47 +7003,44 @@ var MessageSheetcommand = (function (_super) {
             }
             this.html = null;
         }
-    };
-    MessageSheetcommand.prototype.setSheetId = function (id) {
+    }
+    setSheetId(id) {
         this.setSpecial("sheetid", id);
-    };
-    MessageSheetcommand.prototype.getSheetId = function () {
+    }
+    getSheetId() {
         return this.getSpecial("sheetid", 0);
-    };
-    MessageSheetcommand.prototype.setSheetName = function (name) {
+    }
+    setSheetName(name) {
         this.msg = name;
-    };
-    MessageSheetcommand.prototype.getSheetName = function () {
+    }
+    getSheetName() {
         return this.msg;
-    };
-    MessageSheetcommand.prototype.setCustomString = function (customString) {
+    }
+    setCustomString(customString) {
         this.setSpecial("effectCustomString", customString);
-    };
-    MessageSheetcommand.prototype.getCustomString = function () {
+    }
+    getCustomString() {
         return this.getSpecial("effectCustomString", null);
-    };
-    return MessageSheetcommand;
-}(Message));
+    }
+}
 MessageFactory.registerMessage(MessageSheetcommand, "sheetcmd", []);
-var MessageWhisper = (function (_super) {
-    __extends(MessageWhisper, _super);
-    function MessageWhisper() {
-        var _this = _super.call(this) || this;
-        _this.module = "whisper";
+class MessageWhisper extends Message {
+    constructor() {
+        super();
+        this.module = "whisper";
         var list = function (message) {
             if (!message.isMine()) {
                 UI.Chat.Forms.setLastWhisperFrom(message.getUser());
             }
         };
-        _this.addUpdatedListener(list);
-        return _this;
+        this.addUpdatedListener(list);
     }
-    MessageWhisper.prototype.onPrint = function () {
+    onPrint() {
         if (!this.isMine() && UI.Chat.doAutomation() && !document.hasFocus()) {
             UI.SoundController.playAlert();
         }
-    };
-    MessageWhisper.prototype.createHTML = function () {
+    }
+    createHTML() {
         var p = document.createElement("p");
         p.classList.add("chatWhisper");
         var b = document.createElement("b");
@@ -7314,8 +7072,8 @@ var MessageWhisper = (function (_super) {
         p.appendChild(document.createTextNode(": " + this.getMsg()));
         UI.Language.markLanguage(b);
         return p;
-    };
-    MessageWhisper.prototype.receiveCommand = function (slashCommand, msg) {
+    }
+    receiveCommand(slashCommand, msg) {
         var room = UI.Chat.getRoom();
         var index = msg.indexOf(',');
         var target = msg.substr(0, index).trim();
@@ -7329,8 +7087,8 @@ var MessageWhisper = (function (_super) {
         else {
             return false;
         }
-    };
-    MessageWhisper.prototype.getInvalidHTML = function (slashCommand, msg) {
+    }
+    getInvalidHTML(slashCommand, msg) {
         var room = UI.Chat.getRoom();
         var index = msg.indexOf(',');
         var target = msg.substr(0, index).trim();
@@ -7363,18 +7121,15 @@ var MessageWhisper = (function (_super) {
             }
         }
         return error.getElement();
-    };
-    return MessageWhisper;
-}(Message));
-MessageFactory.registerMessage(MessageWhisper, "whisper", ["/whisper", "/whisp", "/private", "/pm", "/privado", "/pessoal", "/w"]);
-var MessageSheetdamage = (function (_super) {
-    __extends(MessageSheetdamage, _super);
-    function MessageSheetdamage() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.module = "sheetdm";
-        return _this;
     }
-    MessageSheetdamage.prototype.createHTML = function () {
+}
+MessageFactory.registerMessage(MessageWhisper, "whisper", ["/whisper", "/whisp", "/private", "/pm", "/privado", "/pessoal", "/w"]);
+class MessageSheetdamage extends Message {
+    constructor() {
+        super(...arguments);
+        this.module = "sheetdm";
+    }
+    createHTML() {
         var p = document.createElement("p");
         p.classList.add("chatMessageSheetdamage");
         p.classList.add(this.getType());
@@ -7389,43 +7144,43 @@ var MessageSheetdamage = (function (_super) {
         span.appendChild(document.createTextNode(this.getAmount() + " " + this.getType()));
         p.appendChild(span);
         return p;
-    };
-    MessageSheetdamage.prototype.getType = function () {
+    }
+    getType() {
         var type = this.getSpecial("type", "HP");
         if (type === "HP" || type === "MP" || type === "Exp") {
             return type;
         }
         return "HP";
-    };
-    MessageSheetdamage.prototype.setTypeHP = function () {
+    }
+    setTypeHP() {
         this.setSpecial("type", "HP");
-    };
-    MessageSheetdamage.prototype.setTypeMP = function () {
+    }
+    setTypeMP() {
         this.setSpecial("type", "MP");
-    };
-    MessageSheetdamage.prototype.setTypeExp = function () {
+    }
+    setTypeExp() {
         this.setSpecial("type", "Exp");
-    };
-    MessageSheetdamage.prototype.setLog = function (log) {
+    }
+    setLog(log) {
         this.setSpecial("log", log);
-    };
-    MessageSheetdamage.prototype.getLog = function () {
+    }
+    getLog() {
         return this.getSpecial("log", null);
-    };
-    MessageSheetdamage.prototype.setSheetName = function (name) {
+    }
+    setSheetName(name) {
         this.msg = name;
-    };
-    MessageSheetdamage.prototype.getSheetName = function () {
+    }
+    getSheetName() {
         var old = this.getSpecial("sheetname", null);
         if (old === null) {
             old = this.msg;
         }
         return old;
-    };
-    MessageSheetdamage.prototype.setAmount = function (amount) {
+    }
+    setAmount(amount) {
         this.setSpecial("amount", amount);
-    };
-    MessageSheetdamage.prototype.getAmount = function () {
+    }
+    getAmount() {
         var amount = this.getSpecial("amount", null);
         if (amount === null) {
             return "0?";
@@ -7437,19 +7192,16 @@ var MessageSheetdamage = (function (_super) {
             return "+ " + amount.toString();
         }
         return "- " + (amount * -1).toString();
-    };
-    return MessageSheetdamage;
-}(Message));
-MessageFactory.registerMessage(MessageSheetdamage, "sheetdm", []);
-var MessageSheetturn = (function (_super) {
-    __extends(MessageSheetturn, _super);
-    function MessageSheetturn() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.module = "sheettr";
-        _this.playedBefore = false;
-        return _this;
     }
-    MessageSheetturn.prototype.createHTML = function () {
+}
+MessageFactory.registerMessage(MessageSheetdamage, "sheetdm", []);
+class MessageSheetturn extends Message {
+    constructor() {
+        super(...arguments);
+        this.module = "sheettr";
+        this.playedBefore = false;
+    }
+    createHTML() {
         var p = document.createElement("p");
         p.classList.add("chatMessageTurn");
         var a = document.createElement("a");
@@ -7458,36 +7210,36 @@ var MessageSheetturn = (function (_super) {
         p.appendChild(a);
         p.appendChild(document.createTextNode(this.getSheetName() + ":"));
         return p;
-    };
-    MessageSheetturn.prototype.setSheetId = function (id) {
+    }
+    setSheetId(id) {
         this.setSpecial("sheetid", id);
-    };
-    MessageSheetturn.prototype.getSheetId = function () {
+    }
+    getSheetId() {
         return this.getSpecial("sheetid", 0);
-    };
-    MessageSheetturn.prototype.setSheetName = function (name) {
+    }
+    setSheetName(name) {
         this.msg = name;
-    };
-    MessageSheetturn.prototype.getSheetName = function () {
+    }
+    getSheetName() {
         var old = this.getSpecial("sheetname", null);
         if (old === null) {
             return this.msg;
         }
         return old;
-    };
-    MessageSheetturn.prototype.setOwnerId = function (id) {
+    }
+    setOwnerId(id) {
         this.setSpecial("owner", id);
-    };
-    MessageSheetturn.prototype.getOwnerId = function () {
+    }
+    getOwnerId() {
         return this.getSpecial("owner", 0);
-    };
-    MessageSheetturn.prototype.setPlayer = function (id) {
+    }
+    setPlayer(id) {
         this.setSpecial("player", id);
-    };
-    MessageSheetturn.prototype.getPlayer = function () {
+    }
+    getPlayer() {
         return this.getSpecial('player', 0);
-    };
-    MessageSheetturn.prototype.onPrint = function () {
+    }
+    onPrint() {
         if (this.playedBefore) {
             return;
         }
@@ -7510,21 +7262,19 @@ var MessageSheetturn = (function (_super) {
             UI.SoundController.playAlert();
         }
         this.playedBefore = true;
-    };
-    return MessageSheetturn;
-}(Message));
+    }
+}
 MessageFactory.registerMessage(MessageSheetturn, "sheettr", []);
-var MessageDice = (function (_super) {
-    __extends(MessageDice, _super);
-    function MessageDice() {
-        var _this = _super.call(this) || this;
-        _this.module = "dice";
-        _this.diceHQTime = 30000;
-        _this.initiativeClicker = null;
-        _this.customClicker = null;
-        _this.playedBefore = false;
-        _this.setDice([]);
-        _this.addUpdatedListener({
+class MessageDice extends Message {
+    constructor() {
+        super();
+        this.module = "dice";
+        this.diceHQTime = 30000;
+        this.initiativeClicker = null;
+        this.customClicker = null;
+        this.playedBefore = false;
+        this.setDice([]);
+        this.addUpdatedListener({
             handleEvent: function (e) {
                 if (e.html !== null) {
                     var newHTML = e.createHTML();
@@ -7535,9 +7285,8 @@ var MessageDice = (function (_super) {
                 }
             }
         });
-        return _this;
     }
-    MessageDice.prototype.onPrint = function () {
+    onPrint() {
         if (this.getRolls().length === 0 && this.getDice().length !== 0) {
             return;
         }
@@ -7550,12 +7299,12 @@ var MessageDice = (function (_super) {
                 this.playedBefore = true;
             }
         }
-    };
-    MessageDice.prototype.findPersona = function () {
+    }
+    findPersona() {
         var personaName = UI.Chat.PersonaManager.getPersonaName();
         this.setPersona(personaName === null ? "???" : personaName);
-    };
-    MessageDice.prototype.makeMockUp = function () {
+    }
+    makeMockUp() {
         var messages = [this];
         this.addDice(2, 10);
         this.setSpecial("rolls", [5, 5]);
@@ -7567,8 +7316,8 @@ var MessageDice = (function (_super) {
         messages[2].addDice(2, 10);
         messages[2].setSpecial("rolls", [10, 10]);
         return messages;
-    };
-    MessageDice.prototype.createHTML = function () {
+    }
+    createHTML() {
         var div = document.createElement("div");
         div.classList.add("chatMessageDice");
         var p = document.createElement("p");
@@ -7729,8 +7478,8 @@ var MessageDice = (function (_super) {
             div.appendChild(this.customClicker);
         }
         return div;
-    };
-    MessageDice.prototype.doCustom = function () {
+    }
+    doCustom() {
         var style = DB.StyleDB.getStyle(this.getCustomAutomationStyle());
         var sheet = DB.SheetDB.getSheet(this.getSheetId());
         if (style === null || !style.isLoaded()) {
@@ -7753,11 +7502,11 @@ var MessageDice = (function (_super) {
             this.customClicker.parentElement.removeChild(this.customClicker);
             this.customClicker = null;
         }
-    };
-    MessageDice.prototype.hasCustomAutomation = function () {
+    }
+    hasCustomAutomation() {
         return this.getSheetId() !== null && this.getSheetName() !== null && this.getCustomAutomation() !== null && this.getCustomAutomationStyle() !== null;
-    };
-    MessageDice.prototype.customAutomationPossible = function () {
+    }
+    customAutomationPossible() {
         if (Server.Chat.getRoom() === null || !Server.Chat.getRoom().getMe().isStoryteller() || !UI.Chat.doAutomation()) {
             return false;
         }
@@ -7766,26 +7515,26 @@ var MessageDice = (function (_super) {
             return true;
         }
         return false;
-    };
-    MessageDice.prototype.setSheetName = function (name) {
+    }
+    setSheetName(name) {
         this.setSpecial("sheetName", name);
-    };
-    MessageDice.prototype.getSheetName = function () {
+    }
+    getSheetName() {
         return this.getSpecial("sheetName", null);
-    };
-    MessageDice.prototype.setCustomAutomationStyle = function (id) {
+    }
+    setCustomAutomationStyle(id) {
         this.setSpecial("customStyle", id);
-    };
-    MessageDice.prototype.getCustomAutomationStyle = function () {
+    }
+    getCustomAutomationStyle() {
         return this.getSpecial("customStyle", null);
-    };
-    MessageDice.prototype.setCustomAutomation = function (obj) {
+    }
+    setCustomAutomation(obj) {
         this.setSpecial("custom", obj);
-    };
-    MessageDice.prototype.getCustomAutomation = function () {
+    }
+    getCustomAutomation() {
         return this.getSpecial("custom", null);
-    };
-    MessageDice.prototype.applyInitiative = function () {
+    }
+    applyInitiative() {
         if (this.initiativeClicker !== null && this.initiativeClicker.parentElement !== null) {
             this.initiativeClicker.parentElement.removeChild(this.initiativeClicker);
             this.initiativeClicker = null;
@@ -7793,20 +7542,20 @@ var MessageDice = (function (_super) {
         var total = this.getResult();
         var memory = Server.Chat.Memory.getConfiguration("Combat");
         memory.applyInitiative(this.getSheetId(), total);
-    };
-    MessageDice.prototype.setSheetId = function (id) {
+    }
+    setSheetId(id) {
         this.setSpecial("sheetid", id);
-    };
-    MessageDice.prototype.getSheetId = function () {
+    }
+    getSheetId() {
         return this.getSpecial("sheetid", null);
-    };
-    MessageDice.prototype.setAsInitiative = function () {
+    }
+    setAsInitiative() {
         this.setSpecial("initiative", true);
-    };
-    MessageDice.prototype.getIsInitiative = function () {
+    }
+    getIsInitiative() {
         return this.getSpecial("initiative", false) && this.getSheetId() !== null;
-    };
-    MessageDice.prototype.getInitialRoll = function () {
+    }
+    getInitialRoll() {
         var dices = this.getDice();
         var cleanedDices = {};
         var mod = this.getMod();
@@ -7830,26 +7579,26 @@ var MessageDice = (function (_super) {
             str += " + " + mod;
         }
         return str;
-    };
-    MessageDice.prototype.getRolls = function () {
+    }
+    getRolls() {
         return this.getSpecial("rolls", []);
-    };
-    MessageDice.prototype.getMod = function () {
+    }
+    getMod() {
         return this.getSpecial("mod", 0);
-    };
-    MessageDice.prototype.setMod = function (mod) {
+    }
+    setMod(mod) {
         this.setSpecial("mod", mod);
-    };
-    MessageDice.prototype.getDice = function () {
+    }
+    getDice() {
         return this.getSpecial("dice", []);
-    };
-    MessageDice.prototype.setDice = function (dice) {
+    }
+    setDice(dice) {
         this.setSpecial("dice", dice);
-    };
-    MessageDice.prototype.addMod = function (mod) {
+    }
+    addMod(mod) {
         this.setSpecial("mod", mod);
-    };
-    MessageDice.prototype.addDice = function (amount, faces) {
+    }
+    addDice(amount, faces) {
         if (faces === 0 || amount === 0) {
             return;
         }
@@ -7858,8 +7607,8 @@ var MessageDice = (function (_super) {
             dices.push(faces);
         }
         this.setDice(dices);
-    };
-    MessageDice.prototype.getResult = function () {
+    }
+    getResult() {
         var result = 0;
         result += this.getMod();
         if (this.getRolls().length !== 0) {
@@ -7868,24 +7617,21 @@ var MessageDice = (function (_super) {
             });
         }
         return result;
-    };
-    MessageDice.prototype.getIsOrdered = function () {
-        return this.getSpecial("order", false);
-    };
-    MessageDice.prototype.setIsOrdered = function (order) {
-        this.setSpecial("order", order === true);
-    };
-    return MessageDice;
-}(Message));
-MessageFactory.registerMessage(MessageDice, "dice", []);
-var MessageStory = (function (_super) {
-    __extends(MessageStory, _super);
-    function MessageStory() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.module = "story";
-        return _this;
     }
-    MessageStory.prototype.makeMockUp = function () {
+    getIsOrdered() {
+        return this.getSpecial("order", false);
+    }
+    setIsOrdered(order) {
+        this.setSpecial("order", order === true);
+    }
+}
+MessageFactory.registerMessage(MessageDice, "dice", []);
+class MessageStory extends Message {
+    constructor() {
+        super(...arguments);
+        this.module = "story";
+    }
+    makeMockUp() {
         var list = [];
         list.push(this);
         this.msg = "Lorem [ipsum] dolor {sit amet}, *consectetur adipiscing elit*. (Maecenas pellentesque) lectus neque, ac suscipit metus facilisis vitae. Sed ut nisi non massa sagittis molestie non sed libero.";
@@ -7899,8 +7645,8 @@ var MessageStory = (function (_super) {
             list.push(newMsg);
         }
         return list;
-    };
-    MessageStory.prototype.createHTML = function () {
+    }
+    createHTML() {
         var p = document.createElement("p");
         p.classList.add("chatMessageStory");
         var container = p;
@@ -7955,22 +7701,19 @@ var MessageStory = (function (_super) {
             container.appendChild(messageNodes[i]);
         }
         return p;
-    };
-    return MessageStory;
-}(Message));
-MessageFactory.registerMessage(MessageStory, "story", ["/story", "/history", "/historia", "/história", "/histo", "/sto"]);
-var MessageAction = (function (_super) {
-    __extends(MessageAction, _super);
-    function MessageAction() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.module = "action";
-        return _this;
     }
-    MessageAction.prototype.findPersona = function () {
+}
+MessageFactory.registerMessage(MessageStory, "story", ["/story", "/history", "/historia", "/história", "/histo", "/sto"]);
+class MessageAction extends Message {
+    constructor() {
+        super(...arguments);
+        this.module = "action";
+    }
+    findPersona() {
         var personaName = UI.Chat.PersonaManager.getPersonaName();
         this.setPersona(personaName === null ? "???" : personaName);
-    };
-    MessageAction.prototype.createHTML = function () {
+    }
+    createHTML() {
         var p = document.createElement("p");
         p.classList.add("chatAction");
         var b = document.createElement("b");
@@ -7978,18 +7721,15 @@ var MessageAction = (function (_super) {
         p.appendChild(b);
         p.appendChild(document.createTextNode(this.msg));
         return p;
-    };
-    return MessageAction;
-}(Message));
-MessageFactory.registerMessage(MessageAction, "action", ["/act", "/me", "/eu", "/açao", "/ação", "/agir"]);
-var MessageOff = (function (_super) {
-    __extends(MessageOff, _super);
-    function MessageOff() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.module = "offgame";
-        return _this;
     }
-    MessageOff.prototype.createHTML = function () {
+}
+MessageFactory.registerMessage(MessageAction, "action", ["/act", "/me", "/eu", "/açao", "/ação", "/agir"]);
+class MessageOff extends Message {
+    constructor() {
+        super(...arguments);
+        this.module = "offgame";
+    }
+    createHTML() {
         var p = document.createElement("p");
         p.classList.add("chatOff");
         var b = document.createElement("b");
@@ -7997,16 +7737,14 @@ var MessageOff = (function (_super) {
         p.appendChild(b);
         p.appendChild(document.createTextNode(this.msg));
         return p;
-    };
-    return MessageOff;
-}(Message));
+    }
+}
 MessageFactory.registerMessage(MessageOff, "offgame", ["/off", "/ooc"]);
-var MessageRoleplay = (function (_super) {
-    __extends(MessageRoleplay, _super);
-    function MessageRoleplay() {
-        var _this = _super.call(this) || this;
-        _this.module = "roleplay";
-        _this.addUpdatedListener({
+class MessageRoleplay extends Message {
+    constructor() {
+        super();
+        this.module = "roleplay";
+        this.addUpdatedListener({
             handleEvent: function (e) {
                 var lingua = e.getSpecial("lingua", null);
                 if (lingua !== null) {
@@ -8015,13 +7753,12 @@ var MessageRoleplay = (function (_super) {
                 }
             }
         });
-        return _this;
     }
-    MessageRoleplay.prototype.findPersona = function () {
+    findPersona() {
         var personaName = UI.Chat.PersonaManager.getPersonaName();
         this.setPersona(personaName === null ? "???" : personaName);
-    };
-    MessageRoleplay.prototype.makeMockUp = function () {
+    }
+    makeMockUp() {
         var list = [];
         list.push(this);
         this.msg = "Lorem [ipsum] dolor {sit amet}, *consectetur adipiscing elit*. (Maecenas pellentesque) lectus neque, ac suscipit metus facilisis vitae. Sed ut nisi non massa sagittis molestie non sed libero.";
@@ -8039,8 +7776,8 @@ var MessageRoleplay = (function (_super) {
             list.push(newMsg);
         }
         return list;
-    };
-    MessageRoleplay.prototype.createHTML = function () {
+    }
+    createHTML() {
         if (this.isIgnored())
             return null;
         var p = document.createElement("p");
@@ -8119,42 +7856,39 @@ var MessageRoleplay = (function (_super) {
             p.appendChild(span);
         }
         return p;
-    };
-    MessageRoleplay.prototype.isIgnored = function () {
+    }
+    isIgnored() {
         if (!Application.Login.isLogged())
             return false;
         var ignored = this.getSpecial("ignoreFor", []);
         return ignored.indexOf(Application.Login.getUser().id) !== -1;
-    };
-    MessageRoleplay.prototype.getLanguage = function () {
+    }
+    getLanguage() {
         var oldLingua = this.getSpecial("lingua", null);
         if (oldLingua !== null)
             return oldLingua;
         var language = this.getSpecial("language", "none");
         return language;
-    };
-    MessageRoleplay.prototype.setLanguage = function (lang) {
-        this.setSpecial("language", lang);
-    };
-    MessageRoleplay.prototype.setTranslation = function (message) {
-        this.setSpecial("translation", message);
-    };
-    MessageRoleplay.prototype.getTranslation = function () {
-        return this.getSpecial('translation', null);
-    };
-    return MessageRoleplay;
-}(Message));
-MessageFactory.registerMessage(MessageRoleplay, "roleplay", []);
-var MessageSheetup = (function (_super) {
-    __extends(MessageSheetup, _super);
-    function MessageSheetup() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.module = "sheetup";
-        _this.playedBefore = false;
-        _this.clicker = null;
-        return _this;
     }
-    MessageSheetup.prototype.onPrint = function () {
+    setLanguage(lang) {
+        this.setSpecial("language", lang);
+    }
+    setTranslation(message) {
+        this.setSpecial("translation", message);
+    }
+    getTranslation() {
+        return this.getSpecial('translation', null);
+    }
+}
+MessageFactory.registerMessage(MessageRoleplay, "roleplay", []);
+class MessageSheetup extends Message {
+    constructor() {
+        super(...arguments);
+        this.module = "sheetup";
+        this.playedBefore = false;
+        this.clicker = null;
+    }
+    onPrint() {
         if (this.playedBefore) {
             return;
         }
@@ -8181,14 +7915,14 @@ var MessageSheetup = (function (_super) {
             this.clicker = msg.getElement();
             UI.Chat.printElement(this.clicker);
         }
-    };
-    MessageSheetup.prototype.setSheetId = function (id) {
+    }
+    setSheetId(id) {
         this.setSpecial("sheetid", id);
-    };
-    MessageSheetup.prototype.getSheetId = function () {
+    }
+    getSheetId() {
         return this.getSpecial("sheetid", 0);
-    };
-    MessageSheetup.prototype.updateSheet = function () {
+    }
+    updateSheet() {
         var sheet = DB.SheetDB.getSheet(this.getSheetId());
         if (sheet === null || !sheet.loaded) {
             return;
@@ -8200,24 +7934,21 @@ var MessageSheetup = (function (_super) {
             }
             this.clicker = null;
         }
-    };
-    MessageSheetup.prototype.createHTML = function () {
+    }
+    createHTML() {
         if (!UI.Chat.doAutomation() || UI.Sheets.SheetManager.isAutoUpdate() || this.wasLocalMessage()) {
             return null;
         }
         return null;
-    };
-    return MessageSheetup;
-}(Message));
-MessageFactory.registerMessage(MessageSheetup, "sheetup", []);
-var MessageUnknown = (function (_super) {
-    __extends(MessageUnknown, _super);
-    function MessageUnknown() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.module = "unkn";
-        return _this;
     }
-    MessageUnknown.prototype.createHTML = function () {
+}
+MessageFactory.registerMessage(MessageSheetup, "sheetup", []);
+class MessageUnknown extends Message {
+    constructor() {
+        super(...arguments);
+        this.module = "unkn";
+    }
+    createHTML() {
         var p = document.createElement("p");
         p.classList.add("chatMessageNotification");
         p.appendChild(document.createTextNode("_CHATMESSAGEUNKNOWNTYPE_"));
@@ -8225,18 +7956,15 @@ var MessageUnknown = (function (_super) {
         UI.Language.addLanguageVariable(p, "b", this.getUser().getUser().getFullNickname());
         UI.Language.markLanguage(p);
         return p;
-    };
-    return MessageUnknown;
-}(Message));
-MessageFactory.registerMessage(MessageUnknown, "unkn", []);
-var MessageCutscene = (function (_super) {
-    __extends(MessageCutscene, _super);
-    function MessageCutscene() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.module = "csc";
-        return _this;
     }
-    MessageCutscene.prototype.createHTML = function () {
+}
+MessageFactory.registerMessage(MessageUnknown, "unkn", []);
+class MessageCutscene extends Message {
+    constructor() {
+        super(...arguments);
+        this.module = "csc";
+    }
+    createHTML() {
         if (!this.getUser().isStoryteller() || this.getUser().getUser().isMe()) {
             return null;
         }
@@ -8248,14 +7976,13 @@ var MessageCutscene = (function (_super) {
             msg.addText("_CHATSHHHHHWEHOLLYWOODTURNUP_");
         }
         return msg.getElement();
-    };
-    MessageCutscene.sendNotification = function (chatAllowed) {
+    }
+    static sendNotification(chatAllowed) {
         var newMessage = new MessageCutscene();
         newMessage.setMsg(chatAllowed ? "1" : "0");
         UI.Chat.sendMessage(newMessage);
-    };
-    return MessageCutscene;
-}(Message));
+    }
+}
 MessageFactory.registerMessage(MessageCutscene, "csc", []);
 var DB;
 (function (DB) {
@@ -9930,7 +9657,7 @@ var Server;
                     var info = {
                         id: array[1],
                         persona: array[2]['persona'] === undefined ? null : array[2]['persona'],
-                        avatar: array[2]['avatar'] === undefined ? null : array[2]['avatar']
+                        avatar: array[2]['avatar'] === undefined ? null : array[2]['avatar'],
                     };
                     UI.Chat.Avatar.updateFromObject([info], false);
                     Server.Chat.triggerPersona(info);
@@ -10427,29 +10154,29 @@ var Server;
         Sheets.sendSheet = sendSheet;
     })(Sheets = Server.Sheets || (Server.Sheets = {}));
 })(Server || (Server = {}));
-var Lingo = (function () {
-    function Lingo() {
+class Lingo {
+    constructor() {
         this.ids = [];
         this.unknownLingo = " :( ";
         this.langValues = {};
         this.myLingos = [];
     }
-    Lingo.prototype.setLingo = function (id, value) {
+    setLingo(id, value) {
         this.langValues[id] = value;
         this.myLingos.push(id);
-    };
-    Lingo.prototype.getLingos = function () {
+    }
+    getLingos() {
         return this.langValues;
-    };
-    Lingo.prototype.merge = function (lingo) {
+    }
+    merge(lingo) {
         var newLingos = lingo.getLingos();
         for (var id in newLingos) {
             if (this.myLingos.indexOf(id) === -1) {
                 this.langValues[id] = newLingos[id];
             }
         }
-    };
-    Lingo.prototype.getLingo = function (id, dataset) {
+    }
+    getLingo(id, dataset) {
         if (this.langValues[id] === undefined) {
             console.warn("[LANGUAGE] No string for \"" + id + "\" in " + this.name + ".");
             return this.unknownLingo;
@@ -10464,24 +10191,23 @@ var Lingo = (function () {
             number++;
         }
         return result;
-    };
-    return Lingo;
-}());
-var SheetLingo = (function () {
-    function SheetLingo() {
+    }
+}
+class SheetLingo {
+    constructor() {
         this.defaultLingo = null;
         this.lingos = [];
     }
-    SheetLingo.prototype.addLingo = function (lingo, isDefault) {
+    addLingo(lingo, isDefault) {
         this.lingos.push(lingo);
         if (isDefault || this.defaultLingo === null) {
             this.defaultLingo = lingo;
         }
-    };
-    SheetLingo.prototype.getDefaultLingo = function () {
+    }
+    getDefaultLingo() {
         return this.defaultLingo;
-    };
-    SheetLingo.prototype.getLingo = function (ids) {
+    }
+    getLingo(ids) {
         for (var k = 0; k < ids.length; k++) {
             var id = ids[k];
             for (var i = 0; i < this.lingos.length; i++) {
@@ -10491,9 +10217,8 @@ var SheetLingo = (function () {
             }
         }
         return this.defaultLingo;
-    };
-    return SheetLingo;
-}());
+    }
+}
 var LingoList;
 (function (LingoList) {
     var lingos = {};
@@ -11812,7 +11537,7 @@ var UI;
                 },
                 linkType: "preview",
                 multiselect: true,
-                extensions: ['images']
+                extensions: ['images'],
             };
             Dropbox.choose(options);
         }
@@ -12298,11 +12023,7 @@ var UI;
             element.dataset['titlelingo'] = value;
         }
         Language.addLanguageTitle = addLanguageTitle;
-        function markLanguage() {
-            var elements = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                elements[_i] = arguments[_i];
-            }
+        function markLanguage(...elements) {
             for (var i = 0; i < elements.length; i++) {
                 var element = elements[i];
                 element.classList.add("language");
@@ -15093,8 +14814,7 @@ var UI;
                 personaChoices = {};
             }
             PersonaDesigner.emptyOut = emptyOut;
-            function createPersona(name, avatar, savePersona) {
-                if (savePersona === void 0) { savePersona = true; }
+            function createPersona(name, avatar, savePersona = true) {
                 var name = name === undefined ? personaName.value.trim() : name;
                 var avatar = avatar === undefined ? personaAvatar.value.trim() : avatar;
                 personaName.value = "";
@@ -15283,44 +15003,44 @@ var UI;
         Pica.stopLoading = stopLoading;
     })(Pica = UI.Pica || (UI.Pica = {}));
 })(UI || (UI = {}));
-var PicaCanvasPoint = (function () {
-    function PicaCanvasPoint() {
+class PicaCanvasPoint {
+    constructor() {
         this.x = 0;
         this.y = 0;
     }
-    PicaCanvasPoint.prototype.setCoordinates = function (offsetX, offsetY) {
+    setCoordinates(offsetX, offsetY) {
         var width = UI.Pica.Board.Canvas.getWidth();
         var height = UI.Pica.Board.Canvas.getHeight();
         this.x = parseInt((offsetX * PicaCanvasPoint.precision) / width);
         this.y = parseInt((offsetY * PicaCanvasPoint.precision) / height);
-    };
-    PicaCanvasPoint.prototype.setRelativeCoordinates = function (x, y) {
+    }
+    setRelativeCoordinates(x, y) {
         this.x = x;
         this.y = y;
-    };
-    PicaCanvasPoint.prototype.getX = function () {
+    }
+    getX() {
         var x = this.x * UI.Pica.Board.Canvas.getWidth() / PicaCanvasPoint.precision;
         return x;
-    };
-    PicaCanvasPoint.prototype.getY = function () {
+    }
+    getY() {
         var y = this.y * UI.Pica.Board.Canvas.getHeight() / PicaCanvasPoint.precision;
         return y;
-    };
-    PicaCanvasPoint.prototype.distanceTo = function (p2) {
+    }
+    distanceTo(p2) {
         var x1 = this.x;
         var x2 = p2.x;
         var y1 = this.y;
         var y2 = p2.y;
         return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
-    };
-    PicaCanvasPoint.prototype.getRealDistanceTo = function (p2) {
+    }
+    getRealDistanceTo(p2) {
         var x1 = this.getX();
         var x2 = p2.getX();
         var y1 = this.getY();
         var y2 = p2.getY();
         return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
-    };
-    PicaCanvasPoint.isTriangle = function (p1, p2, p3) {
+    }
+    static isTriangle(p1, p2, p3) {
         var dab = p1.distanceTo(p2);
         var dbc = p2.distanceTo(p3);
         var dac = p1.distanceTo(p3);
@@ -15333,19 +15053,19 @@ var PicaCanvasPoint = (function () {
             return false;
         }
         return true;
-    };
-    PicaCanvasPoint.isEqual = function (p1, p2) {
+    }
+    static isEqual(p1, p2) {
         return p1.x == p2.x && p1.y == p2.y;
-    };
-    PicaCanvasPoint.prototype.exportAsString = function () {
+    }
+    exportAsString() {
         var str = PicaCanvasPoint.encode(this.x) + PicaCanvasPoint.encode(this.y);
         return str;
-    };
-    PicaCanvasPoint.prototype.updateFromString = function (str) {
+    }
+    updateFromString(str) {
         this.x = PicaCanvasPoint.decode(str.substr(0, 2));
         this.y = PicaCanvasPoint.decode(str.substr(2, 2));
-    };
-    PicaCanvasPoint.encode = function (num) {
+    }
+    static encode(num) {
         var maxChars = PicaCanvasPoint.maxEncodedChars;
         if (num > Math.pow(PicaCanvasPoint.encoding.length, maxChars)) {
             return NaN;
@@ -15360,43 +15080,42 @@ var PicaCanvasPoint = (function () {
             var b = num - (a * PicaCanvasPoint.encoding.length);
             return PicaCanvasPoint.encoding.charAt(a) + PicaCanvasPoint.encoding.charAt(b);
         }
-    };
-    PicaCanvasPoint.decode = function (str) {
+    }
+    static decode(str) {
         var a = PicaCanvasPoint.encoding.indexOf(str.charAt(0)) * PicaCanvasPoint.encoding.length;
         var b = PicaCanvasPoint.encoding.indexOf(str.charAt(1));
         return a + b;
-    };
-    return PicaCanvasPoint;
-}());
+    }
+}
 PicaCanvasPoint.minCurve = 10;
 PicaCanvasPoint.encoding = "0123456789abcdefghijklmnopqrstuvxwyzABCDEFGHIJKLMNOPQRSTUVXWYZ-+_=![]{}()*@/\\:;";
 PicaCanvasPoint.precision = Math.pow(PicaCanvasPoint.encoding.length, 2);
 PicaCanvasPoint.maxEncodedChars = 2;
-var PicaCanvasArt = (function () {
-    function PicaCanvasArt() {
+class PicaCanvasArt {
+    constructor() {
         this.userId = 0;
         this.specialValues = {};
         this.points = [];
     }
-    PicaCanvasArt.prototype.draw = function () {
+    draw() {
         this.pen.drawFromArt(this);
-    };
-    PicaCanvasArt.prototype.setUserId = function (id) {
+    }
+    setUserId(id) {
         this.userId = id;
-    };
-    PicaCanvasArt.prototype.getUserId = function () {
+    }
+    getUserId() {
         return this.userId;
-    };
-    PicaCanvasArt.prototype.setSpecial = function (index, value) {
+    }
+    setSpecial(index, value) {
         this.specialValues[index] = value;
-    };
-    PicaCanvasArt.prototype.getSpecial = function (index, defValue) {
+    }
+    getSpecial(index, defValue) {
         if (this.specialValues[index] != undefined) {
             return this.specialValues[index];
         }
         return defValue;
-    };
-    PicaCanvasArt.prototype.exportAsObject = function () {
+    }
+    exportAsObject() {
         var points = "";
         for (var i = 0; i < this.points.length; i++) {
             points += this.points[i].exportAsString();
@@ -15407,34 +15126,34 @@ var PicaCanvasArt = (function () {
             this.specialValues,
             points
         ];
-    };
-    PicaCanvasArt.prototype.importFromString = function (str) {
+    }
+    importFromString(str) {
         obj = JSON.parse(str);
         this.setUserId(obj[0]);
         this.setPen(PicaToolPen.getPen(obj[1]));
         this.specialValues = obj[2];
         this.importPointStrings(obj[3].match(/.{4}/g));
-    };
-    PicaCanvasArt.prototype.importPointStrings = function (a) {
+    }
+    importPointStrings(a) {
         for (var i = 0; i < a.length; i++) {
             var point = new PicaCanvasPoint();
             point.updateFromString(a[i]);
             this.addPoint(point);
         }
-    };
-    PicaCanvasArt.prototype.setPen = function (pen) {
+    }
+    setPen(pen) {
         this.pen = pen;
-    };
-    PicaCanvasArt.prototype.setValues = function (values) {
+    }
+    setValues(values) {
         this.specialValues = values;
-    };
-    PicaCanvasArt.prototype.setPoints = function (points) {
+    }
+    setPoints(points) {
         this.points = points;
-    };
-    PicaCanvasArt.prototype.addPoint = function (point) {
+    }
+    addPoint(point) {
         this.points.push(point);
-    };
-    PicaCanvasArt.prototype.cleanUpPoints = function () {
+    }
+    cleanUpPoints() {
         var oldLength = this.points.length;
         cleanedPoints = [];
         if (this.points.length > 0) {
@@ -15465,12 +15184,11 @@ var PicaCanvasArt = (function () {
         }
         this.points = cleanedPoints;
         console.debug(oldLength + " -> " + this.points.length + " = " + Math.round(this.points.length * 100 / oldLength) + "%");
-    };
-    PicaCanvasArt.prototype.redraw = function () {
+    }
+    redraw() {
         this.pen.drawFromArt(this);
-    };
-    return PicaCanvasArt;
-}());
+    }
+}
 var UI;
 (function (UI) {
     var Pica;
@@ -15626,8 +15344,8 @@ var UI;
         })(Toolbar = Pica.Toolbar || (Pica.Toolbar = {}));
     })(Pica = UI.Pica || (UI.Pica = {}));
 })(UI || (UI = {}));
-var PicaTool = (function () {
-    function PicaTool() {
+class PicaTool {
+    constructor() {
         this.a = document.createElement("a");
         this.selected = false;
         this.icon = "picaToolNone";
@@ -15639,15 +15357,15 @@ var PicaTool = (function () {
             }
         });
     }
-    PicaTool.prototype.setIcon = function (icon) {
+    setIcon(icon) {
         this.icon = icon;
         this.updateIcon();
-    };
-    PicaTool.prototype.setSelected = function (selected) {
+    }
+    setSelected(selected) {
         this.selected = selected;
         this.updateIcon();
-    };
-    PicaTool.prototype.updateIcon = function () {
+    }
+    updateIcon() {
         if (this.selected) {
             this.a.classList.remove(this.icon);
             this.a.classList.add(this.icon + "Active");
@@ -15656,78 +15374,74 @@ var PicaTool = (function () {
             this.a.classList.add(this.icon);
             this.a.classList.remove(this.icon + "Active");
         }
-    };
-    PicaTool.prototype.updateVisibility = function () {
-    };
-    PicaTool.prototype.setLeftSide = function () {
+    }
+    updateVisibility() {
+    }
+    setLeftSide() {
         this.a.classList.remove("picaToolButton");
         this.a.classList.remove("rightPicaToolButton");
         this.a.classList.add("leftPicaToolButton");
-    };
-    PicaTool.prototype.setRightSide = function () {
+    }
+    setRightSide() {
         this.a.classList.remove("picaToolButton");
         this.a.classList.remove("leftPicaToolButton");
         this.a.classList.add("rightPicaToolButton");
-    };
-    PicaTool.prototype.setTitleLingo = function (str) {
+    }
+    setTitleLingo(str) {
         UI.Language.addLanguageTitle(this.a, str);
         UI.Language.markLanguage(this.a);
-    };
-    PicaTool.prototype.onClick = function () {
-    };
-    PicaTool.prototype.getHTML = function () {
-        return this.a;
-    };
-    return PicaTool;
-}());
-var PicaToolPen = (function (_super) {
-    __extends(PicaToolPen, _super);
-    function PicaToolPen() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.id = "undefined";
-        return _this;
     }
-    PicaToolPen.prototype.mouseDown = function (point) {
+    onClick() {
+    }
+    getHTML() {
+        return this.a;
+    }
+}
+class PicaToolPen extends PicaTool {
+    constructor() {
+        super(...arguments);
+        this.id = "undefined";
+    }
+    mouseDown(point) {
         console.log(point.getX() + " - " + point.getY());
-    };
-    PicaToolPen.prototype.mouseUp = function (point) {
-    };
-    PicaToolPen.prototype.mouseMove = function (point) {
-    };
-    PicaToolPen.prototype.mouseOut = function () {
-    };
-    PicaToolPen.prototype.mouseWheel = function (up, point) {
-    };
-    PicaToolPen.prototype.selected = function () { };
-    PicaToolPen.prototype.redraw = function () { };
-    PicaToolPen.prototype.drawFromArt = function (art) { };
-    PicaToolPen.registerPen = function (id, pen) {
+    }
+    mouseUp(point) {
+    }
+    mouseMove(point) {
+    }
+    mouseOut() {
+    }
+    mouseWheel(up, point) {
+    }
+    selected() { }
+    redraw() { }
+    drawFromArt(art) { }
+    static registerPen(id, pen) {
         PicaToolPen.Pens[id] = pen;
-    };
-    PicaToolPen.getPen = function (id) {
+    }
+    static getPen(id) {
         if (PicaToolPen.Pens[id] != undefined) {
             return PicaToolPen.Pens[id];
         }
         console.error("[PicaToolPen] No pen for " + id + ".");
-    };
-    PicaToolPen.prototype.setSelected = function (selected) {
+    }
+    setSelected(selected) {
         this.selected = selected;
         this.updateIcon();
         this.updateCanvasClasses();
-    };
-    PicaToolPen.prototype.updateCanvasClasses = function () {
-    };
-    PicaToolPen.prototype.onClick = function () {
+    }
+    updateCanvasClasses() {
+    }
+    onClick() {
         UI.Pica.Board.Canvas.setPen(this);
-    };
-    PicaToolPen.registerPen = function (id, pen) {
+    }
+    static registerPen(id, pen) {
         PicaToolPen.Pens[id] = pen;
-    };
-    PicaToolPen.getPen = function (id) {
+    }
+    static getPen(id) {
         return PicaToolPen.Pens[id];
-    };
-    return PicaToolPen;
-}(PicaTool));
+    }
+}
 PicaToolPen.Pens = {};
 var UI;
 (function (UI) {
@@ -16154,22 +15868,20 @@ var UI;
         })(Board = Pica.Board || (Pica.Board = {}));
     })(Pica = UI.Pica || (UI.Pica = {}));
 })(UI || (UI = {}));
-var PicaToolMove = (function (_super) {
-    __extends(PicaToolMove, _super);
-    function PicaToolMove() {
-        var _this = _super.call(this) || this;
-        _this.setIcon("icons-picaToolMove");
-        _this.setTitleLingo("_PICAMOVE_");
-        return _this;
+class PicaToolMove extends PicaToolPen {
+    constructor() {
+        super();
+        this.setIcon("icons-picaToolMove");
+        this.setTitleLingo("_PICAMOVE_");
     }
-    PicaToolMove.prototype.mouseDown = function (point) {
+    mouseDown(point) {
         UI.Pica.Board.Canvas.getCanvas().classList.add("moving");
         this.lastPoint = point;
-    };
-    PicaToolMove.prototype.mouseUp = function (point) {
+    }
+    mouseUp(point) {
         this.mouseOut();
-    };
-    PicaToolMove.prototype.mouseMove = function (point) {
+    }
+    mouseMove(point) {
         if (this.lastPoint != null) {
             var xMovement = this.lastPoint.getX() - point.getX();
             var yMovement = this.lastPoint.getY() - point.getY();
@@ -16177,12 +15889,12 @@ var PicaToolMove = (function (_super) {
             board.scrollLeft += xMovement;
             board.scrollTop += yMovement;
         }
-    };
-    PicaToolMove.prototype.mouseOut = function () {
+    }
+    mouseOut() {
         this.lastPoint = null;
         UI.Pica.Board.Canvas.getCanvas().classList.remove("moving");
-    };
-    PicaToolMove.prototype.mouseWheel = function (up, point) {
+    }
+    mouseWheel(up, point) {
         var board = UI.Pica.Board.getBoard();
         var availScrollTop = board.scrollHeight - UI.Pica.Board.getAvailHeight();
         if (availScrollTop < 1)
@@ -16201,8 +15913,8 @@ var PicaToolMove = (function (_super) {
             availScrollLeft = 1;
         board.scrollLeft = availScrollLeft * relLeft;
         board.scrollTop = availScrollTop * relTop;
-    };
-    PicaToolMove.prototype.updateCanvasClasses = function () {
+    }
+    updateCanvasClasses() {
         if (this.selected) {
             UI.Pica.Board.Canvas.getCanvas().classList.add("move");
         }
@@ -16210,25 +15922,22 @@ var PicaToolMove = (function (_super) {
             UI.Pica.Board.Canvas.getCanvas().classList.remove("move");
             UI.Pica.Board.Canvas.getCanvas().classList.remove("moving");
         }
-    };
-    return PicaToolMove;
-}(PicaToolPen));
+    }
+}
 var move = new PicaToolMove();
 UI.Pica.Toolbar.registerTool(move);
 UI.Pica.Board.Canvas.setPen(move);
 delete (move);
-var PicaToolPensil = (function (_super) {
-    __extends(PicaToolPensil, _super);
-    function PicaToolPensil() {
-        var _this = _super.call(this) || this;
-        _this.art = null;
-        _this.lastPoint = null;
-        _this.id = "pensil";
-        _this.setIcon("icons-picaToolPensil");
-        _this.setTitleLingo("_PICAPENSIL_");
-        return _this;
+class PicaToolPensil extends PicaToolPen {
+    constructor() {
+        super();
+        this.art = null;
+        this.lastPoint = null;
+        this.id = "pensil";
+        this.setIcon("icons-picaToolPensil");
+        this.setTitleLingo("_PICAPENSIL_");
     }
-    PicaToolPensil.prototype.mouseDown = function (point) {
+    mouseDown(point) {
         this.art = new PicaCanvasArt();
         this.art.setUserId(Application.getMyId());
         this.art.addPoint(point);
@@ -16236,29 +15945,29 @@ var PicaToolPensil = (function (_super) {
         this.art.setSpecial("color", UI.Pica.Board.Canvas.getPenColor());
         this.art.setPen(this);
         this.beginDrawing(this.art);
-    };
-    PicaToolPensil.prototype.mouseMove = function (point) {
+    }
+    mouseMove(point) {
         if (this.art != null) {
             this.art.addPoint(point);
             this.drawTo(point);
             this.stroke();
         }
-    };
-    PicaToolPensil.prototype.mouseUp = function (point) {
+    }
+    mouseUp(point) {
         if (this.art != null) {
             this.art.addPoint(point);
             this.mouseOut();
         }
-    };
-    PicaToolPensil.prototype.mouseOut = function () {
+    }
+    mouseOut() {
         if (this.art != null) {
             var art = this.art;
             this.art = null;
             art.cleanUpPoints();
             UI.Pica.ArtManager.addArt(art);
         }
-    };
-    PicaToolPensil.prototype.beginDrawing = function (art) {
+    }
+    beginDrawing(art) {
         var ctx = UI.Pica.Board.Canvas.getCanvasContext();
         ctx.lineCap = "round";
         ctx.lineJoin = "round";
@@ -16268,20 +15977,20 @@ var PicaToolPensil = (function (_super) {
         var point = art.points[0];
         ctx.moveTo(point.getX(), point.getY());
         this.lastPoint = point;
-    };
-    PicaToolPensil.prototype.drawTo = function (point) {
+    }
+    drawTo(point) {
         var ctx = UI.Pica.Board.Canvas.getCanvasContext();
         var x = (point.getX() + this.lastPoint.getX()) / 2;
         var y = (point.getY() + this.lastPoint.getY()) / 2;
         ctx.lineTo(point.getX(), point.getY());
         ctx.moveTo(point.getX(), point.getY());
         this.lastPoint = point;
-    };
-    PicaToolPensil.prototype.stroke = function () {
+    }
+    stroke() {
         var ctx = UI.Pica.Board.Canvas.getCanvasContext();
         ctx.stroke();
-    };
-    PicaToolPensil.prototype.redraw = function () {
+    }
+    redraw() {
         if (this.art != null) {
             this.beginDrawing(this.art);
             for (var i = 1; i < this.art.points.length; i++) {
@@ -16289,40 +15998,37 @@ var PicaToolPensil = (function (_super) {
                 this.stroke();
             }
         }
-    };
-    PicaToolPensil.prototype.drawFromArt = function (art) {
+    }
+    drawFromArt(art) {
         this.beginDrawing(art);
         for (var i = 1; i < art.points.length; i++) {
             this.drawTo(art.points[i]);
         }
         this.stroke();
-    };
-    PicaToolPensil.prototype.updateCanvasClasses = function () {
+    }
+    updateCanvasClasses() {
         if (this.selected) {
             UI.Pica.Board.Canvas.getCanvas().classList.add("draw");
         }
         else {
             UI.Pica.Board.Canvas.getCanvas().classList.remove("draw");
         }
-    };
-    return PicaToolPensil;
-}(PicaToolPen));
+    }
+}
 var pensil = new PicaToolPensil();
 UI.Pica.Toolbar.registerTool(pensil);
 PicaToolPen.registerPen("pensil", pensil);
 delete (pensil);
-var PicaToolRINE = (function (_super) {
-    __extends(PicaToolRINE, _super);
-    function PicaToolRINE() {
-        var _this = _super.call(this) || this;
-        _this.art = null;
-        _this.lastPoint = null;
-        _this.id = "rine";
-        _this.setIcon("icons-picaToolRine");
-        _this.setTitleLingo("_PICARINE_");
-        return _this;
+class PicaToolRINE extends PicaToolPen {
+    constructor() {
+        super();
+        this.art = null;
+        this.lastPoint = null;
+        this.id = "rine";
+        this.setIcon("icons-picaToolRine");
+        this.setTitleLingo("_PICARINE_");
     }
-    PicaToolRINE.prototype.mouseDown = function (point) {
+    mouseDown(point) {
         this.art = new PicaCanvasArt();
         this.art.setUserId(Application.getMyId());
         this.art.addPoint(point);
@@ -16330,19 +16036,19 @@ var PicaToolRINE = (function (_super) {
         this.art.setSpecial("color", UI.Pica.Board.Canvas.getPenColor());
         this.art.setPen(this);
         this.lastPoint = point;
-    };
-    PicaToolRINE.prototype.mouseMove = function (point) {
+    }
+    mouseMove(point) {
         if (this.art != null) {
             this.lastPoint = point;
             this.draw(this.art);
             UI.Pica.Board.Canvas.redraw();
         }
-    };
-    PicaToolRINE.prototype.mouseUp = function (point) {
+    }
+    mouseUp(point) {
         this.lastPoint = point;
         this.mouseOut();
-    };
-    PicaToolRINE.prototype.mouseOut = function () {
+    }
+    mouseOut() {
         if (this.art != null) {
             this.art.addPoint(this.lastPoint);
             var art = this.art;
@@ -16350,8 +16056,8 @@ var PicaToolRINE = (function (_super) {
             this.lastPoint = null;
             UI.Pica.ArtManager.addArt(art);
         }
-    };
-    PicaToolRINE.prototype.draw = function (art) {
+    }
+    draw(art) {
         var p1 = art.points[0];
         var p2 = art.points.length > 1 ? art.points[1] : this.lastPoint != null ? this.lastPoint : p1;
         var ctx = UI.Pica.Board.Canvas.getCanvasContext();
@@ -16374,41 +16080,38 @@ var PicaToolRINE = (function (_super) {
         ctx.fillStyle = '#' + art.getSpecial("color", "000000");
         ctx.stroke();
         ctx.fill();
-    };
-    PicaToolRINE.prototype.redraw = function () {
+    }
+    redraw() {
         if (this.art != null) {
             this.draw(this.art);
         }
-    };
-    PicaToolRINE.prototype.drawFromArt = function (art) {
+    }
+    drawFromArt(art) {
         this.draw(art);
-    };
-    PicaToolRINE.prototype.updateCanvasClasses = function () {
+    }
+    updateCanvasClasses() {
         if (this.selected) {
             UI.Pica.Board.Canvas.getCanvas().classList.add("draw");
         }
         else {
             UI.Pica.Board.Canvas.getCanvas().classList.remove("draw");
         }
-    };
-    return PicaToolRINE;
-}(PicaToolPen));
+    }
+}
 var pensil = new PicaToolRINE();
 UI.Pica.Toolbar.registerTool(pensil);
 PicaToolPen.registerPen("rine", pensil);
 delete (pensil);
-var PicaToolSircu = (function (_super) {
-    __extends(PicaToolSircu, _super);
-    function PicaToolSircu() {
-        var _this = _super.call(this) || this;
-        _this.art = null;
-        _this.lastPoint = null;
-        _this.id = "sircu";
-        _this.setIcon("icons-picaToolSircu");
-        _this.setTitleLingo("_PICASIRCU_");
-        return _this;
+class PicaToolSircu extends PicaToolPen {
+    constructor() {
+        super();
+        this.art = null;
+        this.lastPoint = null;
+        this.id = "sircu";
+        this.setIcon("icons-picaToolSircu");
+        this.setTitleLingo("_PICASIRCU_");
     }
-    PicaToolSircu.prototype.mouseDown = function (point) {
+    mouseDown(point) {
         this.art = new PicaCanvasArt();
         this.art.setUserId(Application.getMyId());
         this.art.addPoint(point);
@@ -16416,19 +16119,19 @@ var PicaToolSircu = (function (_super) {
         this.art.setSpecial("color", UI.Pica.Board.Canvas.getPenColor());
         this.art.setPen(this);
         this.lastPoint = point;
-    };
-    PicaToolSircu.prototype.mouseMove = function (point) {
+    }
+    mouseMove(point) {
         if (this.art != null) {
             this.lastPoint = point;
             this.draw(this.art);
             UI.Pica.Board.Canvas.redraw();
         }
-    };
-    PicaToolSircu.prototype.mouseUp = function (point) {
+    }
+    mouseUp(point) {
         this.lastPoint = point;
         this.mouseOut();
-    };
-    PicaToolSircu.prototype.mouseOut = function () {
+    }
+    mouseOut() {
         if (this.art != null) {
             this.art.addPoint(this.lastPoint);
             var art = this.art;
@@ -16436,8 +16139,8 @@ var PicaToolSircu = (function (_super) {
             this.lastPoint = null;
             UI.Pica.ArtManager.addArt(art);
         }
-    };
-    PicaToolSircu.prototype.draw = function (art) {
+    }
+    draw(art) {
         var p1 = art.points[0];
         var p2 = art.points.length > 1 ? art.points[1] : this.lastPoint != null ? this.lastPoint : p1;
         var radius = Math.sqrt(Math.pow((p2.getX() - p1.getX()), 2) + Math.pow((p2.getY() - p1.getY()), 2));
@@ -16449,41 +16152,38 @@ var PicaToolSircu = (function (_super) {
         ctx.beginPath();
         ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
         ctx.stroke();
-    };
-    PicaToolSircu.prototype.redraw = function () {
+    }
+    redraw() {
         if (this.art != null) {
             this.draw(this.art);
         }
-    };
-    PicaToolSircu.prototype.drawFromArt = function (art) {
+    }
+    drawFromArt(art) {
         this.draw(art);
-    };
-    PicaToolSircu.prototype.updateCanvasClasses = function () {
+    }
+    updateCanvasClasses() {
         if (this.selected) {
             UI.Pica.Board.Canvas.getCanvas().classList.add("draw");
         }
         else {
             UI.Pica.Board.Canvas.getCanvas().classList.remove("draw");
         }
-    };
-    return PicaToolSircu;
-}(PicaToolPen));
+    }
+}
 var pensil = new PicaToolSircu();
 UI.Pica.Toolbar.registerTool(pensil);
 PicaToolPen.registerPen("sircu", pensil);
 delete (pensil);
-var PicaToolSqua = (function (_super) {
-    __extends(PicaToolSqua, _super);
-    function PicaToolSqua() {
-        var _this = _super.call(this) || this;
-        _this.art = null;
-        _this.lastPoint = null;
-        _this.id = "squa";
-        _this.setIcon("icons-picaToolSqua");
-        _this.setTitleLingo("_PICASQUA_");
-        return _this;
+class PicaToolSqua extends PicaToolPen {
+    constructor() {
+        super();
+        this.art = null;
+        this.lastPoint = null;
+        this.id = "squa";
+        this.setIcon("icons-picaToolSqua");
+        this.setTitleLingo("_PICASQUA_");
     }
-    PicaToolSqua.prototype.mouseDown = function (point) {
+    mouseDown(point) {
         this.art = new PicaCanvasArt();
         this.art.setUserId(Application.getMyId());
         this.art.addPoint(point);
@@ -16491,19 +16191,19 @@ var PicaToolSqua = (function (_super) {
         this.art.setSpecial("color", UI.Pica.Board.Canvas.getPenColor());
         this.art.setPen(this);
         this.lastPoint = point;
-    };
-    PicaToolSqua.prototype.mouseMove = function (point) {
+    }
+    mouseMove(point) {
         if (this.art != null) {
             this.lastPoint = point;
             this.draw(this.art);
             UI.Pica.Board.Canvas.redraw();
         }
-    };
-    PicaToolSqua.prototype.mouseUp = function (point) {
+    }
+    mouseUp(point) {
         this.lastPoint = point;
         this.mouseOut();
-    };
-    PicaToolSqua.prototype.mouseOut = function () {
+    }
+    mouseOut() {
         if (this.art != null) {
             this.art.addPoint(this.lastPoint);
             var art = this.art;
@@ -16511,8 +16211,8 @@ var PicaToolSqua = (function (_super) {
             this.lastPoint = null;
             UI.Pica.ArtManager.addArt(art);
         }
-    };
-    PicaToolSqua.prototype.draw = function (art) {
+    }
+    draw(art) {
         var p1 = art.points[0];
         var p2 = art.points.length > 1 ? art.points[1] : this.lastPoint != null ? this.lastPoint : p1;
         var centerX = p1.getX();
@@ -16539,41 +16239,38 @@ var PicaToolSqua = (function (_super) {
         }
         ctx.lineTo(square[0][0], square[0][1]);
         ctx.stroke();
-    };
-    PicaToolSqua.prototype.redraw = function () {
+    }
+    redraw() {
         if (this.art != null) {
             this.draw(this.art);
         }
-    };
-    PicaToolSqua.prototype.drawFromArt = function (art) {
+    }
+    drawFromArt(art) {
         this.draw(art);
-    };
-    PicaToolSqua.prototype.updateCanvasClasses = function () {
+    }
+    updateCanvasClasses() {
         if (this.selected) {
             UI.Pica.Board.Canvas.getCanvas().classList.add("draw");
         }
         else {
             UI.Pica.Board.Canvas.getCanvas().classList.remove("draw");
         }
-    };
-    return PicaToolSqua;
-}(PicaToolPen));
+    }
+}
 var pensil = new PicaToolSqua();
 UI.Pica.Toolbar.registerTool(pensil);
 PicaToolPen.registerPen("squa", pensil);
 delete (pensil);
-var PicaToolConu = (function (_super) {
-    __extends(PicaToolConu, _super);
-    function PicaToolConu() {
-        var _this = _super.call(this) || this;
-        _this.art = null;
-        _this.lastPoint = null;
-        _this.id = "conu";
-        _this.setIcon("icons-picaToolConu");
-        _this.setTitleLingo("_PICACONU_");
-        return _this;
+class PicaToolConu extends PicaToolPen {
+    constructor() {
+        super();
+        this.art = null;
+        this.lastPoint = null;
+        this.id = "conu";
+        this.setIcon("icons-picaToolConu");
+        this.setTitleLingo("_PICACONU_");
     }
-    PicaToolConu.prototype.mouseDown = function (point) {
+    mouseDown(point) {
         this.art = new PicaCanvasArt();
         this.art.setUserId(Application.getMyId());
         this.art.addPoint(point);
@@ -16581,19 +16278,19 @@ var PicaToolConu = (function (_super) {
         this.art.setSpecial("color", UI.Pica.Board.Canvas.getPenColor());
         this.art.setPen(this);
         this.lastPoint = point;
-    };
-    PicaToolConu.prototype.mouseMove = function (point) {
+    }
+    mouseMove(point) {
         if (this.art != null) {
             this.lastPoint = point;
             this.draw(this.art);
             UI.Pica.Board.Canvas.redraw();
         }
-    };
-    PicaToolConu.prototype.mouseUp = function (point) {
+    }
+    mouseUp(point) {
         this.lastPoint = point;
         this.mouseOut();
-    };
-    PicaToolConu.prototype.mouseOut = function () {
+    }
+    mouseOut() {
         if (this.art != null) {
             this.art.addPoint(this.lastPoint);
             var art = this.art;
@@ -16601,8 +16298,8 @@ var PicaToolConu = (function (_super) {
             this.lastPoint = null;
             UI.Pica.ArtManager.addArt(art);
         }
-    };
-    PicaToolConu.prototype.draw = function (art) {
+    }
+    draw(art) {
         var p1 = art.points[0];
         var p2 = art.points.length > 1 ? art.points[1] : this.lastPoint != null ? this.lastPoint : p1;
         var ctx = UI.Pica.Board.Canvas.getCanvasContext();
@@ -16617,84 +16314,75 @@ var PicaToolConu = (function (_super) {
         ctx.lineTo(p1.getX() - sideLength * Math.cos(angle + Math.PI / 6), p1.getY() - sideLength * Math.sin(angle + Math.PI / 6));
         ctx.lineTo(p1.getX(), p1.getY());
         ctx.stroke();
-    };
-    PicaToolConu.prototype.redraw = function () {
+    }
+    redraw() {
         if (this.art != null) {
             this.draw(this.art);
         }
-    };
-    PicaToolConu.prototype.drawFromArt = function (art) {
+    }
+    drawFromArt(art) {
         this.draw(art);
-    };
-    PicaToolConu.prototype.updateCanvasClasses = function () {
+    }
+    updateCanvasClasses() {
         if (this.selected) {
             UI.Pica.Board.Canvas.getCanvas().classList.add("draw");
         }
         else {
             UI.Pica.Board.Canvas.getCanvas().classList.remove("draw");
         }
-    };
-    return PicaToolConu;
-}(PicaToolPen));
+    }
+}
 var pensil = new PicaToolConu();
 UI.Pica.Toolbar.registerTool(pensil);
 PicaToolPen.registerPen("conu", pensil);
 delete (pensil);
-var PicaToolColor = (function (_super) {
-    __extends(PicaToolColor, _super);
-    function PicaToolColor() {
-        var _this = _super.call(this) || this;
-        _this.a = document.createElement("input");
-        _this.a.id = "colopica";
-        _this.a.type = "color";
-        _this.a.addEventListener("change", function () {
+class PicaToolColor extends PicaTool {
+    constructor() {
+        super();
+        this.a = document.createElement("input");
+        this.a.id = "colopica";
+        this.a.type = "color";
+        this.a.addEventListener("change", function () {
             UI.Pica.Board.Canvas.setPenColor(this.value.substr(1));
         });
         UI.Pica.Board.Canvas.addPenListener({
-            a: _this.a,
+            a: this.a,
             handleEvent: function () {
                 this.a.value = "#" + UI.Pica.Board.Canvas.getPenColor();
             }
         });
-        _this.setTitleLingo("_PICACOLOR_");
-        return _this;
+        this.setTitleLingo("_PICACOLOR_");
     }
-    return PicaToolColor;
-}(PicaTool));
+}
 var tool = new PicaToolColor();
 UI.Pica.Toolbar.registerTool(tool);
 delete (tool);
-var PicaToolShare = (function (_super) {
-    __extends(PicaToolShare, _super);
-    function PicaToolShare() {
-        var _this = _super.call(this) || this;
-        _this.setIcon("icons-picaToolShare");
-        _this.setLeftSide();
-        _this.setTitleLingo("_PICASHARE_");
-        return _this;
+class PicaToolShare extends PicaTool {
+    constructor() {
+        super();
+        this.setIcon("icons-picaToolShare");
+        this.setLeftSide();
+        this.setTitleLingo("_PICASHARE_");
     }
-    PicaToolShare.prototype.onClick = function () {
+    onClick() {
         var url = UI.Pica.Board.getUrl();
         var newImage = new MessageImage();
         newImage.findPersona();
         newImage.setName(name);
         newImage.setMsg(url);
         UI.Chat.sendMessage(newImage);
-    };
-    return PicaToolShare;
-}(PicaTool));
-var PicaToolLock = (function (_super) {
-    __extends(PicaToolLock, _super);
-    function PicaToolLock() {
-        var _this = _super.call(this) || this;
-        _this.lockedIcon = "icons-picaToolLockLocked";
-        _this.unlockedIcon = "icons-picaToolLockUnlocked";
-        _this.setIcon(_this.lockedIcon);
-        _this.setRightSide();
-        _this.setTitleLingo("_PICALOCK_");
-        return _this;
     }
-    PicaToolLock.prototype.updateVisibility = function () {
+}
+class PicaToolLock extends PicaTool {
+    constructor() {
+        super();
+        this.lockedIcon = "icons-picaToolLockLocked";
+        this.unlockedIcon = "icons-picaToolLockUnlocked";
+        this.setIcon(this.lockedIcon);
+        this.setRightSide();
+        this.setTitleLingo("_PICALOCK_");
+    }
+    updateVisibility() {
         var m = Server.Chat.Memory.getConfiguration("Pica");
         if (m.isPicaAllowed()) {
             this.a.classList.add(this.unlockedIcon);
@@ -16704,8 +16392,8 @@ var PicaToolLock = (function (_super) {
             this.a.classList.add(this.lockedIcon);
             this.a.classList.remove(this.unlockedIcon);
         }
-    };
-    PicaToolLock.prototype.onClick = function () {
+    }
+    onClick() {
         var room = Server.Chat.getRoom();
         if (room != null) {
             var me = room.getMe();
@@ -16714,54 +16402,48 @@ var PicaToolLock = (function (_super) {
                 m.picaAllowedStore(!m.isPicaAllowed());
             }
         }
-    };
-    return PicaToolLock;
-}(PicaTool));
+    }
+}
 var tool = new PicaToolLock();
 UI.Pica.Toolbar.registerTool(tool);
 delete (tool);
-var PicaToolClean = (function (_super) {
-    __extends(PicaToolClean, _super);
-    function PicaToolClean() {
-        var _this = _super.call(this) || this;
-        _this.setIcon("icons-picaToolClean");
-        _this.setRightSide();
-        _this.setTitleLingo("_PICACLEAN_");
-        return _this;
+class PicaToolClean extends PicaTool {
+    constructor() {
+        super();
+        this.setIcon("icons-picaToolClean");
+        this.setRightSide();
+        this.setTitleLingo("_PICACLEAN_");
     }
-    PicaToolClean.prototype.onClick = function () {
+    onClick() {
         var msg = new MessagePica();
         var url = UI.Pica.Board.getUrl();
         msg.setUrl(url);
         msg.setCleanArts(true);
         UI.Chat.sendMessage(msg);
-    };
-    return PicaToolClean;
-}(PicaTool));
+    }
+}
 var tool = new PicaToolClean();
 UI.Pica.Toolbar.registerTool(tool);
 delete (tool);
-var PicaToolScaling = (function (_super) {
-    __extends(PicaToolScaling, _super);
-    function PicaToolScaling() {
-        var _this = _super.call(this) || this;
-        _this.scaling = -1;
-        _this.ratio = 1;
+class PicaToolScaling extends PicaTool {
+    constructor() {
+        super();
+        this.scaling = -1;
+        this.ratio = 1;
         UI.Pica.Board.addResizeListener({
-            scaler: _this,
+            scaler: this,
             handleEvent: function () {
                 this.scaler.updateEquality();
             }
         });
-        return _this;
     }
-    PicaToolScaling.prototype.onClick = function () {
+    onClick() {
         UI.Pica.Board.setImageScaling(this.scaling);
         if (this.scaling == UI.Pica.Board._IMAGE_SCALING_USE_RATIO) {
             UI.Pica.Board.setRatio(this.ratio);
         }
-    };
-    PicaToolScaling.prototype.updateEquality = function () {
+    }
+    updateEquality() {
         var cS = UI.Pica.Board.getScaling();
         if (this.scaling == UI.Pica.Board._IMAGE_SCALING_USE_RATIO && cS == this.scaling) {
             this.setSelected(UI.Pica.Board.getImageRatio() == this.ratio);
@@ -16769,49 +16451,39 @@ var PicaToolScaling = (function (_super) {
         else {
             this.setSelected(cS == this.scaling);
         }
-    };
-    return PicaToolScaling;
-}(PicaTool));
-var PicaToolScaling0 = (function (_super) {
-    __extends(PicaToolScaling0, _super);
-    function PicaToolScaling0() {
-        var _this = _super.call(this) || this;
-        _this.scaling = UI.Pica.Board._IMAGE_SCALING_FIT_NO_STRETCH;
-        _this.setIcon("icons-picaToolRatio1Fit");
-        _this.setTitleLingo("_PICASCALEFITNOSTRETCH_");
-        return _this;
     }
-    return PicaToolScaling0;
-}(PicaToolScaling));
+}
+class PicaToolScaling0 extends PicaToolScaling {
+    constructor() {
+        super();
+        this.scaling = UI.Pica.Board._IMAGE_SCALING_FIT_NO_STRETCH;
+        this.setIcon("icons-picaToolRatio1Fit");
+        this.setTitleLingo("_PICASCALEFITNOSTRETCH_");
+    }
+}
 var tool = new PicaToolScaling0();
 UI.Pica.Toolbar.registerTool(tool);
 delete (tool);
-var PicaToolScaling1 = (function (_super) {
-    __extends(PicaToolScaling1, _super);
-    function PicaToolScaling1() {
-        var _this = _super.call(this) || this;
-        _this.scaling = UI.Pica.Board._IMAGE_SCALING_FIT_STRETCH;
-        _this.setIcon("icons-picaToolFit");
-        _this.setTitleLingo("_PICASCALEFITSTRETCH_");
-        return _this;
+class PicaToolScaling1 extends PicaToolScaling {
+    constructor() {
+        super();
+        this.scaling = UI.Pica.Board._IMAGE_SCALING_FIT_STRETCH;
+        this.setIcon("icons-picaToolFit");
+        this.setTitleLingo("_PICASCALEFITSTRETCH_");
     }
-    return PicaToolScaling1;
-}(PicaToolScaling));
+}
 var tool = new PicaToolScaling1();
 UI.Pica.Toolbar.registerTool(tool);
 delete (tool);
-var PicaToolScaling2 = (function (_super) {
-    __extends(PicaToolScaling2, _super);
-    function PicaToolScaling2() {
-        var _this = _super.call(this) || this;
-        _this.scaling = UI.Pica.Board._IMAGE_SCALING_USE_RATIO;
-        _this.ratio = 1;
-        _this.setIcon("icons-picaToolRatio1");
-        _this.setTitleLingo("_PICASCALERATIO1_");
-        return _this;
+class PicaToolScaling2 extends PicaToolScaling {
+    constructor() {
+        super();
+        this.scaling = UI.Pica.Board._IMAGE_SCALING_USE_RATIO;
+        this.ratio = 1;
+        this.setIcon("icons-picaToolRatio1");
+        this.setTitleLingo("_PICASCALERATIO1_");
     }
-    return PicaToolScaling2;
-}(PicaToolScaling));
+}
 var tool = new PicaToolScaling2();
 UI.Pica.Toolbar.registerTool(tool);
 delete (tool);
@@ -16879,7 +16551,7 @@ var UI;
                 },
                 linkType: "preview",
                 multiselect: true,
-                extensions: ['.MP3', '.MP4', '.M4A', '.AAC', '.OGG', '.WAV', '.WAVE', '.OPUS']
+                extensions: ['.MP3', '.MP4', '.M4A', '.AAC', '.OGG', '.WAV', '.WAVE', '.OPUS'],
             };
             Dropbox.choose(options);
         }

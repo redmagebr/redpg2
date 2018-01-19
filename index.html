@@ -1,752 +1,752 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>RedPG</title>
-    <meta charset='utf8'>
-    <meta content='' name='description'>
-    <link href='images/favicon.ico' rel='shortcut icon'>
-    <!-- Individual font licenses included in CSS. -->
-    <link href='stylesheets/screen.css' id='redpgCss' media='all' rel='stylesheet' type='text/css'>
-  </head>
-  <body>
-    <div class='flexCentering' id='loadingWindow'>
-      <a class='loadingCircleWhite' id='loadingScreenLoadingIcon'></a>
-    </div>
-    <div class='window flexCentering' id='createAccountWindow'>
-      <div id='accountBox'>
-        <div class='accountCreationError language' id='accCreationError'>_CREATEACCOUNTGENERALERROR_</div>
-        <div class='accountCreationError language' id='accCreationError401'>_CREATEACCOUNTSTUPIDERROR_</div>
-        <div class='accountCreationError language' id='accCreationError409'>_CREATEACCOUNTALREADYEXISTS_</div>
-        <form class='centeredContents' id='accountCreationForm'>
-          <input class='accCreationInput language' data-placeholderlingo='_CREATEACCOUNTNAME_' id='accName'>
-          <div class='accError language'>_CREATEACCOUNTNAMEERROR_</div>
-          <input class='accCreationInput language' data-placeholderlingo='_CREATEACCOUNTNICKNAME_' id='accNickname'>
-          <div class='accError language'>_CREATEACCOUNTNICKNAMEERROR_</div>
-          <input class='accCreationInput language' data-placeholderlingo='_LOGINEMAIL_' id='accEmail'>
-          <div class='accError language'>_CREATEACCOUNTEMAILERROR_</div>
-          <input class='accCreationInput language' data-placeholderlingo='_LOGINPASSWORD_' id='accPassword' type='password'>
-          <div class='accError language'>_CREATEACCOUNTPASSWORDINVALID_</div>
-          <input class='accCreationInput language' data-placeholderlingo='_LOGINPASSWORDREPEAT_' id='accPassword2' type='password'>
-          <div class='accError language'>_CREATEACCOUNTPASSWORDMATCHING_</div>
-          <input class='simpleButton language' data-valuelingo='_ACCCREATIONRETURN_' id='accCreationReturnButton' type='reset'>
-          <input class='simpleButton language' data-valuelingo='_ACCCREATIONSUBMIT_' id='accCreationSubmitButton' type='submit'>
-        </form>
-      </div>
-    </div>
-    <div class='window flexCentering' id='loginWindow'>
-      <div id='loginBox'>
-        <div class='language' id='loginError404'>_LOGINERROR404_</div>
-        <div class='language' id='loginError'>_LOGINERROR_</div>
-        <div id='loginFlagContainer'></div>
-        <form class='centeredContents' id='loginForm'>
-          <input class='loginInput language' data-placeholderlingo='_LOGINEMAIL_' id='loginEmailInput'>
-          <input class='loginInput language' data-placeholderlingo='_LOGINPASSWORD_' id='loginPasswordInput' type='password'>
-          <input class='simpleButton language' data-valuelingo='_LOGINSUBMIT_' id='loginSubmitButton' type='submit'>
-        </form>
-        <div id='loginExtraButtons'>
-          <div class='language' id='loginForgotPassword'>_LOGINFORGOTPASSWORD_</div>
-          <div class='language' id='loginNewAccount'>_LOGINCREATEACCOUNT_</div>
-        </div>
-      </div>
-    </div>
-    <div class='window' id='mainWindow'>
-      <div id='colorFilter'></div>
-      <div class='icons-soundPlayer dontDetach leftSideWindow' id='musicPlayerButton'>
-        <audio crossOrigin='anonymous' id='soundPlayerSE'></audio>
-        <audio crossOrigin='anonymous' id='soundPlayerBGM'></audio>
-        <audio id='soundDiceRoll' preload src='images/soundDice.m4a'></audio>
-        <audio id='soundAlert' preload src='images/soundAlert.m4a'></audio>
-        <div id='musicPlayerContainer'>
-          <div id='musicPlayerTrackName'></div>
-          <progress id='musicPlayerProgress' max='100' min='0' value='50'></progress>
-          <a class='musicPlayerButton icons-soundPlayerPause' id='musicPlayerPlayPause'></a>
-          <a class='musicPlayerButton icons-soundPlayerStop' id='musicPlayerStop'></a>
-          <a class='musicPlayerButton icons-soundPlayerRepeatActive' id='musicPlayerRepeat'></a>
-        </div>
-      </div>
-      <div class='handleBar' id='leftHandleBar'>
-        <div class='icons-handlerLTR' id='leftHandleIcon'></div>
-        <a class='icons-handleLogout leftHandleButton language' id='logoutButton'>_MENULOGOUT_</a>
-        <a class='icons-handleChat leftHandleButton language' id='openChatButton'>_MENUCHAT_</a>
-        <a class='icons-handleGames leftHandleButton language' id='gamesButton'>_MENUGAMES_</a>
-        <a class='icons-handleOptions leftHandleButton language' id='configButton'>_MENUCONFIG_</a>
-      </div>
-      <div class='handleBar' id='rightHandleBar'>
-        <div class='icons-handlerRTL' id='rightHandleIcon'></div>
-        <a class='icons-handleSheets rightHandleButton language' id='sheetsButton'>_MENUSHEETS_</a>
-        <a class='icons-handleSheet rightHandleButton language' id='sheetOpenButton'>_MENUSHEETREOPEN_</a>
-        <a class='icons-handlePicas rightHandleButton language' id='imagesButton'>_MENUIMAGES_</a>
-        <a class='icons-handleSounds rightHandleButton language' id='soundsButton'>_MENUSOUNDS_</a>
-      </div>
-      <div class='leftSideWindow flexCentering dontDetach' id='leftLoading'>
-        <a class='loadingCircleWhite centeredBlock'></a>
-      </div>
-      <div class='rightSideWindow flexCentering dontDetach' id='rightLoading'>
-        <a class='loadingCircleWhite centeredBlock'></a>
-      </div>
-      <div class='leftSideWindow dontDetach' id='loggerWindow'>
-        <div class='language mainWindowHeader'>
-          _LOGGERTITLE_
-          <a class='xButton' onclick='UI.Logger.close();'></a>
-        </div>
-        <div class='mainWindowContent singleton'>
-          <p class='mainWindowParagraph language'>_LOGGEREXP1_</p>
-          <div id='loggerSlider'></div>
-          <div id='loggerTarget'></div>
-          <p class='mainWindowParagraph language'>_LOGGEREXP2_</p>
-          <div id='loggerCheckboxes'>
-            <label>
-              <input type='checkbox'>
-              roleplay
-            </label>
-          </div>
-          <input class='mainWindowParagraphSubmit language' data-valuelingo='_LOGGERSUBMIT_' id='loggerSubmit' type='submit'>
-        </div>
-      </div>
-      <div class='rightSideWindow dontDetach' id='pictureWindow'>
-        <a class='xButton' id='pictureClose' onclick='UI.Pica.close();'></a>
-        <div class='flexCentering' id='pictureLoading' style='display: none'>
-          <a class='loadingCircleWhite centeredBlock'></a>
-        </div>
-      </div>
-      <div class='leftSideWindow' id='changelogSideWindow'>
-        <div class='language mainWindowHeader'>
-          _CHANGELOGTITLE_
-          <a class='xButton' onclick='UI.PageManager.closeLeftPage();'></a>
-        </div>
-        <div class='mainWindowContent singleton'>
-          <p class='mainWindowParagraph language'>_CHANGELOGP2_</p>
-          <p class='mainWindowParagraph language'>
-            _CHANGELOGCURRENTVERSION_
-            <b class='changelogVersion' id='changelogCurrentVersion'>0.0.0</b>
-            _CHANGELOGMOSTRECENTVERSION_
-            <b class='changelogVersion' id='changelogActualVersion'>0.1.0</b>
-          </p>
-          <p class='mainWindowParagraph language' id='changelogWarning'>_CHANGELOGVERSIONWARNING_</p>
-          <div id='changelogTarget'>
-            <p class='mainWindowParagraph changelogMissing'>
-              <span class='changelogChangeVersion'>0.9.0</span>
-              <span class='changelogChange'>Adicionadas coisas legais que você não tem.</span>
-            </p>
-            <p class='mainWindowParagraph changelogCurrent'>
-              <span class='changelogChangeVersion'>0.8.0</span>
-              <span class='changelogChange'>Adicionadas coisas chatas que você tem..</span>
-              <span class='changelogChange'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum a nibh vulputate, mollis libero eu, aliquam leo. Donec tincidunt egestas congue. Vestibulum sagittis dapibus ante sit amet tincidunt. Mauris scelerisque eu sem in vehicula. Aenean justo erat, cursus quis orci quis, consectetur laoreet nulla. Vestibulum tristique mi non varius venenatis. Nulla maximus lacinia erat vel luctus. Vivamus cursus libero vitae aliquet vehicula. Etiam non scelerisque diam. Sed ornare odio quis augue semper dapibus. Nam eros diam, finibus eu felis sit amet, ultrices ullamcorper arcu. Nunc vehicula, risus et aliquam egestas, nulla massa semper quam, non facilisis eros elit a urna. Cras accumsan eleifend pharetra. Cras eu massa felis.</span>
-            </p>
-          </div>
-        </div>
-      </div>
-      <div class='leftSideWindow' id='configSideWindow'>
-        <div class='mainWindowHeader language'>
-          _CONFIGTITLE_
-          <a class='xButton' onclick='UI.PageManager.closeLeftPage();'></a>
-        </div>
-        <div class='mainWindowContent singleton'>
-          <p class='hoverable mainWindowParagraph centered'>
-            <a class='textLink language' id='configSave'>_CONFIGSAVE_</a>
-            -
-            <a class='textLink language' id='configReset'>_CONFIGRESET_</a>
-          </p>
-          <p class='mainWindowParagraph centered' id='configMessages'>
-            <b class='language' id='configError'>_CONFIGERROR_</b>
-            <b class='language' id='configSuccess'>_CONFIGSUCCESS_</b>
-          </p>
-          <label class='configLabel'>
-            <b class='configName language'>_CONFIGCHATMAXMESSAGES_</b>
-            <input class='configInput' id='configChatMaxMessages' max='10000' min='60' type='number' value='120'>
-            <div class='configExplanation language'>
-              _CONFIGCHATMAXMESSAGESEXP01_<br/>_CONFIGCHATMAXMESSAGESEXP02_
-            </div>
-          </label>
-          <label class='configLabel'>
-            <b class='configName language'>_CONFIGCHATFONTSIZE_</b>
-            <input class='configInput' id='configChatFontSize' max='32' min='12' type='range' value='16'>
-            <div class='configExplanation language'>
-              _CHATFONTSIZEEXP01_<br/>_CHATFONTSIZEEXP02_
-            </div>
-          </label>
-          <label class='configLabel'>
-            <b class='configName language'>_CONFIGCHATFONTFAMILY_</b>
-            <input class='configInput' id='configChatFontFamily' type='text' value='Caudex'>
-            <div class='configExplanation language'>
-              _CHATFONTFAMILEXP01_<br/>_CHATFONTFAMILEXP02_
-            </div>
-          </label>
-          <label class='configLabel'>
-            <b class='configName language'>_CONFIGCHATHELP_</b>
-            <select class='configInput' id='configChatShowHelp'>
-              <option class='language' value='true'>_CONFIGCHATHELPOP01_</option>
-              <option class='language' value='false'>_CONFIGCHATHELPOP02_</option>
-            </select>
-            <div class='configExplanation language'>
-              _CONFIGCHATHELPEXP_
-            </div>
-          </label>
-          <label class='configLabel'>
-            <b class='configName language'>_CONFIGHQRAINBOW_</b>
-            <select class='configInput' id='configHQRainbow'>
-              <option class='language' value='0'>_CONFIGHQRAINBOW0_</option>
-              <option class='language' value='1'>_CONFIGHQRAINBOW1_</option>
-              <option class='language' value='2'>_CONFIGHQRAINBOW2_</option>
-            </select>
-            <div class='configExplanation language'>
-              _CONFIGHQRAINBOWEXP_
-            </div>
-          </label>
-          <label class='configLabel'>
-            <b class='configName language'>_CONFIGCHATAUTOBGM_</b>
-            <select class='configInput' id='configChatAutoBGM'>
-              <option class='language' value='0'>_CONFIGCHATAUTONEVER_</option>
-              <option class='language' value='1'>_CONFIGCHATAUTOSOMETIMES_</option>
-              <option class='language' value='2'>_CONFIGCHATAUTOALWAYS_</option>
-            </select>
-            <div class='configExplanation language'>
-              _CONFIGCHATAUTOEXP_
-            </div>
-          </label>
-          <label class='configLabel'>
-            <b class='configName language'>_CONFIGCHATAUTOSE_</b>
-            <select class='configInput' id='configChatAutoSE'>
-              <option class='language' value='0'>_CONFIGCHATAUTONEVER_</option>
-              <option class='language' value='1'>_CONFIGCHATAUTOSOMETIMES_</option>
-              <option class='language' value='2'>_CONFIGCHATAUTOALWAYS_</option>
-            </select>
-            <div class='configExplanation language'>
-              _CONFIGCHATAUTOEXP_
-            </div>
-          </label>
-          <label class='configLabel'>
-            <b class='configName language'>_CONFIGCHATAUTOIMAGE_</b>
-            <select class='configInput' id='configChatAutoImage'>
-              <option class='language' value='0'>_CONFIGCHATAUTONEVER_</option>
-              <option class='language' value='1'>_CONFIGCHATAUTOSOMETIMES_</option>
-              <option class='language' value='2'>_CONFIGCHATAUTOALWAYS_</option>
-            </select>
-            <div class='configExplanation language'>
-              _CONFIGCHATAUTOEXP_
-            </div>
-          </label>
-          <label class='configLabel'>
-            <b class='configName language'>_CONFIGCHATAUTOVIDEO_</b>
-            <select class='configInput' id='configChatAutoVideo'>
-              <option class='language' value='0'>_CONFIGCHATAUTONEVER_</option>
-              <option class='language' value='1'>_CONFIGCHATAUTOSOMETIMES_</option>
-              <option class='language' value='2'>_CONFIGCHATAUTOALWAYS_</option>
-            </select>
-            <div class='configExplanation language'>
-              _CONFIGCHATAUTOEXP_
-            </div>
-          </label>
-          <label class='configLabel'>
-            <b class='configName language'>_CONFIGCHATAUTOROLLS_</b>
-            <select class='configInput' id='configAutoRollApplication'>
-              <option class='language' value='0'>_CONFIGAUTOROLL0_</option>
-              <option class='language' value='1'>_CONFIGAUTOROLL1_</option>
-            </select>
-            <div class='configExplanation language'>
-              _CONFIGAUTOROLLEXP_
-            </div>
-          </label>
-          <label class='configLabel'>
-            <b class='configName language'>_CONFIGCHATSCREENEFFECTS_</b>
-            <select class='configInput' id='configChatScreenEffects'>
-              <option class='language' value='false'>_CONFIGCHATEFFECTSNO_</option>
-              <option class='language' value='true'>_CONFIGCHATEFFECTSYES_</option>
-            </select>
-            <div class='configExplanation language'>
-              _CONFIGCHATEFFECTSEXP_
-            </div>
-          </label>
-          <label class='configLabel'>
-            <b class='configName language'>_CONFIGCHATUNNECESSARYMESSAGES_</b>
-            <select class='configInput' id='configChatHideSomeMessages'>
-              <option class='language' value='false'>_CONFIGCHATUNNECESSARYMESSAGESNO_</option>
-              <option class='language' value='true'>_CONFIGCHATUNNECESSARYMESSAGESYES_</option>
-            </select>
-            <div class='configExplanation language'>
-              _CONFIGCHATUNNECESSARYMESSAGESEXP_
-            </div>
-          </label>
-          <label class='configLabel'>
-            <b class='configName language'>_CONFIGANIMATIONTIME_</b>
-            <input class='configInput' id='configAnimTime' max='300' min='0' type='range' value='150'>
-            <div class='configExplanation language'>
-              _ANIMATIONTIMEEXP01_<br>_ANIMATIONTIMEEXP02_
-            </div>
-          </label>
-          <label class='configLabel'>
-            <b class='configName language'>_CONFIGBGMVOLUME_</b>
-            <input class='configInput' id='configBGMVolume' max='100' min='0' type='range' value='0'>
-            <div class='configExplanation language'>
-              _CONFIGBGMVOLUMEEXP_
-            </div>
-          </label>
-          <label class='configLabel'>
-            <b class='configName language'>_CONFIGSEVOLUME_</b>
-            <input class='configInput' id='configSEVolume' max='100' min='0' type='range' value='0'>
-            <div class='configExplanation language'>
-              _CONFIGSEVOLUMEEXP_
-            </div>
-          </label>
-        </div>
-      </div>
-      <div class='leftSideWindow' id='roomDesignerFormSideWindow'>
-        <div class='language mainWindowHeader'>_ROOMDESIGNERTITLE_</div>
-        <div class='mainWindowContent singleton'>
-          <p class='mainWindowParagraph language'>_ROOMDESIGNEREXP_</p>
-          <p class='mainWindowParagraphError gameInviteDesignerMessage language' id='roomDesignerError'>_ROOMDESIGNERERROR_</p>
-          <form id='roomDesignerForm'>
-            <input class='mainWindowWideInput language' data-placeholderlingo='_ROOMDESIGNERNAMEPLACEHOLDER_' id='roomDesignerName'>
-            <textarea class='mainWindowWideTextarea language' data-placeholderlingo='_ROOMDESIGNERMESSAGEPLACEHOLDER_' id='roomDesignerMessage'></textarea>
-            <input class='mainWindowParagraphSubmit language' data-valuelingo='_ROOMDESIGNERSUBMIT_' type='submit'>
-          </form>
-        </div>
-      </div>
-      <div class='leftSideWindow' id='gameDesignerFormSideWindow'>
-        <div class='language mainWindowHeader'>_GAMEDESIGNERTITLE_</div>
-        <div class='mainWindowContent singleton'>
-          <p class='mainWindowParagraphError gameInviteDesignerMessage language' id='gameDesignerError'>_GAMEDESIGNERERROR_</p>
-          <form id='gameDesignerForm'>
-            <input class='mainWindowWideInput language' data-placeholderlingo='_GAMEDESIGNERNAMEPLACEHOLDER_' id='gameDesignerName'>
-            <textarea class='mainWindowWideTextarea language' data-placeholderlingo='_GAMEDESIGNERMESSAGEPLACEHOLDER_' id='gameDesignerMessage'></textarea>
-            <input class='mainWindowParagraphSubmit language' data-valuelingo='_GAMEDESIGNERSUBMIT_' type='submit'>
-          </form>
-        </div>
-      </div>
-      <div class='leftSideWindow' id='gameInviteFormSideWindow'>
-        <div class='language mainWindowHeader'>_GAMEINVITEDESIGNERTITLE_</div>
-        <div class='mainWindowContent singleton'>
-          <p class='mainWindowParagraph language'>_GAMEINVITEDESIGNEREXP01_</p>
-          <p class='mainWindowParagraph language' id='gameInviteDesignerGameName'>_GAMEINVITEDESIGNEREXP02_</p>
-          <p class='mainWindowParagraphError gameInviteDesignerMessage language' id='gameInviteDesigner404'>_GAMEINVITEDESIGNERERROR404_</p>
-          <p class='mainWindowParagraphError gameInviteDesignerMessage language' id='gameInviteDesigner401'>_GAMEINVITEDESIGNERERROR401_</p>
-          <p class='mainWindowParagraphSuccess gameInviteDesignerMessage language' id='gameInviteDesigner200'>_GAMEINVITEDESIGNERSUCCESS_</p>
-          <form id='gameInviteDesignerForm'>
-            <input class='mainWindowWideInput language' data-placeholderlingo='_GAMEINVITEDESIGNERNAMEPLACEHOLDER_' id='gameInviteDesignerName'>
-            <textarea class='mainWindowWideTextarea language' data-placeholderlingo='_GAMEINVITEDESIGNERMESSAGEPLACEHOLDER_' id='gameInviteDesignerMessage'></textarea>
-            <input class='mainWindowParagraphSubmit language' data-valuelingo='_GAMEINVITEDESIGNERSUBMIT_' type='submit'>
-          </form>
-        </div>
-      </div>
-      <div class='leftSideWindow' id='gameInvitesSideWindow'>
-        <div class='language mainWindowHeader'>_GAMEINVITESTITLE_</div>
-        <div class='mainWindowContent singleton'>
-          <p class='mainWindowParagraph language'>_GAMEINVITESEXP01_</p>
-          <p class='mainWindowParagraph language' id='gameInvitesNickTarget'>_GAMEINVITESEXP02_</p>
-          <p class='mainWindowParagraph language' id='gameInvitesError'></p>
-          <div id='inviteTarget'></div>
-        </div>
-      </div>
-      <div class='leftSideWindow' id='styleEditorSideWindow'>
-        <div class='language mainWindowHeader'>
-          _STYLEEDITOR_
-          <a class='xButton' onclick='UI.PageManager.closeLeftPage();'></a>
-        </div>
-        <div class='mainWindowContent singleton'>
-          <p class='mainWindowParagraph language'>_STYLEEDITOREXP_</p>
-          <form id='styleEditorForm'>
-            <label class='language styleLabel'>
-              <input class='language cuteInputBig' data-placeholderlingo='_STYLEEDITORNAME_' id='styleEditorName'>
-            </label>
-            <label class='language styleLabel' id='styleEditorPublicLabel'>
-              <input id='styleEditorPublic' type='checkbox'>
-              _STYLEEDITORPUBLIC_
-              <span class='language styleExplanation' id='styleEditorPublicExp'>
-                _STYLEEDITORPUBLICEXP_
-              </span>
-            </label>
-            <label class='styleLabel language' id='styleEditorGameLabel'>
-              _STYLEEDITORGAME_
-              <select id='styleEditorGameSelect'>
-                <option>História dos Seis</option>
-              </select>
-              <span class='language styleExplanation' id='styleEditorGameExp'>
-                _STYLEEDITORGAMEEXP_
-              </span>
-            </label>
-            <label class='styleLabel language' id='styleEditorCopyLabel'>
-              _STYLEEDITORCOPY_
-              <select id='styleEditorCopySelect'>
-                <option>Dragon Fantasy Saga 5.0 BETA</option>
-              </select>
-              <a class='textLink language' id='styleEditorCopyButton'>_STYLEEDITORCOPYBUTTON_</a>
-              <span class='language styleExplanation' id='styleEditorCopyExp'>
-                _STYLEEDITORCOPYEXP_
-              </span>
-            </label>
-            <label class='styleFourthLabel language'>
-              _STYLEEDITORHTML_
-              <textarea class='styleFourthTextarea' id='styleEditorHTML'></textarea>
-            </label>
-            <label class='styleFourthLabel language'>
-              _STYLEEDITORCSS_
-              <textarea class='styleFourthTextarea' id='styleEditorCSS'></textarea>
-            </label>
-            <label class='styleFourthLabel language'>
-              _STYLEEDITORJS_
-              <textarea class='styleFourthTextarea' id='styleEditorJS'></textarea>
-            </label>
-            <label class='styleFourthLabel language'>
-              _STYLEEDITORPUBLICCODE_
-              <textarea class='styleFourthTextarea' id='styleEditorPublicCode'></textarea>
-            </label>
-            <label class='language styleLabel' id='styleEditorRemainLabel'>
-              <input id='styleEditorRemain' type='checkbox'>
-                _STYLEEDITORREMAIN_
-              </input>
-            </label>
-            <input class='textLink mainWindowParagraph hoverable language' data-valuelingo='_STYLEEDITORSAVE_' id='styleEditorSubmit' type='submit'>
-          </form>
-        </div>
-      </div>
-      <div class='leftSideWindow' id='stylesSideWindow'>
-        <div class='language mainWindowHeader'>
-          _STYLESTITLE_
-          <a class='xButton' onclick='UI.PageManager.closeLeftPage();'></a>
-        </div>
-        <div class='mainWindowContent singleton'>
-          <p class='mainWindowParagraph language'>_STYLESEXP1_</p>
-          <p class='mainWindowParagraph language'>_STYLESEXP2_</p>
-          <p class='mainWindowParagraph language textLink hoverable' id='stylesNewStyleButton'>_STYLESNEWSTYLE_</p>
-          <div id='styleListTarget'></div>
-        </div>
-      </div>
-      <div class='leftSideWindow' id='gamesSideWindow'>
-        <div class='language mainWindowHeader'>
-          _GAMESTITLE_
-          <a class='xButton' onclick='UI.PageManager.closeLeftPage();'></a>
-        </div>
-        <div class='mainWindowContent singleton'>
-          <p class='mainWindowParagraph language' id='gamesNickTarget'>_GAMESEXP1_</p>
-          <p class='mainWindowParagraph language'>_GAMESEXP2_</p>
-          <p class='mainWindowParagraph language'>_GAMESEXP3_</p>
-          <p class='mainWindowParagraph language'>_GAMESEXP4_</p>
-          <p class='mainWindowParagraph language textLink hoverable' id='gameInvitesButton'>_GAMESINVITES_</p>
-          <p class='mainWindowParagraph language textLink hoverable' id='gameNewGameButton'>_GAMESNEWGAME_</p>
-          <div id='gameListTarget'></div>
-        </div>
-      </div>
-      <div class='chatFloater' id='combatFloater'>
-        <div class='language chatFloaterHandle' id='combatHandle'>
-          <div class='chatFloaterMinus' id='combatMinus'>-</div>
-          _COMBATTRACKER_
-        </div>
-        <div class='chatFloaterContent' id='combatContent'>
-          <div class='combatRow currentTurn currentTarget'>
-            <a class='combatRemove language' data-titlelingo='_COMBATTRACKERREMOVE_'></a>
-            <span class='combatName'>Nome do Sujeito</span>
-            <input class='combatRowInitiative'>
-            <a class='combatSetTurn language' data-titlelingo='_COMBATTRACKERSETTURN_'></a>
-            <a class='combatTarget language' data-titlelingo='_COMBATTRACKERSETTARGET_'></a>
-            <a class='combatSheet language' data-titlelingo='_COMBATTRACKERSHEET_'></a>
-          </div>
-          <div class='combatRow'>
-            <span class='combatName language'>_COMBATTRACKERNOCOMBATANTS_</span>
-          </div>
-        </div>
-        <div class='chatFloaterContent' id='combatStoryButtons'>
-          <select id='combatSelectUser'>
-            <option>NPC</option>
-            <option>Reddo</option>
-          </select>
-          -
-          <select id='combatSelectSheet'>
-            <option class='language' disabled='true'>_COMBATTRACKERNOSHEETS_</option>
-          </select>
-          <a class='combatAdd language' data-titlelingo='_COMBATTRACKERADD_' id='combatAddSheet'></a>
-          <a class='combatNewRound language' data-titlelingo='_COMBATTRACKERNEWROUND_' id='combatNewRound'></a>
-          <a class='combatNextTurn language' data-titlelingo='_COMBATTRACKERNEXTTURN_' id='combatNextTurn'></a>
-          <a class='combatEndCombat language' data-titlelingo='_COMBATTRACKEENDCOMBAT_' id='combatEndCombat'></a>
-        </div>
-      </div>
-      <div class='chatFloater' id='lingoFloater'>
-        <div class='language chatFloaterHandle' id='lingoHandle'>
-          <div class='chatFloaterMinus' id='lingoMinus'>-</div>
-          _LINGOMANAGER_
-        </div>
-        <div class='chatFloaterContent' id='lingoContent'>
-          <div class='lingoRow'>
-            <b class='lingoName'>Reddo#0001:</b>
-            <a class='lingoButton'>Elvish</a>
-            <a class='lingoButton'>
-              <span class='textLink'>(X)</span>
-              Elagon
-            </a>
-            <a class='lingoButton clickable'>Draconic</a>
-            <div class='lingoAdder'>
-              <select>
-                <option>Elvish</option>
-                <option>Orcish</option>
-              </select>
-              <a class='textLink language'>_LINGOADD_</a>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class='leftSideWindow' id='chatSideWindow'>
-        <div id='avatarBox'></div>
-        <div class='icons-chatUp' id='avatarUpButton'></div>
-        <div class='icons-chatDown' id='avatarDownButton'></div>
-        <div id='chatNotificationBar'></div>
-        <div id='chatFloater'></div>
-        <div id='moodWindow'>
-          <div class='moodButton language' onclick="UI.Chat.Filters.applyFilter('none');">_MOODNONE_</div>
-          <div class='moodButton language' onclick="UI.Chat.Filters.applyFilter('night');">_MOODNIGHT_</div>
-          <div class='moodButton language' onclick="UI.Chat.Filters.applyFilter('evening');">_MOODEVENING_</div>
-          <div class='moodButton language' onclick="UI.Chat.Filters.applyFilter('fire');">_MOODFIRE_</div>
-          <div class='moodButton language' onclick="UI.Chat.Filters.applyFilter('trauma');">_MOODTRAUMA_</div>
-          <div class='moodButton language' onclick="UI.Chat.Filters.applyFilter('sepia');">_MOODSEPIA_</div>
-        </div>
-        <div id='chatBox'>
-          <p id='chatTitle'></p>
-          <p id='chatDescription'></p>
-          <p class='chatInitHelp language'>_CHATHELP01_</p>
-          <p class='chatInitHelp language'>_CHATHELP02_</p>
-          <p class='chatInitHelp language'>_CHATHELP03_</p>
-          <p class='chatInitHelp language'>_CHATHELP04_</p>
-          <p class='chatInitHelp language'>_CHATHELP05_</p>
-          <p class='chatInitHelp language'>_CHATHELP06_</p>
-          <div id='chatMessages'></div>
-        </div>
-        <div id='chatScrollDown'></div>
-        <div id='chatButtonsBox'>
-          <a class='chatRightButton icons-chatMood language' data-titlelingo='_CHATBUTTONMOOD_' id='chatMoodButton'></a>
-          <a class='chatRightButton icons-chatLeave language' data-titlelingo='_CHATBUTTONLEAVE_' onclick='UI.Chat.leave();'></a>
-          <a class='chatRightButton icons-chatFontPlus language' data-titlelingo='_CHATBUTTONFONTPLUS_' onclick="Application.Config.getConfig('chatfontsize').storeValue(Application.Config.getConfig('chatfontsize').getValue() + 1);"></a>
-          <a class='chatRightButton icons-chatFontMinus language' data-titlelingo='_CHATBUTTONFONTMINUS_' onclick="Application.Config.getConfig('chatfontsize').storeValue(Application.Config.getConfig('chatfontsize').getValue() - 1);"></a>
-          <a class='chatRightButton icons-chatHollywood language' data-titlelingo='_CHATBUTTONHOLLYWOOD_' id='chatHollywood'></a>
-          <a class='chatRightButton icons-chatCombatButton language' data-titlelingo='_CHATBUTTONCOMBAT_' id='chatCombatButton'></a>
-          <a class='chatRightButton icons-chatLingo language' data-titlelingo='_CHATBUTTONLINGO_' id='chatLingoButton'></a>
-        </div>
-        <div id='chatMessageStateIcon'></div>
-        <div id='chatMessageBox'>
-          <input autocomplete='off' class='chatInput' id='chatMessageInput'>
-        </div>
-        <a class='icons-chatSend language' data-titlelingo='_CHATBUTTONSEND_' id='chatMessageSendButton'></a>
-        <div id='personaDesignerBox'>
-          <div id='personaDesigner'>
-            <div class='language mainWindowHeader'>
-              _PERSONADESIGNERTITLE_
-              <a class='xButton' id='personaDesignerCloseButton'></a>
-            </div>
-            <div class='mainWindowContent singleton'>
-              <form id='personaDesignerForm'>
-                <input class='language' data-placeholderlingo='_PERSONADESIGNERNAME_' id='personaDesignerNameInput'>
-                <input class='language' data-placeholderlingo='_PERSONADESIGNERAVATAR_' id='personaDesignerAvatarInput'>
-                <input class='language' data-valuelingo='_PERSONADESIGNERCREATE_' id='personaDesignerSubmit' type='submit'>
-              </form>
-              <div id='personaDesignerHolder'></div>
-            </div>
-          </div>
-        </div>
-        <div id='personaBox'>
-          <a class='language' data-titlelingo='_CHATPERSONAMANAGERBUTTON_' id='personaAddButton'></a>
-          <div id='personaContainer'>
-            <div class='personaButton active'>Example</div>
-          </div>
-        </div>
-        <form id='diceFormBox'>
-          <input class='chatInput language' data-placeholderlingo='_CHATDICEAMOUNT_' id='chatDiceAmount' type='number'>
-          <input class='chatInput language' data-placeholderlingo='_CHATDICEFACES_' id='chatDiceFaces' type='number'>
-          <input class='chatInput language' data-placeholderlingo='_CHATDICEMOD_' id='chatDiceMod' type='number'>
-          <div id='diceReasonHolder'>
-            <input class='chatInput language' data-placeholderlingo='_CHATDICEREASON_' id='chatDiceReason'>
-          </div>
-          <a class='icons-chatDiceTower language' data-titlelingo='_CHATDICETOWER_' id='chatDiceTower'></a>
-          <input class='icons-chatDiceRoll' id='chatDiceSubmit' type='submit' value=''>
-        </form>
-        <div id='bottomBox'>
-          <div class='diceButton icons-d4' id='chatDiceD4' title='d4'></div>
-          <div class='diceButton icons-d6' id='chatDiceD6' title='d6'></div>
-          <div class='diceButton icons-d8' id='chatDiceD8' title='d8'></div>
-          <div class='diceButton icons-d10' id='chatDiceD10' title='d10'></div>
-          <div class='diceButton icons-d12' id='chatDiceD12' title='d12'></div>
-          <div class='diceButton icons-d20' id='chatDiceD20' title='d20'></div>
-          <div class='diceButton icons-d100' id='chatDiceD100' title='d100'></div>
-        </div>
-      </div>
-      <div class='rightSideWindow' id='sheetDesignerFormSideWindow'>
-        <div class='language mainWindowHeader'>_SHEETDESIGNERTITLE_</div>
-        <div class='mainWindowContent singleton'>
-          <p class='mainWindowParagraph language'>_SHEETDESIGNEREXP_</p>
-          <p class='mainWindowParagraphError gameInviteDesignerMessage language' id='sheetDesignerError'>_SHEETDESIGNERERROR_</p>
-          <form class='mainWindowParagraphMessageMargin' id='sheetDesignerForm'>
-            <input class='mainWindowWideInput language' data-placeholderlingo='_SHEETDESIGNERNAMEPLACEHOLDER_' id='sheetDesignerName'>
-            <label class='styleLabel language'>
-              _SHEETDESIGNERSTYLE_
-              <select class='styleInputMargin' id='sheetDesignerStyleSelect'>
-                <option>História dos Seis</option>
-              </select>
-            </label>
-            <label class='language styleLabel' style='display:none'>
-              <input id='sheetDesignerPublicSheet' type='checkbox'>
-                _SHEETDESIGNERPUBLIC_
-              </input>
-            </label>
-            <label class='language styleLabel'>
-              <input id='sheetDesignerRemain' type='checkbox'>
-                _SHEETDESIGNERREMAIN_
-              </input>
-            </label>
-            <input class='mainWindowParagraphSubmit language' data-valuelingo='_SHEETDESIGNERSUBMIT_' type='submit'>
-          </form>
-        </div>
-      </div>
-      <div class='rightSideWindow' id='sheetViewerSideWindow'>
-        <input accept='.json,.JSON' id='sheetViewerJSONImporter' type='file'>
-        <div id='sheetViewerSheetsTab'></div>
-        <div id='sheetViewport'></div>
-        <div id='sheetToolbox'>
-          <div class='sheetTool icons-sheetSave language' data-titlelingo='_SHEETVIEWERSAVE_' id='sheetSave'></div>
-          <div class='sheetTool icons-sheetFullReload language' data-titlelingo='_SHEETVIEWERFULLRELOAD_' id='sheetFullReload'></div>
-          <div class='sheetTool icons-sheetExport language' data-titlelingo='_SHEETVIEWERIMPORT_' id='sheetImport'></div>
-          <div class='sheetTool icons-sheetImport language' data-titlelingo='_SHEETVIEWEREXPORT_' id='sheetExport'></div>
-          <div class='sheetTool language icons-sheetAutomaticOn' data-titlelingo='_SHEETVIEWERAUTOMATIC_' id='sheetAutomatic'></div>
-          <div class='sheetTool icons-sheetClose language' data-titlelingo='_SHEETVIEWERCLOSE_' id='sheetClose'></div>
-        </div>
-      </div>
-      <div class='rightSideWindow' id='sheetPermSideWindow'>
-        <div class='language mainWindowHeader'>
-          _SHEETPERMISSIONSHEADER_
-          <a class='xButton' onclick='UI.PageManager.closeRightPage();'></a>
-        </div>
-        <div class='mainWindowContent singleton'>
-          <p class='mainWindowParagraph language'>_SHEETPERMISSIONEXP_</p>
-          <p class='mainWindowParagraph language' id='sheetPermNameTarget'>_SHEETPERMISSIONSHEETNAME_</p>
-          <form id='sheetPermForm'>
-            <div id='sheetPermList'></div>
-            <input class='language mainWindowParagraphSubmit' data-valuelingo='_SHEETPERMISSIONSUBMIT_' type='submit'>
-          </form>
-        </div>
-      </div>
-      <div class='rightSideWindow' id='imagesSideWindow'>
-        <div class='mainWindowHeader language'>
-          _IMAGESTITLE_
-          <a class='xButton' onclick='UI.PageManager.closeRightPage();'></a>
-        </div>
-        <div class='mainWindowContent singleton'>
-          <p class='mainWindowParagraph language'>_IMAGESEXP01_</p>
-          <p class='mainWindowParagraph language'>_IMAGESEXP02_</p>
-          <p class='mainWindowParagraph language'>_IMAGESEXP03_</p>
-          <div id='imagesTarget'>
-            <div class='language' id='imagesLoadError'>_IMAGESERROR_</div>
-            <div class='language' id='imagesSaveError'>_IMAGESSAVEERROR_</div>
-            <div>
-              <div class='imagesFolder'>
-                <a class='imagesFolderIcon'></a>
-                <span class='imagesFolderTitle' onclick="this.parentNode.classList.toggle('folderOpen');">Nome da Pasta</span>
-                <div class='imagesRow'>
-                  <a class='imagesLeftButton icons-imagesShare'></a>
-                  <a class='imagesLeftButton icons-imagesView'></a>
-                  <a class='imagesLeftButton icons-imagesPersona'></a>
-                  <a class='imagesRightButton icons-imagesDelete'></a>
-                  <a class='imagesRightButton icons-imagesRename'></a>
-                  <a class='imagesRightButton icons-imagesFolder'></a>
-                  <a class='imagesRowTitle'>Nome da Imagem</a>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div id='imagesUpload'>
-            <div id='imagesUploadLeft' style='display: none'>
-              <div id='linkImagesTitle'>
-                <div class='icons-link' id='linkImagesIcon'></div>
-                <div class='language' id='linkImagesTitleText'>_IMAGESLINKTITLE_</div>
-              </div>
-            </div>
-            <div id='imagesUploadRight'>
-              <div class='icons-dropboxLogo' id='dropboxImagesLogo'></div>
-              <input class='language' data-placeholderlingo='_SOUNDSDROPBOXFOLDER_' id='dropboxImagesFolderName' type='text'>
-              <div class='language' id='dropboxImagesButton'>_IMAGESDROPBOXCHOOSER_</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class='rightSideWindow' id='sheetsSideWindow'>
-        <div class='mainWindowHeader language'>
-          _SHEETSTITLE_
-          <a class='xButton' onclick='UI.PageManager.closeRightPage();'></a>
-        </div>
-        <div class='mainWindowContent singleton'>
-          <p class='mainWindowParagraph language'>_SHEETSEXP01_</p>
-          <p class='mainWindowParagraph language'>_SHEETSEXP02_</p>
-          <p class='mainWindowParagraph language'>_SHEETSEXP03_</p>
-          <p class='mainWindowParagraph textLink language hoverable' id='sheetsStyleButton'>_SHEETSOPENSTYLEEDITOR_</p>
-          <div id='sheetWindowSheetList'>
-            <div class='sheetListGameContainer lightHoverable openSheetGame'>
-              <p class='sheetListGameName' onclick="this.parentNode.classList.toggle('openSheetGame');">Nome da Mesa</p>
-              <div class='sheetListFolderContainer lightHoverable openSheetFolder'>
-                <p class='sheetListFolderName' onclick="this.parentNode.classList.toggle('openSheetFolder');">Nome da pasta</p>
-                <p class='sheetListSheet'>
-                  <a class='sheetNameLink'>Nome da ficha</a>
-                  <a class='sheetExtraButton textLink'>Pasta</a>
-                  <a class='sheetExtraButton textLink'>Permissões</a>
-                  <a class='sheetExtraButton textLink'>Deletar</a>
-                </p>
-              </div>
-              <div class='sheetListFolderContainer lightHoverable'>
-                <p class='sheetListFolderName' onclick="this.parentNode.classList.toggle('openSheetFolder');">Nome da pasta fechada</p>
-                <p class='sheetListSheet'>
-                  Sem fichas para imprimir.
-                </p>
-                <p class='sheetListSheet textLink lightHoverable'>> Criar Ficha</p>
-              </div>
-            </div>
-            <div class='sheetListGameContainer lightHoverable'>
-              <p class='sheetListGameName'>Nome de mesa Fechada</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class='rightSideWindow' id='homeSideWindow'>
-        <div class='mainWindowHeader language'>
-          _REDPGTITLE_
-          <a class='xButton' onclick='UI.PageManager.closeRightPage();'></a>
-        </div>
-        <div class='mainWindowContent'>
-          <p class='mainWindowParagraph language'>_REDPGEXP1_</p>
-          <p class='mainWindowParagraph language'>_REDPGEXP2_</p>
-        </div>
-      </div>
-      <div class='rightSideWindow' id='picturesSideWindow'></div>
-      <div class='rightSideWindow' id='soundsSideWindow'>
-        <div class='mainWindowHeader language'>
-          _SOUNDSTITLE_
-          <a class='xButton' onclick='UI.PageManager.closeRightPage();'></a>
-        </div>
-        <div class='mainWindowContent singleton'>
-          <p class='mainWindowParagraph language'>_SOUNDSEXP01_</p>
-          <p class='mainWindowParagraph language'>_SOUNDSEXP02_</p>
-          <div id='soundsTarget'>
-            <div class='language' id='soundsLoadError'>_SOUNDSERROR_</div>
-            <div class='language' id='soundsSaveError'>_SOUNDSSAVEERROR_</div>
-          </div>
-          <div id='soundsUpload'>
-            <div id='soundsUploadLeft' style='display: none'>
-              <div id='linkSoundsTitle'>
-                <div class='icons-link' id='linkSoundsIcon'></div>
-                <div class='language' id='linkSoundsTitleText'>_SOUNDSLINKTITLE_</div>
-              </div>
-            </div>
-            <div id='soundsUploadRight'>
-              <div class='icons-dropboxLogo' id='dropboxSoundsLogo'></div>
-              <label class='language' id='dropboxBGMInput'>
-                <input checked='checked' id='dropboxSoundsIsBGM' type='checkbox'>
-                _SOUNDSISBGM_
-              </label>
-              <input class='language' data-placeholderlingo='_SOUNDSDROPBOXFOLDER_' id='dropboxFolderName' type='text'>
-              <div class='language' id='dropboxSoundsButton'>_SOUNDSDROPBOXCHOOSER_</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class='rightSideWindow' id='hitboxSideWindow'>
-        <iframe id='hitboxFrame'></iframe>
-      </div>
-      <div class='rightSideWindow' id='youtubeSideWindow'></div>
-    </div>
-    <script data-app-key='nr1604ewqoph539' id='dropboxjs' type='text/javascript'></script>
-    <script id='redpgLibraries' src='js/lib/libraries161029.js' type='text/javascript'></script>
-    <script src='js/Application.js' type='text/javascript'></script>
-  </body>
+<head>
+<title>RedPG</title>
+<meta charset='utf8'>
+<meta content='' name='description'>
+<link href='images/favicon.ico' rel='shortcut icon'>
+<!-- Individual font licenses included in CSS. -->
+<link href='stylesheets/screen.css' id='redpgCss' media='all' rel='stylesheet' type='text/css'>
+</head>
+<body>
+<div class='flexCentering' id='loadingWindow'>
+<a class='loadingCircleWhite' id='loadingScreenLoadingIcon'></a>
+</div>
+<div class='window flexCentering' id='createAccountWindow'>
+<div id='accountBox'>
+<div class='accountCreationError language' id='accCreationError'>_CREATEACCOUNTGENERALERROR_</div>
+<div class='accountCreationError language' id='accCreationError401'>_CREATEACCOUNTSTUPIDERROR_</div>
+<div class='accountCreationError language' id='accCreationError409'>_CREATEACCOUNTALREADYEXISTS_</div>
+<form class='centeredContents' id='accountCreationForm'>
+<input class='accCreationInput language' data-placeholderlingo='_CREATEACCOUNTNAME_' id='accName'>
+<div class='accError language'>_CREATEACCOUNTNAMEERROR_</div>
+<input class='accCreationInput language' data-placeholderlingo='_CREATEACCOUNTNICKNAME_' id='accNickname'>
+<div class='accError language'>_CREATEACCOUNTNICKNAMEERROR_</div>
+<input class='accCreationInput language' data-placeholderlingo='_LOGINEMAIL_' id='accEmail'>
+<div class='accError language'>_CREATEACCOUNTEMAILERROR_</div>
+<input class='accCreationInput language' data-placeholderlingo='_LOGINPASSWORD_' id='accPassword' type='password'>
+<div class='accError language'>_CREATEACCOUNTPASSWORDINVALID_</div>
+<input class='accCreationInput language' data-placeholderlingo='_LOGINPASSWORDREPEAT_' id='accPassword2' type='password'>
+<div class='accError language'>_CREATEACCOUNTPASSWORDMATCHING_</div>
+<input class='simpleButton language' data-valuelingo='_ACCCREATIONRETURN_' id='accCreationReturnButton' type='reset'>
+<input class='simpleButton language' data-valuelingo='_ACCCREATIONSUBMIT_' id='accCreationSubmitButton' type='submit'>
+</form>
+</div>
+</div>
+<div class='window flexCentering' id='loginWindow'>
+<div id='loginBox'>
+<div class='language' id='loginError404'>_LOGINERROR404_</div>
+<div class='language' id='loginError'>_LOGINERROR_</div>
+<div id='loginFlagContainer'></div>
+<form class='centeredContents' id='loginForm'>
+<input class='loginInput language' data-placeholderlingo='_LOGINEMAIL_' id='loginEmailInput'>
+<input class='loginInput language' data-placeholderlingo='_LOGINPASSWORD_' id='loginPasswordInput' type='password'>
+<input class='simpleButton language' data-valuelingo='_LOGINSUBMIT_' id='loginSubmitButton' type='submit'>
+</form>
+<div id='loginExtraButtons'>
+<div class='language' id='loginForgotPassword'>_LOGINFORGOTPASSWORD_</div>
+<div class='language' id='loginNewAccount'>_LOGINCREATEACCOUNT_</div>
+</div>
+</div>
+</div>
+<div class='window' id='mainWindow'>
+<div id='colorFilter'></div>
+<div class='icons-soundPlayer dontDetach leftSideWindow' id='musicPlayerButton'>
+<audio crossOrigin='anonymous' id='soundPlayerSE'></audio>
+<audio crossOrigin='anonymous' id='soundPlayerBGM'></audio>
+<audio id='soundDiceRoll' preload src='images/soundDice.m4a'></audio>
+<audio id='soundAlert' preload src='images/soundAlert.m4a'></audio>
+<div id='musicPlayerContainer'>
+<div id='musicPlayerTrackName'></div>
+<progress id='musicPlayerProgress' max='100' min='0' value='50'></progress>
+<a class='musicPlayerButton icons-soundPlayerPause' id='musicPlayerPlayPause'></a>
+<a class='musicPlayerButton icons-soundPlayerStop' id='musicPlayerStop'></a>
+<a class='musicPlayerButton icons-soundPlayerRepeatActive' id='musicPlayerRepeat'></a>
+</div>
+</div>
+<div class='handleBar' id='leftHandleBar'>
+<div class='icons-handlerLTR' id='leftHandleIcon'></div>
+<a class='icons-handleLogout leftHandleButton language' id='logoutButton'>_MENULOGOUT_</a>
+<a class='icons-handleChat leftHandleButton language' id='openChatButton'>_MENUCHAT_</a>
+<a class='icons-handleGames leftHandleButton language' id='gamesButton'>_MENUGAMES_</a>
+<a class='icons-handleOptions leftHandleButton language' id='configButton'>_MENUCONFIG_</a>
+</div>
+<div class='handleBar' id='rightHandleBar'>
+<div class='icons-handlerRTL' id='rightHandleIcon'></div>
+<a class='icons-handleSheets rightHandleButton language' id='sheetsButton'>_MENUSHEETS_</a>
+<a class='icons-handleSheet rightHandleButton language' id='sheetOpenButton'>_MENUSHEETREOPEN_</a>
+<a class='icons-handlePicas rightHandleButton language' id='imagesButton'>_MENUIMAGES_</a>
+<a class='icons-handleSounds rightHandleButton language' id='soundsButton'>_MENUSOUNDS_</a>
+</div>
+<div class='leftSideWindow flexCentering dontDetach' id='leftLoading'>
+<a class='loadingCircleWhite centeredBlock'></a>
+</div>
+<div class='rightSideWindow flexCentering dontDetach' id='rightLoading'>
+<a class='loadingCircleWhite centeredBlock'></a>
+</div>
+<div class='leftSideWindow dontDetach' id='loggerWindow'>
+<div class='language mainWindowHeader'>
+_LOGGERTITLE_
+<a class='xButton' onclick='UI.Logger.close();'></a>
+</div>
+<div class='mainWindowContent singleton'>
+<p class='mainWindowParagraph language'>_LOGGEREXP1_</p>
+<div id='loggerSlider'></div>
+<div id='loggerTarget'></div>
+<p class='mainWindowParagraph language'>_LOGGEREXP2_</p>
+<div id='loggerCheckboxes'>
+<label>
+<input type='checkbox'>
+roleplay
+</label>
+</div>
+<input class='mainWindowParagraphSubmit language' data-valuelingo='_LOGGERSUBMIT_' id='loggerSubmit' type='submit'>
+</div>
+</div>
+<div class='rightSideWindow dontDetach' id='pictureWindow'>
+<a class='xButton' id='pictureClose' onclick='UI.Pica.close();'></a>
+<div class='flexCentering' id='pictureLoading' style='display: none'>
+<a class='loadingCircleWhite centeredBlock'></a>
+</div>
+</div>
+<div class='leftSideWindow' id='changelogSideWindow'>
+<div class='language mainWindowHeader'>
+_CHANGELOGTITLE_
+<a class='xButton' onclick='UI.PageManager.closeLeftPage();'></a>
+</div>
+<div class='mainWindowContent singleton'>
+<p class='mainWindowParagraph language'>_CHANGELOGP2_</p>
+<p class='mainWindowParagraph language'>
+_CHANGELOGCURRENTVERSION_
+<b class='changelogVersion' id='changelogCurrentVersion'>0.0.0</b>
+_CHANGELOGMOSTRECENTVERSION_
+<b class='changelogVersion' id='changelogActualVersion'>0.1.0</b>
+</p>
+<p class='mainWindowParagraph language' id='changelogWarning'>_CHANGELOGVERSIONWARNING_</p>
+<div id='changelogTarget'>
+<p class='mainWindowParagraph changelogMissing'>
+<span class='changelogChangeVersion'>0.9.0</span>
+<span class='changelogChange'>Adicionadas coisas legais que você não tem.</span>
+</p>
+<p class='mainWindowParagraph changelogCurrent'>
+<span class='changelogChangeVersion'>0.8.0</span>
+<span class='changelogChange'>Adicionadas coisas chatas que você tem..</span>
+<span class='changelogChange'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum a nibh vulputate, mollis libero eu, aliquam leo. Donec tincidunt egestas congue. Vestibulum sagittis dapibus ante sit amet tincidunt. Mauris scelerisque eu sem in vehicula. Aenean justo erat, cursus quis orci quis, consectetur laoreet nulla. Vestibulum tristique mi non varius venenatis. Nulla maximus lacinia erat vel luctus. Vivamus cursus libero vitae aliquet vehicula. Etiam non scelerisque diam. Sed ornare odio quis augue semper dapibus. Nam eros diam, finibus eu felis sit amet, ultrices ullamcorper arcu. Nunc vehicula, risus et aliquam egestas, nulla massa semper quam, non facilisis eros elit a urna. Cras accumsan eleifend pharetra. Cras eu massa felis.</span>
+</p>
+</div>
+</div>
+</div>
+<div class='leftSideWindow' id='configSideWindow'>
+<div class='mainWindowHeader language'>
+_CONFIGTITLE_
+<a class='xButton' onclick='UI.PageManager.closeLeftPage();'></a>
+</div>
+<div class='mainWindowContent singleton'>
+<p class='hoverable mainWindowParagraph centered'>
+<a class='textLink language' id='configSave'>_CONFIGSAVE_</a>
+-
+<a class='textLink language' id='configReset'>_CONFIGRESET_</a>
+</p>
+<p class='mainWindowParagraph centered' id='configMessages'>
+<b class='language' id='configError'>_CONFIGERROR_</b>
+<b class='language' id='configSuccess'>_CONFIGSUCCESS_</b>
+</p>
+<label class='configLabel'>
+<b class='configName language'>_CONFIGCHATMAXMESSAGES_</b>
+<input class='configInput' id='configChatMaxMessages' max='10000' min='60' type='number' value='120'>
+<div class='configExplanation language'>
+_CONFIGCHATMAXMESSAGESEXP01_<br/>_CONFIGCHATMAXMESSAGESEXP02_
+</div>
+</label>
+<label class='configLabel'>
+<b class='configName language'>_CONFIGCHATFONTSIZE_</b>
+<input class='configInput' id='configChatFontSize' max='32' min='12' type='range' value='16'>
+<div class='configExplanation language'>
+_CHATFONTSIZEEXP01_<br/>_CHATFONTSIZEEXP02_
+</div>
+</label>
+<label class='configLabel'>
+<b class='configName language'>_CONFIGCHATFONTFAMILY_</b>
+<input class='configInput' id='configChatFontFamily' type='text' value='Caudex'>
+<div class='configExplanation language'>
+_CHATFONTFAMILEXP01_<br/>_CHATFONTFAMILEXP02_
+</div>
+</label>
+<label class='configLabel'>
+<b class='configName language'>_CONFIGCHATHELP_</b>
+<select class='configInput' id='configChatShowHelp'>
+<option class='language' value='true'>_CONFIGCHATHELPOP01_</option>
+<option class='language' value='false'>_CONFIGCHATHELPOP02_</option>
+</select>
+<div class='configExplanation language'>
+_CONFIGCHATHELPEXP_
+</div>
+</label>
+<label class='configLabel'>
+<b class='configName language'>_CONFIGHQRAINBOW_</b>
+<select class='configInput' id='configHQRainbow'>
+<option class='language' value='0'>_CONFIGHQRAINBOW0_</option>
+<option class='language' value='1'>_CONFIGHQRAINBOW1_</option>
+<option class='language' value='2'>_CONFIGHQRAINBOW2_</option>
+</select>
+<div class='configExplanation language'>
+_CONFIGHQRAINBOWEXP_
+</div>
+</label>
+<label class='configLabel'>
+<b class='configName language'>_CONFIGCHATAUTOBGM_</b>
+<select class='configInput' id='configChatAutoBGM'>
+<option class='language' value='0'>_CONFIGCHATAUTONEVER_</option>
+<option class='language' value='1'>_CONFIGCHATAUTOSOMETIMES_</option>
+<option class='language' value='2'>_CONFIGCHATAUTOALWAYS_</option>
+</select>
+<div class='configExplanation language'>
+_CONFIGCHATAUTOEXP_
+</div>
+</label>
+<label class='configLabel'>
+<b class='configName language'>_CONFIGCHATAUTOSE_</b>
+<select class='configInput' id='configChatAutoSE'>
+<option class='language' value='0'>_CONFIGCHATAUTONEVER_</option>
+<option class='language' value='1'>_CONFIGCHATAUTOSOMETIMES_</option>
+<option class='language' value='2'>_CONFIGCHATAUTOALWAYS_</option>
+</select>
+<div class='configExplanation language'>
+_CONFIGCHATAUTOEXP_
+</div>
+</label>
+<label class='configLabel'>
+<b class='configName language'>_CONFIGCHATAUTOIMAGE_</b>
+<select class='configInput' id='configChatAutoImage'>
+<option class='language' value='0'>_CONFIGCHATAUTONEVER_</option>
+<option class='language' value='1'>_CONFIGCHATAUTOSOMETIMES_</option>
+<option class='language' value='2'>_CONFIGCHATAUTOALWAYS_</option>
+</select>
+<div class='configExplanation language'>
+_CONFIGCHATAUTOEXP_
+</div>
+</label>
+<label class='configLabel'>
+<b class='configName language'>_CONFIGCHATAUTOVIDEO_</b>
+<select class='configInput' id='configChatAutoVideo'>
+<option class='language' value='0'>_CONFIGCHATAUTONEVER_</option>
+<option class='language' value='1'>_CONFIGCHATAUTOSOMETIMES_</option>
+<option class='language' value='2'>_CONFIGCHATAUTOALWAYS_</option>
+</select>
+<div class='configExplanation language'>
+_CONFIGCHATAUTOEXP_
+</div>
+</label>
+<label class='configLabel'>
+<b class='configName language'>_CONFIGCHATAUTOROLLS_</b>
+<select class='configInput' id='configAutoRollApplication'>
+<option class='language' value='0'>_CONFIGAUTOROLL0_</option>
+<option class='language' value='1'>_CONFIGAUTOROLL1_</option>
+</select>
+<div class='configExplanation language'>
+_CONFIGAUTOROLLEXP_
+</div>
+</label>
+<label class='configLabel'>
+<b class='configName language'>_CONFIGCHATSCREENEFFECTS_</b>
+<select class='configInput' id='configChatScreenEffects'>
+<option class='language' value='false'>_CONFIGCHATEFFECTSNO_</option>
+<option class='language' value='true'>_CONFIGCHATEFFECTSYES_</option>
+</select>
+<div class='configExplanation language'>
+_CONFIGCHATEFFECTSEXP_
+</div>
+</label>
+<label class='configLabel'>
+<b class='configName language'>_CONFIGCHATUNNECESSARYMESSAGES_</b>
+<select class='configInput' id='configChatHideSomeMessages'>
+<option class='language' value='false'>_CONFIGCHATUNNECESSARYMESSAGESNO_</option>
+<option class='language' value='true'>_CONFIGCHATUNNECESSARYMESSAGESYES_</option>
+</select>
+<div class='configExplanation language'>
+_CONFIGCHATUNNECESSARYMESSAGESEXP_
+</div>
+</label>
+<label class='configLabel'>
+<b class='configName language'>_CONFIGANIMATIONTIME_</b>
+<input class='configInput' id='configAnimTime' max='300' min='0' type='range' value='150'>
+<div class='configExplanation language'>
+_ANIMATIONTIMEEXP01_<br>_ANIMATIONTIMEEXP02_
+</div>
+</label>
+<label class='configLabel'>
+<b class='configName language'>_CONFIGBGMVOLUME_</b>
+<input class='configInput' id='configBGMVolume' max='100' min='0' type='range' value='0'>
+<div class='configExplanation language'>
+_CONFIGBGMVOLUMEEXP_
+</div>
+</label>
+<label class='configLabel'>
+<b class='configName language'>_CONFIGSEVOLUME_</b>
+<input class='configInput' id='configSEVolume' max='100' min='0' type='range' value='0'>
+<div class='configExplanation language'>
+_CONFIGSEVOLUMEEXP_
+</div>
+</label>
+</div>
+</div>
+<div class='leftSideWindow' id='roomDesignerFormSideWindow'>
+<div class='language mainWindowHeader'>_ROOMDESIGNERTITLE_</div>
+<div class='mainWindowContent singleton'>
+<p class='mainWindowParagraph language'>_ROOMDESIGNEREXP_</p>
+<p class='mainWindowParagraphError gameInviteDesignerMessage language' id='roomDesignerError'>_ROOMDESIGNERERROR_</p>
+<form id='roomDesignerForm'>
+<input class='mainWindowWideInput language' data-placeholderlingo='_ROOMDESIGNERNAMEPLACEHOLDER_' id='roomDesignerName'>
+<textarea class='mainWindowWideTextarea language' data-placeholderlingo='_ROOMDESIGNERMESSAGEPLACEHOLDER_' id='roomDesignerMessage'></textarea>
+<input class='mainWindowParagraphSubmit language' data-valuelingo='_ROOMDESIGNERSUBMIT_' type='submit'>
+</form>
+</div>
+</div>
+<div class='leftSideWindow' id='gameDesignerFormSideWindow'>
+<div class='language mainWindowHeader'>_GAMEDESIGNERTITLE_</div>
+<div class='mainWindowContent singleton'>
+<p class='mainWindowParagraphError gameInviteDesignerMessage language' id='gameDesignerError'>_GAMEDESIGNERERROR_</p>
+<form id='gameDesignerForm'>
+<input class='mainWindowWideInput language' data-placeholderlingo='_GAMEDESIGNERNAMEPLACEHOLDER_' id='gameDesignerName'>
+<textarea class='mainWindowWideTextarea language' data-placeholderlingo='_GAMEDESIGNERMESSAGEPLACEHOLDER_' id='gameDesignerMessage'></textarea>
+<input class='mainWindowParagraphSubmit language' data-valuelingo='_GAMEDESIGNERSUBMIT_' type='submit'>
+</form>
+</div>
+</div>
+<div class='leftSideWindow' id='gameInviteFormSideWindow'>
+<div class='language mainWindowHeader'>_GAMEINVITEDESIGNERTITLE_</div>
+<div class='mainWindowContent singleton'>
+<p class='mainWindowParagraph language'>_GAMEINVITEDESIGNEREXP01_</p>
+<p class='mainWindowParagraph language' id='gameInviteDesignerGameName'>_GAMEINVITEDESIGNEREXP02_</p>
+<p class='mainWindowParagraphError gameInviteDesignerMessage language' id='gameInviteDesigner404'>_GAMEINVITEDESIGNERERROR404_</p>
+<p class='mainWindowParagraphError gameInviteDesignerMessage language' id='gameInviteDesigner401'>_GAMEINVITEDESIGNERERROR401_</p>
+<p class='mainWindowParagraphSuccess gameInviteDesignerMessage language' id='gameInviteDesigner200'>_GAMEINVITEDESIGNERSUCCESS_</p>
+<form id='gameInviteDesignerForm'>
+<input class='mainWindowWideInput language' data-placeholderlingo='_GAMEINVITEDESIGNERNAMEPLACEHOLDER_' id='gameInviteDesignerName'>
+<textarea class='mainWindowWideTextarea language' data-placeholderlingo='_GAMEINVITEDESIGNERMESSAGEPLACEHOLDER_' id='gameInviteDesignerMessage'></textarea>
+<input class='mainWindowParagraphSubmit language' data-valuelingo='_GAMEINVITEDESIGNERSUBMIT_' type='submit'>
+</form>
+</div>
+</div>
+<div class='leftSideWindow' id='gameInvitesSideWindow'>
+<div class='language mainWindowHeader'>_GAMEINVITESTITLE_</div>
+<div class='mainWindowContent singleton'>
+<p class='mainWindowParagraph language'>_GAMEINVITESEXP01_</p>
+<p class='mainWindowParagraph language' id='gameInvitesNickTarget'>_GAMEINVITESEXP02_</p>
+<p class='mainWindowParagraph language' id='gameInvitesError'></p>
+<div id='inviteTarget'></div>
+</div>
+</div>
+<div class='leftSideWindow' id='styleEditorSideWindow'>
+<div class='language mainWindowHeader'>
+_STYLEEDITOR_
+<a class='xButton' onclick='UI.PageManager.closeLeftPage();'></a>
+</div>
+<div class='mainWindowContent singleton'>
+<p class='mainWindowParagraph language'>_STYLEEDITOREXP_</p>
+<form id='styleEditorForm'>
+<label class='language styleLabel'>
+<input class='language cuteInputBig' data-placeholderlingo='_STYLEEDITORNAME_' id='styleEditorName'>
+</label>
+<label class='language styleLabel' id='styleEditorPublicLabel'>
+<input id='styleEditorPublic' type='checkbox'>
+_STYLEEDITORPUBLIC_
+<span class='language styleExplanation' id='styleEditorPublicExp'>
+_STYLEEDITORPUBLICEXP_
+</span>
+</label>
+<label class='styleLabel language' id='styleEditorGameLabel'>
+_STYLEEDITORGAME_
+<select id='styleEditorGameSelect'>
+<option>História dos Seis</option>
+</select>
+<span class='language styleExplanation' id='styleEditorGameExp'>
+_STYLEEDITORGAMEEXP_
+</span>
+</label>
+<label class='styleLabel language' id='styleEditorCopyLabel'>
+_STYLEEDITORCOPY_
+<select id='styleEditorCopySelect'>
+<option>Dragon Fantasy Saga 5.0 BETA</option>
+</select>
+<a class='textLink language' id='styleEditorCopyButton'>_STYLEEDITORCOPYBUTTON_</a>
+<span class='language styleExplanation' id='styleEditorCopyExp'>
+_STYLEEDITORCOPYEXP_
+</span>
+</label>
+<label class='styleFourthLabel language'>
+_STYLEEDITORHTML_
+<textarea class='styleFourthTextarea' id='styleEditorHTML'></textarea>
+</label>
+<label class='styleFourthLabel language'>
+_STYLEEDITORCSS_
+<textarea class='styleFourthTextarea' id='styleEditorCSS'></textarea>
+</label>
+<label class='styleFourthLabel language'>
+_STYLEEDITORJS_
+<textarea class='styleFourthTextarea' id='styleEditorJS'></textarea>
+</label>
+<label class='styleFourthLabel language'>
+_STYLEEDITORPUBLICCODE_
+<textarea class='styleFourthTextarea' id='styleEditorPublicCode'></textarea>
+</label>
+<label class='language styleLabel' id='styleEditorRemainLabel'>
+<input id='styleEditorRemain' type='checkbox'>
+_STYLEEDITORREMAIN_
+</input>
+</label>
+<input class='textLink mainWindowParagraph hoverable language' data-valuelingo='_STYLEEDITORSAVE_' id='styleEditorSubmit' type='submit'>
+</form>
+</div>
+</div>
+<div class='leftSideWindow' id='stylesSideWindow'>
+<div class='language mainWindowHeader'>
+_STYLESTITLE_
+<a class='xButton' onclick='UI.PageManager.closeLeftPage();'></a>
+</div>
+<div class='mainWindowContent singleton'>
+<p class='mainWindowParagraph language'>_STYLESEXP1_</p>
+<p class='mainWindowParagraph language'>_STYLESEXP2_</p>
+<p class='mainWindowParagraph language textLink hoverable' id='stylesNewStyleButton'>_STYLESNEWSTYLE_</p>
+<div id='styleListTarget'></div>
+</div>
+</div>
+<div class='leftSideWindow' id='gamesSideWindow'>
+<div class='language mainWindowHeader'>
+_GAMESTITLE_
+<a class='xButton' onclick='UI.PageManager.closeLeftPage();'></a>
+</div>
+<div class='mainWindowContent singleton'>
+<p class='mainWindowParagraph language' id='gamesNickTarget'>_GAMESEXP1_</p>
+<p class='mainWindowParagraph language'>_GAMESEXP2_</p>
+<p class='mainWindowParagraph language'>_GAMESEXP3_</p>
+<p class='mainWindowParagraph language'>_GAMESEXP4_</p>
+<p class='mainWindowParagraph language textLink hoverable' id='gameInvitesButton'>_GAMESINVITES_</p>
+<p class='mainWindowParagraph language textLink hoverable' id='gameNewGameButton'>_GAMESNEWGAME_</p>
+<div id='gameListTarget'></div>
+</div>
+</div>
+<div class='chatFloater' id='combatFloater'>
+<div class='language chatFloaterHandle' id='combatHandle'>
+<div class='chatFloaterMinus' id='combatMinus'>-</div>
+_COMBATTRACKER_
+</div>
+<div class='chatFloaterContent' id='combatContent'>
+<div class='combatRow currentTurn currentTarget'>
+<a class='combatRemove language' data-titlelingo='_COMBATTRACKERREMOVE_'></a>
+<span class='combatName'>Nome do Sujeito</span>
+<input class='combatRowInitiative'>
+<a class='combatSetTurn language' data-titlelingo='_COMBATTRACKERSETTURN_'></a>
+<a class='combatTarget language' data-titlelingo='_COMBATTRACKERSETTARGET_'></a>
+<a class='combatSheet language' data-titlelingo='_COMBATTRACKERSHEET_'></a>
+</div>
+<div class='combatRow'>
+<span class='combatName language'>_COMBATTRACKERNOCOMBATANTS_</span>
+</div>
+</div>
+<div class='chatFloaterContent' id='combatStoryButtons'>
+<select id='combatSelectUser'>
+<option>NPC</option>
+<option>Reddo</option>
+</select>
+-
+<select id='combatSelectSheet'>
+<option class='language' disabled='true'>_COMBATTRACKERNOSHEETS_</option>
+</select>
+<a class='combatAdd language' data-titlelingo='_COMBATTRACKERADD_' id='combatAddSheet'></a>
+<a class='combatNewRound language' data-titlelingo='_COMBATTRACKERNEWROUND_' id='combatNewRound'></a>
+<a class='combatNextTurn language' data-titlelingo='_COMBATTRACKERNEXTTURN_' id='combatNextTurn'></a>
+<a class='combatEndCombat language' data-titlelingo='_COMBATTRACKEENDCOMBAT_' id='combatEndCombat'></a>
+</div>
+</div>
+<div class='chatFloater' id='lingoFloater'>
+<div class='language chatFloaterHandle' id='lingoHandle'>
+<div class='chatFloaterMinus' id='lingoMinus'>-</div>
+_LINGOMANAGER_
+</div>
+<div class='chatFloaterContent' id='lingoContent'>
+<div class='lingoRow'>
+<b class='lingoName'>Reddo#0001:</b>
+<a class='lingoButton'>Elvish</a>
+<a class='lingoButton'>
+<span class='textLink'>(X)</span>
+Elagon
+</a>
+<a class='lingoButton clickable'>Draconic</a>
+<div class='lingoAdder'>
+<select>
+<option>Elvish</option>
+<option>Orcish</option>
+</select>
+<a class='textLink language'>_LINGOADD_</a>
+</div>
+</div>
+</div>
+</div>
+<div class='leftSideWindow' id='chatSideWindow'>
+<div id='avatarBox'></div>
+<div class='icons-chatUp' id='avatarUpButton'></div>
+<div class='icons-chatDown' id='avatarDownButton'></div>
+<div id='chatNotificationBar'></div>
+<div id='chatFloater'></div>
+<div id='moodWindow'>
+<div class='moodButton language' onclick='UI.Chat.Filters.applyFilter(&#39;none&#39;);'>_MOODNONE_</div>
+<div class='moodButton language' onclick='UI.Chat.Filters.applyFilter(&#39;night&#39;);'>_MOODNIGHT_</div>
+<div class='moodButton language' onclick='UI.Chat.Filters.applyFilter(&#39;evening&#39;);'>_MOODEVENING_</div>
+<div class='moodButton language' onclick='UI.Chat.Filters.applyFilter(&#39;fire&#39;);'>_MOODFIRE_</div>
+<div class='moodButton language' onclick='UI.Chat.Filters.applyFilter(&#39;trauma&#39;);'>_MOODTRAUMA_</div>
+<div class='moodButton language' onclick='UI.Chat.Filters.applyFilter(&#39;sepia&#39;);'>_MOODSEPIA_</div>
+</div>
+<div id='chatBox'>
+<p id='chatTitle'></p>
+<p id='chatDescription'></p>
+<p class='chatInitHelp language'>_CHATHELP01_</p>
+<p class='chatInitHelp language'>_CHATHELP02_</p>
+<p class='chatInitHelp language'>_CHATHELP03_</p>
+<p class='chatInitHelp language'>_CHATHELP04_</p>
+<p class='chatInitHelp language'>_CHATHELP05_</p>
+<p class='chatInitHelp language'>_CHATHELP06_</p>
+<div id='chatMessages'></div>
+</div>
+<div id='chatScrollDown'></div>
+<div id='chatButtonsBox'>
+<a class='chatRightButton icons-chatMood language' data-titlelingo='_CHATBUTTONMOOD_' id='chatMoodButton'></a>
+<a class='chatRightButton icons-chatLeave language' data-titlelingo='_CHATBUTTONLEAVE_' onclick='UI.Chat.leave();'></a>
+<a class='chatRightButton icons-chatFontPlus language' data-titlelingo='_CHATBUTTONFONTPLUS_' onclick='Application.Config.getConfig(&#39;chatfontsize&#39;).storeValue(Application.Config.getConfig(&#39;chatfontsize&#39;).getValue() + 1);'></a>
+<a class='chatRightButton icons-chatFontMinus language' data-titlelingo='_CHATBUTTONFONTMINUS_' onclick='Application.Config.getConfig(&#39;chatfontsize&#39;).storeValue(Application.Config.getConfig(&#39;chatfontsize&#39;).getValue() - 1);'></a>
+<a class='chatRightButton icons-chatHollywood language' data-titlelingo='_CHATBUTTONHOLLYWOOD_' id='chatHollywood'></a>
+<a class='chatRightButton icons-chatCombatButton language' data-titlelingo='_CHATBUTTONCOMBAT_' id='chatCombatButton'></a>
+<a class='chatRightButton icons-chatLingo language' data-titlelingo='_CHATBUTTONLINGO_' id='chatLingoButton'></a>
+</div>
+<div id='chatMessageStateIcon'></div>
+<div id='chatMessageBox'>
+<input autocomplete='off' class='chatInput' id='chatMessageInput'>
+</div>
+<a class='icons-chatSend language' data-titlelingo='_CHATBUTTONSEND_' id='chatMessageSendButton'></a>
+<div id='personaDesignerBox'>
+<div id='personaDesigner'>
+<div class='language mainWindowHeader'>
+_PERSONADESIGNERTITLE_
+<a class='xButton' id='personaDesignerCloseButton'></a>
+</div>
+<div class='mainWindowContent singleton'>
+<form id='personaDesignerForm'>
+<input class='language' data-placeholderlingo='_PERSONADESIGNERNAME_' id='personaDesignerNameInput'>
+<input class='language' data-placeholderlingo='_PERSONADESIGNERAVATAR_' id='personaDesignerAvatarInput'>
+<input class='language' data-valuelingo='_PERSONADESIGNERCREATE_' id='personaDesignerSubmit' type='submit'>
+</form>
+<div id='personaDesignerHolder'></div>
+</div>
+</div>
+</div>
+<div id='personaBox'>
+<a class='language' data-titlelingo='_CHATPERSONAMANAGERBUTTON_' id='personaAddButton'></a>
+<div id='personaContainer'>
+<div class='personaButton active'>Example</div>
+</div>
+</div>
+<form id='diceFormBox'>
+<input class='chatInput language' data-placeholderlingo='_CHATDICEAMOUNT_' id='chatDiceAmount' type='number'>
+<input class='chatInput language' data-placeholderlingo='_CHATDICEFACES_' id='chatDiceFaces' type='number'>
+<input class='chatInput language' data-placeholderlingo='_CHATDICEMOD_' id='chatDiceMod' type='number'>
+<div id='diceReasonHolder'>
+<input class='chatInput language' data-placeholderlingo='_CHATDICEREASON_' id='chatDiceReason'>
+</div>
+<a class='icons-chatDiceTower language' data-titlelingo='_CHATDICETOWER_' id='chatDiceTower'></a>
+<input class='icons-chatDiceRoll' id='chatDiceSubmit' type='submit' value=''>
+</form>
+<div id='bottomBox'>
+<div class='diceButton icons-d4' id='chatDiceD4' title='d4'></div>
+<div class='diceButton icons-d6' id='chatDiceD6' title='d6'></div>
+<div class='diceButton icons-d8' id='chatDiceD8' title='d8'></div>
+<div class='diceButton icons-d10' id='chatDiceD10' title='d10'></div>
+<div class='diceButton icons-d12' id='chatDiceD12' title='d12'></div>
+<div class='diceButton icons-d20' id='chatDiceD20' title='d20'></div>
+<div class='diceButton icons-d100' id='chatDiceD100' title='d100'></div>
+</div>
+</div>
+<div class='rightSideWindow' id='sheetDesignerFormSideWindow'>
+<div class='language mainWindowHeader'>_SHEETDESIGNERTITLE_</div>
+<div class='mainWindowContent singleton'>
+<p class='mainWindowParagraph language'>_SHEETDESIGNEREXP_</p>
+<p class='mainWindowParagraphError gameInviteDesignerMessage language' id='sheetDesignerError'>_SHEETDESIGNERERROR_</p>
+<form class='mainWindowParagraphMessageMargin' id='sheetDesignerForm'>
+<input class='mainWindowWideInput language' data-placeholderlingo='_SHEETDESIGNERNAMEPLACEHOLDER_' id='sheetDesignerName'>
+<label class='styleLabel language'>
+_SHEETDESIGNERSTYLE_
+<select class='styleInputMargin' id='sheetDesignerStyleSelect'>
+<option>História dos Seis</option>
+</select>
+</label>
+<label class='language styleLabel' style='display:none'>
+<input id='sheetDesignerPublicSheet' type='checkbox'>
+_SHEETDESIGNERPUBLIC_
+</input>
+</label>
+<label class='language styleLabel'>
+<input id='sheetDesignerRemain' type='checkbox'>
+_SHEETDESIGNERREMAIN_
+</input>
+</label>
+<input class='mainWindowParagraphSubmit language' data-valuelingo='_SHEETDESIGNERSUBMIT_' type='submit'>
+</form>
+</div>
+</div>
+<div class='rightSideWindow' id='sheetViewerSideWindow'>
+<input accept='.json,.JSON' id='sheetViewerJSONImporter' type='file'>
+<div id='sheetViewerSheetsTab'></div>
+<div id='sheetViewport'></div>
+<div id='sheetToolbox'>
+<div class='sheetTool icons-sheetSave language' data-titlelingo='_SHEETVIEWERSAVE_' id='sheetSave'></div>
+<div class='sheetTool icons-sheetFullReload language' data-titlelingo='_SHEETVIEWERFULLRELOAD_' id='sheetFullReload'></div>
+<div class='sheetTool icons-sheetExport language' data-titlelingo='_SHEETVIEWERIMPORT_' id='sheetImport'></div>
+<div class='sheetTool icons-sheetImport language' data-titlelingo='_SHEETVIEWEREXPORT_' id='sheetExport'></div>
+<div class='sheetTool language icons-sheetAutomaticOn' data-titlelingo='_SHEETVIEWERAUTOMATIC_' id='sheetAutomatic'></div>
+<div class='sheetTool icons-sheetClose language' data-titlelingo='_SHEETVIEWERCLOSE_' id='sheetClose'></div>
+</div>
+</div>
+<div class='rightSideWindow' id='sheetPermSideWindow'>
+<div class='language mainWindowHeader'>
+_SHEETPERMISSIONSHEADER_
+<a class='xButton' onclick='UI.PageManager.closeRightPage();'></a>
+</div>
+<div class='mainWindowContent singleton'>
+<p class='mainWindowParagraph language'>_SHEETPERMISSIONEXP_</p>
+<p class='mainWindowParagraph language' id='sheetPermNameTarget'>_SHEETPERMISSIONSHEETNAME_</p>
+<form id='sheetPermForm'>
+<div id='sheetPermList'></div>
+<input class='language mainWindowParagraphSubmit' data-valuelingo='_SHEETPERMISSIONSUBMIT_' type='submit'>
+</form>
+</div>
+</div>
+<div class='rightSideWindow' id='imagesSideWindow'>
+<div class='mainWindowHeader language'>
+_IMAGESTITLE_
+<a class='xButton' onclick='UI.PageManager.closeRightPage();'></a>
+</div>
+<div class='mainWindowContent singleton'>
+<p class='mainWindowParagraph language'>_IMAGESEXP01_</p>
+<p class='mainWindowParagraph language'>_IMAGESEXP02_</p>
+<p class='mainWindowParagraph language'>_IMAGESEXP03_</p>
+<div id='imagesTarget'>
+<div class='language' id='imagesLoadError'>_IMAGESERROR_</div>
+<div class='language' id='imagesSaveError'>_IMAGESSAVEERROR_</div>
+<div>
+<div class='imagesFolder'>
+<a class='imagesFolderIcon'></a>
+<span class='imagesFolderTitle' onclick='this.parentNode.classList.toggle(&#39;folderOpen&#39;);'>Nome da Pasta</span>
+<div class='imagesRow'>
+<a class='imagesLeftButton icons-imagesShare'></a>
+<a class='imagesLeftButton icons-imagesView'></a>
+<a class='imagesLeftButton icons-imagesPersona'></a>
+<a class='imagesRightButton icons-imagesDelete'></a>
+<a class='imagesRightButton icons-imagesRename'></a>
+<a class='imagesRightButton icons-imagesFolder'></a>
+<a class='imagesRowTitle'>Nome da Imagem</a>
+</div>
+</div>
+</div>
+</div>
+<div id='imagesUpload'>
+<div id='imagesUploadLeft' style='display: none'>
+<div id='linkImagesTitle'>
+<div class='icons-link' id='linkImagesIcon'></div>
+<div class='language' id='linkImagesTitleText'>_IMAGESLINKTITLE_</div>
+</div>
+</div>
+<div id='imagesUploadRight'>
+<div class='icons-dropboxLogo' id='dropboxImagesLogo'></div>
+<input class='language' data-placeholderlingo='_SOUNDSDROPBOXFOLDER_' id='dropboxImagesFolderName' type='text'>
+<div class='language' id='dropboxImagesButton'>_IMAGESDROPBOXCHOOSER_</div>
+</div>
+</div>
+</div>
+</div>
+<div class='rightSideWindow' id='sheetsSideWindow'>
+<div class='mainWindowHeader language'>
+_SHEETSTITLE_
+<a class='xButton' onclick='UI.PageManager.closeRightPage();'></a>
+</div>
+<div class='mainWindowContent singleton'>
+<p class='mainWindowParagraph language'>_SHEETSEXP01_</p>
+<p class='mainWindowParagraph language'>_SHEETSEXP02_</p>
+<p class='mainWindowParagraph language'>_SHEETSEXP03_</p>
+<p class='mainWindowParagraph textLink language hoverable' id='sheetsStyleButton'>_SHEETSOPENSTYLEEDITOR_</p>
+<div id='sheetWindowSheetList'>
+<div class='sheetListGameContainer lightHoverable openSheetGame'>
+<p class='sheetListGameName' onclick='this.parentNode.classList.toggle(&#39;openSheetGame&#39;);'>Nome da Mesa</p>
+<div class='sheetListFolderContainer lightHoverable openSheetFolder'>
+<p class='sheetListFolderName' onclick='this.parentNode.classList.toggle(&#39;openSheetFolder&#39;);'>Nome da pasta</p>
+<p class='sheetListSheet'>
+<a class='sheetNameLink'>Nome da ficha</a>
+<a class='sheetExtraButton textLink'>Pasta</a>
+<a class='sheetExtraButton textLink'>Permissões</a>
+<a class='sheetExtraButton textLink'>Deletar</a>
+</p>
+</div>
+<div class='sheetListFolderContainer lightHoverable'>
+<p class='sheetListFolderName' onclick='this.parentNode.classList.toggle(&#39;openSheetFolder&#39;);'>Nome da pasta fechada</p>
+<p class='sheetListSheet'>
+Sem fichas para imprimir.
+</p>
+<p class='sheetListSheet textLink lightHoverable'>> Criar Ficha</p>
+</div>
+</div>
+<div class='sheetListGameContainer lightHoverable'>
+<p class='sheetListGameName'>Nome de mesa Fechada</p>
+</div>
+</div>
+</div>
+</div>
+<div class='rightSideWindow' id='homeSideWindow'>
+<div class='mainWindowHeader language'>
+_REDPGTITLE_
+<a class='xButton' onclick='UI.PageManager.closeRightPage();'></a>
+</div>
+<div class='mainWindowContent'>
+<p class='mainWindowParagraph language'>_REDPGEXP1_</p>
+<p class='mainWindowParagraph language'>_REDPGEXP2_</p>
+</div>
+</div>
+<div class='rightSideWindow' id='picturesSideWindow'></div>
+<div class='rightSideWindow' id='soundsSideWindow'>
+<div class='mainWindowHeader language'>
+_SOUNDSTITLE_
+<a class='xButton' onclick='UI.PageManager.closeRightPage();'></a>
+</div>
+<div class='mainWindowContent singleton'>
+<p class='mainWindowParagraph language'>_SOUNDSEXP01_</p>
+<p class='mainWindowParagraph language'>_SOUNDSEXP02_</p>
+<div id='soundsTarget'>
+<div class='language' id='soundsLoadError'>_SOUNDSERROR_</div>
+<div class='language' id='soundsSaveError'>_SOUNDSSAVEERROR_</div>
+</div>
+<div id='soundsUpload'>
+<div id='soundsUploadLeft' style='display: none'>
+<div id='linkSoundsTitle'>
+<div class='icons-link' id='linkSoundsIcon'></div>
+<div class='language' id='linkSoundsTitleText'>_SOUNDSLINKTITLE_</div>
+</div>
+</div>
+<div id='soundsUploadRight'>
+<div class='icons-dropboxLogo' id='dropboxSoundsLogo'></div>
+<label class='language' id='dropboxBGMInput'>
+<input checked='checked' id='dropboxSoundsIsBGM' type='checkbox'>
+_SOUNDSISBGM_
+</label>
+<input class='language' data-placeholderlingo='_SOUNDSDROPBOXFOLDER_' id='dropboxFolderName' type='text'>
+<div class='language' id='dropboxSoundsButton'>_SOUNDSDROPBOXCHOOSER_</div>
+</div>
+</div>
+</div>
+</div>
+<div class='rightSideWindow' id='hitboxSideWindow'>
+<iframe id='hitboxFrame'></iframe>
+</div>
+<div class='rightSideWindow' id='youtubeSideWindow'></div>
+</div>
+<script data-app-key='nr1604ewqoph539' id='dropboxjs' type='text/javascript'></script>
+<script id='redpgLibraries' src='js/lib/libraries180119.js' type='text/javascript'></script>
+<script src='js/Application.js' type='text/javascript'></script>
+</body>
 </html>
