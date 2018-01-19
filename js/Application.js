@@ -16551,7 +16551,7 @@ var UI;
                 },
                 linkType: "preview",
                 multiselect: true,
-                extensions: ['.MP3', '.MP4', '.M4A', '.AAC', '.OGG', '.WAV', '.WAVE', '.OPUS'],
+                extensions: ['audio'],
             };
             Dropbox.choose(options);
         }
