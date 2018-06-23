@@ -17,6 +17,10 @@ module UI.Sheets.SheetManager {
 
     export var currentStyle : SheetStyle = null;
 
+    export function hasSheet () {
+        return currentSheet != null && currentSheet != undefined;
+    }
+
     var sheetChangeListener = function () {
         UI.Sheets.SheetManager.updateButtons();
     };

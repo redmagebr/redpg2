@@ -454,6 +454,10 @@ ptbr.setLingo("_CONFIGCHATEFFECTSYES_", "Aceitar efeitos");
 ptbr.setLingo("_CONFIGCHATEFFECTSEXP_", "Um mestre pode definir efeitos de tela para tentar atingir um \"clima\" em sua sessão. Aqui você pode definir se esses efeitos de tela são aceitáveis ou não.");
 
 
+// Window Events
+ptbr.setLingo("_RAPSCHATOPEN_", "Você está em uma sala. Tem certeza que deseja fechar?");
+ptbr.setLingo("_RAPSSHEETOPEN_", "Você possui fichas abertas. Tem certeza que deseja fechar?");
+ptbr.setLingo("_RAPSDELETE_", "Deseja mesmo deletar \"%a\"? Essa ação não pode ser desfeita.");
 
 
 // -------------------------------------------------------------------------
@@ -461,4 +465,3 @@ ptbr.setLingo("_PICARINE_", "Desenhar linha  (clicar e arrastar)"); // RINE ENDS
 
 // Lingolist
 LingoList.storeLingo(ptbr);
-delete (ptbr);

@@ -175,6 +175,12 @@ change = new Changelog(0, 28, 2);
 change.addMessage("Fix: loading a LOT of personas will no longer slow down RedPG.", "en");
 change.addMessage("Fix: carregar MUITAS personas não vai mais acontecer devagar.", "pt");
 
-delete (change);
+change = new Changelog(0, 29, 0);
+change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
+change.addMessage("Janelas criadas pelo Chat terão seus botões de fechar do lado direito.", "pt");
+change.addMessage("Mensagens tentarão prevenir que RedPG seja fechado por acidente sempre que pelo menos uma ficha esteja aberta ou um Chat esteja conectado.", "pt");
+change.addMessage("Para deletar Fichas, Jogos e Salas, será necessário confirmar.", "pt");
+
+//delete (change);
 
 Changelog.finished();

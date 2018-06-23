@@ -7,4 +7,3 @@ en.flagIcon = "EN";
 
 // Lingolist
 LingoList.storeLingo(en);
-delete (en);

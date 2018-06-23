@@ -209,10 +209,10 @@ var Changelog = (function () {
         }
         return p;
     };
+    Changelog.updates = [];
+    Changelog.updatesExternal = null;
     return Changelog;
 }());
-Changelog.updates = [];
-Changelog.updatesExternal = null;
 var ImageRed = (function () {
     function ImageRed() {
     }
@@ -837,7 +837,7 @@ var SheetInstance = (function () {
         this.styleSafe = false;
         this.view = true;
         this.edit = false;
-        this["delete"] = false;
+        this.delete = false;
         this.promote = false;
         this.isPublic = false;
         this.changed = false;
@@ -934,7 +934,7 @@ var SheetInstance = (function () {
         if (typeof obj['visualizar'] !== 'undefined')
             this.view = obj['visualizar'];
         if (typeof obj['deletar'] !== 'undefined')
-            this["delete"] = obj['deletar'];
+            this.delete = obj['deletar'];
         if (typeof obj['editar'] !== 'undefined')
             this.edit = obj['editar'];
         if (typeof obj['promote'] !== 'undefined')
@@ -966,7 +966,7 @@ var SheetInstance = (function () {
         return this.promote;
     };
     SheetInstance.prototype.isDeletable = function () {
-        return this["delete"];
+        return this.delete;
     };
     SheetInstance.prototype.isNPC = function () {
         var player = this.getValue("Player") !== undefined ? this.getValue("Player") :
@@ -1286,9 +1286,9 @@ var PseudoLanguage = (function () {
         }
         return translatedWords.join(" ");
     };
+    PseudoLanguage.languages = {};
     return PseudoLanguage;
 }());
-PseudoLanguage.languages = {};
 var AJAXConfig = (function () {
     function AJAXConfig(url) {
         this._target = 0;
@@ -1407,13 +1407,13 @@ var AJAXConfig = (function () {
     AJAXConfig.prototype.setTargetRightWindow = function () {
         this._target = AJAXConfig.TARGET_RIGHT;
     };
+    AJAXConfig.TARGET_NONE = 0;
+    AJAXConfig.TARGET_GLOBAL = 1;
+    AJAXConfig.TARGET_LEFT = 2;
+    AJAXConfig.TARGET_RIGHT = 3;
+    AJAXConfig.CONDITIONAL_LOADING_TIMEOUT = 150;
     return AJAXConfig;
 }());
-AJAXConfig.TARGET_NONE = 0;
-AJAXConfig.TARGET_GLOBAL = 1;
-AJAXConfig.TARGET_LEFT = 2;
-AJAXConfig.TARGET_RIGHT = 3;
-AJAXConfig.CONDITIONAL_LOADING_TIMEOUT = 150;
 var WebsocketController = (function () {
     function WebsocketController(url) {
         this.socket = null;
@@ -1542,12 +1542,12 @@ var WebsocketController = (function () {
             this.onMessage[i].handleEvent(e);
         }
     };
+    WebsocketController.READYSTATE_CONNECTING = 0;
+    WebsocketController.READYSTATE_OPEN = 1;
+    WebsocketController.READYSTATE_CLOSING = 2;
+    WebsocketController.READYSTATE_CLOSED = 3;
     return WebsocketController;
 }());
-WebsocketController.READYSTATE_CONNECTING = 0;
-WebsocketController.READYSTATE_OPEN = 1;
-WebsocketController.READYSTATE_CLOSING = 2;
-WebsocketController.READYSTATE_CLOSED = 3;
 var ChatWsController = (function () {
     function ChatWsController() {
         this.socket = new WebsocketController(Server.Chat.CHAT_URL);
@@ -2089,9 +2089,9 @@ var MemoryFilter = (function (_super) {
     MemoryFilter.prototype.exportAsObject = function () {
         return this.value;
     };
+    MemoryFilter.names = ["none", "night", "noir", "trauma", "gray", "sepia", "evening", "fire"];
     return MemoryFilter;
 }(TrackerMemory));
-MemoryFilter.names = ["none", "night", "noir", "trauma", "gray", "sepia", "evening", "fire"];
 var MemoryPica = (function (_super) {
     __extends(MemoryPica, _super);
     function MemoryPica() {
@@ -2147,9 +2147,9 @@ var MemoryPica = (function (_super) {
         }
         return result;
     };
+    MemoryPica.fieldOrder = ["picaAllowed"];
     return MemoryPica;
 }(TrackerMemory));
-MemoryPica.fieldOrder = ["picaAllowed"];
 var MemoryLingo = (function (_super) {
     __extends(MemoryLingo, _super);
     function MemoryLingo() {
@@ -2348,9 +2348,9 @@ var MemoryCutscene = (function (_super) {
     MemoryCutscene.prototype.exportAsObject = function () {
         return this.chatAllowed ? 1 : 0;
     };
+    MemoryCutscene.button = document.getElementById("chatHollywood");
     return MemoryCutscene;
 }(TrackerMemory));
-MemoryCutscene.button = document.getElementById("chatHollywood");
 var CombatEffect = (function () {
     function CombatEffect(combat) {
         this.name = "";
@@ -2814,12 +2814,12 @@ var ChatFormState = (function () {
         this.element.classList.add(stateClass[state]);
         this.state = state;
     };
+    ChatFormState.STATE_NORMAL = 0;
+    ChatFormState.STATE_ACTION = 1;
+    ChatFormState.STATE_STORY = 2;
+    ChatFormState.STATE_OFF = 3;
     return ChatFormState;
 }());
-ChatFormState.STATE_NORMAL = 0;
-ChatFormState.STATE_ACTION = 1;
-ChatFormState.STATE_STORY = 2;
-ChatFormState.STATE_OFF = 3;
 var ChatAvatarChoice = (function () {
     function ChatAvatarChoice(name, avatar) {
         this.avatar = new ChatAvatar();
@@ -2944,7 +2944,7 @@ var ImagesRow = (function () {
         deleteButton.addEventListener("click", {
             row: this,
             handleEvent: function () {
-                this.row["delete"]();
+                this.row.delete();
             }
         });
         var renameButton = document.createElement("a");
@@ -2992,7 +2992,7 @@ var ImagesRow = (function () {
         UI.Chat.PersonaDesigner.createPersona(this.image.getName().replace(/ *\([^)]*\) */, '').trim(), this.image.getLink());
         UI.Chat.PersonaManager.createAndUsePersona(this.image.getName().replace(/ *\([^)]*\) */, '').trim(), this.image.getLink());
     };
-    ImagesRow.prototype["delete"] = function () {
+    ImagesRow.prototype.delete = function () {
         this.html.parentElement.removeChild(this.html);
         this.folder.considerSuicide();
         DB.ImageDB.removeImage(this.image);
@@ -3126,7 +3126,9 @@ var SheetsRow = (function () {
                 row: this,
                 handleEvent: function (e) {
                     e.preventDefault();
-                    this.row.deleteSheet();
+                    if (confirm(UI.Language.getLanguage().getLingo("_RAPSDELETE_", { languagea: this.row.sheet.name }))) {
+                        this.row.deleteSheet();
+                    }
                 }
             });
         }
@@ -3305,7 +3307,7 @@ var SoundsRow = (function () {
         deleteButton.addEventListener("click", {
             row: this,
             handleEvent: function () {
-                this.row["delete"]();
+                this.row.delete();
             }
         });
         var renameButton = document.createElement("a");
@@ -3358,7 +3360,7 @@ var SoundsRow = (function () {
             MessageSE.shareLink(this.sound.getName(), this.sound.getLink());
         }
     };
-    SoundsRow.prototype["delete"] = function () {
+    SoundsRow.prototype.delete = function () {
         this.html.parentElement.removeChild(this.html);
         this.folder.considerSuicide();
         DB.SoundDB.removeSound(this.sound);
@@ -6685,9 +6687,9 @@ var MessageCountdown = (function (_super) {
             this.counter.nodeValue = e.toString();
         }
     };
+    MessageCountdown.timeout = null;
     return MessageCountdown;
 }(Message));
-MessageCountdown.timeout = null;
 MessageFactory.registerMessage(MessageCountdown, "countdown", ["/countdown", "/count"]);
 var MessageVote = (function (_super) {
     __extends(MessageVote, _super);
@@ -7074,11 +7076,11 @@ var MessageImage = (function (_super) {
         this.msg = msg;
         return true;
     };
+    MessageImage.lastImages = {};
+    MessageImage.maxHistory = 10;
+    MessageImage.noAutomation = false;
     return MessageImage;
 }(Message));
-MessageImage.lastImages = {};
-MessageImage.maxHistory = 10;
-MessageImage.noAutomation = false;
 MessageFactory.registerMessage(MessageImage, "image", ["/image", "/imagem", "/picture", "/figura", "/pic"]);
 var MessageBGM = (function (_super) {
     __extends(MessageBGM, _super);
@@ -9930,7 +9932,7 @@ var Server;
                     var info = {
                         id: array[1],
                         persona: array[2]['persona'] === undefined ? null : array[2]['persona'],
-                        avatar: array[2]['avatar'] === undefined ? null : array[2]['avatar']
+                        avatar: array[2]['avatar'] === undefined ? null : array[2]['avatar'],
                     };
                     UI.Chat.Avatar.updateFromObject([info], false);
                     Server.Chat.triggerPersona(info);
@@ -10958,9 +10960,11 @@ ptbr.setLingo("_CONFIGCHATSCREENEFFECTS_", "(Chat) Efeitos de Tela");
 ptbr.setLingo("_CONFIGCHATEFFECTSNO_", "Não aceitar efeitos");
 ptbr.setLingo("_CONFIGCHATEFFECTSYES_", "Aceitar efeitos");
 ptbr.setLingo("_CONFIGCHATEFFECTSEXP_", "Um mestre pode definir efeitos de tela para tentar atingir um \"clima\" em sua sessão. Aqui você pode definir se esses efeitos de tela são aceitáveis ou não.");
+ptbr.setLingo("_RAPSCHATOPEN_", "Você está em uma sala. Tem certeza que deseja fechar?");
+ptbr.setLingo("_RAPSSHEETOPEN_", "Você possui fichas abertas. Tem certeza que deseja fechar?");
+ptbr.setLingo("_RAPSDELETE_", "Deseja mesmo deletar \"%a\"? Essa ação não pode ser desfeita.");
 ptbr.setLingo("_PICARINE_", "Desenhar linha  (clicar e arrastar)");
 LingoList.storeLingo(ptbr);
-delete (ptbr);
 var UI;
 (function (UI) {
     UI.idMainWindow = "mainWindow";
@@ -11585,7 +11589,11 @@ change.addMessage("/quadro adicionado. Pode ser utilizado para criar quadros par
 change = new Changelog(0, 28, 2);
 change.addMessage("Fix: loading a LOT of personas will no longer slow down RedPG.", "en");
 change.addMessage("Fix: carregar MUITAS personas não vai mais acontecer devagar.", "pt");
-delete (change);
+change = new Changelog(0, 29, 0);
+change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
+change.addMessage("Janelas criadas pelo Chat terão seus botões de fechar do lado direito.", "pt");
+change.addMessage("Mensagens tentarão prevenir que RedPG seja fechado por acidente sempre que pelo menos uma ficha esteja aberta ou um Chat esteja conectado.", "pt");
+change.addMessage("Para deletar Fichas, Jogos e Salas, será necessário confirmar.", "pt");
 Changelog.finished();
 var UI;
 (function (UI) {
@@ -11812,7 +11820,7 @@ var UI;
                 },
                 linkType: "preview",
                 multiselect: true,
-                extensions: ['images']
+                extensions: ['images'],
             };
             Dropbox.choose(options);
         }
@@ -12494,6 +12502,10 @@ var UI;
                 buttonHolder.removeChild(buttonHolder.firstChild);
             SheetManager.currentSheet = null;
             SheetManager.currentStyle = null;
+            function hasSheet() {
+                return SheetManager.currentSheet != null && SheetManager.currentSheet != undefined;
+            }
+            SheetManager.hasSheet = hasSheet;
             var sheetChangeListener = function () {
                 UI.Sheets.SheetManager.updateButtons();
             };
@@ -12918,7 +12930,9 @@ var UI;
                     deleteGame.addEventListener("click", {
                         game: games[i],
                         handleEvent: function () {
-                            UI.Games.deleteGame(this.game);
+                            if (confirm(UI.Language.getLanguage().getLingo("_RAPSDELETE_", { languagea: this.game.name }))) {
+                                UI.Games.deleteGame(this.game);
+                            }
                         }
                     });
                     UI.Language.markLanguage(edit, deleteGame, perm);
@@ -12982,7 +12996,9 @@ var UI;
                             rDelete.addEventListener("click", {
                                 room: room,
                                 handleEvent: function () {
-                                    UI.Rooms.deleteRoom(this.room);
+                                    if (confirm(UI.Language.getLanguage().getLingo("_RAPSDELETE_", { languagea: this.room.name }))) {
+                                        UI.Rooms.deleteRoom(this.room);
+                                    }
                                 }
                             });
                             p.appendChild(rDelete);
@@ -13710,7 +13726,6 @@ var UI;
         for (var i = 0; i < chatHelperss.length; i++) {
             chatHelpers.push(chatHelperss[i]);
         }
-        delete (i, chatHelperss);
         Application.Config.getConfig("chatfontsize").addChangeListener({
             chatBox: chatBox,
             handleEvent: function () {
@@ -13775,6 +13790,10 @@ var UI;
             return currentRoom;
         }
         Chat.getRoom = getRoom;
+        function inRoom() {
+            return currentRoom != null && currentRoom != undefined;
+        }
+        Chat.inRoom = inRoom;
         function clearRoom() {
             var dateObj = new Date();
             var month = dateObj.getUTCMonth() + 1;
@@ -13987,10 +14006,8 @@ var UI;
         for (var i = 0; i < 1; i++) {
             var messages = MessageFactory.createTestingMessages();
             printMessages(messages, true);
-            delete (messages);
             DB.MessageDB.releaseAllLocalMessages();
         }
-        delete (i);
         var chatButton = document.getElementById("openChatButton");
         chatButton.style.display = "none";
         chatButton.addEventListener("click", function () {
@@ -15366,12 +15383,12 @@ var PicaCanvasPoint = (function () {
         var b = PicaCanvasPoint.encoding.indexOf(str.charAt(1));
         return a + b;
     };
+    PicaCanvasPoint.minCurve = 10;
+    PicaCanvasPoint.encoding = "0123456789abcdefghijklmnopqrstuvxwyzABCDEFGHIJKLMNOPQRSTUVXWYZ-+_=![]{}()*@/\\:;";
+    PicaCanvasPoint.precision = Math.pow(PicaCanvasPoint.encoding.length, 2);
+    PicaCanvasPoint.maxEncodedChars = 2;
     return PicaCanvasPoint;
 }());
-PicaCanvasPoint.minCurve = 10;
-PicaCanvasPoint.encoding = "0123456789abcdefghijklmnopqrstuvxwyzABCDEFGHIJKLMNOPQRSTUVXWYZ-+_=![]{}()*@/\\:;";
-PicaCanvasPoint.precision = Math.pow(PicaCanvasPoint.encoding.length, 2);
-PicaCanvasPoint.maxEncodedChars = 2;
 var PicaCanvasArt = (function () {
     function PicaCanvasArt() {
         this.userId = 0;
@@ -15726,9 +15743,9 @@ var PicaToolPen = (function (_super) {
     PicaToolPen.getPen = function (id) {
         return PicaToolPen.Pens[id];
     };
+    PicaToolPen.Pens = {};
     return PicaToolPen;
 }(PicaTool));
-PicaToolPen.Pens = {};
 var UI;
 (function (UI) {
     var Pica;
@@ -16879,7 +16896,7 @@ var UI;
                 },
                 linkType: "preview",
                 multiselect: true,
-                extensions: ['audio']
+                extensions: ['audio'],
             };
             Dropbox.choose(options);
         }

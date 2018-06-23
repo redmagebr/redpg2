@@ -2,11 +2,7 @@
 /// <reference path="typings/jqueryui/jqueryui.d.ts" />
 /// <reference path="typings/NonLatin.d.ts" />
 /// <reference path="typings/math.js.d.ts" />
-declare function startDebugging(): void;
-declare function stopDebugging(): void;
 declare var onReady: Array<Listener>;
-declare function addOnReady(caller: string, reason: string, listener: Listener): void;
-declare function allReady(): void;
 interface Listener {
     handleEvent: Function;
 }
@@ -91,12 +87,15 @@ declare class ImageLink {
     private name;
     private url;
     private folder;
+    private tokenWidth;
+    private tokenHeight;
     getFolder(): string;
     setFolder(name: any): void;
     getLink(): string;
     getName(): string;
     setName(name: string): void;
     constructor(name: string, url: string, folder: string);
+    updateFromObject(obj: any): void;
     exportAsObject(): {
         name: string;
         url: string;
@@ -553,7 +552,7 @@ declare class MemoryPica extends TrackerMemory {
     reset(): void;
     getValue(): this;
     isPicaAllowed(): boolean;
-    picaAllowedExport(): number;
+    picaAllowedExport(): 0 | 1;
     picaAllowedStore(isIt: boolean | number): void;
     storeValue(values: Array<any>): void;
     exportAsObject(): Array<any>;
@@ -591,7 +590,7 @@ declare class MemoryCutscene extends TrackerMemory {
     reset(): void;
     storeValue(v: boolean | number): void;
     getValue(): boolean;
-    exportAsObject(): number;
+    exportAsObject(): 0 | 1;
 }
 interface CombatEffectInfo {
     name: string;
@@ -788,176 +787,6 @@ declare class SheetPermRow {
     };
     constructor(player: any);
     getHTML(): HTMLParagraphElement;
-}
-declare class PicaBG {
-    private board;
-    private img;
-    private ratio;
-    constructor(board: PicaBoard);
-    onLoad(): void;
-    loadImage(url: string): void;
-    resize(): void;
-    exportSizing(): {
-        height: number;
-        width: number;
-        left: string;
-        top: string;
-    };
-}
-declare class PicaBoard {
-    private board;
-    private background;
-    private canvas;
-    private availHeight;
-    private availWidth;
-    static _IMAGE_SCALING_FIT_NO_STRETCH: number;
-    static _IMAGE_SCALING_FIT_STRETCH: number;
-    static _IMAGE_SCALING_USE_RATIO: number;
-    private imageScaling;
-    private imageRatio;
-    isFit(): boolean;
-    isStretch(): boolean;
-    getRatio(): number;
-    getCanvas(): PicaCanvas;
-    constructor();
-    getBackground(): PicaBG;
-    loadImage(url: string): void;
-    getAvailHeight(): number;
-    getAvailWidth(): number;
-    resize(): void;
-    getHTML(): HTMLDivElement;
-}
-declare class PicaCanvas {
-    private parent;
-    private canvas;
-    private context;
-    private artAllowed;
-    private locked;
-    private width;
-    private height;
-    private pensSize;
-    private pensColor;
-    private pen;
-    private oldArts;
-    setPensSize(num: number): void;
-    addArt(art: PicaCanvasArt): void;
-    getPensSize(): number;
-    getPensColor(): string;
-    setPenColor(hexColor: string): void;
-    getCanvasContext(): CanvasRenderingContext2D;
-    constructor(board: PicaBoard);
-    setLock(isLocked: boolean): void;
-    redraw(): void;
-    getHeight(): number;
-    getWidth(): number;
-    resize(): void;
-    private bindMouse();
-    mouseDown(point: PicaCanvasPoint): void;
-    mouseUp(point: PicaCanvasPoint): void;
-    mouseMove(point: PicaCanvasPoint): void;
-    mouseOut(): void;
-    mouseWheel(up: boolean, point: PicaCanvasPoint): void;
-}
-declare class PicaCanvasArt {
-    private pen;
-    private specialValues;
-    points: Array<PicaCanvasPoint>;
-    setSpecial(index: string, value: any): void;
-    getSpecial(index: string, defValue: any): any;
-    exportAsObject(): any[];
-    setPen(pen: PicaCanvasPen): void;
-    setValues(values: Object): void;
-    setPoints(points: Array<PicaCanvasPoint>): void;
-    addPoint(point: PicaCanvasPoint): void;
-    cleanUpPoints(): void;
-    redraw(): void;
-    update(pen: typeof PicaCanvasPen, values: Object, points: Array<PicaCanvasPoint>): void;
-}
-declare class PicaCanvasPen {
-    private static Pens;
-    mouseDown(point: PicaCanvasPoint): void;
-    mouseUp(point: PicaCanvasPoint): void;
-    mouseMove(point: PicaCanvasPoint): void;
-    mouseOut(): void;
-    mouseWheel(up: boolean, point: PicaCanvasPoint): void;
-    selected(): void;
-    redraw(art: PicaCanvasArt): void;
-    static registerPen(id: string, pen: PicaCanvasPen): void;
-    static getPen(id: string): any;
-}
-declare class PicaCanvasPoint {
-    private x;
-    private y;
-    private canvas;
-    private static minCurve;
-    private static encoding;
-    private static precision;
-    private static maxEncodedChars;
-    constructor(canvas: PicaCanvas);
-    setCoordinates(offsetX: any, offsetY: any): void;
-    setRelativeCoordinates(x: any, y: any): void;
-    getX(): number;
-    getY(): number;
-    distanceTo(p2: PicaCanvasPoint): number;
-    static isTriangle(p1: PicaCanvasPoint, p2: PicaCanvasPoint, p3: PicaCanvasPoint): boolean;
-    static isEqual(p1: PicaCanvasPoint, p2: PicaCanvasPoint): boolean;
-    exportAsString(): string;
-    updateFromString(str: string): void;
-    static encode(num: number): string;
-    static decode(str: String): number;
-}
-declare class PicaContainer {
-    private container;
-    private tools;
-    private board;
-    getBoard(): PicaBoard;
-    constructor(picaWindow: HTMLElement);
-    loadImage(url: string): void;
-    getHTML(): HTMLElement;
-}
-declare class PicaTool {
-    protected a: HTMLAnchorElement;
-    protected storytellerOnly: boolean;
-    protected requiresArtPermission: boolean;
-    constructor();
-    getHTML(): HTMLElement;
-    onMouseIn(): void;
-    onMouseOut(): void;
-    onClick(): void;
-    updateVisibility(isStoryteller: boolean, isPicaDraw: boolean): void;
-}
-declare class PicaToolbar {
-    private container;
-    private tools;
-    private static tools;
-    constructor();
-    getHTML(): HTMLElement;
-    static registerTool(tool: typeof PicaTool): void;
-}
-declare class PicaPensil extends PicaCanvasPen {
-    id: string;
-    private currentArt;
-    private lastPoint;
-    constructor();
-    mouseDown(point: PicaCanvasPoint): void;
-    mouseUp(point: PicaCanvasPoint): void;
-    mouseMove(point: PicaCanvasPoint): void;
-    mouseOut(): void;
-    mouseWheel(up: boolean, point: PicaCanvasPoint): void;
-    selected(): void;
-    beginDrawing(point: PicaCanvasPoint, art: PicaCanvasArt): void;
-    drawTo(point: PicaCanvasPoint): void;
-    finishDrawing(): void;
-    stroke(): void;
-    redraw(art?: PicaCanvasArt): void;
-}
-declare class PicaToolShare extends PicaTool {
-    private a;
-    constructor();
-    getHTML(): HTMLElement;
-    onClick(): void;
-    onHover(): void;
-    updateVisibility(): void;
 }
 declare class SoundsRow {
     private html;
@@ -1169,8 +998,6 @@ declare class SheetVariable {
     triggerChange(counter: number): void;
 }
 declare module StyleFactory {
-    function getCreator(style: StyleInstance): typeof SheetStyle;
-    function getSheetStyle(style: StyleInstance, reload?: boolean): SheetStyle;
 }
 interface SheetCreatorListener {
     complete(): void;
@@ -1355,13 +1182,6 @@ declare class SheetButtoncommonsroll extends SheetButton {
     getValue(): number;
 }
 declare module MessageFactory {
-    function registerMessage(msg: typeof Message, id: string, slashCommands: Array<string>): void;
-    function getMessagetypeArray(): typeof Message[];
-    function registerSlashCommand(slash: typeof SlashCommand, slashCommands: Array<string>): void;
-    function createMessageFromType(id: string): Message;
-    function createTestingMessages(): Array<Message>;
-    function getConstructorFromText(form: string): typeof SlashCommand;
-    function createFromText(form: string): Message;
 }
 declare class SlashCommand {
     receiveCommand(slashCommand: string, message: string): boolean;
@@ -1381,6 +1201,9 @@ declare class SlashLog extends SlashCommand {
 declare class SlashLingo extends SlashCommand {
     receiveCommand(slashCommand: string, message: string): boolean;
     getInvalidHTML(slashCommand: string, message: string): HTMLElement;
+}
+declare class SlashPica extends SlashCommand {
+    receiveCommand(slashCommand: string, message: string): boolean;
 }
 declare class Message extends SlashCommand {
     id: number;
@@ -1452,6 +1275,29 @@ declare class MessageBuff extends Message {
     getEffectEndOnStart(): any;
     setEffectCustomString(customString: string): void;
     getEffectCustomString(): any;
+}
+declare class MessagePica extends Message {
+    module: string;
+    private msgOneArt;
+    private msgUpdateArts;
+    private msgRequestUpdate;
+    private msgClearAll;
+    private runOnce;
+    constructor();
+    considerAddingToArtManager(): void;
+    setArt(art: PicaCanvasArt): void;
+    setArtString(art: string): void;
+    getArt(): PicaCanvasArt;
+    setArts(arts: Array): void;
+    getArts(): any[];
+    setUrl(url: string): void;
+    getUrl(): any;
+    getSpecificConfirmation(userid: number): any;
+    getConfirmation(): any;
+    setConfirmation(userList: Object): void;
+    getHTML(): any;
+    setCleanArts(isIt: boolean): void;
+    isCleanArts(): boolean;
 }
 declare class MessageSystem extends Message {
     module: string;
@@ -1678,135 +1524,35 @@ declare class MessageCutscene extends Message {
 declare module DB {
 }
 declare module DB.UserDB {
-    function hasUser(id: number): boolean;
-    function getUser(id: number): User;
-    function getAUser(id: number): User;
-    function updateFromObject(obj: Array<Object>): void;
 }
 declare module DB.GameDB {
-    function hasGame(id: number): boolean;
-    function getGame(id: number): Game;
-    function getOrderedGameList(): Array<Game>;
-    function updateFromObject(obj: Array<Object>, cleanup: boolean): void;
 }
 declare module DB.RoomDB {
     var rooms: {
         [id: number]: Room;
     };
-    function hasRoom(id: number): boolean;
-    function getRoom(id: number): Room;
-    function releaseRoom(id: number): boolean;
-    function updateFromObject(obj: Array<Object>, cleanup: boolean): void;
 }
 declare module DB.MessageDB {
     var messageById: {
         [id: number]: Message;
     };
-    function releaseMessage(id: number): boolean;
-    function releaseLocalMessage(id: number | string): boolean;
-    function releaseAllLocalMessages(): void;
-    function hasMessage(id: number): boolean;
-    function hasLocalMessage(id: number | string): boolean;
-    function getMessage(id: number): Message;
-    function getLocalMessage(id: number): Message;
-    function registerLocally(msg: Message): void;
-    function updateFromObject(obj: Array<Object>): void;
 }
 declare module DB.SheetDB {
-    function addChangeListener(list: Listener | Function): void;
-    function removeChangeListener(list: Listener | Function): void;
-    function triggerChanged(sheet: SheetInstance): void;
-    function hasSheet(id: number): boolean;
-    function getSheet(id: number): SheetInstance;
-    function releaseSheet(id: number): void;
-    function updateFromObject(obj: Array<Object>): void;
-    function getSheetsByGame(game: Game): any[];
-    function getSheetsByFolder(sheets: Array<SheetInstance>): Array<Array<SheetInstance>>;
-    function saveSheet(sheet: SheetInstance): void;
 }
 declare module DB.ImageDB {
-    function removeImage(img: ImageLink): void;
-    function considerSaving(): void;
-    function getImages(): ImageLink[];
-    function getImageByName(name: string): ImageLink;
-    function getImageByLink(url: string): ImageLink;
-    function hasImageByName(name: string): boolean;
-    function hasImageByLink(url: string): boolean;
-    function getImagesByFolder(): Array<Array<ImageLink>>;
-    function exportAsObject(): any[];
-    function updateFromObject(obj: Array<Object>): void;
-    function addImage(img: ImageLink): void;
-    function addImages(imgs: Array<ImageLink>): void;
-    function triggerChange(image: ImageLink): void;
-    function addChangeListener(f: Listener | Function): void;
-    function removeChangeListener(f: Listener | Function): void;
 }
 declare module DB.SoundDB {
-    function removeSound(snd: SoundLink): void;
-    function considerSaving(): void;
-    function getSounds(): SoundLink[];
-    function getSoundByName(name: string): SoundLink;
-    function getSoundByLink(url: string): SoundLink;
-    function hasSoundByName(name: string): boolean;
-    function hasSoundByLink(url: string): boolean;
-    function getSoundsByFolder(): Array<Array<SoundLink>>;
-    function exportAsObject(): any[];
-    function updateFromObject(obj: Array<Object>): void;
-    function addSound(snd: SoundLink): void;
-    function addSounds(snds: Array<SoundLink>): void;
-    function triggerChange(image: SoundLink): void;
-    function addChangeListener(f: Listener | Function): void;
-    function removeChangeListener(f: Listener | Function): void;
 }
 declare module DB.StyleDB {
-    function addChangeListener(list: Listener | Function): void;
-    function removeChangeListener(list: Listener | Function): void;
-    function triggerChanged(sheet: SheetInstance): void;
-    function hasStyle(id: number): boolean;
-    function getStyle(id: number): StyleInstance;
-    function getStyles(): Array<StyleInstance>;
-    function releaseStyle(id: number): void;
-    function updateStyle(obj: any): void;
 }
 declare module Application {
-    function getMe(): User;
-    function isMe(id: number): boolean;
-    function getMyId(): number;
 }
 declare module Application.Config {
-    function getConfig(id: string): Configuration;
-    function registerChangeListener(id: string, listener: Listener | Function): void;
-    function registerConfiguration(id: string, config: Configuration): void;
-    function exportAsObject(): {
-        [id: string]: any;
-    };
-    function reset(): void;
-    function updateFromObject(obj: {
-        [id: string]: any;
-    }): void;
-    function saveConfig(cbs?: Listener | Function, cbe?: Listener | Function): void;
 }
 declare module Application.LocalMemory {
-    function getMemory(id: string, defaultValue: any): any;
-    function setMemory(id: string, value: any): void;
-    function unsetMemory(id: string): void;
+    function getMemoryLength(id: string): number;
 }
 declare module Application.Login {
-    function searchLogin(): void;
-    function hasLastEmail(): boolean;
-    function getLastEmail(): string;
-    function isLogged(): boolean;
-    function hasSession(): boolean;
-    function getSession(): String;
-    function logout(): void;
-    function attemptLogin(email: string, password: string, cbs: Listener, cbe: Listener): void;
-    function receiveLogin(userJson: Object, sessionid: string): void;
-    function updateSessionLife(): void;
-    function updateLocalStorage(): void;
-    function keepAlive(): void;
-    function setSession(a: string): void;
-    function addListener(listener: Listener | Function): void;
-    function getUser(): User;
 }
 declare module Server {
     var IMAGE_URL: string;
@@ -1815,105 +1561,29 @@ declare module Server {
     var WEBSOCKET_SERVERURL: string;
     var WEBSOCKET_CONTEXT: string;
     var WEBSOCKET_PORTS: Array<number>;
-    function getWebsocketURL(): string;
 }
 declare module Server.AJAX {
-    function requestPage(ajax: AJAXConfig, success: Listener | Function, error: Listener | Function): void;
 }
 declare module Server.Config {
-    function saveConfig(config: Object, cbs?: Listener | Function, cbe?: Listener | Function): void;
 }
 declare module Server.Login {
-    function requestSession(silent: boolean, cbs?: Listener, cbe?: Listener): void;
-    function doLogin(email: string, password: string, cbs?: Listener, cbe?: Listener): void;
-    function doLogout(cbs?: Listener, cbe?: Listener): void;
-    function createAccount(name: string, pass: string, email: string, nick: string, cbs?: Listener | EventListenerObject | Function, cbe?: Listener | EventListenerObject | Function): void;
 }
 declare module Server.Images {
-    function getImages(cbs?: Listener, cbe?: Listener): void;
 }
 declare module Server.Games {
-    function updateLists(cbs?: Listener, cbe?: Listener): void;
-    function createRoom(room: Room, cbs?: Listener, cbe?: Listener): void;
-    function createGame(game: Game, cbs?: Listener, cbe?: Listener): void;
-    function editGame(game: Game, cbs?: Listener, cbe?: Listener): void;
-    function getInviteList(cbs?: Listener, cbe?: Listener): void;
-    function sendInvite(gameid: number, nickname: string, nicknamesufix: string, message: string, cbs?: Listener, cbe?: Listener): void;
-    function acceptInvite(gameid: number, cbs?: Listener, cbe?: Listener): void;
-    function rejectInvite(gameid: number, cbs?: Listener, cbe?: Listener): void;
-    function leaveGame(gameid: number, cbs?: Listener, cbe?: Listener): void;
-    function deleteGame(gameid: number, cbs?: Listener, cbe?: Listener): void;
-    function deleteRoom(roomid: number, cbs?: Listener, cbe?: Listener): void;
-    function getPrivileges(gameid: number, cbs?: Listener, cbe?: Listener): void;
-    function setPrivileges(gameid: number, cbs?: Listener, cbe?: Listener): void;
 }
 declare module Server.URL {
-    function fixURL(url: string): string;
 }
 declare module Server.Chat {
     var CHAT_URL: string;
     var currentController: ChatController;
-    function addRoomListener(f: Function | Listener): void;
-    function removeRoomListener(f: Function | Listener): void;
-    function triggerRoomListener(): void;
-    function isReconnecting(): boolean;
-    function setConnected(): void;
-    function giveUpReconnect(): void;
-    function reconnect(): void;
-    function leaveRoom(): void;
-    function enterRoom(roomid: number): void;
-    function sendStatus(info: PersonaInfo): void;
-    function sendPersona(info: PersonaInfo): void;
-    function isConnected(): boolean;
-    function sendMessage(message: Message): void;
-    function saveMemory(memory: string): void;
-    function hasRoom(): boolean;
-    function getRoom(): Room;
-    function getAllMessages(roomid: number, cbs?: Listener, cbe?: Listener): void;
-    function end(): void;
-    function addStatusListener(f: Function | Listener): void;
-    function triggerStatus(info: Object): void;
-    function addPersonaListener(f: Function | Listener): void;
-    function triggerPersona(f: Object): void;
-    function addMessageListener(f: Function | Listener): void;
-    function triggerMessage(f: Message): void;
 }
 declare module Server.Chat.Memory {
     var version: number;
-    function addChangeListener(f: Function | Listener): void;
-    function getConfig(id: string): TrackerMemory;
-    function registerChangeListener(id: string, listener: Listener | Function): void;
-    function getConfiguration(name: string): TrackerMemory;
-    function registerConfiguration(id: string, name: string, config: TrackerMemory): void;
-    function exportAsObject(): {
-        [id: string]: any;
-    };
-    function updateFromObject(obj: {
-        [id: string]: any;
-    }): void;
-    function saveMemory(): void;
-    function considerSaving(): void;
 }
 declare module Server.Storage {
-    function requestImages(cbs?: Listener, cbe?: Listener): void;
-    function requestSounds(cbs?: Listener, cbe?: Listener): void;
-    function sendImages(cbs?: Listener, cbe?: Listener): void;
-    function sendSounds(cbs?: Listener, cbe?: Listener): void;
 }
 declare module Server.Sheets {
-    function loadSheetAndStyle(sheetid: number, styleid: number, cbs?: EventListenerObject, cbe?: EventListenerObject): void;
-    function loadSheet(sheetid: number, cbs?: Listener, cbe?: Listener): void;
-    function updateStyles(cbs?: Listener, cbe?: Listener): void;
-    function sendStyle(style: StyleInstance, cbs?: Listener | EventListenerObject | Function, cbe?: Listener | EventListenerObject | Function): void;
-    function loadStyle(id: number, cbs?: Listener, cbe?: Listener, right?: boolean): void;
-    function updateLists(cbs?: Listener, cbe?: Listener): void;
-    function sendFolder(sheet: SheetInstance, cbs?: Listener, cbe?: Listener): void;
-    function deleteSheet(sheet: SheetInstance, cbs?: Listener, cbe?: Listener): void;
-    function getSheetPermissions(sheet: SheetInstance, cbs?: Listener | EventListenerObject | Function, cbe?: Listener | EventListenerObject | Function): void;
-    function sendSheetPermissions(sheet: SheetInstance, permissions: Array<SheetPermRow>, cbs?: Listener | EventListenerObject | Function, cbe?: Listener | EventListenerObject | Function): void;
-    function getStyleOptions(game: Game, cbs: Function | EventListenerObject, cbe: Function | EventListenerObject): void;
-    function createSheet(game: Game, sheetName: string, styleId: number, isPublic: boolean, cbs?: Listener | EventListenerObject | Function, cbe?: Listener | EventListenerObject | Function): void;
-    function sendSheet(sheet: SheetInstance, cbs?: Listener | EventListenerObject | Function, cbe?: Listener | EventListenerObject | Function): void;
 }
 declare class Lingo {
     ids: Array<string>;
@@ -1942,11 +1612,6 @@ declare class SheetLingo {
     getLingo(ids: Array<string>): Lingo;
 }
 declare module LingoList {
-    function getLingos(): Array<Lingo>;
-    function getLingo(id: string): Lingo;
-    function storeLingo(lingo: Lingo): void;
-    function mergeLingo(lingo: Lingo): void;
-    function addSheetLingo(lingo: SheetLingo): void;
 }
 declare var ptbr: Lingo;
 declare module UI {
@@ -1974,303 +1639,84 @@ declare module UI {
 declare module UI.WindowManager {
     var currentLeftSize: number;
     var currentRightSize: number;
-    function callWindow(id: string): void;
-    function getWindow(id: string): HTMLElement;
-    function updateWindowSizes(): void;
 }
 declare module UI.Logger {
-    function callSelf(room: Room): void;
-    function filter(): Array<Message>;
-    function updateSlider(): void;
-    function updateMessages(): void;
-    function updateCheckboxes(): void;
-    function setModule(module: string, acceptable: boolean): void;
-    function setSlider(left: any, right: any): void;
-    function open(): void;
-    function close(): void;
-    function submit(): void;
-    function setHTML(code: any): void;
-    function setJS(code: any): void;
-    function setLib(code: any): void;
-    function giveMeLog(): {
-        description: string;
-        name: string;
-        id: number;
-        freejoin: boolean;
-        creatorid: number;
-        creatornick: string;
-        creatorsufix: string;
-    };
-    function saveLog(): void;
-    function openLog(log: any): void;
 }
 declare module UI.Config {
-    function bindInput(configName: string, input: HTMLInputElement): void;
-    function saveConfig(): void;
-    function setUniqueTimeout(f: Function, t: number): void;
 }
 declare var change: any;
 declare module UI.ChangelogManager {
-    function print(): void;
 }
 declare module UI.PageManager {
     var $pages: {
         [id: string]: JQuery;
     };
-    function getAnimationTime(): number;
-    function callPage(id: string): void;
-    function closeLeftPage(): void;
-    function closeRightPage(): void;
-    function readWindows(): void;
-    function getCurrentLeft(): String;
 }
 declare module UI.Images {
-    function callSelf(): void;
-    function printImages(): void;
-    function stayInFolder(name: string): void;
-    function printError(data: any, onLoad: boolean): void;
-    function callDropbox(): void;
-    function addDropbox(files: any): void;
 }
 declare module UI.Loading {
     var $leftLoader: JQuery;
-    function stopLoading(): void;
-    function startLoading(): void;
-    function blockLeft(): void;
-    function blockRight(): void;
-    function unblockLeft(): void;
-    function unblockRight(): void;
 }
 declare module UI.Login {
-    function callSelf(): void;
-    function hideErrors(): void;
-    function showError(code: any): void;
-    function resetState(): void;
-    function resetFocus(): void;
-    function assumeEmail(email: string): void;
-    function submitLogin(e: Event): void;
 }
 declare module UI.Login.NewAccount {
-    function callSelf(): void;
-    function hideErrors(): void;
-    function showError(code: any): void;
-    function submit(): void;
 }
 declare module UI.Handles {
-    function isAlwaysUp(): boolean;
-    function mouseIn(handle: HTMLElement): void;
-    function mouseOut(handle: HTMLElement): void;
-    function setAlwaysUp(keepUp: boolean): void;
 }
 declare module UI.Language {
-    function getLanguage(): Lingo;
-    function searchLanguage(): void;
-    function updateScreen(target?: HTMLElement | Document): void;
-    function updateElement(element: HTMLElement): void;
-    function updateText(element: HTMLElement): void;
-    function addLanguageVariable(element: HTMLElement, id: string, value: string): void;
-    function addLanguageValue(element: HTMLElement, value: string): void;
-    function addLanguagePlaceholder(element: HTMLElement, value: string): void;
-    function addLanguageTitle(element: HTMLElement, value: string): void;
-    function markLanguage(...elements: HTMLElement[]): void;
 }
 declare module UI.Sheets {
-    function keepOpen(folder: string, gameid: number): void;
-    function keepClosed(): void;
-    function callSelf(): void;
-    function printSheets(): void;
 }
 declare module UI.Sheets.SheetPermissionDesigner {
-    function callSelf(sheet: SheetInstance): void;
-    function empty(): void;
-    function printPlayers(players: any): void;
-    function submit(): void;
-    function success(): void;
 }
 declare module UI.Sheets.SheetManager {
     var currentSheet: SheetInstance;
     var currentStyle: SheetStyle;
-    function close(): void;
-    function detachStyle(): void;
-    function attachStyle(): void;
-    function switchToSheet(sheet: SheetInstance, reloadStyle?: boolean, callPage?: boolean): void;
-    function openSheetId(sheetid: number): void;
-    function openSheet(sheet: SheetInstance, reloadSheet?: boolean, reloadStyle?: boolean, callPage?: boolean): void;
-    function saveSheet(): void;
-    function reload(reloadStyle?: boolean): void;
-    function isAutoUpdate(): boolean;
-    function updateButtons(): void;
-    function importFromJSON(ready?: boolean, json?: string): void;
-    function exportAsJSON(): void;
+    function hasSheet(): boolean;
 }
 declare module UI.Sheets.SheetDesigner {
-    function callSelf(game: Game): void;
-    function success(): void;
-    function fillStyles(data: any): void;
-    function submit(): void;
 }
 declare module UI.Rooms {
-    function deleteRoom(room: Room): void;
 }
 declare module UI.Rooms.Designer {
-    function fromRoom(room?: Room): void;
-    function toRoom(): Room;
 }
 declare module UI.Games {
-    function callSelf(ready?: boolean): void;
-    function deleteGame(game: Game): void;
-    function leaveGame(game: Game): void;
-    function updateNick(isLogged: boolean): void;
 }
 declare module UI.Games.Invites {
-    function callSelf(): void;
-    function printInfo(data: any): void;
-    function accept(id: any): void;
-    function reject(id: any): void;
-    function printError(): void;
 }
 declare module UI.Games.InviteDesigner {
     var $msgs: JQuery;
-    function callSelf(game: Game): void;
-    function emptyName(): void;
-    function submit(): void;
-    function showMessage(id: number): void;
 }
 declare module UI.Games.RoomDesigner {
-    function callSelf(game: Game, room?: Room): void;
-    function toRoom(): Room;
-    function submit(): void;
-    function showError(): void;
 }
 declare module UI.Games.Designer {
-    function callSelf(game?: Game): void;
-    function toGame(): Game;
-    function submit(): void;
-    function showError(): void;
 }
 declare module UI.SoundController {
-    function updateSEVolume(newVolume: number): void;
-    function updateBGMVolume(newVolume: number): void;
-    function getBGM(): HTMLAudioElement;
-    function playDice(): void;
-    function playAlert(): void;
-    function isAutoPlay(): boolean;
-    function playBGM(url: string): void;
-    function playSE(url: string): void;
 }
 declare module UI.SoundController.MusicPlayer {
-    function showContainer(): void;
-    function hideContainer(): void;
-    function showButton(): void;
-    function hideButton(): void;
-    function updateSeeker(perc: number): void;
-    function stopPlaying(): void;
 }
 declare module UI.Chat {
     var messageCounter: number;
-    function doAutomation(): boolean;
-    function callSelf(roomid: number, log?: boolean): void;
-    function addRoomChangedListener(listener: Listener | Function): void;
-    function getRoom(): Room;
-    function clearRoom(): void;
-    function printElement(element: HTMLElement, doScroll?: boolean): void;
-    function printMessage(message: Message, doScroll?: boolean): void;
-    function printMessages(messages: Array<Message>, ignoreLowIds: boolean): void;
-    function updateScrollPosition(instant?: boolean): void;
-    function scrollToTop(): void;
-    function setScrolledDown(state: boolean): void;
-    function sendMessage(message: Message): void;
-    function getGetAllButton(): HTMLElement;
-    function leave(): void;
-    function printGetAllButtonAtStart(): void;
-    function printNotallAtStart(): void;
-    function printGetAllButton(): void;
+    function inRoom(): boolean;
 }
 declare module UI.Chat.Avatar {
-    function getMe(): ChatAvatar;
-    function resetForConnect(): void;
-    function moveScroll(direction: number): void;
-    function updatePosition(): void;
-    function updateFromObject(obj: Array<Object>, cleanup: boolean): void;
 }
 declare module UI.Chat.PersonaManager {
-    function setRoom(room: Room): void;
-    function clearPersona(name: String, avatar: String): void;
-    function getRoom(): Room;
-    function createAndUsePersona(name: string, avatar: String): void;
-    function addListener(listener: Listener): void;
-    function setPersona(name: String, avatar: String, element: HTMLElement): void;
-    function getPersonaName(): String;
-    function getPersonaAvatar(): String;
-    function unsetPersona(): void;
 }
 declare module UI.Chat.Forms {
-    function addOlderText(): void;
-    function moveOlderText(direction: number): void;
-    function updateFormState(hasPersona: any): void;
-    function handleInputKeyboard(e: KeyboardEvent): void;
-    function handleInputKeypress(e: KeyboardEvent): void;
-    function prependChatInput(what: string): void;
-    function sendMessage(): void;
-    function isTyping(): boolean;
-    function isFocused(): boolean;
-    function isAfk(): boolean;
-    function setTyping(newTyping: boolean): void;
-    function setFocused(newFocused: boolean): void;
-    function setAfk(newAfk: boolean): void;
-    function considerRedirecting(event: KeyboardEvent): void;
-    function isDiceTower(): boolean;
-    function rollDice(faces?: number): void;
-    function setInput(str: string): void;
-    function setLastWhisperFrom(user: UserRoomContext): void;
 }
 declare module UI.Chat.Notification {
-    function showReconnecting(): void;
-    function hideReconnecting(): void;
-    function hideDisconnected(): void;
-    function showDisconnected(): void;
 }
 declare module UI.Chat.Lingo {
-    function hide(): void;
-    function open(): void;
-    function update(): void;
-    function speakInTongues(language: string): void;
 }
 declare module UI.Chat.Combat {
-    function hide(): void;
-    function open(): void;
-    function updateSelects(): void;
-    function update(): void;
-    function addSheet(): void;
-    function announceTurn(): void;
-    function newRound(): void;
-    function nextTurn(): void;
-    function endCombat(): void;
 }
 declare module UI.Chat.PersonaDesigner {
-    function callSelf(): void;
-    function close(): void;
-    function setRoom(room: Room): void;
-    function fillOut(): void;
-    function emptyOut(): void;
-    function createPersona(name?: string, avatar?: String): void;
-    function removeChoice(choice: ChatAvatarChoice): void;
-    function usePersona(name: string, avatar: String): void;
 }
 declare module UI.Chat.Filters {
-    function toggle(): void;
-    function close(): void;
-    function updateButton(): void;
-    function applyFilter(name: string): void;
-    function updateEffects(): void;
 }
 declare module UI.Pica {
-    function getPica(): PicaContainer;
-    function loadImage(url: string): void;
-    function callSelf(): void;
-    function close(): void;
-    function startLoading(): void;
-    function stopLoading(): void;
+    function getPictureWindow(): HTMLElement;
 }
 declare class PicaCanvasPoint {
     private x;
@@ -2284,6 +1730,7 @@ declare class PicaCanvasPoint {
     getX(): number;
     getY(): number;
     distanceTo(p2: PicaCanvasPoint): number;
+    getRealDistanceTo(p2: PicaCanvasPoint): number;
     static isTriangle(p1: PicaCanvasPoint, p2: PicaCanvasPoint, p3: PicaCanvasPoint): boolean;
     static isEqual(p1: PicaCanvasPoint, p2: PicaCanvasPoint): boolean;
     exportAsString(): string;
@@ -2315,26 +1762,9 @@ declare module UI.Pica.Board {
     var _IMAGE_SCALING_FIT_NO_STRETCH: number;
     var _IMAGE_SCALING_FIT_STRETCH: number;
     var _IMAGE_SCALING_USE_RATIO: number;
-    function isFit(): boolean;
-    function isStretch(): boolean;
-    function getBoard(): HTMLDivElement;
-    function getImageRatio(): number;
-    function loadImage(url: string): void;
-    function getUrl(): string;
-    function resize(): void;
-    function getAvailHeight(): number;
-    function getAvailWidth(): number;
-    function addResizeListener(f: Function | Listener): void;
-    function addUrlListener(f: Function | Listener): void;
-    function setImageScaling(num: number): void;
-    function changeRatio(up: boolean): void;
-    function updateMinRatio(): void;
-    function getScaling(): number;
-    function resetRatio(): void;
+    function setRatio(ratio: number): void;
 }
 declare module UI.Pica.Toolbar {
-    function updateVisibility(): void;
-    function registerTool(tool: PicaTool): void;
 }
 declare class PicaTool {
     protected a: HTMLAnchorElement;
@@ -2367,51 +1797,23 @@ declare class PicaToolPen extends PicaTool {
     onClick(): void;
 }
 declare module UI.Pica.ArtManager {
-    function getLength(roomid: number, url: string): any;
-    function getLengthByUser(roomid: number, url: string): {};
-    function addArt(art: PicaCanvasArt): void;
-    function getMyArtsAsString(roomid: number, url: string): any[];
-    function getArt(roomid: number, url: string): Array<PicaCanvasArt>;
-    function removeArtFromUser(userid: number, roomid: number, url: string): void;
-    function includeManyArts(roomid: number, url: string, arts: Array<PicaCanvasArt>): void;
-    function includeArt(roomid: number, url: string, art: PicaCanvasArt): void;
+    function removeAllArts(roomid: number, url: string): void;
 }
 declare module UI.Pica.Board.Background {
-    function load(url: any): void;
-    function addLoadListener(f: Function | Listener): void;
-    function addSizeListener(f: Function | Listener): void;
-    function onLoad(): void;
-    function getMinRatio(): number;
-    function resize(): void;
-    function exportSizes(): {
-        height: number;
-        width: number;
-        left: string;
-        top: string;
-    };
 }
 declare module UI.Pica.Board.Canvas {
-    function clearCanvas(): void;
-    function redraw(): void;
-    function getCanvas(): HTMLCanvasElement;
-    function getCanvasContext(): CanvasRenderingContext2D;
-    function getHeight(): number;
-    function getWidth(): number;
-    function setLocked(): void;
-    function addLockListener(f: Listener | Function): void;
-    function resize(): void;
-    function mouseDown(point: PicaCanvasPoint): void;
-    function mouseUp(point: PicaCanvasPoint): void;
-    function mouseMove(point: PicaCanvasPoint): void;
-    function mouseOut(): void;
-    function mouseWheel(up: boolean, point: PicaCanvasPoint): void;
-    function setPen(newPen: PicaToolPen): void;
-    function addPenListener(f: Function | Listener): void;
-    function getPenWidth(): number;
-    function getPenColor(): string;
-    function setPenWidth(newWidth: number): void;
-    function setPenColor(newColor: string): void;
 }
+declare class PicaToolMove extends PicaToolPen {
+    private lastPoint;
+    constructor();
+    mouseDown(point: PicaCanvasPoint): void;
+    mouseUp(point: PicaCanvasPoint): void;
+    mouseMove(point: PicaCanvasPoint): void;
+    mouseOut(): void;
+    mouseWheel(up: boolean, point: PicaCanvasPoint): void;
+    updateCanvasClasses(): void;
+}
+declare var move: PicaToolMove;
 declare class PicaToolPensil extends PicaToolPen {
     private art;
     private lastPoint;
@@ -2429,25 +1831,74 @@ declare class PicaToolPensil extends PicaToolPen {
     updateCanvasClasses(): void;
 }
 declare var pensil: PicaToolPensil;
+declare class PicaToolRINE extends PicaToolPen {
+    private art;
+    private lastPoint;
+    id: string;
+    constructor();
+    mouseDown(point: PicaCanvasPoint): void;
+    mouseMove(point: PicaCanvasPoint): void;
+    mouseUp(point: PicaCanvasPoint): void;
+    mouseOut(): void;
+    draw(art: PicaCanvasArt): void;
+    redraw(): void;
+    drawFromArt(art: PicaCanvasArt): void;
+    updateCanvasClasses(): void;
+}
+declare var pensil: PicaToolPensil;
+declare class PicaToolSircu extends PicaToolPen {
+    private art;
+    private lastPoint;
+    id: string;
+    constructor();
+    mouseDown(point: PicaCanvasPoint): void;
+    mouseMove(point: PicaCanvasPoint): void;
+    mouseUp(point: PicaCanvasPoint): void;
+    mouseOut(): void;
+    draw(art: PicaCanvasArt): void;
+    redraw(): void;
+    drawFromArt(art: PicaCanvasArt): void;
+    updateCanvasClasses(): void;
+}
+declare var pensil: PicaToolPensil;
+declare class PicaToolSqua extends PicaToolPen {
+    private art;
+    private lastPoint;
+    id: string;
+    constructor();
+    mouseDown(point: PicaCanvasPoint): void;
+    mouseMove(point: PicaCanvasPoint): void;
+    mouseUp(point: PicaCanvasPoint): void;
+    mouseOut(): void;
+    draw(art: PicaCanvasArt): void;
+    redraw(): void;
+    drawFromArt(art: PicaCanvasArt): void;
+    updateCanvasClasses(): void;
+}
+declare var pensil: PicaToolPensil;
+declare class PicaToolConu extends PicaToolPen {
+    private art;
+    private lastPoint;
+    id: string;
+    constructor();
+    mouseDown(point: PicaCanvasPoint): void;
+    mouseMove(point: PicaCanvasPoint): void;
+    mouseUp(point: PicaCanvasPoint): void;
+    mouseOut(): void;
+    draw(art: PicaCanvasArt): void;
+    redraw(): void;
+    drawFromArt(art: PicaCanvasArt): void;
+    updateCanvasClasses(): void;
+}
+declare var pensil: PicaToolPensil;
 declare class PicaToolColor extends PicaTool {
     constructor();
 }
 declare var tool: PicaToolColor;
-declare class PicaToolMove extends PicaToolPen {
-    private lastPoint;
-    constructor();
-    mouseDown(point: PicaCanvasPoint): void;
-    mouseUp(point: PicaCanvasPoint): void;
-    mouseMove(point: PicaCanvasPoint): void;
-    mouseOut(): void;
-    mouseWheel(up: boolean, point: PicaCanvasPoint): void;
-    updateCanvasClasses(): void;
-}
-declare var move: PicaToolMove;
 declare class PicaToolShare extends PicaTool {
     constructor();
+    onClick(): void;
 }
-declare var share: PicaToolShare;
 declare class PicaToolLock extends PicaTool {
     private lockedIcon;
     private unlockedIcon;
@@ -2456,8 +1907,14 @@ declare class PicaToolLock extends PicaTool {
     onClick(): void;
 }
 declare var tool: PicaToolColor;
+declare class PicaToolClean extends PicaTool {
+    constructor();
+    onClick(): void;
+}
+declare var tool: PicaToolColor;
 declare class PicaToolScaling extends PicaTool {
     protected scaling: number;
+    protected ratio: number;
     constructor();
     onClick(): void;
     updateEquality(): void;
@@ -2472,26 +1929,17 @@ declare class PicaToolScaling1 extends PicaToolScaling {
     constructor();
 }
 declare var tool: PicaToolColor;
+declare class PicaToolScaling2 extends PicaToolScaling {
+    protected scaling: number;
+    protected ratio: number;
+    constructor();
+}
+declare var tool: PicaToolColor;
 declare module UI.Sounds {
-    function callSelf(): void;
-    function printSounds(): void;
-    function stayInFolder(name: string): void;
-    function printError(data: any, onLoad: boolean): void;
-    function callDropbox(): void;
-    function addDropbox(files: any): void;
 }
 declare module UI.Styles {
-    function callSelf(): void;
-    function emptyTarget(): void;
-    function printStyles(styles: Array<StyleInfo>): void;
 }
 declare module UI.Styles.StyleDesigner {
-    function callSelf(id?: number): void;
-    function copy(): void;
-    function loadStyle(id: number): void;
-    function fillWithStyle(style: StyleInstance, copy?: boolean): void;
-    function submit(): void;
-    function finish(): void;
 }
 declare module Dropbox {
     function choose(options: any): any;

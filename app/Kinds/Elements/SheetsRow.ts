@@ -117,7 +117,9 @@ class SheetsRow {
                 row: this,
                 handleEvent: function (e) {
                     e.preventDefault();
-                    this.row.deleteSheet();
+                    if (confirm(UI.Language.getLanguage().getLingo("_RAPSDELETE_", {languagea : this.row.sheet.name}))) {
+                        this.row.deleteSheet();
+                    }
                 }
             });
         }

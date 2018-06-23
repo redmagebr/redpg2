@@ -45,6 +45,5 @@ if (Application.Login.hasSession()) {
 }
 
 document.write("<script src='" + Server.CLIENT_URL + "js/Changelog.js' type='text/javascript'>" + "<" + "/" + "script>");
-
 // Call any onReady listeners
 allReady();

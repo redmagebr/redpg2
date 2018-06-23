@@ -85,7 +85,9 @@ module UI.Games {
                 deleteGame.addEventListener("click", <EventListenerObject> {
                     game : games[i],
                     handleEvent : function () {
-                        UI.Games.deleteGame(this.game);
+                        if (confirm(UI.Language.getLanguage().getLingo("_RAPSDELETE_", {languagea : this.game.name}))) {
+                            UI.Games.deleteGame(this.game);
+                        }
                     }
                 });
 
@@ -161,7 +163,9 @@ module UI.Games {
                         rDelete.addEventListener("click", <EventListenerObject> {
                             room : room,
                             handleEvent : function () {
-                                UI.Rooms.deleteRoom(this.room);
+                                if (confirm(UI.Language.getLanguage().getLingo("_RAPSDELETE_", {languagea : this.room.name}))) {
+                                    UI.Rooms.deleteRoom(this.room);
+                                }
                             }
                         });
                         p.appendChild(rDelete);

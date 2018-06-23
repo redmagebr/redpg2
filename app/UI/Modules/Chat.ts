@@ -15,7 +15,6 @@ module UI.Chat {
     for (var i = 0; i < chatHelperss.length; i++) {
         chatHelpers.push(<HTMLElement> chatHelperss[i]);
     }
-    delete(i, chatHelperss);
 
     // Config Listeners
     Application.Config.getConfig("chatfontsize").addChangeListener(<Listener> {
@@ -95,6 +94,10 @@ module UI.Chat {
 
     export function getRoom () {
         return currentRoom;
+    }
+
+    export function inRoom () {
+        return currentRoom != null && currentRoom != undefined;
     }
 
     export function clearRoom () {
@@ -344,10 +347,8 @@ module UI.Chat {
     for (var i = 0; i < 1; i++) {
         var messages:Array<Message> = MessageFactory.createTestingMessages();
         printMessages(messages, true);
-        delete(messages);
         DB.MessageDB.releaseAllLocalMessages(); // On clear, all temporary messages will be lost anyway. This ties up loose ends.
     }
-    delete(i);
 
     var chatButton = document.getElementById("openChatButton");
     chatButton.style.display = "none";
