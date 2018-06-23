@@ -121,8 +121,8 @@ class Game {
 
     public updateFromObject (game : Object, cleanup : boolean) {
         for (var id in this) {
-            if (game[id] === undefined || id === "users" || id === "rooms" || id === "sheets") continue;
-            this[id] = game[id];
+            if (game[<any>id] === undefined || id === "users" || id === "rooms" || id === "sheets") continue;
+            this[<any>id] = game[<any>id];
         }
 
 
@@ -137,7 +137,7 @@ class Game {
                 cleanedup.push(game['users'][i]['id']);
             }
             if (cleanup) {
-                for (id in this.users) {
+                for (let id in this.users) {
                     if (cleanedup.indexOf(this.users[id].id) === -1) {
                         this.users[id].releaseGameContext(<number> this.id);
                         delete (this.users[id]);
@@ -174,7 +174,7 @@ class Game {
                 cleanedup.push((game['rooms'][i]['id']));
             }
             if (cleanup) {
-                for (id in this.rooms) {
+                for (let id in this.rooms) {
                     if (cleanedup.indexOf(this.rooms[id].id) === -1) {
                         DB.RoomDB.releaseRoom(this.rooms[id].id);
                         delete (this.rooms[id]);
@@ -197,7 +197,7 @@ class Game {
                 cleanedup.push(game['sheets'][i]['id']);
             }
             if (cleanup) {
-                for (id in this.sheets) {
+                for (let id in this.sheets) {
                     if (cleanedup.indexOf(this.sheets[id].id) === -1) {
                         DB.SheetDB.releaseSheet(this.sheets[id].id);
                         delete (this.sheets[id]);

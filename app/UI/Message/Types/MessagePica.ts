@@ -40,7 +40,7 @@ class MessagePica extends Message {
                 if (senderLengthLocal != senderLengthExt) {
                     console.log("I don't have all art for " + this.origin);
                     var msg = new MessagePica();
-                    msg.addDestination(this.getUser());
+                    msg.addDestination(this.getUser().getUser());
                     msg.setUrl(url);
                     msg.setMsg(this.msgRequestUpdate);
                     UI.Chat.sendMessage(msg);
@@ -51,7 +51,7 @@ class MessagePica extends Message {
                 UI.Pica.ArtManager.includeManyArts(roomid, url, arts);
             } else if (this.getMsg() == this.msgRequestUpdate) {
                 var msg = new MessagePica();
-                msg.addDestination(this.getUser());
+                msg.addDestination(this.getUser().getUser());
                 msg.setUrl(url);
                 msg.setMsg(this.msgRequestUpdate);
                 msg.setArts(UI.Pica.ArtManager.getMyArtsAsString(roomid, url));
@@ -83,7 +83,7 @@ class MessagePica extends Message {
         return null;
     }
 
-    public setArts (arts : Array) {
+    public setArts (arts : Array<any>) {
         this.setSpecial("arts", arts);
         this.setMsg(this.msgUpdateArts);
     }

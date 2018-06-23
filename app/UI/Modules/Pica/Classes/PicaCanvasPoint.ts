@@ -9,8 +9,8 @@ class PicaCanvasPoint {
     public setCoordinates (offsetX, offsetY) {
         var width = UI.Pica.Board.Canvas.getWidth();
         var height = UI.Pica.Board.Canvas.getHeight();
-        this.x = parseInt((offsetX * PicaCanvasPoint.precision) / width);
-        this.y = parseInt((offsetY * PicaCanvasPoint.precision) / height);
+        this.x = Math.floor((offsetX * PicaCanvasPoint.precision) / width);
+        this.y = Math.floor((offsetY * PicaCanvasPoint.precision) / height);
     }
 
     public setRelativeCoordinates (x, y) {
@@ -83,13 +83,13 @@ class PicaCanvasPoint {
      */
     public static encode (num : number) : string {
         var maxChars = PicaCanvasPoint.maxEncodedChars;
-        if (num > Math.pow(PicaCanvasPoint.encoding.length, maxChars)) { return NaN; }
-        if (num < 0) return NaN;
+        if (num > Math.pow(PicaCanvasPoint.encoding.length, maxChars)) { return "NaN"; }
+        if (num < 0) return "NaN";
 
         if (num < PicaCanvasPoint.length) {
             return PicaCanvasPoint.encoding[0] + PicaCanvasPoint.encoding.charAt(num);
         } else {
-            var a = parseInt(num / PicaCanvasPoint.encoding.length);
+            var a = Math.floor(num / PicaCanvasPoint.encoding.length);
             var b = num - (a * PicaCanvasPoint.encoding.length);
             return PicaCanvasPoint.encoding.charAt(a) + PicaCanvasPoint.encoding.charAt(b);
         }

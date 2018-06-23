@@ -150,8 +150,8 @@ class Room {
 
     public updateFromObject (room : Object, cleanup : boolean) {
         for (var id in this) {
-            if (room[id] === undefined || id === "users" || id === 'messages') continue;
-            this[id] = room[id];
+            if (room[<any>id] === undefined || id === "users" || id === 'messages') continue;
+            this[<any>id] = room[<any>id];
         }
 
         if (room["cleaner"] !== undefined) {
@@ -177,7 +177,7 @@ class Room {
                 cleanedup.push(room['users'][i]['id']);
             }
             if (cleanup) {
-                for (var id in this.users) {
+                for (let id in this.users) {
                     if (cleanedup.indexOf(this.users[id].id) === -1) {
                         this.users[id].releaseGameContext(this.id);
                         delete (this.users[id]);
@@ -199,7 +199,7 @@ class Room {
                 }
             }
             if (cleanup) {
-                for (id in this.messages) {
+                for (let id in this.messages) {
                     if (cleanedup.indexOf(this.messages[id].id) === -1) {
                         if (this.messages[id].localid !== null) {
                             DB.MessageDB.releaseLocalMessage(this.messages[id].localid);

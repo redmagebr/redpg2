@@ -45,8 +45,8 @@ class PicaCanvasArt {
      * @param str
      * @returns {boolean}
      */
-    public importFromString (str : String) {
-        obj = JSON.parse(str);
+    public importFromString (str : string) {
+        let obj = JSON.parse(str);
         this.setUserId(obj[0]);
         this.setPen(PicaToolPen.getPen(obj[1]));
         this.specialValues = obj[2];
@@ -62,7 +62,7 @@ class PicaCanvasArt {
         }
     }
 
-    public setPen (pen : PicaCanvasPen) {
+    public setPen (pen : PicaToolPen) {
         this.pen = pen;
     }
 
@@ -80,7 +80,7 @@ class PicaCanvasArt {
 
     public cleanUpPoints () {
         var oldLength = this.points.length;
-        cleanedPoints = [];
+        let cleanedPoints = [];
         if (this.points.length > 0) {
             cleanedPoints.push(this.points[0]);
             var lastAdded = this.points[0];

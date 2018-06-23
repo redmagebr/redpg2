@@ -30,8 +30,8 @@ class UserRoomContext {
 
     public updateFromObject (user : Object) {
         for (var id in this) {
-            if (user[id] === undefined) continue;
-            this[id] = user[id];
+            if (user[<any>id] === undefined) continue;
+            this[<any>id] = user[<any>id];
         }
     }
 

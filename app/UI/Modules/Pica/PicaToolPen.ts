@@ -22,8 +22,6 @@ class PicaToolPen extends PicaTool {
 
     }
 
-    public selected () : void {}
-
     public redraw () : void {}
 
     public drawFromArt (art : PicaCanvasArt) : void {}
@@ -51,13 +49,5 @@ class PicaToolPen extends PicaTool {
 
     public onClick () {
         UI.Pica.Board.Canvas.setPen(this);
-    }
-
-    public static registerPen (id : string, pen : PicaToolPen) {
-        PicaToolPen.Pens[id] = pen;
-    }
-
-    public static getPen (id : string) {
-        return PicaToolPen.Pens[id];
     }
 }

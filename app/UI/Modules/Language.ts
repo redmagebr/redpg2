@@ -23,7 +23,6 @@ module UI.Language {
 
         flagContainer.appendChild(a);
     }
-    delete (list, i, a, clickF);
 
     Application.Config.registerChangeListener("language", <Listener> {
         handleEvent : function () {

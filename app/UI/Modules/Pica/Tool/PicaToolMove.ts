@@ -21,7 +21,7 @@ class PicaToolMove extends PicaToolPen {
         if (this.lastPoint != null) {
             var xMovement = this.lastPoint.getX() - point.getX();
             var yMovement = this.lastPoint.getY() - point.getY();
-            board = UI.Pica.Board.getBoard();
+            let board = UI.Pica.Board.getBoard();
             board.scrollLeft += xMovement;
             board.scrollTop += yMovement;
         }
@@ -63,7 +63,8 @@ class PicaToolMove extends PicaToolPen {
     }
 }
 
-var move = new PicaToolMove();
-UI.Pica.Toolbar.registerTool(move);
-UI.Pica.Board.Canvas.setPen(move);
-delete(move);
+(function () {
+    var move = new PicaToolMove();
+    UI.Pica.Toolbar.registerTool(move);
+    UI.Pica.Board.Canvas.setPen(move);
+})();

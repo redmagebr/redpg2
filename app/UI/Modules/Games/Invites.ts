@@ -10,7 +10,6 @@ module UI.Games.Invites {
     a.appendChild(document.createTextNode("_GAMEINVITESERRORTRYAGAIN_"));
     $error[0].appendChild(a);
     UI.Language.markLanguage(a);
-    delete(a);
 
     document.getElementById("gameInvitesButton").addEventListener("click", function () { UI.Games.Invites.callSelf(); });
 

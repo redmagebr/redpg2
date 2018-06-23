@@ -2,7 +2,9 @@
 /// <reference path='Languages/Lingo.ts' />
 /// <reference path='Languages/LingoPTBR.ts' />
 
+
 /// <reference path='UI.ts' />
+/// <reference path='RAPS.ts' />
 /// <reference path='Modules/WindowManager.ts' />
 /// <reference path='Modules/Logger.ts' />
 /// <reference path='Modules/Config.ts' />

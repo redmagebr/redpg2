@@ -66,7 +66,6 @@ module UI.SoundController.MusicPlayer {
     };
     bgm.addEventListener("timeupdate", updateSeekerF);
     bgm.addEventListener("durationchange", updateSeekerF);
-    delete(updateSeekerF);
 
     bgm.addEventListener("ended", function () {
         var loop = Application.Config.getConfig("bgmLoop").getValue();

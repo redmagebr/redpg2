@@ -27,7 +27,6 @@ module UI.Pica.Board.Canvas {
     var updatePenFunction = function () { UI.Pica.Toolbar.updateVisibility(); };
     lockedTrigger.addListenerIfMissing(updatePenFunction);
     Server.Chat.addRoomListener(updatePenFunction);
-    delete (updatePenFunction);
 
     export function clearCanvas () {
         context.clearRect(0, 0, canvas.width, canvas.height);
@@ -182,7 +181,7 @@ module UI.Pica.Board.Canvas {
                 e.preventDefault();
                 var point = new PicaCanvasPoint();
                 point.setCoordinates(e.offsetX, e.offsetY);
-                var up = e.deltaY <= 0;
+                var up = (<any> e).deltaY <= 0;
                 UI.Pica.Board.Canvas.mouseWheel(up, point);
             }
         });

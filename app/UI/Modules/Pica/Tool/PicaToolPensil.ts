@@ -99,7 +99,8 @@ class PicaToolPensil extends PicaToolPen {
     }
 }
 
-var pensil = new PicaToolPensil();
-UI.Pica.Toolbar.registerTool(pensil);
-PicaToolPen.registerPen("pensil", pensil);
-delete(pensil);
+(function () {
+    var pensil = new PicaToolPensil();
+    UI.Pica.Toolbar.registerTool(pensil);
+    PicaToolPen.registerPen("pensil", pensil);
+})();

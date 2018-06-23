@@ -83,7 +83,8 @@ class PicaToolConu extends PicaToolPen {
     }
 }
 
-var pensil = new PicaToolConu();
-UI.Pica.Toolbar.registerTool(pensil);
-PicaToolPen.registerPen("conu", pensil);
-delete(pensil);
+(function () {
+    var pensil = new PicaToolConu();
+    UI.Pica.Toolbar.registerTool(pensil);
+    PicaToolPen.registerPen("conu", pensil);
+})()

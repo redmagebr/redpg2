@@ -33,6 +33,4 @@ class PicaToolLock extends PicaTool {
     }
 }
 
-var tool = new PicaToolLock();
-UI.Pica.Toolbar.registerTool(tool);
-delete(tool);
+UI.Pica.Toolbar.registerTool(new PicaToolLock());

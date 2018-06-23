@@ -38,7 +38,6 @@ module UI.Chat.Forms {
     formInput.addEventListener("keyup", inputKeyHandler);
     formInput.addEventListener("keydown", inputKeyHandler);
     formInput.addEventListener("keydown", function (e : KeyboardEvent) { UI.Chat.Forms.handleInputKeypress(e)});
-    delete (inputKeyHandler);
 
     var lastWhisperFrom : UserRoomContext = null;
 
@@ -410,5 +409,4 @@ module UI.Chat.Forms {
             }
         });
     }
-    delete(dices, i);
 }

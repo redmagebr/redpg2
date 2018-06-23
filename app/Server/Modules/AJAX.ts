@@ -17,7 +17,7 @@ module Server.AJAX {
         var xhr = new XMLHttpRequest();
         var method = ajax.data !== null ? "POST" : "GET";
         xhr.open(method, <string> url, true);
-        xhr.responseType = ajax.responseType;
+        xhr.responseType = <any>ajax.responseType;
 
         xhr.addEventListener("loadend", <EventListenerObject> {
             ajax : ajax,

@@ -17,6 +17,4 @@ class PicaToolClean extends PicaTool {
     }
 }
 
-var tool = new PicaToolClean();
-UI.Pica.Toolbar.registerTool(tool);
-delete(tool);
+UI.Pica.Toolbar.registerTool(new PicaToolClean());

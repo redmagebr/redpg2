@@ -2,12 +2,12 @@ class PicaToolColor extends PicaTool {
     constructor () {
         super();
 
-        this.a = document.createElement("input");
+        this.a = <any> document.createElement("input");
         this.a.id= "colopica";
         this.a.type = "color";
 
         this.a.addEventListener("change", function () {
-            UI.Pica.Board.Canvas.setPenColor(this.value.substr(1));
+            UI.Pica.Board.Canvas.setPenColor((<any> this).value.substr(1));
         });
 
         UI.Pica.Board.Canvas.addPenListener(<EventListenerObject> {
@@ -21,6 +21,4 @@ class PicaToolColor extends PicaTool {
     }
 }
 
-var tool = new PicaToolColor();
-UI.Pica.Toolbar.registerTool(tool);
-delete(tool);
+UI.Pica.Toolbar.registerTool(new PicaToolColor());

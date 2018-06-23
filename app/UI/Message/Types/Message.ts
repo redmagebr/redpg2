@@ -274,9 +274,9 @@ class Message extends SlashCommand {
      */
     public updateFromObject (obj : Object) {
         for (var id in this) {
-            if (obj[id] === undefined) continue;
+            if (obj[<any>id] === undefined) continue;
             if (id === "localid") continue;
-            this[id] = obj[id];
+            this[<any>id] = obj[<any>id];
         }
 
         if (typeof this.special === "string") {

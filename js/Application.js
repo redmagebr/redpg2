@@ -31,7 +31,7 @@ function allReady() {
         onReady[i].handleEvent();
     }
 }
-var Trigger = (function () {
+var Trigger = /** @class */ (function () {
     function Trigger() {
         this.functions = [];
         this.objects = [];
@@ -84,7 +84,7 @@ var Trigger = (function () {
     };
     return Trigger;
 }());
-var Changelog = (function () {
+var Changelog = /** @class */ (function () {
     function Changelog(major, minor, release) {
         this.messages = {};
         this.release = release;
@@ -188,6 +188,9 @@ var Changelog = (function () {
         return ["Changelog contains no messages."];
     };
     Changelog.prototype.getHTML = function (missing) {
+        // %p.mainWindowParagraph.changelogMissing
+        //     %span.changelogChangeVersion="0.9.0"
+        //     %span.changelogChange="Adicionadas coisas legais que você não tem."
         var p = document.createElement("p");
         p.classList.add("mainWindowParagraph");
         if (missing) {
@@ -213,7 +216,7 @@ var Changelog = (function () {
     Changelog.updatesExternal = null;
     return Changelog;
 }());
-var ImageRed = (function () {
+var ImageRed = /** @class */ (function () {
     function ImageRed() {
     }
     ImageRed.prototype.getLink = function () {
@@ -228,7 +231,7 @@ var ImageRed = (function () {
     };
     return ImageRed;
 }());
-var ImageLink = (function () {
+var ImageLink = /** @class */ (function () {
     function ImageLink(name, url, folder) {
         this.tokenWidth = null;
         this.tokenHeight = null;
@@ -278,7 +281,10 @@ var ImageLink = (function () {
     };
     return ImageLink;
 }());
-var User = (function () {
+/**
+ * Created by Reddo on 14/09/2015.
+ */
+var User = /** @class */ (function () {
     function User() {
         this.nickname = "Undefined";
         this.nicknamesufix = "????";
@@ -359,7 +365,7 @@ var User = (function () {
     };
     return User;
 }());
-var UserGameContext = (function () {
+var UserGameContext = /** @class */ (function () {
     function UserGameContext(user) {
         this.gameid = 0;
         this.createRoom = false;
@@ -389,7 +395,7 @@ var UserGameContext = (function () {
     };
     return UserGameContext;
 }());
-var UserRoomContext = (function () {
+var UserRoomContext = /** @class */ (function () {
     function UserRoomContext(user) {
         this.logger = false;
         this.cleaner = false;
@@ -430,7 +436,7 @@ var UserRoomContext = (function () {
     };
     return UserRoomContext;
 }());
-var Room = (function () {
+var Room = /** @class */ (function () {
     function Room() {
         this.gameid = null;
         this.id = null;
@@ -594,10 +600,10 @@ var Room = (function () {
                 cleanedup.push(room['users'][i]['id']);
             }
             if (cleanup) {
-                for (var id in this.users) {
-                    if (cleanedup.indexOf(this.users[id].id) === -1) {
-                        this.users[id].releaseGameContext(this.id);
-                        delete (this.users[id]);
+                for (var id_1 in this.users) {
+                    if (cleanedup.indexOf(this.users[id_1].id) === -1) {
+                        this.users[id_1].releaseGameContext(this.id);
+                        delete (this.users[id_1]);
                     }
                 }
             }
@@ -615,12 +621,12 @@ var Room = (function () {
                 }
             }
             if (cleanup) {
-                for (id in this.messages) {
-                    if (cleanedup.indexOf(this.messages[id].id) === -1) {
-                        if (this.messages[id].localid !== null) {
-                            DB.MessageDB.releaseLocalMessage(this.messages[id].localid);
+                for (var id_2 in this.messages) {
+                    if (cleanedup.indexOf(this.messages[id_2].id) === -1) {
+                        if (this.messages[id_2].localid !== null) {
+                            DB.MessageDB.releaseLocalMessage(this.messages[id_2].localid);
                         }
-                        DB.MessageDB.releaseMessage(this.messages[id].id);
+                        DB.MessageDB.releaseMessage(this.messages[id_2].id);
                     }
                 }
             }
@@ -628,7 +634,7 @@ var Room = (function () {
     };
     return Room;
 }());
-var Game = (function () {
+var Game = /** @class */ (function () {
     function Game() {
         this.users = {};
         this.rooms = {};
@@ -726,6 +732,10 @@ var Game = (function () {
         return list;
     };
     Game.prototype.exportAsObject = function () {
+        //public description : string = null;
+        //public name : string = null;
+        //public id : number = null;
+        //public freejoin : boolean = null;
         var obj = {
             desc: this.description,
             name: this.name,
@@ -753,14 +763,15 @@ var Game = (function () {
                 cleanedup.push(game['users'][i]['id']);
             }
             if (cleanup) {
-                for (id in this.users) {
-                    if (cleanedup.indexOf(this.users[id].id) === -1) {
-                        this.users[id].releaseGameContext(this.id);
-                        delete (this.users[id]);
+                for (var id_3 in this.users) {
+                    if (cleanedup.indexOf(this.users[id_3].id) === -1) {
+                        this.users[id_3].releaseGameContext(this.id);
+                        delete (this.users[id_3]);
                     }
                 }
             }
         }
+        // This game has the permissions for ME
         if (game["createRoom"] !== undefined) {
             this.users[Application.getMyId()] = DB.UserDB.getUser(Application.getMyId());
             var updateObj = {
@@ -786,10 +797,10 @@ var Game = (function () {
                 cleanedup.push((game['rooms'][i]['id']));
             }
             if (cleanup) {
-                for (id in this.rooms) {
-                    if (cleanedup.indexOf(this.rooms[id].id) === -1) {
-                        DB.RoomDB.releaseRoom(this.rooms[id].id);
-                        delete (this.rooms[id]);
+                for (var id_4 in this.rooms) {
+                    if (cleanedup.indexOf(this.rooms[id_4].id) === -1) {
+                        DB.RoomDB.releaseRoom(this.rooms[id_4].id);
+                        delete (this.rooms[id_4]);
                     }
                 }
             }
@@ -808,10 +819,10 @@ var Game = (function () {
                 cleanedup.push(game['sheets'][i]['id']);
             }
             if (cleanup) {
-                for (id in this.sheets) {
-                    if (cleanedup.indexOf(this.sheets[id].id) === -1) {
-                        DB.SheetDB.releaseSheet(this.sheets[id].id);
-                        delete (this.sheets[id]);
+                for (var id_5 in this.sheets) {
+                    if (cleanedup.indexOf(this.sheets[id_5].id) === -1) {
+                        DB.SheetDB.releaseSheet(this.sheets[id_5].id);
+                        delete (this.sheets[id_5]);
                     }
                 }
             }
@@ -819,7 +830,7 @@ var Game = (function () {
     };
     return Game;
 }());
-var SheetInstance = (function () {
+var SheetInstance = /** @class */ (function () {
     function SheetInstance() {
         this.tab = null;
         this.id = 0;
@@ -900,6 +911,8 @@ var SheetInstance = (function () {
         return this.values;
     };
     SheetInstance.prototype.setValues = function (values, local) {
+        // Local values = user changed them NOW.
+        // Not local = saved on server.
         var newJson = JSON.stringify(values);
         if (newJson !== this.lastValues) {
             this.values = values;
@@ -908,9 +921,11 @@ var SheetInstance = (function () {
         }
         if (this.changed) {
             if (local) {
+                // Store in localStorage
                 Application.LocalMemory.setMemory(this.getMemoryId(), newJson);
             }
             else {
+                // Since these are the server values, even though the current instance changed, it's not changed in the way users see it.
                 this.changed = false;
             }
             this.triggerChanged();
@@ -984,7 +999,7 @@ var SheetInstance = (function () {
     };
     return SheetInstance;
 }());
-var StyleInstance = (function () {
+var StyleInstance = /** @class */ (function () {
     function StyleInstance() {
         this.id = 0;
         this.gameid = 0;
@@ -1013,7 +1028,7 @@ var StyleInstance = (function () {
     };
     return StyleInstance;
 }());
-var SoundLink = (function () {
+var SoundLink = /** @class */ (function () {
     function SoundLink(name, url, folder, bgm) {
         this.name = name;
         this.url = url;
@@ -1027,7 +1042,9 @@ var SoundLink = (function () {
         return this.bgm;
     };
     SoundLink.prototype.setFolder = function (name) {
+        //UI.Images.stayInFolder(this.folder);
         this.folder = name;
+        //UI.Images.printImages();
         DB.SoundDB.considerSaving();
     };
     SoundLink.prototype.getLink = function () {
@@ -1053,7 +1070,7 @@ var SoundLink = (function () {
     };
     return SoundLink;
 }());
-var PseudoWord = (function () {
+var PseudoWord = /** @class */ (function () {
     function PseudoWord(word) {
         this.translatedWord = null;
         this.originalWord = word;
@@ -1069,7 +1086,7 @@ var PseudoWord = (function () {
     };
     return PseudoWord;
 }());
-var PseudoLanguage = (function () {
+var PseudoLanguage = /** @class */ (function () {
     function PseudoLanguage(id) {
         this.singleLetters = [];
         this.shortWords = [];
@@ -1289,7 +1306,10 @@ var PseudoLanguage = (function () {
     PseudoLanguage.languages = {};
     return PseudoLanguage;
 }());
-var AJAXConfig = (function () {
+/**
+ * Created by Reddo on 14/09/2015.
+ */
+var AJAXConfig = /** @class */ (function () {
     function AJAXConfig(url) {
         this._target = 0;
         this._url = "";
@@ -1314,6 +1334,25 @@ var AJAXConfig = (function () {
             else if (this.target === AJAXConfig.TARGET_RIGHT) {
                 UI.Loading.blockRight();
             }
+            // Fun, but has issues.
+            //var func = function () {
+            //    this.loadingTimeout = null;
+            //    if (this.target === AJAXConfig.TARGET_GLOBAL) {
+            //        UI.Loading.startLoading();
+            //    } else if (this.target === AJAXConfig.TARGET_LEFT) {
+            //        UI.Loading.blockLeft();
+            //    } else if (this.target === AJAXConfig.TARGET_RIGHT) {
+            //        UI.Loading.blockRight();
+            //    }
+            //}
+            //
+            //func = func.bind(this);
+            //
+            //if (this.instantLoading || Application.Config.getConfig("animTime").getValue() < 50) {
+            //    func();
+            //} else {
+            //    this.loadingTimeout = window.setTimeout(func, Application.Config.getConfig("animTime").getValue());
+            //}
         }
     };
     AJAXConfig.prototype.finishConditionalLoading = function () {
@@ -1414,7 +1453,7 @@ var AJAXConfig = (function () {
     AJAXConfig.CONDITIONAL_LOADING_TIMEOUT = 150;
     return AJAXConfig;
 }());
-var WebsocketController = (function () {
+var WebsocketController = /** @class */ (function () {
     function WebsocketController(url) {
         this.socket = null;
         this.keepAlive = true;
@@ -1548,7 +1587,7 @@ var WebsocketController = (function () {
     WebsocketController.READYSTATE_CLOSED = 3;
     return WebsocketController;
 }());
-var ChatWsController = (function () {
+var ChatWsController = /** @class */ (function () {
     function ChatWsController() {
         this.socket = new WebsocketController(Server.Chat.CHAT_URL);
         this.currentRoom = null;
@@ -1608,7 +1647,10 @@ var ChatWsController = (function () {
     };
     return ChatWsController;
 }());
-var Configuration = (function () {
+/**
+ * Created by Reddo on 16/09/2015.
+ */
+var Configuration = /** @class */ (function () {
     function Configuration(defV) {
         this.changeTrigger = new Trigger();
         this.value = null;
@@ -1650,7 +1692,7 @@ var Configuration = (function () {
     };
     return Configuration;
 }());
-var NumberConfiguration = (function (_super) {
+var NumberConfiguration = /** @class */ (function (_super) {
     __extends(NumberConfiguration, _super);
     function NumberConfiguration(defValue, min, max) {
         var _this = _super.call(this, defValue) || this;
@@ -1669,6 +1711,10 @@ var NumberConfiguration = (function (_super) {
             }
         };
         _this.getFunction = function () {
+            // if ($.browser.mobile) {
+            //     return 0;
+            // }
+            //WTF!?!?!?
             return this.value;
         };
         _this.min = min;
@@ -1677,7 +1723,7 @@ var NumberConfiguration = (function (_super) {
     }
     return NumberConfiguration;
 }(Configuration));
-var WsportConfiguration = (function (_super) {
+var WsportConfiguration = /** @class */ (function (_super) {
     __extends(WsportConfiguration, _super);
     function WsportConfiguration() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
@@ -1693,7 +1739,7 @@ var WsportConfiguration = (function (_super) {
     }
     return WsportConfiguration;
 }(Configuration));
-var LanguageConfiguration = (function (_super) {
+var LanguageConfiguration = /** @class */ (function (_super) {
     __extends(LanguageConfiguration, _super);
     function LanguageConfiguration() {
         var _this = _super.call(this, navigator.language) || this;
@@ -1707,7 +1753,7 @@ var LanguageConfiguration = (function (_super) {
     }
     return LanguageConfiguration;
 }(Configuration));
-var BooleanConfiguration = (function (_super) {
+var BooleanConfiguration = /** @class */ (function (_super) {
     __extends(BooleanConfiguration, _super);
     function BooleanConfiguration(bool) {
         var _this = _super.call(this, bool ? 1 : 0) || this;
@@ -1727,7 +1773,7 @@ var BooleanConfiguration = (function (_super) {
     }
     return BooleanConfiguration;
 }(Configuration));
-var TrackerMemory = (function () {
+var TrackerMemory = /** @class */ (function () {
     function TrackerMemory() {
         this.changeTrigger = new Trigger();
     }
@@ -1739,7 +1785,7 @@ var TrackerMemory = (function () {
     };
     return TrackerMemory;
 }());
-var MemoryCombat = (function (_super) {
+var MemoryCombat = /** @class */ (function (_super) {
     __extends(MemoryCombat, _super);
     function MemoryCombat() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
@@ -2061,7 +2107,7 @@ var MemoryCombat = (function (_super) {
     };
     return MemoryCombat;
 }(TrackerMemory));
-var MemoryFilter = (function (_super) {
+var MemoryFilter = /** @class */ (function (_super) {
     __extends(MemoryFilter, _super);
     function MemoryFilter() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
@@ -2092,7 +2138,7 @@ var MemoryFilter = (function (_super) {
     MemoryFilter.names = ["none", "night", "noir", "trauma", "gray", "sepia", "evening", "fire"];
     return MemoryFilter;
 }(TrackerMemory));
-var MemoryPica = (function (_super) {
+var MemoryPica = /** @class */ (function (_super) {
     __extends(MemoryPica, _super);
     function MemoryPica() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
@@ -2150,7 +2196,7 @@ var MemoryPica = (function (_super) {
     MemoryPica.fieldOrder = ["picaAllowed"];
     return MemoryPica;
 }(TrackerMemory));
-var MemoryLingo = (function (_super) {
+var MemoryLingo = /** @class */ (function (_super) {
     __extends(MemoryLingo, _super);
     function MemoryLingo() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
@@ -2274,7 +2320,7 @@ var MemoryLingo = (function (_super) {
     };
     return MemoryLingo;
 }(TrackerMemory));
-var MemoryVersion = (function (_super) {
+var MemoryVersion = /** @class */ (function (_super) {
     __extends(MemoryVersion, _super);
     function MemoryVersion() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
@@ -2295,7 +2341,7 @@ var MemoryVersion = (function (_super) {
     };
     return MemoryVersion;
 }(TrackerMemory));
-var MemoryCutscene = (function (_super) {
+var MemoryCutscene = /** @class */ (function (_super) {
     __extends(MemoryCutscene, _super);
     function MemoryCutscene() {
         var _this = _super.call(this) || this;
@@ -2322,6 +2368,8 @@ var MemoryCutscene = (function (_super) {
                 msg.addText("_CHATSHHHHHWEHOLLYWOODINACTIVE_");
                 UI.Chat.printElement(msg.getElement());
             }
+            //The button already shows the change, let's not ruin the cutscene by printing a warning
+            //MessageCutscene.sendNotification(this.getValue());
         }
     };
     MemoryCutscene.prototype.reset = function () {
@@ -2351,7 +2399,8 @@ var MemoryCutscene = (function (_super) {
     MemoryCutscene.button = document.getElementById("chatHollywood");
     return MemoryCutscene;
 }(TrackerMemory));
-var CombatEffect = (function () {
+/// <reference path='../MemoryCombat.ts' />
+var CombatEffect = /** @class */ (function () {
     function CombatEffect(combat) {
         this.name = "";
         this.target = 0;
@@ -2415,7 +2464,7 @@ var CombatEffect = (function () {
     };
     return CombatEffect;
 }());
-var CombatParticipant = (function () {
+var CombatParticipant = /** @class */ (function () {
     function CombatParticipant() {
         this.id = 0;
         this.name = "";
@@ -2452,7 +2501,7 @@ var CombatParticipant = (function () {
     };
     return CombatParticipant;
 }());
-var ChatCombatRow = (function () {
+var ChatCombatRow = /** @class */ (function () {
     function ChatCombatRow(combatant, currentTurn, currentTarget, isStoryteller) {
         this.visible = document.createElement("div");
         this.combatant = combatant;
@@ -2485,6 +2534,7 @@ var ChatCombatRow = (function () {
             input.addEventListener("change", (function () {
                 this.change();
             }).bind(this));
+            // TURN!!!!!!!!!!!!!!
             var turn = document.createElement("a");
             turn.classList.add("combatSetTurn", "language");
             UI.Language.addLanguageTitle(turn, "_COMBATTRACKERSETTURN_");
@@ -2494,6 +2544,7 @@ var ChatCombatRow = (function () {
             }).bind(this));
             this.visible.appendChild(turn);
         }
+        // TARGET!!!!
         var target = document.createElement("a");
         target.classList.add("combatTarget", "language");
         UI.Language.addLanguageTitle(target, "_COMBATTRACKERSETTARGET_");
@@ -2502,6 +2553,7 @@ var ChatCombatRow = (function () {
             this.setTarget();
         }).bind(this));
         this.visible.appendChild(target);
+        // SHEET!!!!!!!
         if (isStoryteller || Application.isMe(this.combatant.owner)) {
             var sheet = document.createElement("a");
             sheet.classList.add("combatSheet", "language");
@@ -2545,7 +2597,7 @@ var ChatCombatRow = (function () {
     };
     return ChatCombatRow;
 }());
-var ChatInfo = (function () {
+var ChatInfo = /** @class */ (function () {
     function ChatInfo(floater) {
         this.textNode = document.createTextNode("null");
         this.senderBold = document.createElement("b");
@@ -2580,7 +2632,7 @@ var ChatInfo = (function () {
     };
     ChatInfo.prototype.bindMessage = function (message, element) {
         if (message instanceof MessageSystem) {
-            return;
+            return; // we don't bind system messages
         }
         var $element = $(element);
         element.addEventListener("mouseenter", {
@@ -2607,7 +2659,7 @@ var ChatInfo = (function () {
     };
     return ChatInfo;
 }());
-var ChatAvatar = (function () {
+var ChatAvatar = /** @class */ (function () {
     function ChatAvatar() {
         this.element = document.createElement("div");
         this.img = document.createElement("img");
@@ -2659,6 +2711,7 @@ var ChatAvatar = (function () {
             this.online = online;
         }
     };
+    // Fake "changed" if we are online for reconnect
     ChatAvatar.prototype.reset = function () {
         this.setOnline(false);
         this.changedOnline = false;
@@ -2746,7 +2799,7 @@ var ChatAvatar = (function () {
     };
     return ChatAvatar;
 }());
-var ChatNotificationIcon = (function () {
+var ChatNotificationIcon = /** @class */ (function () {
     function ChatNotificationIcon(icon, hasLanguage) {
         this.element = document.createElement("div");
         this.hoverInfo = document.createElement("div");
@@ -2784,7 +2837,7 @@ var ChatNotificationIcon = (function () {
     };
     return ChatNotificationIcon;
 }());
-var ChatFormState = (function () {
+var ChatFormState = /** @class */ (function () {
     function ChatFormState(element) {
         this.state = -1;
         this.element = element;
@@ -2820,7 +2873,7 @@ var ChatFormState = (function () {
     ChatFormState.STATE_OFF = 3;
     return ChatFormState;
 }());
-var ChatAvatarChoice = (function () {
+var ChatAvatarChoice = /** @class */ (function () {
     function ChatAvatarChoice(name, avatar) {
         this.avatar = new ChatAvatar();
         this.box = document.createElement("div");
@@ -2862,7 +2915,7 @@ var ChatAvatarChoice = (function () {
     };
     return ChatAvatarChoice;
 }());
-var ChatSystemMessage = (function () {
+var ChatSystemMessage = /** @class */ (function () {
     function ChatSystemMessage(hasLanguage) {
         this.element = document.createElement("p");
         this.element.classList.add("chatMessageNotification");
@@ -2901,12 +2954,13 @@ var ChatSystemMessage = (function () {
     };
     return ChatSystemMessage;
 }());
-var ImagesRow = (function () {
+var ImagesRow = /** @class */ (function () {
     function ImagesRow(image, folder) {
         this.folder = folder;
         this.image = image;
         var imageContainer = document.createElement("div");
         imageContainer.classList.add("imagesRow");
+        // SHARE
         var shareButton = document.createElement("a");
         shareButton.classList.add("imagesLeftButton");
         shareButton.classList.add("icons-imagesShare");
@@ -2917,6 +2971,7 @@ var ImagesRow = (function () {
                 this.row.share();
             }
         });
+        // VIEW
         var viewButton = document.createElement("a");
         viewButton.classList.add("imagesLeftButton");
         viewButton.classList.add("icons-imagesView");
@@ -2927,6 +2982,7 @@ var ImagesRow = (function () {
                 this.row.view();
             }
         });
+        // PERSONA
         var personaButton = document.createElement("a");
         personaButton.classList.add("imagesLeftButton");
         personaButton.classList.add("icons-imagesPersona");
@@ -2937,6 +2993,7 @@ var ImagesRow = (function () {
                 this.row.usePersona();
             }
         });
+        // DELETE
         var deleteButton = document.createElement("a");
         deleteButton.classList.add("imagesRightButton");
         deleteButton.classList.add("icons-imagesDelete");
@@ -2947,6 +3004,7 @@ var ImagesRow = (function () {
                 this.row.delete();
             }
         });
+        // RENAME
         var renameButton = document.createElement("a");
         renameButton.classList.add("imagesRightButton");
         renameButton.classList.add("icons-imagesRename");
@@ -2957,6 +3015,7 @@ var ImagesRow = (function () {
                 this.row.rename();
             }
         });
+        // FOLDER
         var folderButton = document.createElement("a");
         folderButton.classList.add("imagesRightButton");
         folderButton.classList.add("icons-imagesFolder");
@@ -2982,6 +3041,14 @@ var ImagesRow = (function () {
         imageContainer.appendChild(imageTitle);
         this.html = imageContainer;
     }
+    //     .imagesRow
+    //         %a.imagesLeftButton.icons-imagesShare
+    //         %a.imagesLeftButton.icons-imagesView
+    //         %a.imagesLeftButton.icons-imagesPersona
+    //         %a.imagesRightButton.icons-imagesDelete
+    //         %a.imagesRightButton.icons-imagesRename
+    //         %a.imagesRightButton.icons-imagesFolder
+    //         %a.imagesRowTitle="Nome da Imagem"
     ImagesRow.prototype.view = function () {
         UI.Pica.loadImage(this.image.getLink());
     };
@@ -3017,7 +3084,10 @@ var ImagesRow = (function () {
     };
     return ImagesRow;
 }());
-var ImagesFolder = (function () {
+var ImagesFolder = /** @class */ (function () {
+    // .imagesFolder
+    //     %a.imagesFolderIcon
+    //     %span.imagesFolderTitle{:onclick => "this.parentNode.classList.toggle('folderOpen');"}="Nome da Pasta"
     function ImagesFolder(images) {
         var folderName = images[0].getFolder();
         this.name = folderName;
@@ -3068,11 +3138,12 @@ var ImagesFolder = (function () {
     };
     return ImagesFolder;
 }());
-var SheetsRow = (function () {
+var SheetsRow = /** @class */ (function () {
     function SheetsRow(sheet) {
         this.sheet = sheet;
         this.html = document.createElement("p");
         this.html.classList.add("sheetListSheet");
+        // NAME
         var nameLink = document.createElement("a");
         nameLink.classList.add("sheetNameLink");
         this.nameNode = document.createTextNode(sheet.getName());
@@ -3085,6 +3156,7 @@ var SheetsRow = (function () {
                 this.row.open(e);
             }
         });
+        // FOLDER
         if (sheet.isEditable()) {
             var folder = document.createElement("a");
             folder.classList.add("sheetExtraButton");
@@ -3100,6 +3172,7 @@ var SheetsRow = (function () {
                 }
             });
         }
+        // PERMISSIONS
         if (sheet.isPromotable()) {
             var perm = document.createElement("a");
             perm.classList.add("sheetExtraButton");
@@ -3115,6 +3188,7 @@ var SheetsRow = (function () {
                 }
             });
         }
+        // DELETE
         if (sheet.isDeletable()) {
             var del = document.createElement("a");
             del.classList.add("sheetExtraButton");
@@ -3176,18 +3250,20 @@ var SheetsRow = (function () {
     };
     return SheetsRow;
 }());
-var SheetsFolder = (function () {
+var SheetsFolder = /** @class */ (function () {
     function SheetsFolder(sheets, open) {
         var folderName = sheets[0].folder;
         if (folderName === "") {
             folderName = UI.Language.getLanguage().getLingo("_SHEETSNOFOLDERNAME_");
         }
+        // .sheetListFolderContainer.lightHoverable.openSheetFolder
         this.html = document.createElement("div");
         this.html.classList.add("sheetListFolderContainer");
         this.html.classList.add("lightHoverable");
         if (open === true) {
             this.html.classList.add("openSheetFolder");
         }
+        // %p.sheetListFolderName{:onclick=>"this.parentNode.classList.toggle('openSheetFolder');"}="Nome da pasta"
         var p = document.createElement("p");
         p.classList.add("sheetListFolderName");
         p.appendChild(document.createTextNode(folderName));
@@ -3206,7 +3282,7 @@ var SheetsFolder = (function () {
     };
     return SheetsFolder;
 }());
-var SheetPermRow = (function () {
+var SheetPermRow = /** @class */ (function () {
     function SheetPermRow(player) {
         this.deleteSheet = false;
         this.editSheet = false;
@@ -3244,6 +3320,17 @@ var SheetPermRow = (function () {
         return obj;
     };
     SheetPermRow.prototype.getHTML = function () {
+        // %p.sheetPermRow
+        //     momo#0000
+        //     %label.sheetPermLabel.language
+        //     %input.sheetPermCheckbox{:type=>"checkbox"}
+        //     _SHEETPERMISSIONVIEW_
+        //     %label.sheetPermLabel.language
+        //     %input.sheetPermCheckbox{:type=>"checkbox"}
+        //     _SHEETPERMISSIONEDIT_
+        //     %label.sheetPermLabel.language
+        //     %input.sheetPermCheckbox{:type=>"checkbox"}
+        //     _SHEETPERMISSIONDELETE_
         var p = document.createElement("p");
         p.classList.add("sheetPermRow");
         p.appendChild(document.createTextNode(this.nickname + "#" + this.nicknamesufix));
@@ -3259,17 +3346,30 @@ var SheetPermRow = (function () {
         editLabel.appendChild(document.createTextNode("_SHEETPERMISSIONEDIT_"));
         editLabel.appendChild(this.editInput);
         p.appendChild(editLabel);
+        // var deleteLabel = document.createElement("label");
+        // deleteLabel.classList.add("language");
+        // deleteLabel.classList.add("sheetPermLabel");
+        // deleteLabel.appendChild(document.createTextNode("_SHEETPERMISSIONDELETE_"));
+        // deleteLabel.appendChild(this.deleteInput);
+        // p.appendChild(deleteLabel);
+        // var promoteLabel = document.createElement("label");
+        // promoteLabel.classList.add("language");
+        // promoteLabel.classList.add("sheetPermLabel");
+        // promoteLabel.appendChild(document.createTextNode("_SHEETPERMISSIONPROMOTE_"));
+        // promoteLabel.appendChild(this.promoteInput);
+        // p.appendChild(promoteLabel);
         UI.Language.updateScreen(p);
         return p;
     };
     return SheetPermRow;
 }());
-var SoundsRow = (function () {
+var SoundsRow = /** @class */ (function () {
     function SoundsRow(snd, folder) {
         this.folder = folder;
         this.sound = snd;
         var soundContainer = document.createElement("div");
         soundContainer.classList.add("imagesRow");
+        // SHARE
         var shareButton = document.createElement("a");
         shareButton.classList.add("imagesLeftButton");
         shareButton.classList.add("icons-imagesShare");
@@ -3280,6 +3380,7 @@ var SoundsRow = (function () {
                 this.row.share();
             }
         });
+        // VIEW
         var viewButton = document.createElement("a");
         viewButton.classList.add("imagesLeftButton");
         viewButton.classList.add("icons-soundsPlay");
@@ -3290,6 +3391,7 @@ var SoundsRow = (function () {
                 this.row.play();
             }
         });
+        // PERSONA
         var personaButton = document.createElement("a");
         personaButton.classList.add("imagesLeftButton");
         personaButton.classList.add("icons-imagesPersona");
@@ -3300,6 +3402,7 @@ var SoundsRow = (function () {
                 this.row.usePersona();
             }
         });
+        // DELETE
         var deleteButton = document.createElement("a");
         deleteButton.classList.add("imagesRightButton");
         deleteButton.classList.add("icons-imagesDelete");
@@ -3310,6 +3413,7 @@ var SoundsRow = (function () {
                 this.row.delete();
             }
         });
+        // RENAME
         var renameButton = document.createElement("a");
         renameButton.classList.add("imagesRightButton");
         renameButton.classList.add("icons-imagesRename");
@@ -3320,6 +3424,7 @@ var SoundsRow = (function () {
                 this.row.rename();
             }
         });
+        // FOLDER
         var folderButton = document.createElement("a");
         folderButton.classList.add("imagesRightButton");
         folderButton.classList.add("icons-imagesFolder");
@@ -3344,6 +3449,14 @@ var SoundsRow = (function () {
         soundContainer.appendChild(imageTitle);
         this.html = soundContainer;
     }
+    //     .imagesRow
+    //         %a.imagesLeftButton.icons-imagesShare
+    //         %a.imagesLeftButton.icons-imagesView
+    //         %a.imagesLeftButton.icons-imagesPersona
+    //         %a.imagesRightButton.icons-imagesDelete
+    //         %a.imagesRightButton.icons-imagesRename
+    //         %a.imagesRightButton.icons-imagesFolder
+    //         %a.imagesRowTitle="Nome da Imagem"
     SoundsRow.prototype.play = function () {
         if (this.sound.isBgm()) {
             UI.SoundController.playBGM(this.sound.getLink());
@@ -3387,7 +3500,10 @@ var SoundsRow = (function () {
     };
     return SoundsRow;
 }());
-var SoundsFolder = (function () {
+var SoundsFolder = /** @class */ (function () {
+    // .imagesFolder
+    //     %a.imagesFolderIcon
+    //     %span.imagesFolderTitle{:onclick => "this.parentNode.classList.toggle('folderOpen');"}="Nome da Pasta"
     function SoundsFolder(sounds) {
         var folderName = sounds[0].getFolder();
         this.name = folderName;
@@ -3438,7 +3554,7 @@ var SoundsFolder = (function () {
     };
     return SoundsFolder;
 }());
-var SheetTab = (function () {
+var SheetTab = /** @class */ (function () {
     function SheetTab(sheet) {
         this.div = document.createElement("div");
         this.text = document.createTextNode("");
@@ -3466,6 +3582,12 @@ var SheetTab = (function () {
         this.text.nodeValue = this.sheet.getName();
     };
     SheetTab.prototype.checkNPCStatus = function () {
+        // var player = this.sheet.getValue("Player") !== undefined ? this.sheet.getValue("Player") :
+        //                 this.sheet.getValue("Jogador") !== undefined ? this.sheet.getValue("Jogador") :
+        //                     this.sheet.getValue("Owner") !== undefined ? this.sheet.getValue("Owner") :
+        //                         this.sheet.getValue("Dono") !== undefined ? this.sheet.getValue("Dono") :
+        //                             undefined;
+        // if (player !== undefined && player.toUpperCase() === "NPC") {
         if (this.sheet.isNPC()) {
             this.toggleNpc();
         }
@@ -3493,6 +3615,7 @@ var SheetTab = (function () {
     };
     return SheetTab;
 }());
+// Ancient
 (new PseudoLanguage("Ancient"))
     .addSyllabi(["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"])
     .addNumbers(['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'])
@@ -3560,6 +3683,7 @@ var SheetTab = (function () {
     .setRandomizeNumbers(false)
     .setAllowPoints(true)
     .setLowerCase(false);
+// Ancient
 (new PseudoLanguage("Binary"))
     .addSyllabi(['.', '-', '!', "+", "#", "|", "\\", "/", "<", ">", "$", "%", ".", "-", ".", "-", ".", "-", ".", "-", "¢", "%", "@", "?", ":", ";"])
     .addNumbers(["0", "1", "00", "01", "10", "11", "000", "001", "010", "011", "100", "101", "110", "111"])
@@ -3644,6 +3768,7 @@ var SheetTab = (function () {
     .setRandomizeNumbers(false)
     .setAllowPoints(true)
     .setLowerCase(false);
+// Language of the Banana Kingdom
 (new PseudoLanguage("Mankiki"))
     .addNumbers(["ba", "na", "na", "ba", "na", "na", "ba", "na", "na", "ba"])
     .addLetters(["a"])
@@ -3665,6 +3790,7 @@ var SheetTab = (function () {
     }
     return null;
 };
+// Magraki
 (new PseudoLanguage("Magraki"))
     .addLetters(['a', 'u', 'k', 'c', 'e'])
     .addSyllabi(['a', 'u', 'k', 'c', 'e', 'ek', 'uk', 'tu', 'ob', 'zug', 'va', 'ruk', 'gra', 'mog', 'zuk', 'xar', 'zaga', 'garo', 'xhok', 'teba', 'nogu', 'uruk', 'ruk', 'gra', 'mog', 'zuk', 'xar', 'ek', 'uk', 'tu', 'ob', 'zug', 'va', 'a', 'u', 'k', 'c', 'e'])
@@ -3695,7 +3821,24 @@ var SheetTab = (function () {
     .setRandomizeNumbers(false)
     .setAllowPoints(true)
     .setLowerCase(false);
-var SheetStyle = (function () {
+/// <reference path='Ancient.ts' />
+/// <reference path='Animal.ts' />
+/// <reference path='Abyssal.ts' />
+/// <reference path='Aquon.ts' />
+/// <reference path='Arcana.ts' />
+/// <reference path='Arkadium.ts' />
+/// <reference path='Auran.ts' />
+/// <reference path='Binary.ts' />
+/// <reference path='Celestan.ts' />
+/// <reference path='Davek.ts' />
+/// <reference path='Draconic.ts' />
+/// <reference path='Elvish.ts' />
+/// <reference path='Ellum.ts' />
+/// <reference path='Mankiki.ts' />
+/// <reference path='Magraki.ts' />
+/// <reference path='Natrum.ts' />
+/// <reference path='Technum.ts' />
+var SheetStyle = /** @class */ (function () {
     function SheetStyle(style) {
         this.css = document.createElement("style");
         this.visible = document.createElement("div");
@@ -3736,6 +3879,13 @@ var SheetStyle = (function () {
     SheetStyle.prototype.isEditable = function () {
         return this.sheetInstance !== null && this.sheetInstance.isEditable();
     };
+    /**
+     * This function needs to be rewritten anytime a Style has custom types.
+     * @param kind = string, "Sheet" | "SheetButton" | "SheetList"
+     * @param type = string, "text" | "number"
+     * @param def = string, default id
+     * @returns {typeof Sheet | typeof SheetButton | typeof SheetList}
+     */
     SheetStyle.prototype.getCreator = function (kind, type, def) {
         var name = kind + this.stringToType(type);
         if (eval("typeof " + name) === "function") {
@@ -3850,9 +4000,18 @@ var SheetStyle = (function () {
     SheetStyle.prototype.getName = function () {
         return this.styleInstance.getName();
     };
+    /**
+     * Return true if the command was accepted, this will cause the Dice to remove the button.
+     * Return false if the command was not acceptable. Please print a Chat Message in this case.
+     * @param dice
+     * @returns {boolean}
+     */
     SheetStyle.prototype.doDiceCustom = function (dice) {
         var msg = new ChatSystemMessage(true);
+        // Use this message if not implemented
         msg.addText("_CHATMESSAGEDICECUSTOMSTYLENOCUSTOM_");
+        // Use this message if invalid dice
+        //msg.addText("_CHATMESSAGEDICECUSTOMSTYLEINVALIDCUSTOM_");
         UI.Chat.printElement(msg.getElement());
         return false;
     };
@@ -3876,12 +4035,15 @@ var SheetStyle = (function () {
             }
         });
     };
+    /**
+     * This code gets called when a Style is being destroyed. Destroy anything that you created which is not connected to the style.
+     */
     SheetStyle.prototype.die = function () {
         this.unbindSheetInstance();
     };
     return SheetStyle;
 }());
-var SheetStyleTranslatable = (function (_super) {
+var SheetStyleTranslatable = /** @class */ (function (_super) {
     __extends(SheetStyleTranslatable, _super);
     function SheetStyleTranslatable() {
         return _super !== null && _super.apply(this, arguments) || this;
@@ -3900,9 +4062,11 @@ var SheetStyleTranslatable = (function (_super) {
     SheetStyleTranslatable.prototype.translateSheet = function () {
         var variables = this.visible.getElementsByClassName("sheetVariable");
         for (var i = 0; i < variables.length; i++) {
+            // Placeholder Lingo
             if (variables[i].dataset["placeholder"] !== undefined && variables[i].dataset['placeholder'].charAt(0) === "_") {
                 variables[i].dataset['placeholder'] = UI.Language.getLanguage().getLingo(variables[i].dataset['placeholder']);
             }
+            // Default Lingo
             if (variables[i].dataset['default'] !== undefined && variables[i].dataset['default'].charAt(0) === "_") {
                 variables[i].dataset['default'] = UI.Language.getLanguage().getLingo(variables[i].dataset['default']);
             }
@@ -3937,7 +4101,7 @@ var SheetStyleTranslatable = (function (_super) {
     };
     return SheetStyleTranslatable;
 }(SheetStyle));
-var Sheet = (function () {
+var Sheet = /** @class */ (function () {
     function Sheet(parent, style, elements) {
         this.parent = null;
         this.style = null;
@@ -3957,6 +4121,10 @@ var Sheet = (function () {
                 }
             }
         };
+        /**
+         * Alerts interested parties of changes made to this.
+         * @type {Trigger}
+         */
         this.changeTrigger = new Trigger();
         this.parent = parent;
         this.style = style;
@@ -4050,6 +4218,16 @@ var Sheet = (function () {
         }
         return obj;
     };
+    /**
+     *
+     *
+     * SheetCreation below
+     *
+     */
+    /**
+     *
+     * @param element
+     */
     Sheet.prototype.processElement = function (element) {
         if (element.classList.contains("sheetList")) {
             this.createList(element);
@@ -4068,10 +4246,11 @@ var Sheet = (function () {
                 parent = lists[i].parentElement;
                 while (parent !== element) {
                     if (parent.classList.contains("sheetList")) {
-                        break;
+                        break; // This sheetList is inside another sheetList and can't be processed right now
                     }
                     parent = parent.parentElement;
                 }
+                // If parent to be element, that means we went all the way up and found no SheetLists.
                 if (parent === element) {
                     validLists.push(lists[i]);
                 }
@@ -4093,6 +4272,10 @@ var Sheet = (function () {
         var constructor;
         var list;
         var type = element.dataset['type'] === undefined ? "" : element.dataset['type'];
+        // if (eval("typeof SheetList" + type + " !== \"function\"")) {
+        //     type = "";
+        // }
+        // constructor = eval("SheetList" + type);
         constructor = this.style.getCreator("SheetList", type, "");
         list = new constructor(this, this.style, element);
         this.values[list.getId()] = list;
@@ -4116,6 +4299,10 @@ var Sheet = (function () {
             }
             return;
         }
+        // if (eval("typeof SheetVariable" + type + " !== \"function\"")) {
+        //     type = "text";
+        // }
+        // constructor = eval("SheetVariable" + type);
         constructor = this.style.getCreator("SheetVariable", type, "text");
         variable = new constructor(this, this.style, element);
         this.values[variable.getId()] = variable;
@@ -4130,6 +4317,10 @@ var Sheet = (function () {
         var constructor;
         var button;
         var type = element.dataset['type'] === undefined ? "" : element.dataset['type'];
+        // if (eval("typeof SheetButton" + type + " !== \"function\"")) {
+        //     type = "";
+        // }
+        // constructor = eval("SheetButton" + type);
         constructor = this.style.getCreator("SheetButton", type, "");
         button = new constructor(this, this.style, element);
         this.buttons[button.getId()] = button;
@@ -4151,7 +4342,7 @@ var Sheet = (function () {
     };
     return Sheet;
 }());
-var SheetButton = (function () {
+var SheetButton = /** @class */ (function () {
     function SheetButton(parent, style, element) {
         this.clickFunction = (function (e) {
             this.click(e);
@@ -4169,7 +4360,9 @@ var SheetButton = (function () {
     };
     return SheetButton;
 }());
-var SheetList = (function () {
+var SheetList = /** @class */ (function () {
+    // Example: tableIndex of "Name" and tableValue of "Level" in a table with multiple rows of Name, Level would mean NAME identifies a row while LEVEL gets it's value
+    // Additionally, asking for a List's value will return an array of every other value
     function SheetList(parent, style, element) {
         this.rows = [];
         this.detachedRows = [];
@@ -4186,6 +4379,10 @@ var SheetList = (function () {
                 }
             }
         };
+        /**
+         * Alerts interested parties of changes made to this.
+         * @type {Trigger}
+         */
         this.changeTrigger = new Trigger();
         this.parent = parent;
         this.visible = element;
@@ -4194,6 +4391,10 @@ var SheetList = (function () {
             this.sheetElements.push(element.removeChild(element.firstChild));
         }
         var type = element.dataset['sheettype'] === undefined ? "" : element.dataset['sheettype'];
+        // if (eval("typeof Sheet" + type + " !== \"function\"")) {
+        //     type = "";
+        // }
+        // this.sheetType = eval("Sheet" + type);
         this.sheetType = this.style.getCreator("Sheet", type, "");
         this.id = this.visible.dataset['id'] === undefined ? this.parent.getUniqueID() : this.visible.dataset['id'];
         this.tableIndex = this.visible.dataset['tableindex'] === undefined ? null : this.visible.dataset['tableindex'];
@@ -4353,7 +4554,7 @@ var SheetList = (function () {
                     }
                 }
                 else {
-                    return null;
+                    return null; // Variable types are constant, if one is not a string, neither is any of the others
                 }
             }
         }
@@ -4370,7 +4571,7 @@ var SheetList = (function () {
                     }
                 }
                 else {
-                    return NaN;
+                    return NaN; // Variable types are constant, if one is not a string, neither is any of the others
                 }
             }
         }
@@ -4412,11 +4613,15 @@ var SheetList = (function () {
     };
     return SheetList;
 }());
-var SheetVariable = (function () {
+var SheetVariable = /** @class */ (function () {
     function SheetVariable(parent, style, element) {
         this.value = null;
         this.defaultValueString = null;
         this.aliases = [];
+        /**
+         * Alerts interested parties of changes made to this.
+         * @type {Trigger}
+         */
         this.changeTrigger = new Trigger();
         this.parent = parent;
         this.visible = element;
@@ -4439,6 +4644,9 @@ var SheetVariable = (function () {
     SheetVariable.prototype.getAliases = function () {
         return this.aliases;
     };
+    /**
+     * Updates this variable's element to better reflect the current state.
+     */
     SheetVariable.prototype.updateVisible = function () { };
     SheetVariable.prototype.empty = function () {
         while (this.visible.firstChild !== null)
@@ -4502,7 +4710,7 @@ var StyleFactory;
             console.warn(e);
             creator = SheetStyle;
         }
-        var SheetStyleAdapted = (function (_super) {
+        var SheetStyleAdapted = /** @class */ (function (_super) {
             __extends(SheetStyleAdapted, _super);
             function SheetStyleAdapted() {
                 return _super !== null && _super.apply(this, arguments) || this;
@@ -4535,7 +4743,7 @@ var StyleFactory;
     }
     StyleFactory.getSheetStyle = getSheetStyle;
 })(StyleFactory || (StyleFactory = {}));
-var SheetVariabletext = (function (_super) {
+var SheetVariabletext = /** @class */ (function (_super) {
     __extends(SheetVariabletext, _super);
     function SheetVariabletext(parent, style, ele) {
         var _this = _super.call(this, parent, style, ele) || this;
@@ -4593,6 +4801,13 @@ var SheetVariabletext = (function (_super) {
     SheetVariabletext.prototype.input = function (e) {
     };
     SheetVariabletext.prototype.keyup = function (e) {
+        // if (e.key === "Tab" && document.activeElement === this.visible) {
+        //     var selection = window.getSelection();
+        //     var range = document.createRange();
+        //     range.selectNodeContents(this.visible);
+        //     selection.removeAllRanges();
+        //     selection.addRange(range);
+        // }
     };
     SheetVariabletext.prototype.isAllowedKey = function (key) {
         return true;
@@ -4656,7 +4871,7 @@ var SheetVariabletext = (function (_super) {
     };
     return SheetVariabletext;
 }(SheetVariable));
-var SheetVariablelongtext = (function (_super) {
+var SheetVariablelongtext = /** @class */ (function (_super) {
     __extends(SheetVariablelongtext, _super);
     function SheetVariablelongtext(parent, style, ele) {
         var _this = _super.call(this, parent, style, ele) || this;
@@ -4716,6 +4931,13 @@ var SheetVariablelongtext = (function (_super) {
     SheetVariablelongtext.prototype.input = function (e) {
     };
     SheetVariablelongtext.prototype.keyup = function (e) {
+        // if (e.key === "Tab" && document.activeElement === this.visible) {
+        //     var selection = window.getSelection();
+        //     var range = document.createRange();
+        //     range.selectNodeContents(this.visible);
+        //     selection.removeAllRanges();
+        //     selection.addRange(range);
+        // }
     };
     SheetVariablelongtext.prototype.keydown = function (e) {
     };
@@ -4778,7 +5000,7 @@ var SheetVariablelongtext = (function (_super) {
     };
     return SheetVariablelongtext;
 }(SheetVariable));
-var SheetVariablenumber = (function (_super) {
+var SheetVariablenumber = /** @class */ (function (_super) {
     __extends(SheetVariablenumber, _super);
     function SheetVariablenumber(parent, style, ele) {
         var _this = _super.call(this, parent, style, ele) || this;
@@ -4847,7 +5069,7 @@ var SheetVariablenumber = (function (_super) {
     };
     return SheetVariablenumber;
 }(SheetVariabletext));
-var SheetVariableinteger = (function (_super) {
+var SheetVariableinteger = /** @class */ (function (_super) {
     __extends(SheetVariableinteger, _super);
     function SheetVariableinteger() {
         return _super !== null && _super.apply(this, arguments) || this;
@@ -4863,7 +5085,7 @@ var SheetVariableinteger = (function (_super) {
     };
     return SheetVariableinteger;
 }(SheetVariablenumber));
-var SheetVariablemath = (function (_super) {
+var SheetVariablemath = /** @class */ (function (_super) {
     __extends(SheetVariablemath, _super);
     function SheetVariablemath(parent, style, ele) {
         var _this = _super.call(this, parent, style, ele) || this;
@@ -5004,7 +5226,7 @@ var SheetVariablemath = (function (_super) {
     };
     return SheetVariablemath;
 }(SheetVariabletext));
-var SheetVariableimage = (function (_super) {
+var SheetVariableimage = /** @class */ (function (_super) {
     __extends(SheetVariableimage, _super);
     function SheetVariableimage(parent, style, element) {
         var _this = _super.call(this, parent, style, element) || this;
@@ -5167,7 +5389,7 @@ var SheetVariableimage = (function (_super) {
     };
     return SheetVariableimage;
 }(SheetVariable));
-var SheetVariableselect = (function (_super) {
+var SheetVariableselect = /** @class */ (function (_super) {
     __extends(SheetVariableselect, _super);
     function SheetVariableselect(parent, style, element) {
         var _this = _super.call(this, parent, style, element) || this;
@@ -5212,9 +5434,13 @@ var SheetVariableselect = (function (_super) {
     };
     SheetVariableselect.prototype.blur = function () { };
     SheetVariableselect.prototype.focus = function () {
+        // this.showSelect();
+        // this.select.focus();
     };
     SheetVariableselect.prototype.selectBlur = function (e) {
         this.storeValue(this.select.value);
+        // this.empty();
+        // this.visible.appendChild(this.textNode);
     };
     SheetVariableselect.prototype.selectChange = function (e) {
         this.storeValue(this.select.value);
@@ -5242,7 +5468,7 @@ var SheetVariableselect = (function (_super) {
     };
     return SheetVariableselect;
 }(SheetVariable));
-var SheetVariableboolean = (function (_super) {
+var SheetVariableboolean = /** @class */ (function (_super) {
     __extends(SheetVariableboolean, _super);
     function SheetVariableboolean(parent, style, element) {
         var _this = _super.call(this, parent, style, element) || this;
@@ -5282,7 +5508,7 @@ var SheetVariableboolean = (function (_super) {
     };
     return SheetVariableboolean;
 }(SheetVariable));
-var SheetVariableimageselect = (function (_super) {
+var SheetVariableimageselect = /** @class */ (function (_super) {
     __extends(SheetVariableimageselect, _super);
     function SheetVariableimageselect(parent, style, element) {
         var _this = _super.call(this, parent, style, element) || this;
@@ -5415,7 +5641,7 @@ var SheetVariableimageselect = (function (_super) {
     };
     return SheetVariableimageselect;
 }(SheetVariable));
-var SheetButtonaddrow = (function (_super) {
+var SheetButtonaddrow = /** @class */ (function (_super) {
     __extends(SheetButtonaddrow, _super);
     function SheetButtonaddrow(parent, style, element) {
         var _this = _super.call(this, parent, style, element) || this;
@@ -5441,7 +5667,7 @@ var SheetButtonaddrow = (function (_super) {
     };
     return SheetButtonaddrow;
 }(SheetButton));
-var SheetButtonremoverow = (function (_super) {
+var SheetButtonremoverow = /** @class */ (function (_super) {
     __extends(SheetButtonremoverow, _super);
     function SheetButtonremoverow(parent, style, element) {
         var _this = _super.call(this, parent, style, element) || this;
@@ -5463,7 +5689,7 @@ var SheetButtonremoverow = (function (_super) {
     };
     return SheetButtonremoverow;
 }(SheetButton));
-var SheetButtondice = (function (_super) {
+var SheetButtondice = /** @class */ (function (_super) {
     __extends(SheetButtondice, _super);
     function SheetButtondice(parent, style, element) {
         var _this = _super.call(this, parent, style, element) || this;
@@ -5572,7 +5798,7 @@ var SheetButtondice = (function (_super) {
     };
     return SheetButtondice;
 }(SheetButton));
-var SheetButtonsort = (function (_super) {
+var SheetButtonsort = /** @class */ (function (_super) {
     __extends(SheetButtonsort, _super);
     function SheetButtonsort() {
         return _super !== null && _super.apply(this, arguments) || this;
@@ -5586,7 +5812,7 @@ var SheetButtonsort = (function (_super) {
     };
     return SheetButtonsort;
 }(SheetButtonaddrow));
-var SheetButtoncommonsroll = (function (_super) {
+var SheetButtoncommonsroll = /** @class */ (function (_super) {
     __extends(SheetButtoncommonsroll, _super);
     function SheetButtoncommonsroll() {
         return _super !== null && _super.apply(this, arguments) || this;
@@ -5710,11 +5936,97 @@ var SheetButtoncommonsroll = (function (_super) {
     };
     return SheetButtoncommonsroll;
 }(SheetButton));
+/// <reference path='SheetStyle.ts' />
+/// <reference path='SheetStyleTranslatable.ts' />
+/// <reference path='Sheet.ts' />
+/// <reference path='SheetButton.ts' />
+/// <reference path='SheetList.ts' />
+/// <reference path='SheetVariable.ts' />
+/// <reference path='StyleFactory.ts' />
+/// <reference path='SheetCreatorListener.ts' />
+/// <reference path='SheetVariable/SheetVariabletext.ts' />
+/// <reference path='SheetVariable/SheetVariableLongtext.ts' />
+/// <reference path='SheetVariable/SheetVariablenumber.ts' />
+/// <reference path='SheetVariable/SheetVariableinteger.ts' />
+/// <reference path='SheetVariable/SheetVariablemath.ts' />
+/// <reference path='SheetVariable/SheetVariableimage.ts' />
+/// <reference path='SheetVariable/SheetVariableselect.ts' />
+/// <reference path='SheetVariable/SheetVariableboolean.ts' />
+/// <reference path='SheetVariable/SheetVariableimageselect.ts' />
+/// <reference path='SheetButton/SheetButtonaddrow.ts' />
+/// <reference path='SheetButton/SheetButtonremoverow.ts' />
+/// <reference path='SheetButton/SheetButtonDice.ts' />
+/// <reference path='SheetButton/SheetButtonsort.ts' />
+/// <reference path='SheetButton/SheetButtoncommonsroll.ts' />
+/**
+ * Created by Reddo on 14/09/2015.
+ */
+/// <reference path='Interfaces/Listener.ts' />
+/// <reference path='Interfaces/PageManagerPage.ts' />
+/// <reference path='Interfaces/PersonaInfo.ts' />
+/// <reference path='Interfaces/PersonaLocalInfo.ts' />
+/// <reference path='Interfaces/ChatController.ts' />
+/// <reference path='Interfaces/ImageInt.ts' />
+/// <reference path='Interfaces/StyleInfo.ts' />
+/// <reference path='Classes/Trigger.ts' />
+/// <reference path='Classes/Changelog.ts' />
+/// <reference path='Classes/ImageRed.ts' />
+/// <reference path='Classes/ImageLink.ts' />
+/// <reference path='Classes/User.ts' />
+/// <reference path='Classes/UserGameContext.ts' />
+/// <reference path='Classes/UserRoomContext.ts' />
+/// <reference path='Classes/Room.ts' />
+/// <reference path='Classes/Game.ts' />
+/// <reference path='Classes/SheetInstance.ts' />
+/// <reference path='Classes/StyleInstance.ts' />
+/// <reference path='Classes/SoundLink.ts' />
+/// <reference path='Classes/PseudoLanguage.ts' />
+/// <reference path='Classes/AJAXConfig.ts' />
+/// <reference path='Classes/WebsocketController.ts' />
+/// <reference path='Classes/ChatWsController.ts' />
+/// <reference path='Classes/Configuration.ts' />
+/// <reference path='Classes/Configuration/NumberConfiguration.ts' />
+/// <reference path='Classes/Configuration/WsportConfiguration.ts' />
+/// <reference path='Classes/Configuration/LanguageConfiguration.ts' />
+/// <reference path='Classes/Configuration/BooleanConfiguration.ts' />
+/// <reference path='Classes/TrackerMemory.ts' />
+/// <reference path='Classes/Memory/MemoryCombat.ts' />
+/// <reference path='Classes/Memory/MemoryFilter.ts' />
+/// <reference path='Classes/Memory/MemoryPica.ts' />
+/// <reference path='Classes/Memory/MemoryLingo.ts' />
+/// <reference path='Classes/Memory/MemoryVersion.ts' />
+/// <reference path='Classes/Memory/MemoryCutscene.ts' />
+/// <reference path='Classes/Memory/Combat/CombatEffect.ts' />
+/// <reference path='Classes/Memory/Combat/CombatParticipant.ts' />
+/// <reference path='Elements/ChatCombatRow.ts' />
+/// <reference path='Elements/ChatInfo.ts' />
+/// <reference path='Elements/ChatAvatar.ts' />
+/// <reference path='Elements/ChatNotificationIcon.ts' />
+/// <reference path='Elements/ChatFormState.ts' />
+/// <reference path='Elements/ChatAvatarChoice.ts' />
+/// <reference path='Elements/ChatSystemMessage.ts' />
+/// <reference path='Elements/ImagesRow.ts' />
+/// <reference path='Elements/ImagesFolder.ts' />
+/// <reference path='Elements/SheetsRow.ts' />
+/// <reference path='Elements/SheetsFolder.ts' />
+/// <reference path='Elements/SheetPermRow.ts' />
+/// <reference path='Elements/SoundsRow.ts' />
+/// <reference path='Elements/SoundsFolder.ts' />
+/// <reference path='Elements/Sheet/SheetTab.ts' />
+/// <reference path='Classes/PseudoLanguage/References.ts' />
+/// <reference path='Classes/Sheets/References.ts' />
 var MessageFactory;
 (function (MessageFactory) {
     var messageClasses = {};
     var messageClassesArray = [];
     var messageSlash = {};
+    /**
+     * Registers a message class for later use.
+     * Messages are created when users type commands or when the system requires a message by name.
+     * @param msg
+     * @param id
+     * @param slashCommands
+     */
     function registerMessage(msg, id, slashCommands) {
         if (messageClasses[id] !== undefined) {
             console.warn("Attempt to overwrite message type at " + id + ". Ignoring. Offending class:", msg);
@@ -5737,6 +6049,12 @@ var MessageFactory;
         return messageClassesArray;
     }
     MessageFactory.getMessagetypeArray = getMessagetypeArray;
+    /**
+     * Registers a slashcommand class for later use.
+     * SlashCommands are called when users type commands.
+     * @param slash
+     * @param slashCommands
+     */
     function registerSlashCommand(slash, slashCommands) {
         for (var i = 0; i < slashCommands.length; i++) {
             if (messageSlash[slashCommands[i]] !== undefined) {
@@ -5747,6 +6065,11 @@ var MessageFactory;
         }
     }
     MessageFactory.registerSlashCommand = registerSlashCommand;
+    /**
+     * Returns a new instance of Message for the given id. Can return MessageUnknown.
+     * @param id
+     * @returns {any}
+     */
     function createMessageFromType(id) {
         id = id.toLowerCase();
         if (messageClasses[id] !== undefined) {
@@ -5755,6 +6078,10 @@ var MessageFactory;
         return new MessageUnknown();
     }
     MessageFactory.createMessageFromType = createMessageFromType;
+    /**
+     * Creates examples of every Message class for testing purposes.
+     * @returns {Array<Message>}
+     */
     function createTestingMessages() {
         var list = [];
         for (var id in messageClasses) {
@@ -5780,6 +6107,11 @@ var MessageFactory;
         return null;
     }
     MessageFactory.getConstructorFromText = getConstructorFromText;
+    /**
+     * Runs a form through a SlashCommand. Returns a Message if the SlashCommand was valid and for a Message.
+     * @param form
+     * @returns {any}
+     */
     function createFromText(form) {
         var index = form.indexOf(' ');
         if (index !== -1) {
@@ -5813,22 +6145,37 @@ var MessageFactory;
     }
     MessageFactory.createFromText = createFromText;
 })(MessageFactory || (MessageFactory = {}));
-var SlashCommand = (function () {
+var SlashCommand = /** @class */ (function () {
     function SlashCommand() {
     }
+    /**
+     * Returns false for invalid commands. Returns true for valid commands.
+     * @param slashCommand
+     * @param message
+     */
     SlashCommand.prototype.receiveCommand = function (slashCommand, message) {
         console.error("SlashCommand.receiveCommand is abstract. Offending class:", this.constructor['name'], this);
         return false;
     };
+    /**
+     * Informs MessageFactory whether this SlashCommand is a message or not. Probably doesn't have to be changed.
+     * @returns {boolean}
+     */
     SlashCommand.prototype.isMessage = function () {
         return this instanceof Message;
     };
+    /**
+     * HTMLElement that should be printed when receiveCommand returns false.
+     * @param slashCommand
+     * @param msg
+     * @returns {HTMLElement|null}
+     */
     SlashCommand.prototype.getInvalidHTML = function (slashCommand, msg) {
         return null;
     };
     return SlashCommand;
 }());
-var SlashClear = (function (_super) {
+var SlashClear = /** @class */ (function (_super) {
     __extends(SlashClear, _super);
     function SlashClear() {
         return _super !== null && _super.apply(this, arguments) || this;
@@ -5836,7 +6183,7 @@ var SlashClear = (function (_super) {
     return SlashClear;
 }(SlashCommand));
 MessageFactory.registerSlashCommand(SlashClear, ["/clear", "/clr", "/cls"]);
-var SlashReply = (function (_super) {
+var SlashReply = /** @class */ (function (_super) {
     __extends(SlashReply, _super);
     function SlashReply() {
         return _super !== null && _super.apply(this, arguments) || this;
@@ -5844,11 +6191,16 @@ var SlashReply = (function (_super) {
     return SlashReply;
 }(SlashCommand));
 MessageFactory.registerSlashCommand(SlashReply, ["/r", "/reply", "/responder", "/resposta"]);
-var SlashImages = (function (_super) {
+var SlashImages = /** @class */ (function (_super) {
     __extends(SlashImages, _super);
     function SlashImages() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    /**
+     * Returns false for invalid commands. Returns true for valid commands.
+     * @param slashCommand
+     * @param message
+     */
     SlashImages.prototype.receiveCommand = function (slashCommand, message) {
         var room = Server.Chat.getRoom();
         if (room === null)
@@ -5874,11 +6226,16 @@ var SlashImages = (function (_super) {
     return SlashImages;
 }(SlashCommand));
 MessageFactory.registerSlashCommand(SlashImages, ["/images", "/imgs", "/imagens", "/fotos", "/picas"]);
-var SlashLog = (function (_super) {
+var SlashLog = /** @class */ (function (_super) {
     __extends(SlashLog, _super);
     function SlashLog() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    /**
+     * Returns false for invalid commands. Returns true for valid commands.
+     * @param slashCommand
+     * @param message
+     */
     SlashLog.prototype.receiveCommand = function (slashCommand, message) {
         var cbs = {
             room: Server.Chat.getRoom(),
@@ -5892,11 +6249,16 @@ var SlashLog = (function (_super) {
     return SlashLog;
 }(SlashCommand));
 MessageFactory.registerSlashCommand(SlashLog, ["/log", "/logger"]);
-var SlashLingo = (function (_super) {
+var SlashLingo = /** @class */ (function (_super) {
     __extends(SlashLingo, _super);
     function SlashLingo() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    /**
+     * Returns false for invalid commands. Returns true for valid commands.
+     * @param slashCommand
+     * @param message
+     */
     SlashLingo.prototype.receiveCommand = function (slashCommand, message) {
         var storyMode = slashCommand.toLowerCase().indexOf("sto") !== -1;
         if (storyMode && !Server.Chat.getRoom().getMe().isStoryteller()) {
@@ -5944,6 +6306,7 @@ var SlashLingo = (function (_super) {
         if (currentSentence.length > 0) {
             endResult += lingo.translate(currentSentence);
         }
+        //alert(endResult);
         var translatedMsg;
         var pseudoMsg;
         if (storyMode) {
@@ -5971,6 +6334,12 @@ var SlashLingo = (function (_super) {
         UI.Chat.sendMessage(pseudoMsg);
         return true;
     };
+    /**
+     * HTMLElement that should be printed when receiveCommand returns false.
+     * @param slashCommand
+     * @param msg
+     * @returns {HTMLElement|null}
+     */
     SlashLingo.prototype.getInvalidHTML = function (slashCommand, message) {
         var smsg = new ChatSystemMessage(true);
         if (slashCommand.toLowerCase().indexOf("sto") !== -1 && !Server.Chat.getRoom().getMe().isStoryteller()) {
@@ -5995,11 +6364,16 @@ var SlashLingo = (function (_super) {
     return SlashLingo;
 }(SlashCommand));
 MessageFactory.registerSlashCommand(SlashLingo, ["/lang", "/ling", "/lingo", "/language", "/lingua"]);
-var SlashPica = (function (_super) {
+var SlashPica = /** @class */ (function (_super) {
     __extends(SlashPica, _super);
     function SlashPica() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    /**
+     * Returns false for invalid commands. Returns true for valid commands.
+     * @param slashCommand
+     * @param message
+     */
     SlashPica.prototype.receiveCommand = function (slashCommand, message) {
         var room = Server.Chat.getRoom();
         if (room === null)
@@ -6023,7 +6397,17 @@ var SlashPica = (function (_super) {
     return SlashPica;
 }(SlashCommand));
 MessageFactory.registerSlashCommand(SlashPica, ["/pica", "/quadro", "/board", "/desenho", "/drawing"]);
-var Message = (function (_super) {
+/**
+ * 'destination', 'id', 'module', 'msg', 'origin', 'roomid', 'date'
+ message;
+ {"localid":0,
+ "destination":null,
+ "message":"",
+ "module":"dice",
+ "special":{"dice":[8],"mod":null,"persona":null},
+ "clone":false}
+ */
+var Message = /** @class */ (function (_super) {
     __extends(Message, _super);
     function Message() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
@@ -6058,6 +6442,9 @@ var Message = (function (_super) {
         return this.getSpecial("persona", "???");
     };
     Message.prototype.findPersona = function () { };
+    /**
+     * Assigns this message a localId
+     */
     Message.prototype.getLocalId = function () {
         if (this.localid === null)
             DB.MessageDB.registerLocally(this);
@@ -6066,13 +6453,17 @@ var Message = (function (_super) {
     Message.prototype.wasLocalMessage = function () {
         return this.wasLocal;
     };
+    /**
+     * Returns the UserRoomContext for the sender. ALWAYS returns a user, even if Origin is invalid (returns a new UserRoomContext() in this case).
+     * @returns {UserRoomContext}
+     */
     Message.prototype.getUser = function () {
         var user = DB.UserDB.getAUser(this.origin);
         var context = user.getRoomContext(this.roomid);
         if (context === null) {
             context = new UserRoomContext(user);
             context.roomid = this.roomid;
-            if (this.origin !== 0) {
+            if (this.origin !== 0) { // Origin 0 means this is a mockup, warnings are not necessary
                 console.warn("[MESSAGE] Could not find user Room Context for " + this.origin + ", creating a new one.");
             }
         }
@@ -6140,22 +6531,42 @@ var Message = (function (_super) {
             return [context];
         }
     };
+    /**
+     * Returns whether this message is public or has a given destinatary
+     * @return boolean
+     */
     Message.prototype.hasDestination = function () {
         return this.destination !== null && this.destination !== 0;
     };
+    /**
+     * Returns an Array of Messages meant for testing. This array should include all variations of this message type. Should include self for optimization.
+     * @returns {Message[]}
+     */
     Message.prototype.makeMockUp = function () {
         this.msg = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent volutpat orci nulla, et dictum turpis commodo a. Duis iaculis neque lectus, ac sodales diam varius id.";
         return [this];
     };
+    /**
+     * Returns whether this is a whisper or not.
+     * @returns {boolean}
+     */
     Message.prototype.isWhisper = function () {
         if (Array.isArray(this.destination)) {
             return this.destination.length > 0;
         }
         return this.destination !== null && this.destination !== 0;
     };
+    /**
+     * Was this message sent by the current user?
+     * @returns {boolean}
+     */
     Message.prototype.isMine = function () {
         return this.origin === Application.getMyId();
     };
+    /**
+     * Returns an HTMLElement representing the Message. Can be null for Messages that should not be seen.
+     * @returns {HTMLElement|Null}
+     */
     Message.prototype.createHTML = function () {
         var p = document.createElement("p");
         p.appendChild(document.createTextNode("_CHATMESSAGEUNKNOWNTYPE_"));
@@ -6209,6 +6620,12 @@ var Message = (function (_super) {
             this.sending = setTimeout(timeoutFunction, 8000);
         }
     };
+    /**
+     * Returns the request Special Value. Returns defaultValue if the requested special is not found.
+     * @param id
+     * @param defaultValue
+     * @returns {any}
+     */
     Message.prototype.getSpecial = function (id, defaultValue) {
         if (this.special[id] !== undefined) {
             return this.special[id];
@@ -6218,9 +6635,18 @@ var Message = (function (_super) {
         }
         return null;
     };
+    /**
+     * Stores a Special Value for the assigned Id.
+     * @param id
+     * @param value
+     */
     Message.prototype.setSpecial = function (id, value) {
         this.special[id] = value;
     };
+    /**
+     * Receives values from an Object.
+     * @param obj
+     */
     Message.prototype.updateFromObject = function (obj) {
         for (var id in this) {
             if (obj[id] === undefined)
@@ -6242,6 +6668,10 @@ var Message = (function (_super) {
         delete (obj['message']);
         return obj;
     };
+    /**
+     * Exports Message as an object (meant for server).
+     * @returns {{}}
+     */
     Message.prototype.exportAsObject = function () {
         var result = {};
         var attributes = [
@@ -6262,8 +6692,16 @@ var Message = (function (_super) {
             }
         }
         result["message"] = this.msg;
+        //result['special'] = JSON.stringify(this.special);
         return result;
     };
+    /**
+     * Processes a received SlashCommand from the user.
+     * If true is returned, the system will assume that the slashcommand was valid. If false, it'll assume it was invalid.
+     * @param slashCommand
+     * @param msg
+     * @returns {boolean}
+     */
     Message.prototype.receiveCommand = function (slashCommand, msg) {
         this.msg = msg;
         return true;
@@ -6304,7 +6742,7 @@ var Message = (function (_super) {
     };
     return Message;
 }(SlashCommand));
-var MessageBuff = (function (_super) {
+var MessageBuff = /** @class */ (function (_super) {
     __extends(MessageBuff, _super);
     function MessageBuff() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
@@ -6314,7 +6752,7 @@ var MessageBuff = (function (_super) {
     }
     MessageBuff.prototype.onPrint = function () {
         if (this.playedBefore) {
-            return;
+            return; // don't play yourself twice!
         }
         if (this.customAutomationPossible()) {
             if (Application.Config.getConfig('chatAutoRolls').getValue() === 1 || (Application.isMe(this.getUser().getUser().id) && this.wasLocalMessage())) {
@@ -6421,7 +6859,7 @@ var MessageBuff = (function (_super) {
     return MessageBuff;
 }(Message));
 MessageFactory.registerMessage(MessageBuff, "buff", []);
-var MessagePica = (function (_super) {
+var MessagePica = /** @class */ (function (_super) {
     __extends(MessagePica, _super);
     function MessagePica() {
         var _this = _super.call(this) || this;
@@ -6463,7 +6901,7 @@ var MessagePica = (function (_super) {
                 if (senderLengthLocal != senderLengthExt) {
                     console.log("I don't have all art for " + this.origin);
                     var msg = new MessagePica();
-                    msg.addDestination(this.getUser());
+                    msg.addDestination(this.getUser().getUser());
                     msg.setUrl(url);
                     msg.setMsg(this.msgRequestUpdate);
                     UI.Chat.sendMessage(msg);
@@ -6476,7 +6914,7 @@ var MessagePica = (function (_super) {
             }
             else if (this.getMsg() == this.msgRequestUpdate) {
                 var msg = new MessagePica();
-                msg.addDestination(this.getUser());
+                msg.addDestination(this.getUser().getUser());
                 msg.setUrl(url);
                 msg.setMsg(this.msgRequestUpdate);
                 msg.setArts(UI.Pica.ArtManager.getMyArtsAsString(roomid, url));
@@ -6548,6 +6986,7 @@ var MessagePica = (function (_super) {
     MessagePica.prototype.getHTML = function () {
         if (!this.runOnce) {
             this.runOnce = true;
+            //this.considerAddingToArtManager();
         }
         return null;
     };
@@ -6562,7 +7001,7 @@ var MessagePica = (function (_super) {
     return MessagePica;
 }(Message));
 MessageFactory.registerMessage(MessagePica, "pica", []);
-var MessageSystem = (function (_super) {
+var MessageSystem = /** @class */ (function (_super) {
     __extends(MessageSystem, _super);
     function MessageSystem() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
@@ -6582,7 +7021,7 @@ var MessageSystem = (function (_super) {
     return MessageSystem;
 }(Message));
 MessageFactory.registerMessage(MessageSystem, "system", []);
-var MessageCountdown = (function (_super) {
+var MessageCountdown = /** @class */ (function (_super) {
     __extends(MessageCountdown, _super);
     function MessageCountdown() {
         var _this = _super.call(this) || this;
@@ -6683,6 +7122,7 @@ var MessageCountdown = (function (_super) {
     };
     MessageCountdown.prototype.updateCounter = function (e) {
         var curr = parseInt(this.counter.nodeValue);
+        // Protection against lag and desync. Counters are only supposed to go down.
         if (e < curr) {
             this.counter.nodeValue = e.toString();
         }
@@ -6691,7 +7131,7 @@ var MessageCountdown = (function (_super) {
     return MessageCountdown;
 }(Message));
 MessageFactory.registerMessage(MessageCountdown, "countdown", ["/countdown", "/count"]);
-var MessageVote = (function (_super) {
+var MessageVote = /** @class */ (function (_super) {
     __extends(MessageVote, _super);
     function MessageVote() {
         var _this = _super.call(this) || this;
@@ -6781,7 +7221,7 @@ var MessageVote = (function (_super) {
     return MessageVote;
 }(Message));
 MessageFactory.registerMessage(MessageVote, "vote", ["/vote", "/voto", "/votar", "/vota"]);
-var MessageWebm = (function (_super) {
+var MessageWebm = /** @class */ (function (_super) {
     __extends(MessageWebm, _super);
     function MessageWebm() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
@@ -6818,7 +7258,7 @@ var MessageWebm = (function (_super) {
     return MessageWebm;
 }(Message));
 MessageFactory.registerMessage(MessageWebm, "webm", ["/webm"]);
-var MessageVideo = (function (_super) {
+var MessageVideo = /** @class */ (function (_super) {
     __extends(MessageVideo, _super);
     function MessageVideo() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
@@ -6855,7 +7295,7 @@ var MessageVideo = (function (_super) {
     return MessageVideo;
 }(Message));
 MessageFactory.registerMessage(MessageVideo, "youtube", ["/video", "/youtube"]);
-var MessageQuote = (function (_super) {
+var MessageQuote = /** @class */ (function (_super) {
     __extends(MessageQuote, _super);
     function MessageQuote() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
@@ -6899,7 +7339,7 @@ var MessageQuote = (function (_super) {
     return MessageQuote;
 }(Message));
 MessageFactory.registerMessage(MessageQuote, "quote", ["/quote", "/citar", "/citação", "/citaçao", "/citacao"]);
-var MessageSE = (function (_super) {
+var MessageSE = /** @class */ (function (_super) {
     __extends(MessageSE, _super);
     function MessageSE() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
@@ -6909,7 +7349,7 @@ var MessageSE = (function (_super) {
     }
     MessageSE.prototype.onPrint = function () {
         if (this.playedBefore) {
-            return;
+            return; // don't play yourself twice!
         }
         if (UI.Chat.doAutomation()) {
             var cfg = Application.Config.getConfig("autoSE").getValue();
@@ -6967,7 +7407,7 @@ var MessageSE = (function (_super) {
     return MessageSE;
 }(Message));
 MessageFactory.registerMessage(MessageSE, "seplay", ["/se", "/seplay", "/soundeffect", "/sound"]);
-var MessageImage = (function (_super) {
+var MessageImage = /** @class */ (function (_super) {
     __extends(MessageImage, _super);
     function MessageImage() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
@@ -7069,6 +7509,13 @@ var MessageImage = (function (_super) {
         newImage.setMsg(url);
         UI.Chat.sendMessage(newImage);
     };
+    /**
+     * Processes a received SlashCommand from the user.
+     * If true is returned, the system will assume that the slashcommand was valid. If false, it'll assume it was invalid.
+     * @param slashCommand
+     * @param msg
+     * @returns {boolean}
+     */
     MessageImage.prototype.receiveCommand = function (slashCommand, msg) {
         if (msg === "") {
             return false;
@@ -7082,7 +7529,7 @@ var MessageImage = (function (_super) {
     return MessageImage;
 }(Message));
 MessageFactory.registerMessage(MessageImage, "image", ["/image", "/imagem", "/picture", "/figura", "/pic"]);
-var MessageBGM = (function (_super) {
+var MessageBGM = /** @class */ (function (_super) {
     __extends(MessageBGM, _super);
     function MessageBGM() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
@@ -7092,7 +7539,7 @@ var MessageBGM = (function (_super) {
     }
     MessageBGM.prototype.onPrint = function () {
         if (this.playedBefore) {
-            return;
+            return; // don't play yourself twice!
         }
         if (UI.Chat.doAutomation()) {
             var cfg = Application.Config.getConfig("autoBGM").getValue();
@@ -7150,7 +7597,7 @@ var MessageBGM = (function (_super) {
     return MessageBGM;
 }(Message));
 MessageFactory.registerMessage(MessageBGM, "bgmplay", ["/bgm", "/splay", "/bgmplay", "/musica"]);
-var MessageStream = (function (_super) {
+var MessageStream = /** @class */ (function (_super) {
     __extends(MessageStream, _super);
     function MessageStream() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
@@ -7163,7 +7610,7 @@ var MessageStream = (function (_super) {
     return MessageStream;
 }(Message));
 MessageFactory.registerMessage(MessageStream, "stream", []);
-var MessageSheetcommand = (function (_super) {
+var MessageSheetcommand = /** @class */ (function (_super) {
     __extends(MessageSheetcommand, _super);
     function MessageSheetcommand() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
@@ -7173,7 +7620,7 @@ var MessageSheetcommand = (function (_super) {
     }
     MessageSheetcommand.prototype.onPrint = function () {
         if (this.playedBefore) {
-            return;
+            return; // don't play yourself twice!
         }
         if (this.customAutomationPossible()) {
             if (Application.Config.getConfig('chatAutoRolls').getValue() === 1 || (Application.isMe(this.getUser().getUser().id) && this.wasLocalMessage())) {
@@ -7266,7 +7713,7 @@ var MessageSheetcommand = (function (_super) {
     return MessageSheetcommand;
 }(Message));
 MessageFactory.registerMessage(MessageSheetcommand, "sheetcmd", []);
-var MessageWhisper = (function (_super) {
+var MessageWhisper = /** @class */ (function (_super) {
     __extends(MessageWhisper, _super);
     function MessageWhisper() {
         var _this = _super.call(this) || this;
@@ -7369,7 +7816,7 @@ var MessageWhisper = (function (_super) {
     return MessageWhisper;
 }(Message));
 MessageFactory.registerMessage(MessageWhisper, "whisper", ["/whisper", "/whisp", "/private", "/pm", "/privado", "/pessoal", "/w"]);
-var MessageSheetdamage = (function (_super) {
+var MessageSheetdamage = /** @class */ (function (_super) {
     __extends(MessageSheetdamage, _super);
     function MessageSheetdamage() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
@@ -7443,7 +7890,7 @@ var MessageSheetdamage = (function (_super) {
     return MessageSheetdamage;
 }(Message));
 MessageFactory.registerMessage(MessageSheetdamage, "sheetdm", []);
-var MessageSheetturn = (function (_super) {
+var MessageSheetturn = /** @class */ (function (_super) {
     __extends(MessageSheetturn, _super);
     function MessageSheetturn() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
@@ -7491,7 +7938,7 @@ var MessageSheetturn = (function (_super) {
     };
     MessageSheetturn.prototype.onPrint = function () {
         if (this.playedBefore) {
-            return;
+            return; // don't play yourself twice!
         }
         if (UI.Chat.doAutomation()) {
             var memory = Server.Chat.Memory.getConfiguration("Combat");
@@ -7516,7 +7963,7 @@ var MessageSheetturn = (function (_super) {
     return MessageSheetturn;
 }(Message));
 MessageFactory.registerMessage(MessageSheetturn, "sheettr", []);
-var MessageDice = (function (_super) {
+var MessageDice = /** @class */ (function (_super) {
     __extends(MessageDice, _super);
     function MessageDice() {
         var _this = _super.call(this) || this;
@@ -7526,6 +7973,7 @@ var MessageDice = (function (_super) {
         _this.customClicker = null;
         _this.playedBefore = false;
         _this.setDice([]);
+        // Replace incomplete roll with server-provided rolls.
         _this.addUpdatedListener({
             handleEvent: function (e) {
                 if (e.html !== null) {
@@ -7544,7 +7992,7 @@ var MessageDice = (function (_super) {
             return;
         }
         if (this.playedBefore) {
-            return;
+            return; // don't play yourself twice!
         }
         if (this.hasCustomAutomation() && this.customAutomationPossible()) {
             if (Application.Config.getConfig('chatAutoRolls').getValue() === 1 || (Application.isMe(this.getUser().getUser().id) && this.wasLocalMessage())) {
@@ -7659,6 +8107,7 @@ var MessageDice = (function (_super) {
             span.appendChild(document.createTextNode(this.getResult().toString()));
             if (allCrits) {
                 span.classList.add("rainbow");
+                //p.classList.add("rainbow");
             }
             else if (allFailures) {
                 span.classList.add("shame");
@@ -7688,6 +8137,9 @@ var MessageDice = (function (_super) {
             initialRoll.appendChild(document.createTextNode(this.getMod().toString()));
             p.appendChild(initialRoll);
         }
+        //var msg = this.getInitialRoll() + " = " + this.getRolls().join(" ") + " + " + this.getMod() + " = ";
+        //
+        //p.appendChild(document.createTextNode(msg));
         if (this.getIsInitiative() && (Server.Chat.getRoom() !== null && Server.Chat.getRoom().getMe().isStoryteller()) && UI.Chat.doAutomation()) {
             if (Application.isMe(this.origin) || Application.Config.getConfig("chatAutoRolls").getValue() === 1) {
                 this.applyInitiative();
@@ -7853,7 +8305,7 @@ var MessageDice = (function (_super) {
     };
     MessageDice.prototype.addDice = function (amount, faces) {
         if (faces === 0 || amount === 0) {
-            return;
+            return; // face = 0 is an invalid roll, as is amount = 0
         }
         var dices = this.getDice();
         for (var i = 0; i < amount; i++) {
@@ -7880,7 +8332,7 @@ var MessageDice = (function (_super) {
     return MessageDice;
 }(Message));
 MessageFactory.registerMessage(MessageDice, "dice", []);
-var MessageStory = (function (_super) {
+var MessageStory = /** @class */ (function (_super) {
     __extends(MessageStory, _super);
     function MessageStory() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
@@ -7906,6 +8358,9 @@ var MessageStory = (function (_super) {
         var p = document.createElement("p");
         p.classList.add("chatMessageStory");
         var container = p;
+        //var b = document.createElement("b");
+        //b.appendChild(document.createTextNode("- "));
+        //p.appendChild(b);
         var lang = this.getSpecial("language", "none");
         var thisMsg = "";
         var messageNodes = [];
@@ -7961,7 +8416,7 @@ var MessageStory = (function (_super) {
     return MessageStory;
 }(Message));
 MessageFactory.registerMessage(MessageStory, "story", ["/story", "/history", "/historia", "/história", "/histo", "/sto"]);
-var MessageAction = (function (_super) {
+var MessageAction = /** @class */ (function (_super) {
     __extends(MessageAction, _super);
     function MessageAction() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
@@ -7984,7 +8439,7 @@ var MessageAction = (function (_super) {
     return MessageAction;
 }(Message));
 MessageFactory.registerMessage(MessageAction, "action", ["/act", "/me", "/eu", "/açao", "/ação", "/agir"]);
-var MessageOff = (function (_super) {
+var MessageOff = /** @class */ (function (_super) {
     __extends(MessageOff, _super);
     function MessageOff() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
@@ -8003,7 +8458,7 @@ var MessageOff = (function (_super) {
     return MessageOff;
 }(Message));
 MessageFactory.registerMessage(MessageOff, "offgame", ["/off", "/ooc"]);
-var MessageRoleplay = (function (_super) {
+var MessageRoleplay = /** @class */ (function (_super) {
     __extends(MessageRoleplay, _super);
     function MessageRoleplay() {
         var _this = _super.call(this) || this;
@@ -8147,7 +8602,7 @@ var MessageRoleplay = (function (_super) {
     return MessageRoleplay;
 }(Message));
 MessageFactory.registerMessage(MessageRoleplay, "roleplay", []);
-var MessageSheetup = (function (_super) {
+var MessageSheetup = /** @class */ (function (_super) {
     __extends(MessageSheetup, _super);
     function MessageSheetup() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
@@ -8158,7 +8613,7 @@ var MessageSheetup = (function (_super) {
     }
     MessageSheetup.prototype.onPrint = function () {
         if (this.playedBefore) {
-            return;
+            return; // don't play yourself twice!
         }
         if (UI.Chat.doAutomation() && UI.Sheets.SheetManager.isAutoUpdate() && !this.wasLocalMessage()) {
             this.playedBefore = true;
@@ -8212,7 +8667,7 @@ var MessageSheetup = (function (_super) {
     return MessageSheetup;
 }(Message));
 MessageFactory.registerMessage(MessageSheetup, "sheetup", []);
-var MessageUnknown = (function (_super) {
+var MessageUnknown = /** @class */ (function (_super) {
     __extends(MessageUnknown, _super);
     function MessageUnknown() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
@@ -8231,7 +8686,7 @@ var MessageUnknown = (function (_super) {
     return MessageUnknown;
 }(Message));
 MessageFactory.registerMessage(MessageUnknown, "unkn", []);
-var MessageCutscene = (function (_super) {
+var MessageCutscene = /** @class */ (function (_super) {
     __extends(MessageCutscene, _super);
     function MessageCutscene() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
@@ -8259,6 +8714,39 @@ var MessageCutscene = (function (_super) {
     return MessageCutscene;
 }(Message));
 MessageFactory.registerMessage(MessageCutscene, "csc", []);
+/// <reference path='MessageFactory.ts' />
+/// <reference path='Types/SlashCommand.ts' />
+/// <reference path='Types/SlashClear.ts' />
+/// <reference path='Types/SlashReply.ts' />
+/// <reference path='Types/SlashImages.ts' />
+/// <reference path='Types/SlashLog.ts' />
+/// <reference path='Types/SlashLingo.ts' />
+/// <reference path='Types/SlashPica.ts' />
+/// <reference path='Types/Message.ts' />
+/// <reference path='Types/MessageBuff.ts' />
+/// <reference path='Types/MessagePica.ts' />
+/// <reference path='Types/MessageSystem.ts' />
+/// <reference path='Types/MessageCountdown.ts' />
+/// <reference path='Types/MessageVote.ts' />
+/// <reference path='Types/MessageWebm.ts' />
+/// <reference path='Types/MessageVideo.ts' />
+/// <reference path='Types/MessageQuote.ts' />
+/// <reference path='Types/MessageSE.ts' />
+/// <reference path='Types/MessageImage.ts' />
+/// <reference path='Types/MessageBGM.ts' />
+/// <reference path='Types/MessageStream.ts' />
+/// <reference path='Types/MessageSheetcommand.ts' />
+/// <reference path='Types/MessageWhisper.ts' />
+/// <reference path='Types/MessageSheetdamage.ts' />
+/// <reference path='Types/MessageSheetturn.ts' />
+/// <reference path='Types/MessageDice.ts' />
+/// <reference path='Types/MessageStory.ts' />
+/// <reference path='Types/MessageAction.ts' />
+/// <reference path='Types/MessageOff.ts' />
+/// <reference path='Types/MessageRoleplay.ts' />
+/// <reference path='Types/MessageSheetup.ts' />
+/// <reference path='Types/MessageUnknown.ts' />
+/// <reference path='Types/MessageCutscene.ts' />
 var DB;
 (function (DB) {
     var UserDB;
@@ -8948,6 +9436,16 @@ var DB;
         StyleDB.updateStyle = updateStyle;
     })(StyleDB = DB.StyleDB || (DB.StyleDB = {}));
 })(DB || (DB = {}));
+/// <reference path='DB.ts' />
+/// <reference path='Modules/UserDB.ts' />
+/// <reference path='Modules/GameDB.ts' />
+/// <reference path='Modules/RoomDB.ts' />
+/// <reference path='Modules/MessageDB.ts' />
+/// <reference path='Modules/UserDB.ts' />
+/// <reference path='Modules/SheetDB.ts' />
+/// <reference path='Modules/ImageDB.ts' />
+/// <reference path='Modules/SoundDB.ts' />
+/// <reference path='Modules/StyleDB.ts' />
 var Application;
 (function (Application) {
     function getMe() {
@@ -8968,7 +9466,13 @@ var Application;
     }
     Application.getMyId = getMyId;
 })(Application || (Application = {}));
+/**
+ * Created by Reddo on 15/09/2015.
+ */
 var Application;
+/**
+ * Created by Reddo on 15/09/2015.
+ */
 (function (Application) {
     var Config;
     (function (Config) {
@@ -9065,7 +9569,9 @@ var Application;
         LocalMemory.unsetMemory = unsetMemory;
     })(LocalMemory = Application.LocalMemory || (Application.LocalMemory = {}));
 })(Application || (Application = {}));
+/// <reference path='../Application.ts' />
 var Application;
+/// <reference path='../Application.ts' />
 (function (Application) {
     var Login;
     (function (Login) {
@@ -9073,13 +9579,19 @@ var Application;
         var currentSession = null;
         var lastEmail = null;
         var lastUpdate = null;
-        var sessionLife = 30 * 60 * 1000;
-        var keepAliveTime = 2 * 60 * 1000;
+        var sessionLife = 30 * 60 * 1000; // 30 * 60 seconds
+        var keepAliveTime = 2 * 60 * 1000; // 2 * 60 seconds
         var interval = null;
         var trigger = new Trigger();
+        // Constants for localStorage
         var LAST_LOGIN_STORAGE = "redpg_lastLogin";
         var LAST_SESSION_STORAGE = "redpg_lastSession";
         var LAST_SESSION_TIME_STORAGE = "redpg_lastSessionTime";
+        /**
+         * Checks localStorage for a valid Session id.
+         * If there is no valid Session id, checks localStorage for last login's e-mail.
+         * If there is no last e-mail, goes back to square one.
+         */
         function searchLogin() {
             if (localStorage.getItem(LAST_LOGIN_STORAGE) !== null) {
                 lastEmail = localStorage.getItem(LAST_LOGIN_STORAGE);
@@ -9121,6 +9633,8 @@ var Application;
             var oldLogged = isLogged();
             currentSession = null;
             currentUser = null;
+            //lastEmail = null;
+            //lastEmail must remain in memory
             if (interval !== null)
                 window.clearInterval(interval);
             interval = null;
@@ -9201,6 +9715,10 @@ var Application;
         }
     })(Login = Application.Login || (Application.Login = {}));
 })(Application || (Application = {}));
+/// <reference path='Application.ts' />
+/// <reference path='Modules/Config.ts' />
+/// <reference path='Modules/LocalMemory.ts' />
+/// <reference path='Modules/Login.ts' />
 var Server;
 (function (Server) {
     Server.IMAGE_URL = "http://img.redpg.com.br/";
@@ -9214,20 +9732,36 @@ var Server;
     }
     Server.WEBSOCKET_CONTEXT = "/service/";
     Server.WEBSOCKET_PORTS = [80, 8080, 8081];
+    // export var APPLICATION_URL : string = "http://localhost:8080/RedPG/";
+    // export var WEBSOCKET_SERVERURL : string = "ws://localhost";
+    // export var WEBSOCKET_CONTEXT : string = "/RedPG/";
+    //export var WEBSOCKET_PORTS : Array<number> = [8080];
+    //export var APPLICATION_URL : string = "http://93.188.167.121/service/";
+    //export var WEBSOCKET_SERVERURL : string = "ws://93.188.167.121";
+    //export var WEBSOCKET_CONTEXT : string = "/service/";
+    //export var WEBSOCKET_PORTS : Array<number> = [80, 8080, 8081];
     Application.Config.registerConfiguration("wsPort", new WsportConfiguration(Server.WEBSOCKET_PORTS[0]));
     function getWebsocketURL() {
         return Server.WEBSOCKET_SERVERURL + ":" + Application.Config.getConfig("wsPort").getValue() + Server.WEBSOCKET_CONTEXT;
     }
     Server.getWebsocketURL = getWebsocketURL;
 })(Server || (Server = {}));
+/**
+ * Created by Reddo on 14/09/2015.
+ */
 var Server;
+/**
+ * Created by Reddo on 14/09/2015.
+ */
 (function (Server) {
     var AJAX;
     (function (AJAX) {
         function requestPage(ajax, success, error) {
             var url = ajax.url;
+            // Relative URL?
             if (url.indexOf("://") === -1) {
                 url = Server.APPLICATION_URL + url;
+                // Include session in link?
                 if (Application.Login.hasSession()) {
                     url += ';jsessionid=' + Application.Login.getSession();
                 }
@@ -9357,6 +9891,12 @@ var Server;
         var ACCOUNT_URL = "Account";
         var emptyCallback = { handleEvent: function () { } };
         var emptyCallbackFunction = function () { };
+        /**
+         * Requests session information from the server. Renews login information on success, logs out on error.
+         * @param silent
+         * @param cbs
+         * @param cbe
+         */
         function requestSession(silent, cbs, cbe) {
             var success = {
                 cbs: cbs,
@@ -9405,6 +9945,13 @@ var Server;
             Server.AJAX.requestPage(ajax, success, error);
         }
         Login.requestSession = requestSession;
+        /**
+         * Attempts to log in with information provided. Sets up login information on success. Runs cbe, if available, on failure.
+         * @param email
+         * @param password
+         * @param cbs
+         * @param cbe
+         */
         function doLogin(email, password, cbs, cbe) {
             var success = {
                 cbs: cbs,
@@ -9429,6 +9976,11 @@ var Server;
             Server.AJAX.requestPage(ajax, success, cbe);
         }
         Login.doLogin = doLogin;
+        /**
+         * Attempts to log out from current session. Logs out on success.
+         * @param cbs
+         * @param cbe
+         */
         function doLogout(cbs, cbe) {
             var success = {
                 cbs: cbs,
@@ -9478,6 +10030,15 @@ var Server;
         var IMAGES_URL = "Image";
         var emptyCallback = function () { };
         function getImages(cbs, cbe) {
+            // var success : Listener = <Listener> {
+            //     cbs : cbs,
+            //     handleEvent : function (response, xhr) {
+            //         // response.images = ARRAY <objeto>    folder: "" id: NEGATIVO name: "" url: ""
+            //         // response.imagess3 = ARRAY <objeto> folder   name   size   uploader   uuid
+            //         // response.space = FreeSpace, TotalSpace, UsedSpace
+            //         if (this.cbs !== undefined) this.cbs.handleEvent(response, xhr);
+            //     }
+            // };
             var success = cbs === undefined ? emptyCallback : cbs;
             var error = cbe === undefined ? emptyCallback : cbe;
             var ajax = new AJAXConfig(IMAGES_URL);
@@ -9645,7 +10206,7 @@ var Server;
             var ajax = new AJAXConfig(GAMES_URL);
             ajax.setResponseTypeJSON();
             ajax.setData("action", "setPrivileges");
-            ajax.setData("privileges", "permissions");
+            ajax.setData("privileges", "permissions"); // TODO: Find out wtf "permissions" is
             ajax.setData("id", gameid.toString());
             ajax.setTargetLeftWindow();
             Server.AJAX.requestPage(ajax, success, error);
@@ -9659,12 +10220,14 @@ var Server;
     (function (URL) {
         function fixURL(url) {
             url = url.trim();
+            // Don't ruin relative links
             if (url.indexOf("images/") == 0) {
                 return url;
             }
             if (url.indexOf("://") === -1) {
                 url = "http://" + url;
             }
+            // Fix Dropbox links to be direct
             if (url.indexOf("www.dropbox.com") !== -1) {
                 url = url.replace("www.dropbox.com", "dl.dropboxusercontent.com");
                 var interr = url.lastIndexOf("?dl");
@@ -9701,7 +10264,7 @@ var Server;
             typing: false,
             persona: null,
             avatar: null
-        };
+        }; // "persona":null,"avatar":null}]
         var reconnecting = false;
         var reconnectAttempts = 0;
         var maxReconnectAttempts = 5;
@@ -9751,7 +10314,7 @@ var Server;
         Chat.giveUpReconnect = giveUpReconnect;
         function reconnect() {
             if (currentRoom === null) {
-                return;
+                return; // intentional disconnect
             }
             UI.Chat.Notification.showReconnecting();
             if (reconnectAttempts++ <= maxReconnectAttempts && Application.Login.isLogged()) {
@@ -9890,6 +10453,7 @@ var Server;
             messageTrigger.trigger(f);
         }
         Chat.triggerMessage = triggerMessage;
+        // Set up controllers
         (function () {
             var getRoom = {
                 handleEvent: function (e) {
@@ -10056,6 +10620,7 @@ var Server;
                 return result;
             }
             Memory.exportAsObject = exportAsObject;
+            // TODO: Trigger all changes at once
             function updateFromObject(obj) {
                 updating = true;
                 for (var key in configList) {
@@ -10072,6 +10637,7 @@ var Server;
             Memory.updateFromObject = updateFromObject;
             var updateTimeout = null;
             var updateTimeoutTime = 1500;
+            // TODO: Don't save the same thing multiple times
             function saveMemory() {
                 updateTimeout = null;
                 var room = Server.Chat.getRoom();
@@ -10080,6 +10646,7 @@ var Server;
                     if (user.isStoryteller()) {
                         var memoryString = JSON.stringify(exportAsObject());
                         console.debug("[RoomMemory] Memory string: " + memoryString);
+                        //this.sendAction("memory", JSON.stringify(this.room.memory.memory));
                         Server.Chat.saveMemory(memoryString);
                     }
                 }
@@ -10130,7 +10697,7 @@ var Server;
             var ajax = new AJAXConfig(STORAGE_URL);
             ajax.setTargetRightWindow();
             ajax.setResponseTypeJSON();
-            ajax.data = { action: ACTION_RESTORE, id: IMAGES_ID };
+            ajax.data = { action: ACTION_RESTORE, id: IMAGES_ID }; // "store"
             Server.AJAX.requestPage(ajax, success, error);
         }
         Storage.requestImages = requestImages;
@@ -10147,7 +10714,7 @@ var Server;
             var ajax = new AJAXConfig(STORAGE_URL);
             ajax.setTargetRightWindow();
             ajax.setResponseTypeJSON();
-            ajax.data = { action: ACTION_RESTORE, id: SOUNDS_ID };
+            ajax.data = { action: ACTION_RESTORE, id: SOUNDS_ID }; // "store"
             Server.AJAX.requestPage(ajax, success, error);
         }
         Storage.requestSounds = requestSounds;
@@ -10157,7 +10724,7 @@ var Server;
             var ajax = new AJAXConfig(STORAGE_URL);
             ajax.setTargetRightWindow();
             ajax.setResponseTypeJSON();
-            ajax.data = { action: ACTION_STORE, id: IMAGES_ID, storage: DB.ImageDB.exportAsObject() };
+            ajax.data = { action: ACTION_STORE, id: IMAGES_ID, storage: DB.ImageDB.exportAsObject() }; // "store"
             Server.AJAX.requestPage(ajax, success, error);
         }
         Storage.sendImages = sendImages;
@@ -10167,7 +10734,7 @@ var Server;
             var ajax = new AJAXConfig(STORAGE_URL);
             ajax.setTargetRightWindow();
             ajax.setResponseTypeJSON();
-            ajax.data = { action: ACTION_STORE, id: SOUNDS_ID, storage: DB.SoundDB.exportAsObject() };
+            ajax.data = { action: ACTION_STORE, id: SOUNDS_ID, storage: DB.SoundDB.exportAsObject() }; // "store"
             Server.AJAX.requestPage(ajax, success, error);
         }
         Storage.sendSounds = sendSounds;
@@ -10397,6 +10964,8 @@ var Server;
             ajax.setData("action", "list");
             ajax.setData("id", game.getId());
             ajax.setTargetRightWindow();
+            // url : 'Style',
+            //     data: {id : gameid, action : 'list'},
             Server.AJAX.requestPage(ajax, cbs, cbe);
         }
         Sheets.getStyleOptions = getStyleOptions;
@@ -10429,7 +10998,21 @@ var Server;
         Sheets.sendSheet = sendSheet;
     })(Sheets = Server.Sheets || (Server.Sheets = {}));
 })(Server || (Server = {}));
-var Lingo = (function () {
+/// <reference path='Server.ts' />
+/// <reference path='Modules/AJAX.ts' />
+/// <reference path='Modules/Config.ts' />
+/// <reference path='Modules/Login.ts' />
+/// <reference path='Modules/Images.ts' />
+/// <reference path='Modules/Games.ts' />
+/// <reference path='Modules/URL.ts' />
+/// <reference path='Modules/Chat.ts' />
+/// <reference path='Modules/Chat/Memory.ts' />
+/// <reference path='Modules/Storage.ts' />
+/// <reference path='Modules/Sheets.ts' />
+/**
+ * Created by Reddo on 01/11/2015.
+ */
+var Lingo = /** @class */ (function () {
     function Lingo() {
         this.ids = [];
         this.unknownLingo = " :( ";
@@ -10469,7 +11052,7 @@ var Lingo = (function () {
     };
     return Lingo;
 }());
-var SheetLingo = (function () {
+var SheetLingo = /** @class */ (function () {
     function SheetLingo() {
         this.defaultLingo = null;
         this.lingos = [];
@@ -10557,11 +11140,13 @@ var LingoList;
     }
     LingoList.addSheetLingo = addSheetLingo;
 })(LingoList || (LingoList = {}));
+// Create new Lingo
 var ptbr = new Lingo();
 ptbr.ids = ["pt", "pt-br", "ptbr"];
 ptbr.name = "Português - Brasil";
 ptbr.shortname = "Português";
 ptbr.flagIcon = "PT_BR";
+// Login Screen
 ptbr.setLingo("_LOGINEMAIL_", "E-mail");
 ptbr.setLingo("_LOGINPASSWORD_", "Senha");
 ptbr.setLingo("_LOGINSUBMIT_", "Entrar");
@@ -10582,16 +11167,19 @@ ptbr.setLingo("_CREATEACCOUNTGENERALERROR_", "Houve um erro no processamento. Te
 ptbr.setLingo("_CREATEACCOUNTSTUPIDERROR_", "Alguma informação enviada foi inválida. Corrija e tente novamente.");
 ptbr.setLingo("_CREATEACCOUNTPASSWORDINVALID_", "3 a 12 caracteres, apenas letras e números.");
 ptbr.setLingo("_CREATEACCOUNTALREADYEXISTS_", "E-mail já está registrado.");
+// Changelog
 ptbr.setLingo("_CHANGELOGTITLE_", "Histórico de mudanças");
 ptbr.setLingo("_CHANGELOGP1_", "Para receber os updates marcados em vermelho você precisa atualizar sua aplicação para a última versão.");
 ptbr.setLingo("_CHANGELOGP2_", "Compatibilidade com versões anteriores não é intencional. Não existem garantias de que versões desatualizadas funcionem e é recomendável sempre utilizar a versão mais recente do aplicativo.");
 ptbr.setLingo("_CHANGELOGCURRENTVERSION_", "A sua versão é");
 ptbr.setLingo("_CHANGELOGMOSTRECENTVERSION_", "A versão mais recente é");
 ptbr.setLingo("_CHANGELOGVERSIONWARNING_", "Seu aplicativo está desatualizado. Recomenda-se atualizar o seu aplicativo. Caso esteja acessando a versão Online através de RedPG.com.br, é só recarregar a página (F5). Atualizações marcadas em vermelho não estão disponíveis.");
+// Home  Page
 ptbr.setLingo("_REDPGTITLE_", "RedPG");
 ptbr.setLingo("_REDPGEXP1_", "RedPG é um sistema para facilitar RPGs de Mesa através da internet. Funções do sistema incluem o compartilhamento de Imagens, Sons, Fichas de Personagens, uma sala para troca de mensagens com suporte a dados e muito mais, com novas funções sempre sendo adicionadas.");
 ptbr.setLingo("_REDPGEXP2_", "Todos os aspectos do sistema existem e estão presos aos Grupos, um grupo de RPG. Então para criar qualquer coisa ou utilizar o sistema de qualquer maneira, você precisa criar ou ser convidado a um Grupo. Isso é feito na seção \"Grupos\", no menu à esquerda.");
 ptbr.setLingo("_REDPGFORUMTITLE_", "Últimos posts no Fórum");
+// TODO: Implementar mensagens do fórum.
 ptbr.setLingo("_REDPGFORUM1_", "Não Implementado");
 ptbr.setLingo("_REDPGDONATIONTITLE_", "Doações");
 ptbr.setLingo("_REDPGDONATIONEXP1_", "RedPG é um sistema gratuito e permanecerá gratuito enquanto isso for possível. Mas o servidor possui um custo e alguém precisa pagar.");
@@ -10600,6 +11188,7 @@ ptbr.setLingo("_REDPGDONATIONEXP3_", "Sempre que fizer uma doação, tente reali
 ptbr.setLingo("_REDPGLINKSTITLE_", "Links úteis");
 ptbr.setLingo("_REDPGLINKFRONTBUTTON_", "RedPG Front on GitHub");
 ptbr.setLingo("_REDPGLINKFRONTEXP_", "Versão offline do cliente RedPG. Usuários que queiram abrir o RedPG a partir da própria máquina devem baixar versões atualizadas aqui. A versão offline permite que jogadores e mestres compartilhem sons que estejam dentro da pasta Sons, sem a necessidade de um servidor para compartilhar sons.");
+// Menu
 ptbr.setLingo("_MENULOGOUT_", "Logout");
 ptbr.setLingo("_MENUGAMES_", "Grupos");
 ptbr.setLingo("_MENUCONFIG_", "Opções");
@@ -10614,6 +11203,7 @@ ptbr.setLingo("", "");
 ptbr.setLingo("", "");
 ptbr.setLingo("", "");
 ptbr.setLingo("", "");
+// Estilos
 ptbr.setLingo("_STYLESTITLE_", "Estilos de Fichas");
 ptbr.setLingo("_STYLESEXP1_", "Um estilo de ficha é como um formulário em branco que pode ser preenchido para criar uma ficha. O sistema é bem aberto e não existem limites para o que um estilo de ficha pode realizar. O uso mais comum para o estilo de ficha é definir quais campos a ficha terá e como eles são apresentados para servirem como fichas de personagens durante o jogo, mas muitos outros tipos de \"ficha\" já foram criados no passado (como História de Personagem, Mapas, Notas Pessoais, etc).");
 ptbr.setLingo("_STYLESEXP2_", "A confecção de um estilo é algo um tanto complicado, então essa parte do sistema deve ser utilizada por usuários avançados.");
@@ -10621,6 +11211,7 @@ ptbr.setLingo("_STYLESNEWSTYLE_", "--- Criar novo estilo");
 ptbr.setLingo("", "");
 ptbr.setLingo("", "");
 ptbr.setLingo("", "");
+// Estilo Designer
 ptbr.setLingo("_STYLEEDITOR_", "Editor de Estilo");
 ptbr.setLingo("_STYLEEDITOREXP_", "");
 ptbr.setLingo("_STYLEEDITORNAME_", "Nome do Estilo");
@@ -10637,6 +11228,7 @@ ptbr.setLingo("_STYLEEDITORCOPYEXP_", "Copia todos os valores do estilo selecion
 ptbr.setLingo("_STYLEEDITORCOPYBUTTON_", "Copiar");
 ptbr.setLingo("_STYLEEDITORREMAIN_", "Permanecer nessa tela");
 ptbr.setLingo("_STYLEEDITORSAVE_", "Salvar");
+// Sons
 ptbr.setLingo("_SOUNDSTITLE_", "Sons");
 ptbr.setLingo("_SOUNDSLINKTITLE_", "Link Direto");
 ptbr.setLingo("_SOUNDSDROPBOXCHOOSER_", "Escolher do Dropbox");
@@ -10650,6 +11242,7 @@ ptbr.setLingo("_SOUNDSFOLDER_", "Renomear Pasta");
 ptbr.setLingo("_SOUNDSPLAY_", "Tocar");
 ptbr.setLingo("_SOUNDSRENAMEPROMPT_", "Digite o novo nome para \"%a\":");
 ptbr.setLingo("_SOUNDSRENAMEFOLDERPROMPT_", "Digite a nova pasta para \"%a\", atualmente em \"%b\":");
+// Imagens
 ptbr.setLingo("_IMAGESTITLE_", "Fotos");
 ptbr.setLingo("_IMAGESEXP01_", "Imagens ficam anexadas à sua conta e podem ser utilizadas em qualquer seção do RedPG.");
 ptbr.setLingo("_IMAGESEXP02_", "Você deve adicionar imagens como um Link direto ou através de uma conta Dropbox. É possível utilizar o botão Dropbox abaixo para começar a guardar as imagens na sua conta RedPG.");
@@ -10669,6 +11262,7 @@ ptbr.setLingo("_IMAGESRENAMEPROMPT_", "Digite o novo nome para \"%a\":");
 ptbr.setLingo("_IMAGESRENAMEFOLDERPROMPT_", "Digite a nova pasta para \"%a\", atualmente em \"%b\":");
 ptbr.setLingo("", "");
 ptbr.setLingo("", "");
+// PICAS
 ptbr.setLingo("_PICASHARE_", "Compartilhar no Chat");
 ptbr.setLingo("_PICASCALEFITNOSTRETCH_", "Encaixar na tela (sem aumentar a imagem)");
 ptbr.setLingo("_PICASCALEFITSTRETCH_", "Encaixar na tela");
@@ -10683,11 +11277,13 @@ ptbr.setLingo("_PICACONU_", "Desenho de triângulos (clicar e arrastar)");
 ptbr.setLingo("_PICASQUA_", "Desenho de quadrados (clicar e arrastar)");
 ptbr.setLingo("", "");
 ptbr.setLingo("_SLASHPICANONAME_", "Quadro sem nome");
+// LOGGER
 ptbr.setLingo("_LOGGERTITLE_", "Logger");
 ptbr.setLingo("_LOGGEREXP1_", "O excerto a seguir representa as primeiras e as últimas mensagens que irão fazer parte deste log. Você pode alterar o slider abaixo para definir onde começar o log e onde terminar o log. Apenas mensagens públicas (não enviadas a uma pessoa específica) serão guardadas no JSON. Você pode mover com as setas do teclado após clicar nos sliders.");
 ptbr.setLingo("_LOGGEREXP2_", "Aqui você pode definir quais tipos de mensagens não serão salvas. Lembrando que apenas mensagens públicas (visível a todos) serão salvas no log.");
 ptbr.setLingo("_LOGGERSUBMIT_", "Criar Log");
 ptbr.setLingo("", "");
+// Fichas
 ptbr.setLingo("_MENUSHEETREOPEN_", "Ficha");
 ptbr.setLingo("_SHEETSTITLE_", "Fichas");
 ptbr.setLingo("_SHEETSEXP01_", "Fichas são algo que mestres e seus jogadores podem guardar no sistema, garantindo que todos estejam vendo a mesma versão desse recurso. Um jogador só pode ver fichas para as quais ele tem permissões adequadas, então lembre-se de alterar essas opções para cada ficha que fizer.");
@@ -10718,10 +11314,12 @@ ptbr.setLingo("_SHEETVIEWEREXPORT_", "Salvar valores como .json");
 ptbr.setLingo("_SHEETVIEWERAUTOMATIC_", "Recarregar a ficha automaticamente");
 ptbr.setLingo("_SHEETVIEWERCLOSE_", "Fechar ficha");
 ptbr.setLingo("_SHEETIMPORTFAILED_", "O arquivo escolhido não continha uma ficha válida e não pôde ser importado.");
+// SHEET VARIABLES
 ptbr.setLingo("_SHEETVARIABLEIMAGENONE_", "Sem imagem");
 ptbr.setLingo("_SHEETVARIABLEIMAGESNOTLOADED_", "Imagens não carregadas");
 ptbr.setLingo("_SHEETVARIABLEIMAGELASTVALUE_", "Imagem atual");
 ptbr.setLingo("_SHEETVARIABLEMATHNAN_", "Não é um Número");
+// Fichas Permissoes
 ptbr.setLingo("_SHEETPERMISSIONSHEADER_", "Permissões de Ficha");
 ptbr.setLingo("_SHEETPERMISSIONEXP_", "As permissões definem o que cada jogador de um grupo pode fazer com uma certa ficha. \"Ver\" indica que o jogador poderá abrir a ficha, \"Editar\" indica que o jogador poderá alterar os valores dessa ficha, \"Deletar\" permite que o jogador apague a ficha (permanentemente) e \"Promover\" permite que um jogador acesse essa tela, podendo fornecer permissões para outros jogadores.");
 ptbr.setLingo("_SHEETPERMISSIONSHEETNAME_", "Você está editando permissões para \"%a\".");
@@ -10730,6 +11328,7 @@ ptbr.setLingo("_SHEETPERMISSIONEDIT_", "Editar");
 ptbr.setLingo("_SHEETPERMISSIONDELETE_", "Deletar");
 ptbr.setLingo("_SHEETPERMISSIONPROMOTE_", "Promover");
 ptbr.setLingo("_SHEETPERMISSIONSUBMIT_", "Confirmar");
+// Jogos
 ptbr.setLingo("_GAMESTITLE_", "Grupos");
 ptbr.setLingo("_GAMESEXP1_", "Caso precise informar seu identificador para alguém, ele é \"%a\", sem as aspas.");
 ptbr.setLingo("_GAMESEXP2_", "Aqui você pode administrar os grupos dos quais você participa. Para convidar jogadores ao seu grupo, você irá precisar do identificador deles.");
@@ -10759,6 +11358,7 @@ ptbr.setLingo("_GAMESCREATEROOM_", "Criar sala");
 ptbr.setLingo("_GAMESROOMPERMISSIONS_", "Permissões");
 ptbr.setLingo("_GAMESROOMDELETE_", "Deletar");
 ptbr.setLingo("", "");
+// Salas
 ptbr.setLingo("_ROOMDESIGNERTITLE_", "Editor de Salas");
 ptbr.setLingo("_ROOMDESIGNERERROR_", "Houve um erro no processamento. Tente novamente.");
 ptbr.setLingo("_ROOMDESIGNERNAMEPLACEHOLDER_", "Nome da Sala");
@@ -10767,12 +11367,14 @@ ptbr.setLingo("_ROOMDESIGNERSUBMIT_", "Enviar");
 ptbr.setLingo("_ROOMDESIGNEREXP_", "Uma sala é um lugar onde todos podem se reunir para participar de um jogo. Recomenda-se criar salas separadas por sua função, como \"Criação de Fichas\" ou \"História Principal\".");
 ptbr.setLingo("", "");
 ptbr.setLingo("", "");
+// Jogo Formulário
 ptbr.setLingo("_GAMEDESIGNERTITLE_", "Editor de Mesas");
 ptbr.setLingo("_GAMEDESIGNERERROR_", "Houve um erro no processamento. Tente novamente.");
 ptbr.setLingo("_GAMEDESIGNERNAMEPLACEHOLDER_", "Nome da mesa. Máximo de 30 caracteres.");
 ptbr.setLingo("_GAMEDESIGNERMESSAGEPLACEHOLDER_", "Descrição para a mesa. Utilize esse espaço para definir quais os objetivos da mesa, assim como horários e qualquer informação que seus jogadores devam ter.");
 ptbr.setLingo("_GAMEDESIGNERSUBMIT_", "Enviar");
 ptbr.setLingo("", "");
+// Jogos Invites
 ptbr.setLingo("_GAMEINVITESTITLE_", "Meus Convites");
 ptbr.setLingo("_GAMEINVITESEXP01_", "Enquanto você não aceitar um dos convites, você não faz parte do grupo.");
 ptbr.setLingo("_GAMEINVITESEXP02_", "Caso precise informar seu identificador a alguém, ele é \"%a\".");
@@ -10786,6 +11388,7 @@ ptbr.setLingo("_GAMEINVITEDESIGNERSUBMIT_", "Enviar");
 ptbr.setLingo("_GAMEINVITEDESIGNERNAMEPLACEHOLDER_", "Identificador#");
 ptbr.setLingo("_GAMEINVITEDESIGNERMESSAGEPLACEHOLDER_", "Carta de apresentação");
 ptbr.setLingo("", "");
+// Chat
 ptbr.setLingo("_CHATHELP01_", "Use \"/comandos\" para imprimir uma lista completa de comandos. Comandos básicos:");
 ptbr.setLingo("_CHATHELP02_", "\"/me [mensagem]\": Envia a mensagem como uma ação da persona escolhida.");
 ptbr.setLingo("_CHATHELP03_", "\"/off [mensagem]\": Envia a mensagem como uma mensagem fora de jogo, falando como o jogador.");
@@ -10888,16 +11491,19 @@ ptbr.setLingo("_CHATCOMMANDREQUEST_", "%a deseja aplicar um comando em %b.");
 ptbr.setLingo("_CHATCOMMANDCLICK_", "Clique aqui para permitir.");
 ptbr.setLingo("_CHATMESSAGESHEETUPDATED_", "A ficha \"%a\" foi atualizada.");
 ptbr.setLingo("_CHATMESSAGESHEETUPDATEDCLICKER_", "Clique aqui para atualizar ela.");
+// Chat Mood
 ptbr.setLingo("_MOODNONE_", "Nenhum");
 ptbr.setLingo("_MOODNIGHT_", "Noite");
 ptbr.setLingo("_MOODEVENING_", "Entardecer");
 ptbr.setLingo("_MOODFIRE_", "Fogo");
 ptbr.setLingo("_MOODTRAUMA_", "Trauma");
 ptbr.setLingo("_MOODSEPIA_", "Antigo");
+// Chat Hide Some Mssages
 ptbr.setLingo("_CONFIGCHATUNNECESSARYMESSAGES_", "(Chat) Esconder algumas mensagens:");
 ptbr.setLingo("_CONFIGCHATUNNECESSARYMESSAGESNO_", "Não esconder");
 ptbr.setLingo("_CONFIGCHATUNNECESSARYMESSAGESYES_", "Sim");
 ptbr.setLingo("_CONFIGCHATUNNECESSARYMESSAGESEXP_", "Para tentar manter um certo clima durante a sessão, é possível desabilitar a impressão de mensagens desnecessárias. As mensagens que não serão impressas (mas ainda serão processadas) por essa configuração são mensagens de Som, Música e Imagens.");
+// Chat Persona Designer
 ptbr.setLingo("_PERSONADESIGNERTITLE_", "Administrador de Personas");
 ptbr.setLingo("_PERSONADESIGNERNAME_", "Nome do Personagem");
 ptbr.setLingo("_PERSONADESIGNERAVATAR_", "Link para Imagem (Opcional)");
@@ -10906,6 +11512,7 @@ ptbr.setLingo("_CHATPERSONADESIGNERUSE_", "Usar essa persona");
 ptbr.setLingo("_CHATPERSONADESIGNERDELETE_", "Deletar essa persona");
 ptbr.setLingo("", "");
 ptbr.setLingo("", "");
+// Config
 ptbr.setLingo("_CONFIGSEVOLUME_", "Volume de Efeitos Sonoros");
 ptbr.setLingo("_CONFIGSEVOLUMEEXP_", "Define o volume para efeitos sonoros reproduzidos no RedPG.");
 ptbr.setLingo("_CONFIGBGMVOLUME_", "Volume de Músicas");
@@ -10960,16 +11567,23 @@ ptbr.setLingo("_CONFIGCHATSCREENEFFECTS_", "(Chat) Efeitos de Tela");
 ptbr.setLingo("_CONFIGCHATEFFECTSNO_", "Não aceitar efeitos");
 ptbr.setLingo("_CONFIGCHATEFFECTSYES_", "Aceitar efeitos");
 ptbr.setLingo("_CONFIGCHATEFFECTSEXP_", "Um mestre pode definir efeitos de tela para tentar atingir um \"clima\" em sua sessão. Aqui você pode definir se esses efeitos de tela são aceitáveis ou não.");
+// Window Events
 ptbr.setLingo("_RAPSCHATOPEN_", "Você está em uma sala. Tem certeza que deseja fechar?");
 ptbr.setLingo("_RAPSSHEETOPEN_", "Você possui fichas abertas. Tem certeza que deseja fechar?");
 ptbr.setLingo("_RAPSDELETE_", "Deseja mesmo deletar \"%a\"? Essa ação não pode ser desfeita.");
-ptbr.setLingo("_PICARINE_", "Desenhar linha  (clicar e arrastar)");
+// -------------------------------------------------------------------------
+ptbr.setLingo("_PICARINE_", "Desenhar linha  (clicar e arrastar)"); // RINE ENDS HERE
+// Lingolist
 LingoList.storeLingo(ptbr);
 var UI;
 (function (UI) {
+    /**
+     * Window IDs for Page Calling
+     */
     UI.idMainWindow = "mainWindow";
     UI.idLoginWindow = "loginWindow";
     UI.idAccountCreationWindow = "createAccountWindow";
+    // Left side windows
     UI.idChangelog = "changelogSideWindow";
     UI.idGames = "gamesSideWindow";
     UI.idChat = "chatSideWindow";
@@ -10982,31 +11596,44 @@ var UI;
     UI.idRoomDesigner = "roomDesignerFormSideWindow";
     UI.idSheetViewer = "sheetViewerSideWindow";
     UI.idSheetDesigner = "sheetDesignerFormSideWindow";
+    // Right side windows
     UI.idHome = "homeSideWindow";
     UI.idSheets = "sheetsSideWindow";
     UI.idImages = "imagesSideWindow";
     UI.idSounds = "soundsSideWindow";
     UI.idSheetPerm = "sheetPermSideWindow";
-    Application.Config.registerConfiguration("chatMaxMessages", new NumberConfiguration(120, 60, 0));
-    Application.Config.registerConfiguration("chatshowhelp", new BooleanConfiguration(true));
-    Application.Config.registerConfiguration("chatfontsize", new NumberConfiguration(16, 12, 32));
-    Application.Config.registerConfiguration("chatfontfamily", new Configuration("caudex"));
-    Application.Config.registerConfiguration("animTime", new NumberConfiguration(150, 0, 300));
-    Application.Config.registerConfiguration("language", new LanguageConfiguration());
-    Application.Config.registerConfiguration("fsmode", new BooleanConfiguration(false));
-    Application.Config.registerConfiguration("chatuseprompt", new BooleanConfiguration(true));
-    Application.Config.registerConfiguration("chatAutoRolls", new NumberConfiguration(0, 0, 1));
-    Application.Config.registerConfiguration("autoImage", new NumberConfiguration(1, 0, 2));
-    Application.Config.registerConfiguration("autoBGM", new NumberConfiguration(1, 0, 2));
-    Application.Config.registerConfiguration("autoSE", new NumberConfiguration(1, 0, 2));
-    Application.Config.registerConfiguration("autoVIDEO", new NumberConfiguration(1, 0, 2));
-    Application.Config.registerConfiguration("bgmVolume", new NumberConfiguration(50, 0, 100));
-    Application.Config.registerConfiguration("seVolume", new NumberConfiguration(50, 0, 100));
-    Application.Config.registerConfiguration("bgmLoop", new BooleanConfiguration(true));
-    Application.Config.registerConfiguration("hqRainbow", new NumberConfiguration(1, 0, 2));
+    /**
+     * Registered UI Configurations
+     */
+    Application.Config.registerConfiguration("chatMaxMessages", new NumberConfiguration(120, 60, 0)); // Chat Font Size
+    Application.Config.registerConfiguration("chatshowhelp", new BooleanConfiguration(true)); // Show help messages on top of chat
+    Application.Config.registerConfiguration("chatfontsize", new NumberConfiguration(16, 12, 32)); // Chat Font Size
+    Application.Config.registerConfiguration("chatfontfamily", new Configuration("caudex")); // Chat Font Family
+    Application.Config.registerConfiguration("animTime", new NumberConfiguration(150, 0, 300)); // Animation Time
+    Application.Config.registerConfiguration("language", new LanguageConfiguration()); // Current Language
+    Application.Config.registerConfiguration("fsmode", new BooleanConfiguration(false)); // Full Screen Mode (forced)
+    Application.Config.registerConfiguration("chatuseprompt", new BooleanConfiguration(true)); // Open up message prompt on mobile
+    Application.Config.registerConfiguration("chatAutoRolls", new NumberConfiguration(0, 0, 1)); // Open up message prompt on mobile
+    Application.Config.registerConfiguration("autoImage", new NumberConfiguration(1, 0, 2)); // Automatically open shared Images
+    Application.Config.registerConfiguration("autoBGM", new NumberConfiguration(1, 0, 2)); // Automatically open shared BGMs
+    Application.Config.registerConfiguration("autoSE", new NumberConfiguration(1, 0, 2)); // Automatically open shared Sound Effects
+    Application.Config.registerConfiguration("autoVIDEO", new NumberConfiguration(1, 0, 2)); // Automatically open shared Videos
+    Application.Config.registerConfiguration("bgmVolume", new NumberConfiguration(50, 0, 100)); // Volume for BGM
+    Application.Config.registerConfiguration("seVolume", new NumberConfiguration(50, 0, 100)); // Volume for Sound Effect
+    Application.Config.registerConfiguration("bgmLoop", new BooleanConfiguration(true)); // Whether BGMs loop or not
+    Application.Config.registerConfiguration("hqRainbow", new NumberConfiguration(1, 0, 2)); // Automatically open shared Videos
     Application.Config.registerConfiguration("screeneffects", new BooleanConfiguration(true));
     Application.Config.registerConfiguration("hideMessages", new BooleanConfiguration(false));
 })(UI || (UI = {}));
+function RedPGAccidentPreventionSystem(e) {
+    if (UI.Chat.inRoom()) {
+        return UI.Language.getLanguage().getLingo("_RAPSCHATOPEN_");
+    }
+    else if (UI.Sheets.SheetManager.hasSheet()) {
+        return UI.Language.getLanguage().getLingo("_RAPSSHEETOPEN_");
+    }
+}
+window.onbeforeunload = RedPGAccidentPreventionSystem;
 var UI;
 (function (UI) {
     var WindowManager;
@@ -11035,7 +11662,7 @@ var UI;
                 return;
             }
             if (id === currentWindow)
-                return;
+                return; // Same window, no point
             if (currentWindow === "") {
                 detachAllWindows();
             }
@@ -11078,12 +11705,13 @@ var UI;
         WindowManager.getWindow = getWindow;
         function updateWindowSizes() {
             var stylehtml = "";
+            // Find left and right sizes
             var totalWidth = window.innerWidth;
             var rightSize = 698;
-            var leftSize = 35 + 340 + 100;
+            var leftSize = 35 + 340 + 100; // Buttons + 4 Avatars + 2 extra dice buttons
             var remainingSize = totalWidth - rightSize - leftSize - 20;
             if (remainingSize > 255) {
-                remainingSize = 255 + ((remainingSize - 255) * 1 / 2);
+                remainingSize = 255 + ((remainingSize - 255) * 1 / 2); // Right side grows too when too big
             }
             if (remainingSize < 0 || Application.Config.getConfig("fsmode").getValue()) {
                 UI.Handles.setAlwaysUp(true);
@@ -11093,15 +11721,17 @@ var UI;
             }
             else {
                 UI.Handles.setAlwaysUp(false);
-                leftSize += Math.floor(remainingSize / 85) * 85;
-                rightSize = totalWidth - leftSize - 20;
+                leftSize += Math.floor(remainingSize / 85) * 85; // Fit as many avatars as possible
+                rightSize = totalWidth - leftSize - 20; // Remove handle sizes
             }
             stylehtml += ".leftSideWindow { width: " + leftSize + "px; }\n.rightSideWindow { width: " + rightSize + "px; }";
             WindowManager.currentLeftSize = leftSize;
             WindowManager.currentRightSize = rightSize;
+            // Set up handles
             if (UI.Handles.isAlwaysUp()) {
                 stylehtml += "\n.leftSideWindow { left: 60px; }\n.rightSideWindow { right: 60px; }";
             }
+            // Only do costly update if necessary
             if (stylehtml !== lastStyleInnerHTML) {
                 style.innerHTML = stylehtml;
                 lastStyleInnerHTML = stylehtml;
@@ -11200,6 +11830,7 @@ var UI;
                 checkboxesTarget.removeChild(checkboxesTarget.firstChild);
             var msgTypes = MessageFactory.getMessagetypeArray();
             for (var i = 0; i < msgTypes.length; i++) {
+                // TODO: Implement module strings as static
             }
             var msgModules = [];
             for (var i = 0; i < messages.length; i++) {
@@ -11450,6 +12081,8 @@ var UI;
         Config.setUniqueTimeout = setUniqueTimeout;
     })(Config = UI.Config || (UI.Config = {}));
 })(UI || (UI = {}));
+// This is a typescript file, but it's not to be written as typescript
+// Only Changelog class usage is allowed in this file.
 var change;
 change = new Changelog(0, 8, 0);
 change.addMessage("Implemented most of the application before Changelog implemented.", "en");
@@ -11594,8 +12227,11 @@ change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
 change.addMessage("Janelas criadas pelo Chat terão seus botões de fechar do lado direito.", "pt");
 change.addMessage("Mensagens tentarão prevenir que RedPG seja fechado por acidente sempre que pelo menos uma ficha esteja aberta ou um Chat esteja conectado.", "pt");
 change.addMessage("Para deletar Fichas, Jogos e Salas, será necessário confirmar.", "pt");
+//delete (change);
 Changelog.finished();
+/// <reference path='../../Changelog.ts' />
 var UI;
+/// <reference path='../../Changelog.ts' />
 (function (UI) {
     var ChangelogManager;
     (function (ChangelogManager) {
@@ -12171,10 +12807,17 @@ var UI;
             }
         }
         Handles.setAlwaysUp = setAlwaysUp;
+        // Setting up button functions
         $("#logoutButton").on("click", function () { Server.Login.doLogout(); });
     })(Handles = UI.Handles || (UI.Handles = {}));
 })(UI || (UI = {}));
+/**
+ * Created by Reddo on 24/09/2015.
+ */
 var UI;
+/**
+ * Created by Reddo on 24/09/2015.
+ */
 (function (UI) {
     var Language;
     (function (Language) {
@@ -12195,7 +12838,6 @@ var UI;
             a.setAttribute("title", list[i].name);
             flagContainer.appendChild(a);
         }
-        delete (list, i, a, clickF);
         Application.Config.registerChangeListener("language", {
             handleEvent: function () {
                 var oldLanguage = UI.Language.getLanguage();
@@ -12289,6 +12931,7 @@ var UI;
             }
             element.dataset['languagenodes'] = languageNodes.join(";");
             element.dataset['languagevalues'] = languageValues.join(";");
+            //updateText(element);
         }
         function addLanguageVariable(element, id, value) {
             element.dataset['language' + id] = value;
@@ -12354,6 +12997,8 @@ var UI;
         }
         function printSheets() {
             empty();
+            // .sheetListGameContainer.lightHoverable.openSheetGame
+            //     %p.sheetListGameName{:onclick=>"this.parentNode.classList.toggle('openSheetGame');"}="Nome da Mesa"
             var games = DB.GameDB.getOrderedGameList();
             for (var k = 0; k < games.length; k++) {
                 var game = games[k];
@@ -12515,14 +13160,17 @@ var UI;
                     buttons.splice(idx, 1);
                 }
                 buttons.push(sheet);
+                // Changing positions is weird, stop that
                 if (idx === -1) {
                     buttonHolder.appendChild(sheet.getTab().getHTML());
                 }
                 sheet.getTab().toggleOn();
+                // Overflowing? Remove oldest sheet
                 while (buttonHolder.clientHeight > sheet.getTab().getHTML().scrollHeight) {
                     var oldTab = buttons.splice(0, 1)[0];
                     buttonHolder.removeChild(oldTab.getTab().getHTML());
                 }
+                // Toggle off last sheet's tab, unless we're going for the same one, then it's all fine
                 if (SheetManager.currentSheet !== null && SheetManager.currentSheet !== sheet) {
                     SheetManager.currentSheet.getTab().toggleOff();
                 }
@@ -12665,6 +13313,10 @@ var UI;
             document.getElementById("sheetFullReload").addEventListener("click", function (e) {
                 UI.Sheets.SheetManager.reload(e.shiftKey);
             });
+            // Hiding reload to reduce button bloat
+            // document.getElementById("sheetReload").addEventListener("click", function () {
+            //     UI.Sheets.SheetManager.reload();
+            // });
             function reload(reloadStyle) {
                 openSheet(SheetManager.currentSheet, true, reloadStyle === true);
             }
@@ -12907,10 +13559,11 @@ var UI;
                     perm.classList.add("gamesOwnerButton");
                     perm.classList.add("textLink");
                     perm.appendChild(document.createTextNode("_GAMESPERMISSIONS_"));
-                    perm.style.display = "none";
+                    perm.style.display = "none"; // TODO: Display once implemented
                     perm.addEventListener("click", {
                         game: games[i],
                         handleEvent: function () {
+                            // TODO: UI.Games.editGamePermissions(this.game);
                         }
                     });
                     var edit = document.createElement("a");
@@ -12920,9 +13573,10 @@ var UI;
                     edit.addEventListener("click", {
                         game: games[i],
                         handleEvent: function () {
+                            // TODO: UI.Games.editGame(this.game);
                         }
                     });
-                    edit.style.display = "none";
+                    edit.style.display = "none"; // TODO: Display once server-side issue resolved
                     var deleteGame = document.createElement("a");
                     deleteGame.classList.add("gamesOwnerButton");
                     deleteGame.classList.add("textLink");
@@ -13009,9 +13663,10 @@ var UI;
                             rPerm.addEventListener("click", {
                                 room: room,
                                 handleEvent: function () {
+                                    // TODO: UI.Rooms.setPermissions(this.room);
                                 }
                             });
-                            rPerm.style.display = "none";
+                            rPerm.style.display = "none"; // TODO: Display once implemented
                             p.appendChild(rPerm);
                             UI.Language.markLanguage(rPerm, rDelete);
                         }
@@ -13102,7 +13757,6 @@ var UI;
             a.appendChild(document.createTextNode("_GAMEINVITESERRORTRYAGAIN_"));
             $error[0].appendChild(a);
             UI.Language.markLanguage(a);
-            delete (a);
             document.getElementById("gameInvitesButton").addEventListener("click", function () { UI.Games.Invites.callSelf(); });
             Application.Login.addListener({
                 element: document.getElementById("gameInvitesNickTarget"),
@@ -13153,6 +13807,8 @@ var UI;
                 }
                 else {
                     for (var i = 0; i < data.length; i++) {
+                        //MensagemConvite: "Invite com mensagem"
+                        //id: 435
                         var row = data[i];
                         var div = document.createElement("div");
                         div.classList.add("gameInvitesContainer");
@@ -13380,6 +14036,7 @@ var UI;
                     Server.Games.createRoom(toRoom(), cbs, cbe);
                 }
                 else {
+                    // TODO: Call Server.Games.editRoom(toRoom(), cbs, cbe);
                 }
             }
             RoomDesigner.submit = submit;
@@ -13647,7 +14304,6 @@ var UI;
             };
             bgm.addEventListener("timeupdate", updateSeekerF);
             bgm.addEventListener("durationchange", updateSeekerF);
-            delete (updateSeekerF);
             bgm.addEventListener("ended", function () {
                 var loop = Application.Config.getConfig("bgmLoop").getValue();
                 if (loop) {
@@ -13717,15 +14373,19 @@ var UI;
     var Chat;
     (function (Chat) {
         var lastDate = "";
+        // Main Box
         var chatBox = document.getElementById("chatBox");
         var $chatBox = $(chatBox);
         var $chatBoxScrollDown = $("#chatScrollDown");
         $chatBoxScrollDown[0].style.display = "none";
+        // Help messages
         var chatHelperss = document.getElementsByClassName("chatInitHelp");
+        // NodeList loses values if they are unattached to the DOM
         var chatHelpers = [];
         for (var i = 0; i < chatHelperss.length; i++) {
             chatHelpers.push(chatHelperss[i]);
         }
+        // Config Listeners
         Application.Config.getConfig("chatfontsize").addChangeListener({
             chatBox: chatBox,
             handleEvent: function () {
@@ -13749,16 +14409,21 @@ var UI;
                 }
             }
         });
+        // Title and description
         var chatTitleNode = document.createTextNode("Title");
         var chatDescriptionNode = document.createTextNode("Description");
         document.getElementById("chatTitle").appendChild(chatTitleNode);
         document.getElementById("chatDescription").appendChild(chatDescriptionNode);
+        // Floater
         var chatInfoFloater = new ChatInfo(document.getElementById("chatFloater"));
+        // Message target
         var chatTarget = document.getElementById("chatMessages");
+        // Variables
         var printingMany = false;
         var lastPrintedId = 0;
         var scrolledDown = true;
         var currentRoom = null;
+        //var roomListeners : Array<Listener> = [];
         var roomTrigger = new Trigger();
         Chat.messageCounter = 0;
         function doAutomation() {
@@ -13796,7 +14461,7 @@ var UI;
         Chat.inRoom = inRoom;
         function clearRoom() {
             var dateObj = new Date();
-            var month = dateObj.getUTCMonth() + 1;
+            var month = dateObj.getUTCMonth() + 1; //months from 1-12
             var day = dateObj.getUTCDate();
             var year = dateObj.getUTCFullYear();
             lastDate = year + "-" + month + "-" + day;
@@ -13823,6 +14488,8 @@ var UI;
                     Chat.messageCounter--;
                     chatTarget.removeChild(chatTarget.firstChild);
                 }
+                //printGetAllButtonAtStart();
+                // this is about too many messages, not some missing
                 printNotallAtStart();
             }
         }
@@ -13854,22 +14521,30 @@ var UI;
         }
         Chat.printMessage = printMessage;
         function printMessages(messages, ignoreLowIds) {
+            // Initiate printing mode
             printingMany = true;
+            // Maximum amount of messages allowed Config
             var maxMessages = $.browser.mobile && false ?
                 Application.Config.getConfig("chatMaxMessages").getDefault()
                 :
                     Application.Config.getConfig("chatMaxMessages").getValue();
+            // Do we have more messages than allowed?
             var i;
             var counting = 0;
             for (i = messages.length - 1; i >= 0; i--) {
                 if (messages[i].getHTML() !== null) {
+                    // I don't why 4 works but it does and I'm not feeling like finding out
                     if (++counting > (maxMessages - 4)) {
                         break;
                     }
                 }
             }
+            // Are we going to print only part of the messages?
             if (i >= 0) {
+                // i > 0 means that we reached the maxMessages Limit
+                // i === 0 means that we have the exact amount of messages we are allowed to print.
                 clearRoom();
+                // If we're not printing all of them, we need to say so
                 if (i > 0) {
                     var msg = new ChatSystemMessage(true);
                     msg.addText("_CHATNOTALLMESSAGES_");
@@ -13877,18 +14552,25 @@ var UI;
                 }
             }
             else {
+                // i < 0 means we can print them all.
                 i = 0;
             }
+            // Detach parent to speed up process
             var parent = chatTarget.parentNode;
             parent.removeChild(chatTarget);
+            // Actually print the messages
             while (i < messages.length) {
                 if (!messages[i].doNotPrint() && (ignoreLowIds || messages[i].id > lastPrintedId)) {
                     printMessage(messages[i], false);
                 }
                 i++;
             }
+            // Reatach parent
             parent.appendChild(chatTarget);
+            // Stop printing mode
             printingMany = false;
+            // Scroll down to bottom, if necessary
+            // Don't scroll down if opening a log
             if ((currentRoom === null || currentRoom.id !== 0)) {
                 updateScrollPosition();
             }
@@ -14002,11 +14684,14 @@ var UI;
             UI.Chat.setScrolledDown(true);
             UI.Chat.updateScrollPosition(false);
         });
+        /**
+         * Initialize with mock up chat messages to force preloading of fonts
+         */
         clearRoom();
         for (var i = 0; i < 1; i++) {
             var messages = MessageFactory.createTestingMessages();
             printMessages(messages, true);
-            DB.MessageDB.releaseAllLocalMessages();
+            DB.MessageDB.releaseAllLocalMessages(); // On clear, all temporary messages will be lost anyway. This ties up loose ends.
         }
         var chatButton = document.getElementById("openChatButton");
         chatButton.style.display = "none";
@@ -14278,7 +14963,9 @@ var UI;
         })(PersonaManager = Chat.PersonaManager || (Chat.PersonaManager = {}));
     })(Chat = UI.Chat || (UI.Chat = {}));
 })(UI || (UI = {}));
+/// <reference path='PersonaManager.ts' />
 var UI;
+/// <reference path='PersonaManager.ts' />
 (function (UI) {
     var Chat;
     (function (Chat) {
@@ -14317,7 +15004,6 @@ var UI;
             formInput.addEventListener("keyup", inputKeyHandler);
             formInput.addEventListener("keydown", inputKeyHandler);
             formInput.addEventListener("keydown", function (e) { UI.Chat.Forms.handleInputKeypress(e); });
-            delete (inputKeyHandler);
             var lastWhisperFrom = null;
             UI.Chat.PersonaManager.addListener({
                 handleEvent: function (name, avatar) {
@@ -14405,6 +15091,7 @@ var UI;
                         }
                     }
                 }
+                // Prevent alt from going to the browser
                 if (e.keyCode === 18) {
                     e.preventDefault();
                 }
@@ -14422,26 +15109,31 @@ var UI;
                     }
                     e.preventDefault();
                 }
+                // ENTER
                 if (e.keyCode === 10 || e.keyCode === 13) {
                     UI.Chat.Forms.sendMessage();
                     e.preventDefault();
                     return;
                 }
+                // UP
                 if (e.keyCode === 38) {
                     UI.Chat.Forms.moveOlderText(-1);
                     e.preventDefault();
                     return;
                 }
+                // DOWN
                 if (e.keyCode === 40) {
                     UI.Chat.Forms.moveOlderText(1);
                     e.preventDefault();
                     return;
                 }
+                // ESC
                 if (e.keyCode === 27) {
                     e.preventDefault();
                     return;
                 }
                 var trimmed = formInput.value.trim();
+                // TAB to complete Whisper
                 if (e.keyCode === 9) {
                     if (MessageFactory.getConstructorFromText(trimmed) === MessageWhisper) {
                         var room = UI.Chat.getRoom();
@@ -14498,6 +15190,7 @@ var UI;
                         }
                     }
                 }
+                // Space and tab, for Reply
                 if (e.keyCode === 9 || e.keyCode === 32) {
                     if (lastWhisperFrom !== null && MessageFactory.getConstructorFromText(trimmed) === SlashReply) {
                         setInput("/whisper " + lastWhisperFrom.getUniqueNickname() + ", ");
@@ -14638,21 +15331,26 @@ var UI;
                 lastWhisperFrom = user;
             }
             Forms.setLastWhisperFrom = setLastWhisperFrom;
+            // Redirect on keypress
             document.addEventListener("keypress", function (e) {
                 UI.Chat.Forms.considerRedirecting(e);
             });
+            // Redirect on Control + V
             document.addEventListener("keydown", function (e) {
                 if (e.ctrlKey && e.keyCode === 86) {
                     UI.Chat.Forms.considerRedirecting(e);
                 }
             });
+            // Please don't go BACK on backspace, this is an application so this only happens on accident.
             document.addEventListener("keydown", function (e) {
                 if (e.which === 8 && !$(e.target).is("input, textarea") && e.target.contentEditable !== "true") {
                     e.preventDefault();
                 }
             });
+            // Focused?
             window.addEventListener("focus", function () { UI.Chat.Forms.setFocused(true); });
             window.addEventListener("blur", function () { UI.Chat.Forms.setFocused(false); });
+            // AFK?
             $(window).idle({
                 onIdle: function () {
                     UI.Chat.Forms.setAfk(true);
@@ -14663,6 +15361,7 @@ var UI;
                 events: "mouseover mouseout click keypress mousedown mousemove blur focus",
                 idle: 30000
             });
+            // Bind dices
             var dices = [4, 6, 8, 10, 12, 20, 100];
             for (var i = 0; i < dices.length; i++) {
                 document.getElementById("chatDiceD" + dices[i]).addEventListener("click", {
@@ -14672,7 +15371,6 @@ var UI;
                     }
                 });
             }
-            delete (dices, i);
         })(Forms = Chat.Forms || (Chat.Forms = {}));
     })(Chat = UI.Chat || (UI.Chat = {}));
 })(UI || (UI = {}));
@@ -14782,7 +15480,7 @@ var UI;
                 var languageNames = PseudoLanguage.getLanguageNames();
                 for (var i = 0; i < usersOrdered.length; i++) {
                     if (usersOrdered[i].isStoryteller()) {
-                        continue;
+                        continue; // Storytellers have all languages
                     }
                     var row = document.createElement("div");
                     row.classList.add("lingoRow");
@@ -14792,6 +15490,7 @@ var UI;
                     b.appendChild(document.createTextNode(usersOrdered[i].getUniqueNickname() + ":"));
                     var lingos = users[usersOrdered[i].getUser().id];
                     if (lingos !== undefined) {
+                        // Print current languages
                         for (var k = 0; k < lingos.length; k++) {
                             var a = document.createElement("a");
                             a.classList.add("lingoButton");
@@ -14830,6 +15529,7 @@ var UI;
                         UI.Language.updateElement(row);
                     }
                     if (Server.Chat.getRoom().getMe().isStoryteller()) {
+                        // Print adder
                         var adder = document.createElement("div");
                         adder.classList.add("lingoAdder");
                         var select = document.createElement("select");
@@ -15111,9 +15811,9 @@ var UI;
             }
             PersonaDesigner.emptyOut = emptyOut;
             function createPersona(name, avatar, savePersona) {
-                if (savePersona === void 0) { savePersona = true; }
-                var name = name === undefined ? personaName.value.trim() : name;
-                var avatar = avatar === undefined ? personaAvatar.value.trim() : avatar;
+                name = name === undefined ? personaName.value.trim() : name;
+                avatar = avatar === undefined ? personaAvatar.value.trim() : avatar;
+                savePersona = savePersona === undefined ? true : savePersona == true;
                 personaName.value = "";
                 personaAvatar.value = "";
                 personaName.focus();
@@ -15178,8 +15878,8 @@ var UI;
                         return -1;
                     if (nb < na)
                         return 1;
-                    var na = String(a.avatar).toLowerCase().latinise();
-                    var nb = String(b.avatar).toLowerCase().latinise();
+                    na = (String(a.avatar).toLowerCase()).latinise();
+                    nb = (String(b.avatar).toLowerCase()).latinise();
                     if (na < nb)
                         return -1;
                     if (nb < na)
@@ -15277,6 +15977,7 @@ var UI;
         }
         Pica.loadImage = loadImage;
         function callSelf() {
+            //$pictureWindow.stop().fadeIn(Application.Config.getConfig("animTime").getValue());
             $pictureWindow.stop().animate({
                 opacity: 1
             }, Application.Config.getConfig("animTime").getValue());
@@ -15300,7 +16001,7 @@ var UI;
         Pica.stopLoading = stopLoading;
     })(Pica = UI.Pica || (UI.Pica = {}));
 })(UI || (UI = {}));
-var PicaCanvasPoint = (function () {
+var PicaCanvasPoint = /** @class */ (function () {
     function PicaCanvasPoint() {
         this.x = 0;
         this.y = 0;
@@ -15308,8 +16009,8 @@ var PicaCanvasPoint = (function () {
     PicaCanvasPoint.prototype.setCoordinates = function (offsetX, offsetY) {
         var width = UI.Pica.Board.Canvas.getWidth();
         var height = UI.Pica.Board.Canvas.getHeight();
-        this.x = parseInt((offsetX * PicaCanvasPoint.precision) / width);
-        this.y = parseInt((offsetY * PicaCanvasPoint.precision) / height);
+        this.x = Math.floor((offsetX * PicaCanvasPoint.precision) / width);
+        this.y = Math.floor((offsetY * PicaCanvasPoint.precision) / height);
     };
     PicaCanvasPoint.prototype.setRelativeCoordinates = function (x, y) {
         this.x = x;
@@ -15347,7 +16048,7 @@ var PicaCanvasPoint = (function () {
         var angle = Math.acos(((dab * dab) + (dac * dac) - (dbc * dbc)) / (2 * dac * dab));
         angle = angle * 180 / Math.PI;
         if (angle > (180 - PicaCanvasPoint.minCurve)) {
-            return false;
+            return false; // "Not a triangle" by our own definition
         }
         return true;
     };
@@ -15362,37 +16063,48 @@ var PicaCanvasPoint = (function () {
         this.x = PicaCanvasPoint.decode(str.substr(0, 2));
         this.y = PicaCanvasPoint.decode(str.substr(2, 2));
     };
+    /**
+     * Encodes number "num" as a 2-character string.
+     * Encodes from 0 to PicaCanvasPoint.encoding.length^PicaCanvasPoint.maxEncodedChars, so about 0 to 6000.
+     * @param num
+     * @returns {string}
+     */
     PicaCanvasPoint.encode = function (num) {
         var maxChars = PicaCanvasPoint.maxEncodedChars;
         if (num > Math.pow(PicaCanvasPoint.encoding.length, maxChars)) {
-            return NaN;
+            return "NaN";
         }
         if (num < 0)
-            return NaN;
+            return "NaN";
         if (num < PicaCanvasPoint.length) {
             return PicaCanvasPoint.encoding[0] + PicaCanvasPoint.encoding.charAt(num);
         }
         else {
-            var a = parseInt(num / PicaCanvasPoint.encoding.length);
+            var a = Math.floor(num / PicaCanvasPoint.encoding.length);
             var b = num - (a * PicaCanvasPoint.encoding.length);
             return PicaCanvasPoint.encoding.charAt(a) + PicaCanvasPoint.encoding.charAt(b);
         }
     };
+    /**
+     * Decodes a 2-character encoded string "str" to a number
+     * @param str
+     */
     PicaCanvasPoint.decode = function (str) {
         var a = PicaCanvasPoint.encoding.indexOf(str.charAt(0)) * PicaCanvasPoint.encoding.length;
         var b = PicaCanvasPoint.encoding.indexOf(str.charAt(1));
         return a + b;
+        //return (encoding.indexOf(str.charAt(0)) * encoding.length) + encoding.indexOf(str.charAt(1));
     };
-    PicaCanvasPoint.minCurve = 10;
+    PicaCanvasPoint.minCurve = 10; // The minimum angle between points before they're kept in the final encoded art
     PicaCanvasPoint.encoding = "0123456789abcdefghijklmnopqrstuvxwyzABCDEFGHIJKLMNOPQRSTUVXWYZ-+_=![]{}()*@/\\:;";
     PicaCanvasPoint.precision = Math.pow(PicaCanvasPoint.encoding.length, 2);
     PicaCanvasPoint.maxEncodedChars = 2;
     return PicaCanvasPoint;
 }());
-var PicaCanvasArt = (function () {
+var PicaCanvasArt = /** @class */ (function () {
     function PicaCanvasArt() {
         this.userId = 0;
-        this.specialValues = {};
+        this.specialValues = {}; // specialValues is a JSON string generated and read by the Pen
         this.points = [];
     }
     PicaCanvasArt.prototype.draw = function () {
@@ -15425,11 +16137,17 @@ var PicaCanvasArt = (function () {
             points
         ];
     };
+    /**
+     * Can throw errors
+     * @param str
+     * @returns {boolean}
+     */
     PicaCanvasArt.prototype.importFromString = function (str) {
-        obj = JSON.parse(str);
+        var obj = JSON.parse(str);
         this.setUserId(obj[0]);
         this.setPen(PicaToolPen.getPen(obj[1]));
         this.specialValues = obj[2];
+        //this.setPoints(obj[3]);
         this.importPointStrings(obj[3].match(/.{4}/g));
     };
     PicaCanvasArt.prototype.importPointStrings = function (a) {
@@ -15453,7 +16171,7 @@ var PicaCanvasArt = (function () {
     };
     PicaCanvasArt.prototype.cleanUpPoints = function () {
         var oldLength = this.points.length;
-        cleanedPoints = [];
+        var cleanedPoints = [];
         if (this.points.length > 0) {
             cleanedPoints.push(this.points[0]);
             var lastAdded = this.points[0];
@@ -15464,6 +16182,7 @@ var PicaCanvasArt = (function () {
                 }
                 else {
                     var found = false;
+                    // Remove repeated points
                     for (var k = this.points.length - 1; k >= 0; k--) {
                         if (k == i)
                             continue;
@@ -15488,6 +16207,8 @@ var PicaCanvasArt = (function () {
     };
     return PicaCanvasArt;
 }());
+/// <reference path='PicaCanvasPoint.ts' />
+/// <reference path='PicaCanvasArt.ts' />
 var UI;
 (function (UI) {
     var Pica;
@@ -15508,6 +16229,7 @@ var UI;
             var imageRatio = 2;
             var imageRatioRate = 0.12;
             var sizeTrigger = new Trigger();
+            // Bind on resize to update height and width
             console.debug("[PicaBoard] Binding on window resize.");
             window.addEventListener("resize", function () {
                 UI.Pica.Board.resize();
@@ -15583,7 +16305,7 @@ var UI;
                     }
                     imageScaling = Board._IMAGE_SCALING_USE_RATIO;
                 }
-                imageRatioRate = UI.Pica.Board.Background.getMinRatio() * 0.1;
+                imageRatioRate = UI.Pica.Board.Background.getMinRatio() * 0.1; // Use rate relative to image size so that it isn't terribly slow for small images
                 if (up) {
                     imageRatio += imageRatioRate;
                 }
@@ -15643,7 +16365,8 @@ var UI;
         })(Toolbar = Pica.Toolbar || (Pica.Toolbar = {}));
     })(Pica = UI.Pica || (UI.Pica = {}));
 })(UI || (UI = {}));
-var PicaTool = (function () {
+/// <reference path='Toolbar.ts' />
+var PicaTool = /** @class */ (function () {
     function PicaTool() {
         this.a = document.createElement("a");
         this.selected = false;
@@ -15675,6 +16398,7 @@ var PicaTool = (function () {
         }
     };
     PicaTool.prototype.updateVisibility = function () {
+        // If the icon needs to disappear when something happens (like not being a storyteller) it has to be added here
     };
     PicaTool.prototype.setLeftSide = function () {
         this.a.classList.remove("picaToolButton");
@@ -15697,7 +16421,7 @@ var PicaTool = (function () {
     };
     return PicaTool;
 }());
-var PicaToolPen = (function (_super) {
+var PicaToolPen = /** @class */ (function (_super) {
     __extends(PicaToolPen, _super);
     function PicaToolPen() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
@@ -15715,7 +16439,6 @@ var PicaToolPen = (function (_super) {
     };
     PicaToolPen.prototype.mouseWheel = function (up, point) {
     };
-    PicaToolPen.prototype.selected = function () { };
     PicaToolPen.prototype.redraw = function () { };
     PicaToolPen.prototype.drawFromArt = function (art) { };
     PicaToolPen.registerPen = function (id, pen) {
@@ -15736,12 +16459,6 @@ var PicaToolPen = (function (_super) {
     };
     PicaToolPen.prototype.onClick = function () {
         UI.Pica.Board.Canvas.setPen(this);
-    };
-    PicaToolPen.registerPen = function (id, pen) {
-        PicaToolPen.Pens[id] = pen;
-    };
-    PicaToolPen.getPen = function (id) {
-        return PicaToolPen.Pens[id];
     };
     PicaToolPen.Pens = {};
     return PicaToolPen;
@@ -15941,6 +16658,8 @@ var UI;
                     naturalHeight = img.naturalHeight;
                     factor = 1;
                     if (UI.Pica.Board.isFit()) {
+                        // If is supposed to stretch to fit, find max Factor
+                        // If doesn't fit, find factor to fit
                         if (UI.Pica.Board.isStretch() || (naturalHeight > maxHeight || naturalWidth > maxWidth)) {
                             var fWidth = maxWidth / naturalWidth;
                             var fHeight = maxHeight / naturalHeight;
@@ -15982,7 +16701,9 @@ var UI;
         })(Board = Pica.Board || (Pica.Board = {}));
     })(Pica = UI.Pica || (UI.Pica = {}));
 })(UI || (UI = {}));
+/// <reference path='Background.ts' />
 var UI;
+/// <reference path='Background.ts' />
 (function (UI) {
     var Pica;
     (function (Pica) {
@@ -16010,7 +16731,6 @@ var UI;
                 var updatePenFunction = function () { UI.Pica.Toolbar.updateVisibility(); };
                 lockedTrigger.addListenerIfMissing(updatePenFunction);
                 Server.Chat.addRoomListener(updatePenFunction);
-                delete (updatePenFunction);
                 function clearCanvas() {
                     context.clearRect(0, 0, canvas.width, canvas.height);
                 }
@@ -16123,6 +16843,7 @@ var UI;
                     }
                 }
                 Canvas.setPenColor = setPenColor;
+                // Binding Mouse on Canvas
                 {
                     canvas.addEventListener("mousedown", {
                         handleEvent: function (e) {
@@ -16171,7 +16892,9 @@ var UI;
         })(Board = Pica.Board || (Pica.Board = {}));
     })(Pica = UI.Pica || (UI.Pica = {}));
 })(UI || (UI = {}));
-var PicaToolMove = (function (_super) {
+/// <reference path='Background.ts' />
+/// <reference path='Canvas.ts' />
+var PicaToolMove = /** @class */ (function (_super) {
     __extends(PicaToolMove, _super);
     function PicaToolMove() {
         var _this = _super.call(this) || this;
@@ -16190,7 +16913,7 @@ var PicaToolMove = (function (_super) {
         if (this.lastPoint != null) {
             var xMovement = this.lastPoint.getX() - point.getX();
             var yMovement = this.lastPoint.getY() - point.getY();
-            board = UI.Pica.Board.getBoard();
+            var board = UI.Pica.Board.getBoard();
             board.scrollLeft += xMovement;
             board.scrollTop += yMovement;
         }
@@ -16230,11 +16953,12 @@ var PicaToolMove = (function (_super) {
     };
     return PicaToolMove;
 }(PicaToolPen));
-var move = new PicaToolMove();
-UI.Pica.Toolbar.registerTool(move);
-UI.Pica.Board.Canvas.setPen(move);
-delete (move);
-var PicaToolPensil = (function (_super) {
+(function () {
+    var move = new PicaToolMove();
+    UI.Pica.Toolbar.registerTool(move);
+    UI.Pica.Board.Canvas.setPen(move);
+})();
+var PicaToolPensil = /** @class */ (function (_super) {
     __extends(PicaToolPensil, _super);
     function PicaToolPensil() {
         var _this = _super.call(this) || this;
@@ -16324,11 +17048,12 @@ var PicaToolPensil = (function (_super) {
     };
     return PicaToolPensil;
 }(PicaToolPen));
-var pensil = new PicaToolPensil();
-UI.Pica.Toolbar.registerTool(pensil);
-PicaToolPen.registerPen("pensil", pensil);
-delete (pensil);
-var PicaToolRINE = (function (_super) {
+(function () {
+    var pensil = new PicaToolPensil();
+    UI.Pica.Toolbar.registerTool(pensil);
+    PicaToolPen.registerPen("pensil", pensil);
+})();
+var PicaToolRINE = /** @class */ (function (_super) {
     __extends(PicaToolRINE, _super);
     function PicaToolRINE() {
         var _this = _super.call(this) || this;
@@ -16381,11 +17106,15 @@ var PicaToolRINE = (function (_super) {
         ctx.beginPath();
         var angle = Math.atan2(p2.getY() - p1.getY(), p2.getX() - p1.getX());
         ctx.moveTo(p2.getX(), p2.getY());
-        var headlen = 10;
+        var headlen = 10; // length of head in pixels
         ctx.lineTo(p2.getX() - headlen * Math.cos(angle - Math.PI / 7), p2.getY() - headlen * Math.sin(angle - Math.PI / 7));
+        //path from the side point of the arrow, to the other side point
         ctx.lineTo(p2.getX() - headlen * Math.cos(angle + Math.PI / 7), p2.getY() - headlen * Math.sin(angle + Math.PI / 7));
+        //path from the side point back to the tip of the arrow, and then again to the opposite side point
         ctx.lineTo(p2.getX(), p2.getY());
+        // the fuck is this?
         ctx.lineTo(p2.getX() - headlen * Math.cos(angle - Math.PI / 7), p2.getY() - headlen * Math.sin(angle - Math.PI / 7));
+        // Draws arrows and fills them
         ctx.lineWidth = art.getSpecial("width", 1);
         ctx.strokeStyle = '#' + art.getSpecial("color", "000000");
         ctx.fillStyle = '#' + art.getSpecial("color", "000000");
@@ -16410,11 +17139,12 @@ var PicaToolRINE = (function (_super) {
     };
     return PicaToolRINE;
 }(PicaToolPen));
-var pensil = new PicaToolRINE();
-UI.Pica.Toolbar.registerTool(pensil);
-PicaToolPen.registerPen("rine", pensil);
-delete (pensil);
-var PicaToolSircu = (function (_super) {
+(function () {
+    var pensil = new PicaToolRINE();
+    UI.Pica.Toolbar.registerTool(pensil);
+    PicaToolPen.registerPen("rine", pensil);
+})();
+var PicaToolSircu = /** @class */ (function (_super) {
     __extends(PicaToolSircu, _super);
     function PicaToolSircu() {
         var _this = _super.call(this) || this;
@@ -16485,11 +17215,12 @@ var PicaToolSircu = (function (_super) {
     };
     return PicaToolSircu;
 }(PicaToolPen));
-var pensil = new PicaToolSircu();
-UI.Pica.Toolbar.registerTool(pensil);
-PicaToolPen.registerPen("sircu", pensil);
-delete (pensil);
-var PicaToolSqua = (function (_super) {
+(function () {
+    var pensil = new PicaToolSircu();
+    UI.Pica.Toolbar.registerTool(pensil);
+    PicaToolPen.registerPen("sircu", pensil);
+})();
+var PicaToolSqua = /** @class */ (function (_super) {
     __extends(PicaToolSqua, _super);
     function PicaToolSqua() {
         var _this = _super.call(this) || this;
@@ -16575,11 +17306,12 @@ var PicaToolSqua = (function (_super) {
     };
     return PicaToolSqua;
 }(PicaToolPen));
-var pensil = new PicaToolSqua();
-UI.Pica.Toolbar.registerTool(pensil);
-PicaToolPen.registerPen("squa", pensil);
-delete (pensil);
-var PicaToolConu = (function (_super) {
+(function () {
+    var pensil = new PicaToolSqua();
+    UI.Pica.Toolbar.registerTool(pensil);
+    PicaToolPen.registerPen("squa", pensil);
+})();
+var PicaToolConu = /** @class */ (function (_super) {
     __extends(PicaToolConu, _super);
     function PicaToolConu() {
         var _this = _super.call(this) || this;
@@ -16626,6 +17358,7 @@ var PicaToolConu = (function (_super) {
         ctx.lineWidth = art.getSpecial("width", 1);
         ctx.strokeStyle = '#' + art.getSpecial("color", "000000");
         ctx.beginPath();
+        // Draw triangle
         var triangleHeight = p1.getRealDistanceTo(p2);
         var sideLength = (triangleHeight * 2) / Math.sqrt(3);
         var angle = Math.atan2(p1.getY() - p2.getY(), p1.getX() - p2.getX());
@@ -16653,11 +17386,12 @@ var PicaToolConu = (function (_super) {
     };
     return PicaToolConu;
 }(PicaToolPen));
-var pensil = new PicaToolConu();
-UI.Pica.Toolbar.registerTool(pensil);
-PicaToolPen.registerPen("conu", pensil);
-delete (pensil);
-var PicaToolColor = (function (_super) {
+(function () {
+    var pensil = new PicaToolConu();
+    UI.Pica.Toolbar.registerTool(pensil);
+    PicaToolPen.registerPen("conu", pensil);
+})();
+var PicaToolColor = /** @class */ (function (_super) {
     __extends(PicaToolColor, _super);
     function PicaToolColor() {
         var _this = _super.call(this) || this;
@@ -16678,10 +17412,8 @@ var PicaToolColor = (function (_super) {
     }
     return PicaToolColor;
 }(PicaTool));
-var tool = new PicaToolColor();
-UI.Pica.Toolbar.registerTool(tool);
-delete (tool);
-var PicaToolShare = (function (_super) {
+UI.Pica.Toolbar.registerTool(new PicaToolColor());
+var PicaToolShare = /** @class */ (function (_super) {
     __extends(PicaToolShare, _super);
     function PicaToolShare() {
         var _this = _super.call(this) || this;
@@ -16694,13 +17426,13 @@ var PicaToolShare = (function (_super) {
         var url = UI.Pica.Board.getUrl();
         var newImage = new MessageImage();
         newImage.findPersona();
-        newImage.setName(name);
+        newImage.setName(name); // WE don't hold on to the name, so this is not possibru!
         newImage.setMsg(url);
         UI.Chat.sendMessage(newImage);
     };
     return PicaToolShare;
 }(PicaTool));
-var PicaToolLock = (function (_super) {
+var PicaToolLock = /** @class */ (function (_super) {
     __extends(PicaToolLock, _super);
     function PicaToolLock() {
         var _this = _super.call(this) || this;
@@ -16734,10 +17466,8 @@ var PicaToolLock = (function (_super) {
     };
     return PicaToolLock;
 }(PicaTool));
-var tool = new PicaToolLock();
-UI.Pica.Toolbar.registerTool(tool);
-delete (tool);
-var PicaToolClean = (function (_super) {
+UI.Pica.Toolbar.registerTool(new PicaToolLock());
+var PicaToolClean = /** @class */ (function (_super) {
     __extends(PicaToolClean, _super);
     function PicaToolClean() {
         var _this = _super.call(this) || this;
@@ -16755,10 +17485,8 @@ var PicaToolClean = (function (_super) {
     };
     return PicaToolClean;
 }(PicaTool));
-var tool = new PicaToolClean();
-UI.Pica.Toolbar.registerTool(tool);
-delete (tool);
-var PicaToolScaling = (function (_super) {
+UI.Pica.Toolbar.registerTool(new PicaToolClean());
+var PicaToolScaling = /** @class */ (function (_super) {
     __extends(PicaToolScaling, _super);
     function PicaToolScaling() {
         var _this = _super.call(this) || this;
@@ -16789,7 +17517,7 @@ var PicaToolScaling = (function (_super) {
     };
     return PicaToolScaling;
 }(PicaTool));
-var PicaToolScaling0 = (function (_super) {
+var PicaToolScaling0 = /** @class */ (function (_super) {
     __extends(PicaToolScaling0, _super);
     function PicaToolScaling0() {
         var _this = _super.call(this) || this;
@@ -16800,10 +17528,8 @@ var PicaToolScaling0 = (function (_super) {
     }
     return PicaToolScaling0;
 }(PicaToolScaling));
-var tool = new PicaToolScaling0();
-UI.Pica.Toolbar.registerTool(tool);
-delete (tool);
-var PicaToolScaling1 = (function (_super) {
+UI.Pica.Toolbar.registerTool(new PicaToolScaling0());
+var PicaToolScaling1 = /** @class */ (function (_super) {
     __extends(PicaToolScaling1, _super);
     function PicaToolScaling1() {
         var _this = _super.call(this) || this;
@@ -16814,10 +17540,8 @@ var PicaToolScaling1 = (function (_super) {
     }
     return PicaToolScaling1;
 }(PicaToolScaling));
-var tool = new PicaToolScaling1();
-UI.Pica.Toolbar.registerTool(tool);
-delete (tool);
-var PicaToolScaling2 = (function (_super) {
+UI.Pica.Toolbar.registerTool(new PicaToolScaling1());
+var PicaToolScaling2 = /** @class */ (function (_super) {
     __extends(PicaToolScaling2, _super);
     function PicaToolScaling2() {
         var _this = _super.call(this) || this;
@@ -16829,9 +17553,31 @@ var PicaToolScaling2 = (function (_super) {
     }
     return PicaToolScaling2;
 }(PicaToolScaling));
-var tool = new PicaToolScaling2();
-UI.Pica.Toolbar.registerTool(tool);
-delete (tool);
+UI.Pica.Toolbar.registerTool(new PicaToolScaling2());
+/// <reference path='../PicaTool.ts' />
+/// <reference path='../PicaToolPen.ts' />
+/// <reference path='PicaToolMove.ts' />
+/// <reference path='PicaToolPensil.ts' />
+/// <reference path='PicaToolRINE.ts' />
+/// <reference path='PicaToolSircu.ts' />
+/// <reference path='PicaToolSqua.ts' />
+/// <reference path='PicaToolConu.ts' />
+/// <reference path='PicaToolColor.ts' />
+/// <reference path='PicaToolShare.ts' />
+/// <reference path='PicaToolLock.ts' />
+/// <reference path='PicaToolClean.ts' />
+/// <reference path='PicaToolScaling.ts' />
+/// <reference path='PicaToolScaling0.ts' />
+/// <reference path='PicaToolScaling1.ts' />
+/// <reference path='PicaToolScaling2.ts' />
+/// <reference path='Classes/References.ts' />
+/// <reference path='Board.ts' />
+/// <reference path='Toolbar.ts' />
+/// <reference path='PicaTool.ts' />
+/// <reference path='PicaToolPen.ts' />
+/// <reference path='ArtManager.ts' />
+/// <reference path='Board/References.ts' />
+/// <reference path='Tool/References.ts' />
 var UI;
 (function (UI) {
     var Sounds;
@@ -16966,6 +17712,7 @@ var UI;
         Styles.emptyTarget = emptyTarget;
         function printStyles(styles) {
             emptyTarget();
+            // %p.mainWindowParagraph.language.textLink.hoverable
             for (var i = 0; i < styles.length; i++) {
                 if (styles[i].name.indexOf("RedPG1") !== -1) {
                     continue;
@@ -17119,6 +17866,7 @@ var UI;
             function submit() {
                 var style;
                 if (currentStyle === null) {
+                    // CREATE
                     style = new StyleInstance();
                 }
                 else {
@@ -17145,11 +17893,79 @@ var UI;
         })(StyleDesigner = Styles.StyleDesigner || (Styles.StyleDesigner = {}));
     })(Styles = UI.Styles || (UI.Styles = {}));
 })(UI || (UI = {}));
+// Language Files
+/// <reference path='Languages/Lingo.ts' />
+/// <reference path='Languages/LingoPTBR.ts' />
+/// <reference path='UI.ts' />
+/// <reference path='RAPS.ts' />
+/// <reference path='Modules/WindowManager.ts' />
+/// <reference path='Modules/Logger.ts' />
+/// <reference path='Modules/Config.ts' />
+/// <reference path='Modules/Changelog.ts' />
+/// <reference path='Modules/PageManager.ts' />
+/// <reference path='Modules/Images.ts' />
+/// <reference path='Modules/Loading.ts' />
+/// <reference path='Modules/Login.ts' />
+/// <reference path='Modules/Login/NewAccount.ts' />
+/// <reference path='Modules/Handles.ts' />
+/// <reference path='Modules/Language.ts' />
+/// <reference path='Modules/Sheets.ts' />
+/// <reference path='Modules/Sheets/SheetPermissionDesigner.ts' />
+/// <reference path='Modules/Sheets/SheetManager.ts' />
+/// <reference path='Modules/Sheets/SheetDesigner.ts' />
+/// <reference path='Modules/Rooms.ts' />
+/// <reference path='Modules/Rooms/Designer.ts' />
+/// <reference path='Modules/Games.ts' />
+/// <reference path='Modules/Games/Invites.ts' />
+/// <reference path='Modules/Games/InviteDesigner.ts' />
+/// <reference path='Modules/Games/RoomDesigner.ts' />
+/// <reference path='Modules/Games/Designer.ts' />
+/// <reference path='Modules/SoundController.ts' />
+/// <reference path='Modules/SoundController/MusicPlayer.ts' />
+/// <reference path='Modules/Chat.ts' />
+/// <reference path='Modules/Chat/Avatar.ts' />
+/// <reference path='Modules/Chat/Forms.ts' />
+/// <reference path='Modules/Chat/Notification.ts' />
+/// <reference path='Modules/Chat/Lingo.ts' />
+/// <reference path='Modules/Chat/Combat.ts' />
+/// <reference path='Modules/Chat/PersonaManager.ts' />
+/// <reference path='Modules/Chat/PersonaDesigner.ts' />
+/// <reference path='Modules/Chat/Filters.ts' />
+/// <reference path='Modules/Pica.ts' />
+/// <reference path='Modules/Pica/References.ts' />
+/// <reference path='Modules/Sounds.ts' />
+/// <reference path='Modules/Styles.ts' />
+/// <reference path='Modules/Styles/StyleDesigner.ts' />
+// Message Classes
+/// <reference path='Message/References.ts' />
+/// <reference path='../typings/jquery/jquery.d.ts' />
+/// <reference path='../typings/jqueryui/jqueryui.d.ts' />
+/// <reference path='../typings/NonLatin.d.ts' />
+/// <reference path='../typings/math.js.d.ts' />
+/// <reference path='Debug.ts' />
+/// <reference path='OnReady.ts' />
+//Kind references
+/// <reference path='Kinds/References.ts' />
+/// <reference path='UI/Message/References.ts' />
+// DB Modules
+/// <reference path='DB/References.ts' />
+// Main Modules
+/// <reference path='Application/References.ts' />
+/// <reference path='Server/References.ts' />
+/// <reference path='UI/References.ts' />
+// Changelog
+/// <reference path="Changelog.ts" />
+/// <reference path='References.ts' />
+// Set up language
 UI.Language.searchLanguage();
+// Read and detach pages
 UI.PageManager.readWindows();
+// Update window sizes
 UI.WindowManager.updateWindowSizes();
+// Set up initial pages of main window
 UI.PageManager.callPage(UI.idChangelog);
 UI.PageManager.callPage(UI.idHome);
+// Return to loginWindow on logout, return to mainWindow on login
 Application.Login.addListener({
     handleEvent: function () {
         if (Application.Login.isLogged()) {
@@ -17162,8 +17978,10 @@ Application.Login.addListener({
         }
     }
 });
+// Search for old logins and fill out remembered inputs
 Application.Login.searchLogin();
 UI.Login.resetState();
+// Do we have a session we can use or do we go straight to login screen?
 UI.WindowManager.callWindow("loginWindow");
 if (Application.Login.hasSession()) {
     Server.Login.requestSession(false);
@@ -17172,5 +17990,6 @@ else {
     UI.Login.resetFocus();
 }
 document.write("<script src='" + Server.CLIENT_URL + "js/Changelog.js' type='text/javascript'>" + "<" + "/" + "script>");
+// Call any onReady listeners
 allReady();
 //# sourceMappingURL=Application.js.map

@@ -66,8 +66,8 @@ class User {
             user['id'] = parseInt(user['id']);
         }
         for (var key in this) {
-            if (user[key] === undefined) continue;
-            this[key] = user[key];
+            if (user[<any>key] === undefined) continue;
+            this[<any>key] = user[<any>key];
         }
 
         var context;

@@ -9,6 +9,4 @@ class PicaToolScaling2 extends PicaToolScaling {
     }
 }
 
-var tool = new PicaToolScaling2();
-UI.Pica.Toolbar.registerTool(tool);
-delete(tool);
+UI.Pica.Toolbar.registerTool(new PicaToolScaling2());

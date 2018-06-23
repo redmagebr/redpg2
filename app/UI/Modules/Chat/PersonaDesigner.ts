@@ -61,9 +61,10 @@ module UI.Chat.PersonaDesigner {
         personaChoices = {};
     }
 
-    export function createPersona (name? : string, avatar? : String, savePersona? : boolean = true) {
-        var name = name === undefined ? personaName.value.trim() : name;
-        var avatar = avatar === undefined ? personaAvatar.value.trim() : avatar;
+    export function createPersona (name? : string, avatar? : String, savePersona? : boolean) {
+        name = name === undefined ? personaName.value.trim() : name;
+        avatar = avatar === undefined ? personaAvatar.value.trim() : avatar;
+        savePersona = savePersona === undefined ? true : savePersona == true;
         personaName.value =  "";
         personaAvatar.value = "";
         personaName.focus();
@@ -129,12 +130,12 @@ module UI.Chat.PersonaDesigner {
 
     function saveMemory () {
         lastMemory.sort(function (a, b) {
-            var na = a.name.toLowerCase().latinise();
-            var nb = b.name.toLowerCase().latinise();
+            var na : string = a.name.toLowerCase().latinise();
+            var nb : string = b.name.toLowerCase().latinise();
             if (na < nb) return -1;
             if (nb < na) return 1;
-            var na = String(a.avatar).toLowerCase().latinise();
-            var nb = String(b.avatar).toLowerCase().latinise();
+            na = (<Latinisable> (<String> (String(a.avatar).toLowerCase()))).latinise();
+            nb = (<Latinisable> (<String> (String(b.avatar).toLowerCase()))).latinise();
             if (na < nb) return -1;
             if (nb < na) return 1;
             return 0;

@@ -79,7 +79,8 @@ class PicaToolSircu extends PicaToolPen {
     }
 }
 
-var pensil = new PicaToolSircu();
-UI.Pica.Toolbar.registerTool(pensil);
-PicaToolPen.registerPen("sircu", pensil);
-delete(pensil);
+(function () {
+    var pensil = new PicaToolSircu();
+    UI.Pica.Toolbar.registerTool(pensil);
+    PicaToolPen.registerPen("sircu", pensil);
+})();
