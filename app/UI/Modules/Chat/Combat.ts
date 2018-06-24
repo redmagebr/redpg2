@@ -63,6 +63,8 @@ module UI.Chat.Combat {
 
             userSelect.appendChild(option);
 
+            let optGroups = {};
+
             if (room !== null) {
                 var users = room.getOrderedUserContexts();
                 for (var i = 0; i < users.length; i++) {
@@ -89,7 +91,18 @@ module UI.Chat.Combat {
                         option.value = sheets[i].getId();
                         option.appendChild(document.createTextNode(sheets[i].getName()));
 
-                        sheetSelect.appendChild(option);
+                        let folderName = (<SheetInstance> sheets[i]).getFolder();
+                        if (optGroups[folderName] == undefined) {
+                            optGroups[folderName] = document.createElement("optgroup");
+                            optGroups[folderName].label = (
+                                folderName == "" ?
+                                    UI.Language.getLanguage().getLingo("_SHEETSNOFOLDERNAME_")
+                                    :
+                                    folderName
+                            );
+                            sheetSelect.appendChild(optGroups[folderName]);
+                        }
+                        optGroups[folderName].appendChild(option);
                     }
                 }
             }

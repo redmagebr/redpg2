@@ -50,8 +50,8 @@ module DB.SheetDB {
         }
 
         wanted.sort(function (a : SheetInstance, b : SheetInstance) {
-            if (a.getName() < b.getName()) return -1;
-            if (a.getName() > b.getName()) return 1;
+            if (a.getName().toLowerCase() < b.getName().toLowerCase()) return -1;
+            if (a.getName().toLowerCase() > b.getName().toLowerCase()) return 1;
             return 0;
         });
 
@@ -71,15 +71,15 @@ module DB.SheetDB {
         }
 
         result.sort(function (a : Array<SheetInstance>,b : Array<SheetInstance>) {
-            if (a[0].getFolder() < b[0].getFolder()) return -1;
-            if (a[0].getFolder() > b[0].getFolder()) return 1;
+            if (a[0].getFolder().toLowerCase() < b[0].getFolder().toLowerCase()) return -1;
+            if (a[0].getFolder().toLowerCase() > b[0].getFolder().toLowerCase()) return 1;
             return 0;
         });
 
         for (var i = 0; i < result.length; i++) {
             result[i].sort(function (a : SheetInstance, b : SheetInstance) {
-                if (a.getName() < b.getName()) return -1;
-                if (a.getName() > b.getName()) return 1;
+                if (a.getName().toLowerCase() < b.getName().toLowerCase()) return -1;
+                if (a.getName().toLowerCase() > b.getName().toLowerCase()) return 1;
                 return 0;
             });
         }

@@ -185,6 +185,8 @@ change = new Changelog(0, 29, 1);
 change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
 change.addMessage("Nova opção: esconder conteúdo de Mesas na tela de Mesas. Por padrão, mesas tem seu conteúdo revelado, podendo ser escondida manualmente com cliques, mas existe uma opção na tela de Opções que faz todas as mesas ficarem recolhidas por padrão.", "pt");
 change.addMessage("Confirmação é exigida para realizar Logout.", "pt");
+change.addMessage("Fichas são separadas por suas pastas no Combat Tracker.", "pt");
+change.addMessage("Ordem das fichas não deve mais ser afetada por caracteres minúsculos.", "pt");
 
 //delete (change);
 

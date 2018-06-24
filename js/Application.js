@@ -8987,9 +8987,9 @@ var DB;
                 }
             }
             wanted.sort(function (a, b) {
-                if (a.getName() < b.getName())
+                if (a.getName().toLowerCase() < b.getName().toLowerCase())
                     return -1;
-                if (a.getName() > b.getName())
+                if (a.getName().toLowerCase() > b.getName().toLowerCase())
                     return 1;
                 return 0;
             });
@@ -9009,17 +9009,17 @@ var DB;
                 }
             }
             result.sort(function (a, b) {
-                if (a[0].getFolder() < b[0].getFolder())
+                if (a[0].getFolder().toLowerCase() < b[0].getFolder().toLowerCase())
                     return -1;
-                if (a[0].getFolder() > b[0].getFolder())
+                if (a[0].getFolder().toLowerCase() > b[0].getFolder().toLowerCase())
                     return 1;
                 return 0;
             });
             for (var i = 0; i < result.length; i++) {
                 result[i].sort(function (a, b) {
-                    if (a.getName() < b.getName())
+                    if (a.getName().toLowerCase() < b.getName().toLowerCase())
                         return -1;
-                    if (a.getName() > b.getName())
+                    if (a.getName().toLowerCase() > b.getName().toLowerCase())
                         return 1;
                     return 0;
                 });
@@ -12238,6 +12238,8 @@ change = new Changelog(0, 29, 1);
 change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
 change.addMessage("Nova opção: esconder conteúdo de Mesas na tela de Mesas. Por padrão, mesas tem seu conteúdo revelado, podendo ser escondida manualmente com cliques, mas existe uma opção na tela de Opções que faz todas as mesas ficarem recolhidas por padrão.", "pt");
 change.addMessage("Confirmação é exigida para realizar Logout.", "pt");
+change.addMessage("Fichas são separadas por suas pastas no Combat Tracker.", "pt");
+change.addMessage("Ordem das fichas não deve mais ser afetada por caracteres minúsculos.", "pt");
 //delete (change);
 Changelog.finished();
 /// <reference path='../../Changelog.ts' />
@@ -15678,6 +15680,7 @@ var UI;
                     option.value = "0";
                     option.appendChild(document.createTextNode("NPC"));
                     userSelect.appendChild(option);
+                    var optGroups = {};
                     if (room !== null) {
                         var users = room.getOrderedUserContexts();
                         for (var i = 0; i < users.length; i++) {
@@ -15701,7 +15704,16 @@ var UI;
                                 option = document.createElement("option");
                                 option.value = sheets[i].getId();
                                 option.appendChild(document.createTextNode(sheets[i].getName()));
-                                sheetSelect.appendChild(option);
+                                var folderName = sheets[i].getFolder();
+                                if (optGroups[folderName] == undefined) {
+                                    optGroups[folderName] = document.createElement("optgroup");
+                                    optGroups[folderName].label = (folderName == "" ?
+                                        UI.Language.getLanguage().getLingo("_SHEETSNOFOLDERNAME_")
+                                        :
+                                            folderName);
+                                    sheetSelect.appendChild(optGroups[folderName]);
+                                }
+                                optGroups[folderName].appendChild(option);
                             }
                         }
                     }
