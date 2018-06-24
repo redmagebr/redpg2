@@ -12253,6 +12253,7 @@ change.addMessage("Confirmação é exigida para realizar Logout.", "pt");
 change.addMessage("Fichas são separadas por suas pastas no Combat Tracker.", "pt");
 change.addMessage("Ordem das fichas não deve mais ser afetada por caracteres minúsculos.", "pt");
 change.addMessage("Novo botão em fichas permite ativar e desativar a alteração de fichas. Por padrão a alteração é permitida.", "pt");
+change.addMessage("Chat altera o título da janela para avisar quando existem mensagens novas.", "pt");
 //delete (change);
 Changelog.finished();
 /// <reference path='../../Changelog.ts' />
@@ -14433,7 +14434,7 @@ var UI;
     var Chat;
     (function (Chat) {
         var lastDate = "";
-        var unseenMessages = 0;
+        Chat.unseenMessages = 0;
         // Main Box
         var chatBox = document.getElementById("chatBox");
         var $chatBox = $(chatBox);
@@ -14775,14 +14776,15 @@ var UI;
         function considerFocus() {
             if (document.hasFocus()) {
                 UI.resetTitle();
-                unseenMessages = 0;
+                Chat.unseenMessages = 0;
             }
             else {
-                UI.addTitle("(" + ++unseenMessages + ")");
+                UI.addTitle("(" + ++Chat.unseenMessages + ")");
             }
         }
         window.addEventListener("focus", function () {
             UI.resetTitle();
+            UI.Chat.unseenMessages = 0;
         });
     })(Chat = UI.Chat || (UI.Chat = {}));
 })(UI || (UI = {}));
