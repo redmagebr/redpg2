@@ -452,7 +452,10 @@ ptbr.setLingo("_CONFIGCHATSCREENEFFECTS_", "(Chat) Efeitos de Tela");
 ptbr.setLingo("_CONFIGCHATEFFECTSNO_", "Não aceitar efeitos");
 ptbr.setLingo("_CONFIGCHATEFFECTSYES_", "Aceitar efeitos");
 ptbr.setLingo("_CONFIGCHATEFFECTSEXP_", "Um mestre pode definir efeitos de tela para tentar atingir um \"clima\" em sua sessão. Aqui você pode definir se esses efeitos de tela são aceitáveis ou não.");
-
+ptbr.setLingo("_CONFIGGAMESHIDEGAMES_", "Mesas Reduzidas");
+ptbr.setLingo("_CONFIGGAMESHIDEGAMESON_", "Recolher por padrão");
+ptbr.setLingo("_CONFIGGAMESHIDEGAMESOFF_", "Revelar por padrão");
+ptbr.setLingo("_CONFIGGAMESHIDEGAMESEXP_", "Define se a tela de mesas deve, por padrão, recolher o conteúdo das mesas para que ocupe menos espaço.");
 
 // Window Events
 ptbr.setLingo("_RAPSCHATOPEN_", "Você está em uma sala. Tem certeza que deseja fechar?");

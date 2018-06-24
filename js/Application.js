@@ -11567,6 +11567,10 @@ ptbr.setLingo("_CONFIGCHATSCREENEFFECTS_", "(Chat) Efeitos de Tela");
 ptbr.setLingo("_CONFIGCHATEFFECTSNO_", "Não aceitar efeitos");
 ptbr.setLingo("_CONFIGCHATEFFECTSYES_", "Aceitar efeitos");
 ptbr.setLingo("_CONFIGCHATEFFECTSEXP_", "Um mestre pode definir efeitos de tela para tentar atingir um \"clima\" em sua sessão. Aqui você pode definir se esses efeitos de tela são aceitáveis ou não.");
+ptbr.setLingo("_CONFIGGAMESHIDEGAMES_", "Mesas Reduzidas");
+ptbr.setLingo("_CONFIGGAMESHIDEGAMESON_", "Recolher por padrão");
+ptbr.setLingo("_CONFIGGAMESHIDEGAMESOFF_", "Revelar por padrão");
+ptbr.setLingo("_CONFIGGAMESHIDEGAMESEXP_", "Define se a tela de mesas deve, por padrão, recolher o conteúdo das mesas para que ocupe menos espaço.");
 // Window Events
 ptbr.setLingo("_RAPSCHATOPEN_", "Você está em uma sala. Tem certeza que deseja fechar?");
 ptbr.setLingo("_RAPSSHEETOPEN_", "Você possui fichas abertas. Tem certeza que deseja fechar?");
@@ -11624,6 +11628,7 @@ var UI;
     Application.Config.registerConfiguration("hqRainbow", new NumberConfiguration(1, 0, 2)); // Automatically open shared Videos
     Application.Config.registerConfiguration("screeneffects", new BooleanConfiguration(true));
     Application.Config.registerConfiguration("hideMessages", new BooleanConfiguration(false));
+    Application.Config.registerConfiguration("hideGames", new BooleanConfiguration(false));
 })(UI || (UI = {}));
 function RedPGAccidentPreventionSystem(e) {
     if (UI.Chat.inRoom()) {
@@ -12044,6 +12049,7 @@ var UI;
         bindInput("bgmVolume", document.getElementById("configBGMVolume"));
         bindInput("seVolume", document.getElementById("configSEVolume"));
         bindInput("screeneffects", document.getElementById("configChatScreenEffects"));
+        bindInput("hideGames", document.getElementById("configGamesHideGames"));
         bindInput("hideMessages", document.getElementById("configChatHideSomeMessages"));
         function saveConfig() {
             var hide = function () {
@@ -12227,6 +12233,9 @@ change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
 change.addMessage("Janelas criadas pelo Chat terão seus botões de fechar do lado direito.", "pt");
 change.addMessage("Mensagens tentarão prevenir que RedPG seja fechado por acidente sempre que pelo menos uma ficha esteja aberta ou um Chat esteja conectado.", "pt");
 change.addMessage("Para deletar Fichas, Jogos e Salas, será necessário confirmar.", "pt");
+change = new Changelog(0, 29, 1);
+change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
+change.addMessage("Nova opção: esconder conteúdo de Mesas na tela de Mesas. Por padrão, mesas tem seu conteúdo revelado, podendo ser escondida manualmente com cliques, mas existe uma opção na tela de Opções que faz todas as mesas ficarem recolhidas por padrão.", "pt");
 //delete (change);
 Changelog.finished();
 /// <reference path='../../Changelog.ts' />
@@ -13550,9 +13559,17 @@ var UI;
                 var div = document.createElement("div");
                 div.classList.add("mainWindowParagraph");
                 div.classList.add("gamesMainDiv");
+                if (Application.Config.getConfig("hideGames").getValue()) {
+                    div.classList.add("off");
+                }
                 var b = document.createElement("b");
                 b.appendChild(document.createTextNode(games[i].name));
                 b.classList.add("gamesName");
+                b.addEventListener("click", (function (div) {
+                    return function () {
+                        div.classList.toggle("off");
+                    };
+                })(div));
                 div.appendChild(b);
                 if (games[i].isMyCreation()) {
                     var perm = document.createElement("a");
@@ -13610,6 +13627,11 @@ var UI;
                 }
                 var creatorDiv = document.createElement("div");
                 creatorDiv.classList.add("gameCreatorDiv");
+                creatorDiv.addEventListener("click", (function (div) {
+                    return function () {
+                        div.classList.toggle("off");
+                    };
+                })(div));
                 var creatorTitle = document.createElement("b");
                 creatorTitle.appendChild(document.createTextNode("_GAMECREATORTITLE_"));
                 creatorTitle.appendChild(document.createTextNode(": "));

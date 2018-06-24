@@ -25,8 +25,12 @@
 }
 
 .gamesName {
+  @extend .buttonBehavior;
   font-size: 18px;
   line-height: 26px;
+  &:hover {
+    color: #3f48aa;
+  }
 }
 
 .gamesOwnerButton {
@@ -45,6 +49,10 @@
   font-size: 12px;
   margin-top: -2px;
   margin-bottom: 6px;
+  @extend .buttonBehavior;
+  &:hover {
+    color: #3f48aa;
+  }
 }
 
 .gamesAdminButton {
@@ -81,4 +89,12 @@
 .gamesRoomP:hover {
   background-color: rgba(0,0,0,.1);
   margin: 0px;
+}
+
+.gamesMainDiv.off {
+  opacity: 0.7;
+
+  & > .gamesRoomP, & > .gamesHR, & > .gamesAdminButton, & > .gamesNoRooms  {
+    display: none;
+  }
 }

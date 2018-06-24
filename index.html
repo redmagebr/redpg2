@@ -131,7 +131,7 @@ _CHANGELOGMOSTRECENTVERSION_
 _CONFIGTITLE_
 <a class='xButton' onclick='UI.PageManager.closeLeftPage();'></a>
 </div>
-<div class='mainWindowContent singleton'>
+<div class='mainWindowContent singleton' id='configContents'>
 <p class='hoverable mainWindowParagraph centered'>
 <a class='textLink language' id='configSave'>_CONFIGSAVE_</a>
 -
@@ -255,6 +255,16 @@ _CONFIGCHATEFFECTSEXP_
 </select>
 <div class='configExplanation language'>
 _CONFIGCHATUNNECESSARYMESSAGESEXP_
+</div>
+</label>
+<label class='configLabel'>
+<b class='configName language'>_CONFIGGAMESHIDEGAMES_</b>
+<select class='configInput' id='configGamesHideGames'>
+<option class='language' value='false'>_CONFIGGAMESHIDEGAMESOFF_</option>
+<option class='language' value='true'>_CONFIGGAMESHIDEGAMESON_</option>
+</select>
+<div class='configExplanation language'>
+_CONFIGGAMESHIDEGAMESEXP_
 </div>
 </label>
 <label class='configLabel'>

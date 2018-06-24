@@ -119,7 +119,7 @@
         .mainWindowHeader.language
           _CONFIGTITLE_
           %a.xButton{:onclick => "UI.PageManager.closeLeftPage();"}
-        .mainWindowContent.singleton
+        .mainWindowContent.singleton#configContents
           %p.hoverable.mainWindowParagraph.centered
             %a#configSave.textLink.language="_CONFIGSAVE_"
             \-
@@ -210,6 +210,13 @@
               %option.language{:value => "true"}="_CONFIGCHATUNNECESSARYMESSAGESYES_"
             .configExplanation.language
               _CONFIGCHATUNNECESSARYMESSAGESEXP_
+          %label.configLabel
+            %b.configName.language="_CONFIGGAMESHIDEGAMES_"
+            %select.configInput#configGamesHideGames
+              %option.language{:value => "false"}="_CONFIGGAMESHIDEGAMESOFF_"
+              %option.language{:value => "true"}="_CONFIGGAMESHIDEGAMESON_"
+            .configExplanation.language
+              _CONFIGGAMESHIDEGAMESEXP_
           %label.configLabel
             %b.configName.language="_CONFIGANIMATIONTIME_"
             %input.configInput#configAnimTime{:type => "range", :value => "150", :min => "0", :max => "300"}

@@ -50,4 +50,5 @@ module UI {
     Application.Config.registerConfiguration("hqRainbow", new NumberConfiguration(1, 0, 2)); // Automatically open shared Videos
     Application.Config.registerConfiguration("screeneffects", new BooleanConfiguration(true));
     Application.Config.registerConfiguration("hideMessages", new BooleanConfiguration(false));
+    Application.Config.registerConfiguration("hideGames", new BooleanConfiguration(false));
 }

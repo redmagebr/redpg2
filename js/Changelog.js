@@ -181,6 +181,10 @@ change.addMessage("Janelas criadas pelo Chat terão seus botões de fechar do la
 change.addMessage("Mensagens tentarão prevenir que RedPG seja fechado por acidente sempre que pelo menos uma ficha esteja aberta ou um Chat esteja conectado.", "pt");
 change.addMessage("Para deletar Fichas, Jogos e Salas, será necessário confirmar.", "pt");
 
+change = new Changelog(0, 29, 1);
+change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
+change.addMessage("Nova opção: esconder conteúdo de Mesas na tela de Mesas. Por padrão, mesas tem seu conteúdo revelado, podendo ser escondida manualmente com cliques, mas existe uma opção na tela de Opções que faz todas as mesas ficarem recolhidas por padrão.", "pt");
+
 //delete (change);
 
 Changelog.finished();

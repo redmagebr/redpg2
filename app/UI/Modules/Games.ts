@@ -43,9 +43,21 @@ module UI.Games {
             div.classList.add("mainWindowParagraph");
             div.classList.add("gamesMainDiv");
 
+            if (Application.Config.getConfig("hideGames").getValue()) {
+                div.classList.add("off");
+            }
+
             var b =<HTMLElement> document.createElement("b");
             b.appendChild(document.createTextNode(<string> games[i].name));
             b.classList.add("gamesName");
+
+            b.addEventListener("click",
+                (function (div) {
+                    return function () {
+                        div.classList.toggle("off");
+                    }
+                })(div)
+            );
 
             div.appendChild(b);
 
@@ -115,6 +127,14 @@ module UI.Games {
 
             var creatorDiv = document.createElement("div");
             creatorDiv.classList.add("gameCreatorDiv");
+
+            creatorDiv.addEventListener("click",
+                (function (div) {
+                    return function () {
+                        div.classList.toggle("off");
+                    }
+                })(div)
+            );
 
             var creatorTitle = document.createElement("b");
             creatorTitle.appendChild(document.createTextNode("_GAMECREATORTITLE_"))
