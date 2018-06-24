@@ -187,6 +187,7 @@ change.addMessage("Nova opção: esconder conteúdo de Mesas na tela de Mesas. P
 change.addMessage("Confirmação é exigida para realizar Logout.", "pt");
 change.addMessage("Fichas são separadas por suas pastas no Combat Tracker.", "pt");
 change.addMessage("Ordem das fichas não deve mais ser afetada por caracteres minúsculos.", "pt");
+change.addMessage("Novo botão em fichas permite ativar e desativar a alteração de fichas. Por padrão a alteração é permitida.", "pt");
 
 //delete (change);
 

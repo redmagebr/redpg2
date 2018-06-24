@@ -184,6 +184,7 @@ ptbr.setLingo("_SHEETVIEWERFULLRELOAD_", "Recarregar ficha completamente");
 ptbr.setLingo("_SHEETVIEWERIMPORT_", "Carregar valores de .json");
 ptbr.setLingo("_SHEETVIEWEREXPORT_", "Salvar valores como .json");
 ptbr.setLingo("_SHEETVIEWERAUTOMATIC_", "Recarregar a ficha automaticamente");
+ptbr.setLingo("_SHEETVIEWEREDIT_", "Permitir alterações na ficha");
 ptbr.setLingo("_SHEETVIEWERCLOSE_", "Fechar ficha");
 ptbr.setLingo("_SHEETIMPORTFAILED_", "O arquivo escolhido não continha uma ficha válida e não pôde ser importado.");
 

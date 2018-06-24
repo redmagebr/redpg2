@@ -975,6 +975,9 @@ var SheetInstance = /** @class */ (function () {
         }
     };
     SheetInstance.prototype.isEditable = function () {
+        return this.edit && UI.Sheets.SheetManager.editAllowed();
+    };
+    SheetInstance.prototype.isEditableForRealsies = function () {
         return this.edit;
     };
     SheetInstance.prototype.isPromotable = function () {
@@ -11312,6 +11315,7 @@ ptbr.setLingo("_SHEETVIEWERFULLRELOAD_", "Recarregar ficha completamente");
 ptbr.setLingo("_SHEETVIEWERIMPORT_", "Carregar valores de .json");
 ptbr.setLingo("_SHEETVIEWEREXPORT_", "Salvar valores como .json");
 ptbr.setLingo("_SHEETVIEWERAUTOMATIC_", "Recarregar a ficha automaticamente");
+ptbr.setLingo("_SHEETVIEWEREDIT_", "Permitir alterações na ficha");
 ptbr.setLingo("_SHEETVIEWERCLOSE_", "Fechar ficha");
 ptbr.setLingo("_SHEETIMPORTFAILED_", "O arquivo escolhido não continha uma ficha válida e não pôde ser importado.");
 // SHEET VARIABLES
@@ -12240,6 +12244,7 @@ change.addMessage("Nova opção: esconder conteúdo de Mesas na tela de Mesas. P
 change.addMessage("Confirmação é exigida para realizar Logout.", "pt");
 change.addMessage("Fichas são separadas por suas pastas no Combat Tracker.", "pt");
 change.addMessage("Ordem das fichas não deve mais ser afetada por caracteres minúsculos.", "pt");
+change.addMessage("Novo botão em fichas permite ativar e desativar o Edit de fichas. Por padrão o Edit é ativo.", "pt");
 //delete (change);
 Changelog.finished();
 /// <reference path='../../Changelog.ts' />
@@ -13168,6 +13173,10 @@ var UI;
                 return SheetManager.currentSheet != null && SheetManager.currentSheet != undefined;
             }
             SheetManager.hasSheet = hasSheet;
+            function editAllowed() {
+                return sheetEditable.classList.contains("icons-sheetEditOn");
+            }
+            SheetManager.editAllowed = editAllowed;
             var sheetChangeListener = function () {
                 UI.Sheets.SheetManager.updateButtons();
             };
@@ -13301,6 +13310,7 @@ var UI;
             var sheetSave = document.getElementById("sheetSave");
             var importInput = document.getElementById("sheetViewerJSONImporter");
             var sheetAutomatic = document.getElementById("sheetAutomatic");
+            var sheetEditable = document.getElementById("sheetEditable");
             sheetSave.addEventListener("click", function (e) {
                 e.preventDefault();
                 UI.Sheets.SheetManager.saveSheet();
@@ -13313,6 +13323,12 @@ var UI;
                 e.preventDefault();
                 this.classList.toggle("icons-sheetAutomaticOn");
                 this.classList.toggle("icons-sheetAutomatic");
+            });
+            sheetEditable.addEventListener("click", function (e) {
+                e.preventDefault();
+                this.classList.toggle("icons-sheetEditOn");
+                this.classList.toggle("icons-sheetEdit");
+                recycleSheet();
             });
             document.getElementById("sheetClose").addEventListener("click", function (e) {
                 e.preventDefault();
@@ -13338,18 +13354,24 @@ var UI;
                 openSheet(SheetManager.currentSheet, true, reloadStyle === true);
             }
             SheetManager.reload = reload;
+            function recycleSheet() {
+                openSheet(SheetManager.currentSheet, false, false, false);
+            }
+            SheetManager.recycleSheet = recycleSheet;
             function isAutoUpdate() {
                 return sheetAutomatic.classList.contains("icons-sheetAutomaticOn");
             }
             SheetManager.isAutoUpdate = isAutoUpdate;
             function updateButtons() {
-                if (SheetManager.currentSheet.isEditable()) {
+                if (SheetManager.currentSheet.isEditableForRealsies()) {
                     sheetSave.style.display = "";
                     sheetImport.style.display = "";
+                    sheetEditable.style.display = "";
                 }
                 else {
                     sheetSave.style.display = "none";
                     sheetImport.style.display = "none";
+                    sheetEditable.style.display = "none";
                 }
                 if (SheetManager.currentSheet.changed) {
                     sheetSave.classList.remove("icons-sheetSave");

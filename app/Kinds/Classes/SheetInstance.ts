@@ -156,6 +156,10 @@ class SheetInstance {
     }
 
     public isEditable () {
+        return this.edit && UI.Sheets.SheetManager.editAllowed();
+    }
+
+    public isEditableForRealsies () {
         return this.edit;
     }
 

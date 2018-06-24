@@ -21,6 +21,10 @@ module UI.Sheets.SheetManager {
         return currentSheet != null && currentSheet != undefined;
     }
 
+    export function editAllowed () {
+        return sheetEditable.classList.contains("icons-sheetEditOn");
+    }
+
     var sheetChangeListener = function () {
         UI.Sheets.SheetManager.updateButtons();
     };
@@ -169,6 +173,7 @@ module UI.Sheets.SheetManager {
     var sheetSave = document.getElementById("sheetSave");
     var importInput = <HTMLInputElement> document.getElementById("sheetViewerJSONImporter");
     var sheetAutomatic = document.getElementById("sheetAutomatic");
+    var sheetEditable = document.getElementById("sheetEditable");
 
     sheetSave.addEventListener("click", function (e) {
         e.preventDefault();
@@ -183,6 +188,13 @@ module UI.Sheets.SheetManager {
         e.preventDefault();
         this.classList.toggle("icons-sheetAutomaticOn");
         this.classList.toggle("icons-sheetAutomatic");
+    });
+
+    sheetEditable.addEventListener("click", function (e) {
+        e.preventDefault();
+        this.classList.toggle("icons-sheetEditOn");
+        this.classList.toggle("icons-sheetEdit");
+        recycleSheet();
     });
 
     document.getElementById("sheetClose").addEventListener("click", function(e) {
@@ -215,17 +227,23 @@ module UI.Sheets.SheetManager {
         openSheet(currentSheet, true, reloadStyle === true);
     }
 
+    export function recycleSheet () {
+        openSheet(currentSheet, false, false, false);
+    }
+
     export function isAutoUpdate () {
         return sheetAutomatic.classList.contains("icons-sheetAutomaticOn");
     }
 
     export function updateButtons () {
-        if (currentSheet.isEditable()) {
+        if (currentSheet.isEditableForRealsies()) {
             sheetSave.style.display = "";
             sheetImport.style.display = "";
+            sheetEditable.style.display = "";
         } else {
             sheetSave.style.display = "none";
             sheetImport.style.display = "none";
+            sheetEditable.style.display = "none";
         }
         if (currentSheet.changed) {
             sheetSave.classList.remove("icons-sheetSave");
