@@ -11575,6 +11575,7 @@ ptbr.setLingo("_CONFIGGAMESHIDEGAMESEXP_", "Define se a tela de mesas deve, por 
 ptbr.setLingo("_RAPSCHATOPEN_", "Você está em uma sala. Tem certeza que deseja fechar?");
 ptbr.setLingo("_RAPSSHEETOPEN_", "Você possui fichas abertas. Tem certeza que deseja fechar?");
 ptbr.setLingo("_RAPSDELETE_", "Deseja mesmo deletar \"%a\"? Essa ação não pode ser desfeita.");
+ptbr.setLingo("_LOGOUTCONSENT_", "Deseja mesmo sair do sistema?");
 // -------------------------------------------------------------------------
 ptbr.setLingo("_PICARINE_", "Desenhar linha  (clicar e arrastar)"); // RINE ENDS HERE
 // Lingolist
@@ -12236,6 +12237,7 @@ change.addMessage("Para deletar Fichas, Jogos e Salas, será necessário confirm
 change = new Changelog(0, 29, 1);
 change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
 change.addMessage("Nova opção: esconder conteúdo de Mesas na tela de Mesas. Por padrão, mesas tem seu conteúdo revelado, podendo ser escondida manualmente com cliques, mas existe uma opção na tela de Opções que faz todas as mesas ficarem recolhidas por padrão.", "pt");
+change.addMessage("Confirmação é exigida para realizar Logout.", "pt");
 //delete (change);
 Changelog.finished();
 /// <reference path='../../Changelog.ts' />
@@ -12817,7 +12819,11 @@ var UI;
         }
         Handles.setAlwaysUp = setAlwaysUp;
         // Setting up button functions
-        $("#logoutButton").on("click", function () { Server.Login.doLogout(); });
+        $("#logoutButton").on("click", function () {
+            if (confirm(UI.Language.getLanguage().getLingo("_LOGOUTCONSENT_"))) {
+                Server.Login.doLogout();
+            }
+        });
     })(Handles = UI.Handles || (UI.Handles = {}));
 })(UI || (UI = {}));
 /**

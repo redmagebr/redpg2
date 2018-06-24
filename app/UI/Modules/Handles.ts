@@ -79,5 +79,9 @@ module UI.Handles {
     }
 
     // Setting up button functions
-    $("#logoutButton").on("click", function () { Server.Login.doLogout(); });
+    $("#logoutButton").on("click", function () {
+        if (confirm(UI.Language.getLanguage().getLingo("_LOGOUTCONSENT_"))) {
+            Server.Login.doLogout();
+        }
+    });
 }

@@ -184,6 +184,7 @@ change.addMessage("Para deletar Fichas, Jogos e Salas, será necessário confirm
 change = new Changelog(0, 29, 1);
 change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
 change.addMessage("Nova opção: esconder conteúdo de Mesas na tela de Mesas. Por padrão, mesas tem seu conteúdo revelado, podendo ser escondida manualmente com cliques, mas existe uma opção na tela de Opções que faz todas as mesas ficarem recolhidas por padrão.", "pt");
+change.addMessage("Confirmação é exigida para realizar Logout.", "pt");
 
 //delete (change);
 
