@@ -11634,6 +11634,14 @@ var UI;
     Application.Config.registerConfiguration("screeneffects", new BooleanConfiguration(true));
     Application.Config.registerConfiguration("hideMessages", new BooleanConfiguration(false));
     Application.Config.registerConfiguration("hideGames", new BooleanConfiguration(false));
+    function resetTitle() {
+        document.title = "RedPG";
+    }
+    UI.resetTitle = resetTitle;
+    function addTitle(str) {
+        document.title = str + " RedPG";
+    }
+    UI.addTitle = addTitle;
 })(UI || (UI = {}));
 function RedPGAccidentPreventionSystem(e) {
     if (UI.Chat.inRoom()) {
@@ -12244,7 +12252,7 @@ change.addMessage("Nova opção: esconder conteúdo de Mesas na tela de Mesas. P
 change.addMessage("Confirmação é exigida para realizar Logout.", "pt");
 change.addMessage("Fichas são separadas por suas pastas no Combat Tracker.", "pt");
 change.addMessage("Ordem das fichas não deve mais ser afetada por caracteres minúsculos.", "pt");
-change.addMessage("Novo botão em fichas permite ativar e desativar o Edit de fichas. Por padrão o Edit é ativo.", "pt");
+change.addMessage("Novo botão em fichas permite ativar e desativar a alteração de fichas. Por padrão a alteração é permitida.", "pt");
 //delete (change);
 Changelog.finished();
 /// <reference path='../../Changelog.ts' />
@@ -14425,6 +14433,7 @@ var UI;
     var Chat;
     (function (Chat) {
         var lastDate = "";
+        var unseenMessages = 0;
         // Main Box
         var chatBox = document.getElementById("chatBox");
         var $chatBox = $(chatBox);
@@ -14570,6 +14579,7 @@ var UI;
             if (doScroll === undefined || doScroll) {
                 updateScrollPosition();
             }
+            considerFocus();
         }
         Chat.printMessage = printMessage;
         function printMessages(messages, ignoreLowIds) {
@@ -14761,6 +14771,18 @@ var UI;
                     this.button.style.display = "";
                 }
             }
+        });
+        function considerFocus() {
+            if (document.hasFocus()) {
+                UI.resetTitle();
+                unseenMessages = 0;
+            }
+            else {
+                UI.addTitle("(" + ++unseenMessages + ")");
+            }
+        }
+        window.addEventListener("focus", function () {
+            UI.resetTitle();
         });
     })(Chat = UI.Chat || (UI.Chat = {}));
 })(UI || (UI = {}));

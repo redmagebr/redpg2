@@ -51,4 +51,12 @@ module UI {
     Application.Config.registerConfiguration("screeneffects", new BooleanConfiguration(true));
     Application.Config.registerConfiguration("hideMessages", new BooleanConfiguration(false));
     Application.Config.registerConfiguration("hideGames", new BooleanConfiguration(false));
+
+    export function resetTitle () {
+        document.title = "RedPG";
+    }
+
+    export function addTitle (str : string) {
+        document.title = str + " RedPG";
+    }
 }

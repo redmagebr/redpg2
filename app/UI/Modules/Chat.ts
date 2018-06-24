@@ -1,5 +1,6 @@
 module UI.Chat {
     var lastDate : string = "";
+    export var unseenMessages = 0;
 
     // Main Box
     var chatBox : HTMLElement = document.getElementById("chatBox");
@@ -164,6 +165,8 @@ module UI.Chat {
         if (doScroll === undefined || doScroll) {
             updateScrollPosition();
         }
+
+        considerFocus();
     }
 
     export function printMessages (messages : Array<Message>, ignoreLowIds : boolean) {
@@ -367,5 +370,19 @@ module UI.Chat {
                 this.button.style.display = "";
             }
         }
+    });
+
+    function considerFocus () {
+        if (document.hasFocus()) {
+            UI.resetTitle();
+            unseenMessages = 0;
+        } else {
+            UI.addTitle("(" + ++unseenMessages + ")");
+        }
+    }
+
+    window.addEventListener("focus", function () {
+        UI.resetTitle();
+        UI.Chat.unseenMessages = 0;
     });
 }
