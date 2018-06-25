@@ -9,7 +9,7 @@ class PicaContainer {
 
     constructor (picaWindow : HTMLElement) {
         this.container = document.createElement("div");
-        this.container.id = "pictureContainer";
+        this.container.classList.add("pictureContainer");
 
         this.container.appendChild(this.board.getHTML());
         this.container.appendChild(this.tools.getHTML());

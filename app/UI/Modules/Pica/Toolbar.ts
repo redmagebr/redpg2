@@ -1,6 +1,6 @@
 module UI.Pica.Toolbar {
     var container = document.createElement("div");
-    container.id = "pictureToolsContainer";
+    container.classList.add("pictureToolsContainer");
     UI.Pica.getPictureWindow().appendChild(container);
 
     var tools : Array<PicaTool> = [];

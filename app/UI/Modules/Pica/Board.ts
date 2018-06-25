@@ -1,7 +1,7 @@
 module UI.Pica.Board {
     import triggerStatus = Server.Chat.triggerStatus;
     var board = document.createElement("div");
-    board.id = "pictureBoard";
+    board.classList.add("pictureBoard");
     UI.Pica.getPictureWindow().appendChild(board);
 
     var currentUrl = "";

@@ -20,12 +20,12 @@
   background-color: rgba(0,0,0,.4);
 }
 
-#mapBackground {
+.mapBackground {
   position: absolute;
   z-index: 1;
 }
 
-#pictureContainer {
+.pictureContainer {
   position: absolute;
   top: 0px;
   bottom: 0px;
@@ -33,7 +33,7 @@
   right: 0px;
 }
 
-#pictureBoard {
+.pictureBoard {
   position: absolute;
   top: 10px;
   left: 10px;
@@ -44,7 +44,7 @@
   @extend .scrollbar;
 }
 
-#pictureToolsContainer {
+.pictureToolsContainer {
   position: absolute;
   bottom: 0px;
   left: 0px;
@@ -137,7 +137,7 @@
   }
 }
 
-#colopica {
+.colopica {
   @extend .buttonBehavior;
   appearance: none;
   -moz-appearance: none;

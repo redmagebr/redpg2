@@ -31,7 +31,7 @@ class PicaBoard {
     }
 
     constructor () {
-        this.board.id = "pictureBoard";
+        this.board.classList.add("pictureBoard");
 
         console.debug("[PicaBoard] Binding on window resize.");
 

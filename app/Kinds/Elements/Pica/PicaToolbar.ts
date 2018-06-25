@@ -5,7 +5,7 @@ class PicaToolbar {
 
     constructor () {
         this.container = document.createElement("div");
-        this.container.id = "pictureToolsContainer";
+        this.container.classList.add("pictureToolsContainer");
 
         for (var i = 0; i < PicaToolbar.tools.length; i++) {
             this.tools.push(new PicaToolbar.tools[i]());

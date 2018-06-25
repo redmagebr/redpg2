@@ -16302,7 +16302,7 @@ var UI;
         var Board;
         (function (Board) {
             var board = document.createElement("div");
-            board.id = "pictureBoard";
+            board.classList.add("pictureBoard");
             UI.Pica.getPictureWindow().appendChild(board);
             var currentUrl = "";
             var urlTrigger = new Trigger();
@@ -16434,7 +16434,7 @@ var UI;
         var Toolbar;
         (function (Toolbar) {
             var container = document.createElement("div");
-            container.id = "pictureToolsContainer";
+            container.classList.add("pictureToolsContainer");
             UI.Pica.getPictureWindow().appendChild(container);
             var tools = [];
             function updateVisibility() {
