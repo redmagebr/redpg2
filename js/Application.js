@@ -11318,6 +11318,9 @@ ptbr.setLingo("_SHEETVIEWERAUTOMATIC_", "Recarregar a ficha automaticamente");
 ptbr.setLingo("_SHEETVIEWEREDIT_", "Permitir alterações na ficha");
 ptbr.setLingo("_SHEETVIEWERCLOSE_", "Fechar ficha");
 ptbr.setLingo("_SHEETIMPORTFAILED_", "O arquivo escolhido não continha uma ficha válida e não pôde ser importado.");
+// SHEET TYPES
+ptbr.setLingo("_SHEETSTORY_", "História");
+ptbr.setLingo("_SHEETMAP_", "Mapa");
 // SHEET VARIABLES
 ptbr.setLingo("_SHEETVARIABLEIMAGENONE_", "Sem imagem");
 ptbr.setLingo("_SHEETVARIABLEIMAGESNOTLOADED_", "Imagens não carregadas");
@@ -12254,6 +12257,9 @@ change.addMessage("Fichas são separadas por suas pastas no Combat Tracker.", "p
 change.addMessage("Ordem das fichas não deve mais ser afetada por caracteres minúsculos.", "pt");
 change.addMessage("Novo botão em fichas permite ativar e desativar a alteração de fichas. Por padrão a alteração é permitida.", "pt");
 change.addMessage("Chat altera o título da janela para avisar quando existem mensagens novas.", "pt");
+change = new Changelog(0, 29, 2);
+change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
+change.addMessage("Durante a criação de fichas, fichas de história ou mapas ou outras fichas com nomes variáveis por língua irão mostrar seu nome corretamente. _SHEETSTORY_ agora é apenas \"História\".", "pt");
 //delete (change);
 Changelog.finished();
 /// <reference path='../../Changelog.ts' />
@@ -13480,6 +13486,12 @@ var UI;
             function fillStyles(data) {
                 while (selectStyle.firstChild !== null)
                     selectStyle.removeChild(selectStyle.firstChild);
+                for (var i_1 = 0; i_1 < data.length; i_1++) {
+                    var name_1 = data[i_1]['name'];
+                    if (name_1.charAt(0) == "_" && name_1.charAt(name_1.length - 1) == "_") {
+                        data[i_1]['name'] = UI.Language.getLanguage().getLingo(name_1);
+                    }
+                }
                 data.sort(function (a, b) {
                     var na = a['name'].toLowerCase();
                     var nb = b['name'].toLowerCase();

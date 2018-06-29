@@ -53,7 +53,7 @@ class MemoryCutscene extends TrackerMemory {
         return this.chatAllowed;
     }
 
-    public exportAsObject () {
+    public exportAsObject () : number {
         return this.chatAllowed ? 1 : 0;
     }
 }

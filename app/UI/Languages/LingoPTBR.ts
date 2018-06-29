@@ -188,6 +188,11 @@ ptbr.setLingo("_SHEETVIEWEREDIT_", "Permitir alterações na ficha");
 ptbr.setLingo("_SHEETVIEWERCLOSE_", "Fechar ficha");
 ptbr.setLingo("_SHEETIMPORTFAILED_", "O arquivo escolhido não continha uma ficha válida e não pôde ser importado.");
 
+// SHEET TYPES
+ptbr.setLingo("_SHEETSTORY_", "História");
+ptbr.setLingo("_SHEETMAP_", "Mapa");
+
+
 // SHEET VARIABLES
 ptbr.setLingo("_SHEETVARIABLEIMAGENONE_", "Sem imagem");
 ptbr.setLingo("_SHEETVARIABLEIMAGESNOTLOADED_", "Imagens não carregadas");

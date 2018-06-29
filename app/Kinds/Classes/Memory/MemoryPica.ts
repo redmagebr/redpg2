@@ -18,7 +18,7 @@ class MemoryPica extends TrackerMemory {
         return this.picaAllowed;
     }
 
-    public picaAllowedExport () {
+    public picaAllowedExport () : number {
         return this.picaAllowed ? 1 : 0;
     }
 

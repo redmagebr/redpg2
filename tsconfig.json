@@ -3,7 +3,8 @@
     "module": "system",
     "target": "es5",
     "outFile" : "js/Application.js",
-    "sourceMap": true
+    "sourceMap": true,
+    "declaration": true
   },
   "exclude": [
     "node_modules"

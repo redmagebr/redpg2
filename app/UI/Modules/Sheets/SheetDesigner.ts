@@ -47,6 +47,13 @@ module UI.Sheets.SheetDesigner {
     export function fillStyles (data) {
         while (selectStyle.firstChild !== null) selectStyle.removeChild(selectStyle.firstChild);
 
+        for (let i = 0; i < data.length; i++) {
+            let name = data[i]['name'];
+            if (name.charAt(0) == "_" && name.charAt(name.length - 1) == "_") {
+                data[i]['name'] = UI.Language.getLanguage().getLingo(name);
+            }
+        }
+
         data.sort(function (a, b) {
             var na = a['name'].toLowerCase();
             var nb = b['name'].toLowerCase();

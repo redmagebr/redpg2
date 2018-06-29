@@ -190,6 +190,11 @@ change.addMessage("Ordem das fichas não deve mais ser afetada por caracteres mi
 change.addMessage("Novo botão em fichas permite ativar e desativar a alteração de fichas. Por padrão a alteração é permitida.", "pt");
 change.addMessage("Chat altera o título da janela para avisar quando existem mensagens novas.", "pt");
 
+change = new Changelog(0, 29, 2);
+change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
+change.addMessage("Durante a criação de fichas, fichas de história ou mapas ou outras fichas com nomes variáveis por língua irão mostrar seu nome corretamente. _SHEETSTORY_ agora é apenas \"História\".", "pt");
+
+
 //delete (change);
 
 Changelog.finished();
