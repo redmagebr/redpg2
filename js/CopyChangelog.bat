@@ -1,1 +1,1 @@
-copy /Y C:\WebOld\redpg2\app\Changelog.ts C:\WebOld\redpg2\js\Changelog.js
+copy /Y %1 %2

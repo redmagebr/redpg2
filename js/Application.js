@@ -1,7 +1,10 @@
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -11654,7 +11657,12 @@ function RedPGAccidentPreventionSystem(e) {
         return UI.Language.getLanguage().getLingo("_RAPSSHEETOPEN_");
     }
 }
-window.onbeforeunload = RedPGAccidentPreventionSystem;
+window.addEventListener("beforeunload", function (e) {
+    e.preventDefault();
+    var confirmationMessage = RedPGAccidentPreventionSystem(e);
+    (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+    return confirmationMessage; //Webkit, Safari, Chrome etc.
+});
 var UI;
 (function (UI) {
     var WindowManager;
@@ -12103,6 +12111,7 @@ var UI;
         Config.setUniqueTimeout = setUniqueTimeout;
     })(Config = UI.Config || (UI.Config = {}));
 })(UI || (UI = {}));
+///<reference path="Kinds/Classes/Changelog.ts"/>
 // This is a typescript file, but it's not to be written as typescript
 // Only Changelog class usage is allowed in this file.
 var change;
@@ -12260,6 +12269,9 @@ change.addMessage("Chat altera o título da janela para avisar quando existem me
 change = new Changelog(0, 29, 2);
 change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
 change.addMessage("Durante a criação de fichas, fichas de história ou mapas ou outras fichas com nomes variáveis por língua irão mostrar seu nome corretamente. _SHEETSTORY_ agora é apenas \"História\".", "pt");
+change = new Changelog(0, 30, 0);
+change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
+change.addMessage("Reformular RedPG2 para poder ser trabalhado na versão mais recente do TypeScript.", "pt");
 //delete (change);
 Changelog.finished();
 /// <reference path='../../Changelog.ts' />

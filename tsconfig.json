@@ -10,6 +10,7 @@
     "node_modules"
   ],
   "include": [
+    "typings/**/*",
     "app/main.ts"
   ]
 }

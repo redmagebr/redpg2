@@ -10,7 +10,7 @@ module UI.Chat {
 
 
     // Help messages
-    var chatHelperss : NodeList = document.getElementsByClassName("chatInitHelp");
+    var chatHelperss : HTMLCollection = document.getElementsByClassName("chatInitHelp");
     // NodeList loses values if they are unattached to the DOM
     var chatHelpers : Array<HTMLElement> = [];
     for (var i = 0; i < chatHelperss.length; i++) {

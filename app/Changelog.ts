@@ -1,3 +1,4 @@
+///<reference path="Kinds/Classes/Changelog.ts"/>
 // This is a typescript file, but it's not to be written as typescript
 // Only Changelog class usage is allowed in this file.
 var change;
@@ -193,6 +194,11 @@ change.addMessage("Chat altera o título da janela para avisar quando existem me
 change = new Changelog(0, 29, 2);
 change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
 change.addMessage("Durante a criação de fichas, fichas de história ou mapas ou outras fichas com nomes variáveis por língua irão mostrar seu nome corretamente. _SHEETSTORY_ agora é apenas \"História\".", "pt");
+
+change = new Changelog(0, 30, 0);
+change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
+change.addMessage("Reformular RedPG2 para poder ser trabalhado na versão mais recente do TypeScript.", "pt");
+change.addMessage("Tentativa de corrigir problemas encontrados no Sistema de Prevenção de Acidentes do RedPG (RAPS).", "pt");
 
 
 //delete (change);

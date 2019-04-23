@@ -6,4 +6,10 @@ function RedPGAccidentPreventionSystem (e : Event) {
     }
 }
 
-window.onbeforeunload = RedPGAccidentPreventionSystem;
+window.addEventListener("beforeunload", function (e) {
+    e.preventDefault();
+    var confirmationMessage = RedPGAccidentPreventionSystem(e);
+
+    (e || window.event).returnValue = confirmationMessage;     //Gecko + IE
+    return confirmationMessage;                                //Webkit, Safari, Chrome etc.
+});
