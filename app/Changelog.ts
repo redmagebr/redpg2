@@ -199,6 +199,7 @@ change = new Changelog(0, 30, 0);
 change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
 change.addMessage("Reformular RedPG2 para poder ser trabalhado na versão mais recente do TypeScript.", "pt");
 change.addMessage("Tentativa de corrigir problemas encontrados no Sistema de Prevenção de Acidentes do RedPG (RAPS).", "pt");
+change.addMessage("Botões de controle de imagem refeitos..", "pt");
 
 
 //delete (change);
