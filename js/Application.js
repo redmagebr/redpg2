@@ -12407,6 +12407,8 @@ change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
 change.addMessage("Reformular RedPG2 para poder ser trabalhado na versão mais recente do TypeScript.", "pt");
 change.addMessage("Tentativa de corrigir problemas encontrados no Sistema de Prevenção de Acidentes do RedPG (RAPS).", "pt");
 change.addMessage("Botões de controle de imagem refeitos.", "pt");
+change = new Changelog(0, 31, 0);
+change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
 change.addMessage("Possibilidade de Zebra adicionado às configurações.", "pt");
 change.addMessage("/comandos implementado.", "pt");
 change.addMessage("/clear implementado.", "pt");
