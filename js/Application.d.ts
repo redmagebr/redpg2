@@ -2065,11 +2065,15 @@ declare module UI {
     var idRoomDesigner: string;
     var idSheetViewer: string;
     var idSheetDesigner: string;
+    var idLeftIFrame: string;
+    var idLeftVideo: string;
     var idHome: string;
     var idSheets: string;
     var idImages: string;
     var idSounds: string;
     var idSheetPerm: string;
+    var idRightIFrame: string;
+    var idRightVideo: string;
     function resetTitle(): void;
     function addTitle(str: string): void;
 }
@@ -2179,6 +2183,12 @@ declare module UI.Language {
     function addLanguagePlaceholder(element: HTMLElement, value: string): void;
     function addLanguageTitle(element: HTMLElement, value: string): void;
     function markLanguage(...elements: HTMLElement[]): void;
+}
+declare module UI.IFrame {
+    function openLeftIFrame(url: string): void;
+    function openRightFrame(url: string): void;
+    function openLeftVideo(url: string): void;
+    function openRightVideo(url: string): void;
 }
 declare module UI.Sheets {
     function keepOpen(folder: string, gameid: number): void;

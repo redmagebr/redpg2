@@ -38,6 +38,7 @@ ptbr.setLingo("_CHANGELOGVERSIONWARNING_", "Seu aplicativo está desatualizado. 
 
 // Home  Page
 ptbr.setLingo("_REDPGTITLE_", "RedPG");
+ptbr.setLingo("_IFRAME_", "Página Externa");
 ptbr.setLingo("_REDPGEXP1_", "RedPG é um sistema para facilitar RPGs de Mesa através da internet. Funções do sistema incluem o compartilhamento de Imagens, Sons, Fichas de Personagens, uma sala para troca de mensagens com suporte a dados e muito mais, com novas funções sempre sendo adicionadas.");
 ptbr.setLingo("_REDPGEXP2_", "Todos os aspectos do sistema existem e estão presos aos Grupos, um grupo de RPG. Então para criar qualquer coisa ou utilizar o sistema de qualquer maneira, você precisa criar ou ser convidado a um Grupo. Isso é feito na seção \"Grupos\", no menu à esquerda.");
 ptbr.setLingo("_REDPGFORUMTITLE_", "Últimos posts no Fórum");
@@ -282,6 +283,7 @@ ptbr.setLingo("_CHATHELP05_", "Alternativamente, segure Alt, Control ou Shift qu
 ptbr.setLingo("_CHATHELP06_", "É recomendável executar \"/clear 1\" para limpar as mensagens no servidor de vez em quando, ou a sala ficará cada vez mais lenta.");
 ptbr.setLingo("_CHATHELP07_", "Caso deseje usar as músicas em modo offline, mas o RedPG em modo online, clique no formulário abaixo e escolha suas músicas: você estará dando permissão temporária para o RedPG acessá-las.");
 ptbr.setLingo("_CHATEMPTYNOTALLOWED_", "Mensagens vazias não são permitidas. Para limpar a tela de mensagens, digite \"/clear\".");
+ptbr.setLingo("_CHATYOUTUBEINVALID_", "Link youtube inválido.");
 ptbr.setLingo("_REALLYDELETEMESSAGESFOREVER_", "Deletar mensagens apagará elas para sempre. É impossível recuperá-las. Proceder?");
 ptbr.setLingo("_CHATMESSAGENOTSENT_", "Houve um erro no envio da mensagem acima.");
 ptbr.setLingo("_CHATMESSAGENOTSENTRESEND_", "Clique aqui para tentar novamente.");

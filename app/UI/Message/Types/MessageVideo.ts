@@ -22,6 +22,17 @@ class MessageVideo extends Message {
         a.appendChild(document.createTextNode("."));
         UI.Language.markLanguage(a);
 
+        a.addEventListener("click", () => {
+            var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            var match = this.getMsg().trim().match(regExp);
+            if (match && match[2].length === 11) {
+                UI.IFrame.openRightFrame("https://www.youtube.com/embed/" + match[2]);
+            } else {
+                var msg = new ChatSystemMessage(true);
+                msg.addText("_CHATYOUTUBEINVALID_");
+            }
+        });
+
         p.appendChild(a);
 
         return p;

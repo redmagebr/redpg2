@@ -75,6 +75,31 @@
         %a.loadingCircleWhite.centeredBlock
       #rightLoading.rightSideWindow.flexCentering.dontDetach
         %a.loadingCircleWhite.centeredBlock
+      -# iFrames
+      #leftIFrame.leftSideWindow
+        .mainWindowHeader.language
+          _IFRAME_
+          %a.xButton{:onclick => "UI.PageManager.closeLeftPage();"}
+        .mainWindowContent.singleton.iframeContainer
+          %iframe#leftIFrameElement
+      #rightIFrame.rightSideWindow
+        .mainWindowHeader.language
+          _IFRAME_
+          %a.xButton{:onclick => "UI.PageManager.closeRightPage();"}
+        .mainWindowContent.singleton.iframeContainer
+          %iframe#rightIFrameElement
+      #leftVideo.leftSideWindow
+        .mainWindowHeader.language
+          _IFRAME_
+          %a.xButton{:onclick => "UI.PageManager.closeLeftPage();"}
+        .mainWindowContent.singleton.iframeContainer
+          %video#leftVideoElement
+      #rightVideo.rightSideWindow
+        .mainWindowHeader.language
+          _IFRAME_
+          %a.xButton{:onclick => "UI.PageManager.closeRightPage();"}
+        .mainWindowContent.singleton.iframeContainer
+          %video#rightVideoElement{:controls => true, :autobuffer => true}
       -# Logger
       #loggerWindow.leftSideWindow.dontDetach
         .language.mainWindowHeader

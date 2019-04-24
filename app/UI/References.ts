@@ -16,6 +16,7 @@
 /// <reference path='Modules/Login/NewAccount.ts' />
 /// <reference path='Modules/Handles.ts' />
 /// <reference path='Modules/Language.ts' />
+/// <reference path='Modules/IFrame.ts' />
 /// <reference path='Modules/Sheets.ts' />
 /// <reference path='Modules/Sheets/SheetPermissionDesigner.ts' />
 /// <reference path='Modules/Sheets/SheetManager.ts' />

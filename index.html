@@ -84,6 +84,42 @@
 <div class='rightSideWindow flexCentering dontDetach' id='rightLoading'>
 <a class='loadingCircleWhite centeredBlock'></a>
 </div>
+<div class='leftSideWindow' id='leftIFrame'>
+<div class='mainWindowHeader language'>
+_IFRAME_
+<a class='xButton' onclick='UI.PageManager.closeLeftPage();'></a>
+</div>
+<div class='mainWindowContent singleton iframeContainer'>
+<iframe id='leftIFrameElement'></iframe>
+</div>
+</div>
+<div class='rightSideWindow' id='rightIFrame'>
+<div class='mainWindowHeader language'>
+_IFRAME_
+<a class='xButton' onclick='UI.PageManager.closeRightPage();'></a>
+</div>
+<div class='mainWindowContent singleton iframeContainer'>
+<iframe id='rightIFrameElement'></iframe>
+</div>
+</div>
+<div class='leftSideWindow' id='leftVideo'>
+<div class='mainWindowHeader language'>
+_IFRAME_
+<a class='xButton' onclick='UI.PageManager.closeLeftPage();'></a>
+</div>
+<div class='mainWindowContent singleton iframeContainer'>
+<video id='leftVideoElement'></video>
+</div>
+</div>
+<div class='rightSideWindow' id='rightVideo'>
+<div class='mainWindowHeader language'>
+_IFRAME_
+<a class='xButton' onclick='UI.PageManager.closeRightPage();'></a>
+</div>
+<div class='mainWindowContent singleton iframeContainer'>
+<video autobuffer controls id='rightVideoElement'></video>
+</div>
+</div>
 <div class='leftSideWindow dontDetach' id='loggerWindow'>
 <div class='language mainWindowHeader'>
 _LOGGERTITLE_

@@ -7318,6 +7318,7 @@ var MessageWebm = /** @class */ (function (_super) {
         return _this;
     }
     MessageWebm.prototype.createHTML = function () {
+        var _this = this;
         var p = document.createElement("p");
         p.classList.add("chatMessageShare");
         p.appendChild(document.createTextNode(this.getUser().getUniqueNickname() + " "));
@@ -7335,6 +7336,9 @@ var MessageWebm = /** @class */ (function (_super) {
         a.appendChild(document.createTextNode("_CHATMESSAGEPLAYVIDEO_"));
         a.appendChild(document.createTextNode("."));
         UI.Language.markLanguage(a);
+        a.addEventListener("click", function () {
+            UI.IFrame.openRightVideo(_this.getMsg().trim());
+        });
         p.appendChild(a);
         return p;
     };
@@ -7355,6 +7359,7 @@ var MessageVideo = /** @class */ (function (_super) {
         return _this;
     }
     MessageVideo.prototype.createHTML = function () {
+        var _this = this;
         var p = document.createElement("p");
         p.classList.add("chatMessageShare");
         p.appendChild(document.createTextNode(this.getUser().getUniqueNickname() + " "));
@@ -7372,6 +7377,17 @@ var MessageVideo = /** @class */ (function (_super) {
         a.appendChild(document.createTextNode("_CHATMESSAGEPLAYVIDEO_"));
         a.appendChild(document.createTextNode("."));
         UI.Language.markLanguage(a);
+        a.addEventListener("click", function () {
+            var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            var match = _this.getMsg().trim().match(regExp);
+            if (match && match[2].length === 11) {
+                UI.IFrame.openRightFrame("https://www.youtube.com/embed/" + match[2]);
+            }
+            else {
+                var msg = new ChatSystemMessage(true);
+                msg.addText("_CHATYOUTUBEINVALID_");
+            }
+        });
         p.appendChild(a);
         return p;
     };
@@ -11287,6 +11303,7 @@ ptbr.setLingo("_CHANGELOGMOSTRECENTVERSION_", "A versão mais recente é");
 ptbr.setLingo("_CHANGELOGVERSIONWARNING_", "Seu aplicativo está desatualizado. Recomenda-se atualizar o seu aplicativo. Caso esteja acessando a versão Online através de RedPG.com.br, é só recarregar a página (F5). Atualizações marcadas em vermelho não estão disponíveis.");
 // Home  Page
 ptbr.setLingo("_REDPGTITLE_", "RedPG");
+ptbr.setLingo("_IFRAME_", "Página Externa");
 ptbr.setLingo("_REDPGEXP1_", "RedPG é um sistema para facilitar RPGs de Mesa através da internet. Funções do sistema incluem o compartilhamento de Imagens, Sons, Fichas de Personagens, uma sala para troca de mensagens com suporte a dados e muito mais, com novas funções sempre sendo adicionadas.");
 ptbr.setLingo("_REDPGEXP2_", "Todos os aspectos do sistema existem e estão presos aos Grupos, um grupo de RPG. Então para criar qualquer coisa ou utilizar o sistema de qualquer maneira, você precisa criar ou ser convidado a um Grupo. Isso é feito na seção \"Grupos\", no menu à esquerda.");
 ptbr.setLingo("_REDPGFORUMTITLE_", "Últimos posts no Fórum");
@@ -11512,6 +11529,7 @@ ptbr.setLingo("_CHATHELP05_", "Alternativamente, segure Alt, Control ou Shift qu
 ptbr.setLingo("_CHATHELP06_", "É recomendável executar \"/clear 1\" para limpar as mensagens no servidor de vez em quando, ou a sala ficará cada vez mais lenta.");
 ptbr.setLingo("_CHATHELP07_", "Caso deseje usar as músicas em modo offline, mas o RedPG em modo online, clique no formulário abaixo e escolha suas músicas: você estará dando permissão temporária para o RedPG acessá-las.");
 ptbr.setLingo("_CHATEMPTYNOTALLOWED_", "Mensagens vazias não são permitidas. Para limpar a tela de mensagens, digite \"/clear\".");
+ptbr.setLingo("_CHATYOUTUBEINVALID_", "Link youtube inválido.");
 ptbr.setLingo("_REALLYDELETEMESSAGESFOREVER_", "Deletar mensagens apagará elas para sempre. É impossível recuperá-las. Proceder?");
 ptbr.setLingo("_CHATMESSAGENOTSENT_", "Houve um erro no envio da mensagem acima.");
 ptbr.setLingo("_CHATMESSAGENOTSENTRESEND_", "Clique aqui para tentar novamente.");
@@ -11742,12 +11760,16 @@ var UI;
     UI.idRoomDesigner = "roomDesignerFormSideWindow";
     UI.idSheetViewer = "sheetViewerSideWindow";
     UI.idSheetDesigner = "sheetDesignerFormSideWindow";
+    UI.idLeftIFrame = "leftIFrame";
+    UI.idLeftVideo = "leftVideo";
     // Right side windows
     UI.idHome = "homeSideWindow";
     UI.idSheets = "sheetsSideWindow";
     UI.idImages = "imagesSideWindow";
     UI.idSounds = "soundsSideWindow";
     UI.idSheetPerm = "sheetPermSideWindow";
+    UI.idRightIFrame = "rightIFrame";
+    UI.idRightVideo = "rightVideo";
     /**
      * Registered UI Configurations
      */
@@ -12412,6 +12434,11 @@ change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
 change.addMessage("Possibilidade de Zebra adicionado às configurações.", "pt");
 change.addMessage("/comandos implementado.", "pt");
 change.addMessage("/clear implementado.", "pt");
+change = new Changelog(0, 32, 0);
+change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
+change.addMessage("Suporte a iFrames e Vídeos.", "pt");
+change.addMessage("/youtube implementado.", "pt");
+change.addMessage("/webm implementado.", "pt");
 //delete (change);
 Changelog.finished();
 /// <reference path='../../Changelog.ts' />
@@ -13152,6 +13179,36 @@ var UI;
         }
         Language.markLanguage = markLanguage;
     })(Language = UI.Language || (UI.Language = {}));
+})(UI || (UI = {}));
+var UI;
+(function (UI) {
+    var IFrame;
+    (function (IFrame) {
+        var leftIFrame = document.getElementById("leftIFrameElement");
+        var rightIFrame = document.getElementById("rightIFrameElement");
+        var leftVideo = document.getElementById("leftVideoElement");
+        var rightVideo = document.getElementById("rightVideoElement");
+        function openLeftIFrame(url) {
+            UI.PageManager.callPage(UI.idLeftIFrame);
+            leftIFrame.src = url;
+        }
+        IFrame.openLeftIFrame = openLeftIFrame;
+        function openRightFrame(url) {
+            UI.PageManager.callPage(UI.idRightIFrame);
+            rightIFrame.src = url;
+        }
+        IFrame.openRightFrame = openRightFrame;
+        function openLeftVideo(url) {
+            UI.PageManager.callPage(UI.idLeftVideo);
+            leftVideo.src = url;
+        }
+        IFrame.openLeftVideo = openLeftVideo;
+        function openRightVideo(url) {
+            UI.PageManager.callPage(UI.idRightVideo);
+            rightVideo.src = url;
+        }
+        IFrame.openRightVideo = openRightVideo;
+    })(IFrame = UI.IFrame || (UI.IFrame = {}));
 })(UI || (UI = {}));
 var UI;
 (function (UI) {
@@ -18175,6 +18232,7 @@ var UI;
 /// <reference path='Modules/Login/NewAccount.ts' />
 /// <reference path='Modules/Handles.ts' />
 /// <reference path='Modules/Language.ts' />
+/// <reference path='Modules/IFrame.ts' />
 /// <reference path='Modules/Sheets.ts' />
 /// <reference path='Modules/Sheets/SheetPermissionDesigner.ts' />
 /// <reference path='Modules/Sheets/SheetManager.ts' />

@@ -22,6 +22,10 @@ class MessageWebm extends Message {
         a.appendChild(document.createTextNode("."));
         UI.Language.markLanguage(a);
 
+        a.addEventListener("click", () => {
+            UI.IFrame.openRightVideo(this.getMsg().trim());
+        });
+
         p.appendChild(a);
 
         return p;

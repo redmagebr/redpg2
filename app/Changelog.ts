@@ -208,6 +208,12 @@ change.addMessage("Possibilidade de Zebra adicionado às configurações.", "pt"
 change.addMessage("/comandos implementado.", "pt");
 change.addMessage("/clear implementado.", "pt");
 
+change = new Changelog(0, 32, 0);
+change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
+change.addMessage("Suporte a iFrames e Vídeos.", "pt");
+change.addMessage("/youtube implementado.", "pt");
+change.addMessage("/webm implementado.", "pt");
+
 
 //delete (change);
 

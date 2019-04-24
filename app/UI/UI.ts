@@ -19,6 +19,8 @@ module UI {
     export var idRoomDesigner = "roomDesignerFormSideWindow";
     export var idSheetViewer = "sheetViewerSideWindow";
     export var idSheetDesigner = "sheetDesignerFormSideWindow";
+    export var idLeftIFrame = "leftIFrame";
+    export var idLeftVideo = "leftVideo";
 
     // Right side windows
     export var idHome = "homeSideWindow";
@@ -26,6 +28,8 @@ module UI {
     export var idImages = "imagesSideWindow";
     export var idSounds = "soundsSideWindow";
     export var idSheetPerm = "sheetPermSideWindow";
+    export var idRightIFrame = "rightIFrame";
+    export var idRightVideo = "rightVideo";
 
     /**
      * Registered UI Configurations
