@@ -3,6 +3,25 @@ module MessageFactory {
     var messageClassesArray : Array<typeof Message> = [];
     var messageSlash : { [slash : string] : typeof SlashCommand} = {};
 
+    var allArray : Array<typeof SlashCommand> = [];
+    var allSlashes : Array<Array<string>> = [];
+
+    export function getCommandsAndSlashes () {
+        let result = [];
+        for (let i = 0; i < allArray.length; i++) {
+            result.push(
+                [allArray[i], allSlashes[i]]
+            );
+        }
+        return result.sort((a, b) => {
+            let na = (a[0].name).toLowerCase();
+            let nb = (b[0].name).toLowerCase();
+            if (na < nb) return -1;
+            if (nb < na) return 1;
+            return 0;
+        });
+    }
+
     /**
      * Registers a message class for later use.
      * Messages are created when users type commands or when the system requires a message by name.
@@ -22,12 +41,21 @@ module MessageFactory {
 
         messageClasses[id] = msg;
 
+        let idx = allArray.indexOf(msg);
+        if (slashCommands.length > 0) {
+            if (idx == -1) {
+                idx = allArray.push(msg) - 1;
+                allSlashes.push([]);
+            }
+        }
+
         for (var i = 0; i < slashCommands.length; i++) {
             if (messageSlash[slashCommands[i]] !== undefined) {
                 console.warn("Attempt to overwrite message slash command at " + slashCommands[i] + ". Ignoring. Offending class:", msg);
                 continue;
             }
             messageSlash[slashCommands[i]] = msg;
+            allSlashes[idx].push(slashCommands[i]);
         }
     }
 
@@ -41,13 +69,22 @@ module MessageFactory {
      * @param slash
      * @param slashCommands
      */
-    export function registerSlashCommand (slash : typeof SlashCommand, slashCommands :Array<string>) {
+    export function registerSlashCommand (slash : typeof SlashCommand, slashCommands : Array<string>) {
+        let idx = allArray.indexOf(slash);
+        if (slashCommands.length > 0) {
+            if (idx == -1) {
+                idx = allArray.push(slash) - 1;
+                allSlashes.push([]);
+            }
+        }
+
         for (var i = 0; i < slashCommands.length; i++) {
             if (messageSlash[slashCommands[i]] !== undefined) {
                 console.warn("Attempt to overwrite message slash command at " + slashCommands[i] + ". Ignoring. Offending class:", slash);
                 continue;
             }
             messageSlash[slashCommands[i]] = slash;
+            allSlashes[idx].push(slashCommands[i]);
         }
     }
 

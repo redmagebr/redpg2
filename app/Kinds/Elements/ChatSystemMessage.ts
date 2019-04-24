@@ -31,6 +31,10 @@ class ChatSystemMessage {
         this.element.appendChild(ChatSystemMessage.createTextLink(text, hasLanguage, click));
     }
 
+    public addLineBreak () {
+        this.element.appendChild(document.createElement("br"));
+    }
+
     public addText (text : string) {
         this.element.appendChild(document.createTextNode(text));
     }

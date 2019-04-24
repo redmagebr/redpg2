@@ -282,6 +282,7 @@ ptbr.setLingo("_CHATHELP05_", "Alternativamente, segure Alt, Control ou Shift qu
 ptbr.setLingo("_CHATHELP06_", "É recomendável executar \"/clear 1\" para limpar as mensagens no servidor de vez em quando, ou a sala ficará cada vez mais lenta.");
 ptbr.setLingo("_CHATHELP07_", "Caso deseje usar as músicas em modo offline, mas o RedPG em modo online, clique no formulário abaixo e escolha suas músicas: você estará dando permissão temporária para o RedPG acessá-las.");
 ptbr.setLingo("_CHATEMPTYNOTALLOWED_", "Mensagens vazias não são permitidas. Para limpar a tela de mensagens, digite \"/clear\".");
+ptbr.setLingo("_REALLYDELETEMESSAGESFOREVER_", "Deletar mensagens apagará elas para sempre. É impossível recuperá-las. Proceder?");
 ptbr.setLingo("_CHATMESSAGENOTSENT_", "Houve um erro no envio da mensagem acima.");
 ptbr.setLingo("_CHATMESSAGENOTSENTRESEND_", "Clique aqui para tentar novamente.");
 ptbr.setLingo("_CHATHASCONNECTED_", "entrou na sala.");
@@ -426,6 +427,10 @@ ptbr.setLingo("_CONFIGCHATHELPOP02_", "Não imprimir mensagens de ajuda");
 ptbr.setLingo("_CONFIGANIMATIONTIME_", "Duração de animações:");
 ptbr.setLingo("_ANIMATIONTIMEEXP01_", "Todas as animações do RedPG serão proporcionais a essa configuração.");
 ptbr.setLingo("_ANIMATIONTIMEEXP02_", "Abaixar essa configuração pode ajudar em dispositivos mais lentos que estejam tendo dificuldades em processar as animações do RedPG.");
+ptbr.setLingo("_CONFIGCHATZEBRAEXP_", "Define se imagens devem ser destacadas linha a linha.");
+ptbr.setLingo("_CONFIGCHATZEBRA_", "Zebra:");
+ptbr.setLingo("_CONFIGCHATZEBRANO_", "Imprimir mensagens normalmente");
+ptbr.setLingo("_CONFIGCHATZEBRAYES_", "Imprimir mensagens destacando pares");
 ptbr.setLingo("_CONFIGCHATAUTOEXP_", "Quando recebendo compartilhamentos no Chat, essa opção define quando o compartilhamento é aceito automaticamente. Você sempre pode aceitar manualmente.");
 ptbr.setLingo("_CONFIGCHATAUTONEVER_", "Nunca");
 ptbr.setLingo("_CONFIGCHATAUTOSOMETIMES_", "Apenas quando enviado pelo narrador");
@@ -462,6 +467,29 @@ ptbr.setLingo("_CONFIGGAMESHIDEGAMES_", "Mesas Reduzidas");
 ptbr.setLingo("_CONFIGGAMESHIDEGAMESON_", "Recolher por padrão");
 ptbr.setLingo("_CONFIGGAMESHIDEGAMESOFF_", "Revelar por padrão");
 ptbr.setLingo("_CONFIGGAMESHIDEGAMESEXP_", "Define se a tela de mesas deve, por padrão, recolher o conteúdo das mesas para que ocupe menos espaço.");
+
+//Slash Commands
+ptbr.setLingo("_CHATHELPCOMMANDSINTRO_", "Comandos disponíveis:");
+ptbr.setLingo("_CHATHELPMESSAGEACTION_", "Envia o comando como uma ação com a Persona atual, e.g. /me pula da ponte");
+ptbr.setLingo("_CHATHELPMESSAGEBGM_", "Envia o comando como uma música, e.g. /splay link/para/musica.mp3");
+ptbr.setLingo("_CHATHELPMESSAGESE_", "Envia o comando como um efeito sonoro, e.g. /seplay link/para/efeito.wav");
+ptbr.setLingo("_CHATHELPMESSAGECOUNTDOWN_", "Inicia uma contagem regressiva, em segundos, e.g. /count 10");
+ptbr.setLingo("_CHATHELPMESSAGEIMAGE_", "Envia o comando como uma imagem, e.g. /imagem link/para/imagem.jpg");
+ptbr.setLingo("_CHATHELPMESSAGEOFF_", "Envia o comando como uma mensagem fora de personagem, e.g. /off vou no banheiro");
+ptbr.setLingo("_CHATHELPMESSAGEQUOTE_", "Envia o comando como uma mensagem de citação, e.g. /citar Heráclito, Nada é permanente, exceto a mudança.");
+ptbr.setLingo("_CHATHELPMESSAGEVIDEO_", "Compartilha um vídeo do YouTube, e.g. /video https://www.youtube.com/watch?v=xuCn8ux2gbs");
+ptbr.setLingo("_CHATHELPMESSAGEWEBM_", "Compartilha um vídeo com link direto, e.g. /webm link/para/video.webm");
+ptbr.setLingo("_CHATHELPMESSAGEVOTE_", "Cria um botão de votação, e.g. /vote Li tudo");
+ptbr.setLingo("_CHATHELPMESSAGEWHISPER_", "Envia uma mensagem privada. É possível deixar o sistema completar o nome sozinho por apertar Tab enquanto digita o nome do destinatário., e.g. /w Reddo, Oi :]");
+ptbr.setLingo("_CHATHELPSLASHCLEAR_", "Limpa a tela de mensagens. É possível adicionar a opção 1 para apagar as mensagens no servidor também (Mensagens não podem ser restauradas), e.g. /clear 1");
+ptbr.setLingo("_CHATHELPSLASHCOMMANDS_", "Imprime essa lista de comandos, e.g. /help");
+ptbr.setLingo("_CHATHELPSLASHIMAGES_", "Imprime uma lista das imagens compartilhadas no chat, em ordem da mais recente para mais antiga, e.g. /imagens");
+ptbr.setLingo("_CHATHELPSLASHLINGO_", "Envia uma mensagem codificada como língua, e.g. /lingo Davek, Apenas entendedores entenderão");
+ptbr.setLingo("_CHATHELPSLASHLOG_", "Abre a tela que cria logs, e.g. /log");
+ptbr.setLingo("_CHATHELPSLASHPICA_", "Cria um quadro em branco para desenhar, pode adicionar uma opção para criar um quadro com artes persistente, e.g. /quadro Como chegar na caverna");
+ptbr.setLingo("_CHATHELPSLASHREPLY_", "Atalho para enviar mensagem privada para a última pessoa que te enviou mensagens privadas, e.g. /r Certo, vamos atacar ele juntos");
+ptbr.setLingo("_CHATHELPMESSAGESTORY_", "Envia o comando como uma mensagem de história (apenas para narradores), e.g. /story ...And so it came to pass that the Countess, who once bathed in the rejuvenating blood of a hundred virgins, was buried alive...");
+
 
 // Window Events
 ptbr.setLingo("_RAPSCHATOPEN_", "Você está em uma sala. Tem certeza que deseja fechar?");

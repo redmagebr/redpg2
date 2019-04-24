@@ -452,6 +452,9 @@ var Room = /** @class */ (function () {
         this.users = {};
         this.messages = {};
     }
+    Room.prototype.clearMessages = function () {
+        this.messages = [];
+    };
     Room.prototype.exportAsLog = function (messages) {
         var obj = {
             gameid: this.gameid,
@@ -2942,6 +2945,9 @@ var ChatSystemMessage = /** @class */ (function () {
     };
     ChatSystemMessage.prototype.addTextLink = function (text, hasLanguage, click) {
         this.element.appendChild(ChatSystemMessage.createTextLink(text, hasLanguage, click));
+    };
+    ChatSystemMessage.prototype.addLineBreak = function () {
+        this.element.appendChild(document.createElement("br"));
     };
     ChatSystemMessage.prototype.addText = function (text) {
         this.element.appendChild(document.createTextNode(text));
@@ -6026,6 +6032,24 @@ var MessageFactory;
     var messageClasses = {};
     var messageClassesArray = [];
     var messageSlash = {};
+    var allArray = [];
+    var allSlashes = [];
+    function getCommandsAndSlashes() {
+        var result = [];
+        for (var i = 0; i < allArray.length; i++) {
+            result.push([allArray[i], allSlashes[i]]);
+        }
+        return result.sort(function (a, b) {
+            var na = (a[0].name).toLowerCase();
+            var nb = (b[0].name).toLowerCase();
+            if (na < nb)
+                return -1;
+            if (nb < na)
+                return 1;
+            return 0;
+        });
+    }
+    MessageFactory.getCommandsAndSlashes = getCommandsAndSlashes;
     /**
      * Registers a message class for later use.
      * Messages are created when users type commands or when the system requires a message by name.
@@ -6042,12 +6066,20 @@ var MessageFactory;
             messageClassesArray.push(msg);
         }
         messageClasses[id] = msg;
+        var idx = allArray.indexOf(msg);
+        if (slashCommands.length > 0) {
+            if (idx == -1) {
+                idx = allArray.push(msg) - 1;
+                allSlashes.push([]);
+            }
+        }
         for (var i = 0; i < slashCommands.length; i++) {
             if (messageSlash[slashCommands[i]] !== undefined) {
                 console.warn("Attempt to overwrite message slash command at " + slashCommands[i] + ". Ignoring. Offending class:", msg);
                 continue;
             }
             messageSlash[slashCommands[i]] = msg;
+            allSlashes[idx].push(slashCommands[i]);
         }
     }
     MessageFactory.registerMessage = registerMessage;
@@ -6062,12 +6094,20 @@ var MessageFactory;
      * @param slashCommands
      */
     function registerSlashCommand(slash, slashCommands) {
+        var idx = allArray.indexOf(slash);
+        if (slashCommands.length > 0) {
+            if (idx == -1) {
+                idx = allArray.push(slash) - 1;
+                allSlashes.push([]);
+            }
+        }
         for (var i = 0; i < slashCommands.length; i++) {
             if (messageSlash[slashCommands[i]] !== undefined) {
                 console.warn("Attempt to overwrite message slash command at " + slashCommands[i] + ". Ignoring. Offending class:", slash);
                 continue;
             }
             messageSlash[slashCommands[i]] = slash;
+            allSlashes[idx].push(slashCommands[i]);
         }
     }
     MessageFactory.registerSlashCommand = registerSlashCommand;
@@ -6186,6 +6226,17 @@ var SlashClear = /** @class */ (function (_super) {
     function SlashClear() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    SlashClear.prototype.receiveCommand = function (slashCommand, message) {
+        if (message.trim() == "1") {
+            if (confirm(UI.Language.getLanguage().getLingo("_REALLYDELETEMESSAGESFOREVER_"))) {
+                Server.Chat.clearForever(Server.Chat.getRoom().id, { handleEvent: function () { UI.Chat.clearRoom(); } });
+            }
+        }
+        else {
+            UI.Chat.clearRoom();
+        }
+        return true;
+    };
     return SlashClear;
 }(SlashCommand));
 MessageFactory.registerSlashCommand(SlashClear, ["/clear", "/clr", "/cls"]);
@@ -6403,6 +6454,38 @@ var SlashPica = /** @class */ (function (_super) {
     return SlashPica;
 }(SlashCommand));
 MessageFactory.registerSlashCommand(SlashPica, ["/pica", "/quadro", "/board", "/desenho", "/drawing"]);
+var SlashCommands = /** @class */ (function (_super) {
+    __extends(SlashCommands, _super);
+    function SlashCommands() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    /**
+     * Returns false for invalid commands. Returns true for valid commands.
+     * @param slashCommand
+     * @param message
+     */
+    SlashCommands.prototype.receiveCommand = function (slashCommand, message) {
+        var room = Server.Chat.getRoom();
+        if (room === null)
+            return false;
+        var commands = MessageFactory.getCommandsAndSlashes();
+        var msg = new ChatSystemMessage(true);
+        msg.addText("_CHATHELPCOMMANDSINTRO_");
+        for (var i = 0; i < commands.length; i++) {
+            var name_1 = commands[i][0].name.toUpperCase();
+            var slashes = commands[i][1];
+            msg.addLineBreak();
+            msg.addLineBreak();
+            msg.addText(slashes[0] + ": ");
+            msg.addText("_CHATHELP" + name_1 + "_");
+            msg.addText(" [" + slashes.join("; ") + "]");
+            UI.Chat.printElement(msg.getElement());
+        }
+        return true;
+    };
+    return SlashCommands;
+}(SlashCommand));
+MessageFactory.registerSlashCommand(SlashCommands, ["/help", "/ajuda", "/comandos", "/commands", "/howdo", "/comofas"]);
 /**
  * 'destination', 'id', 'module', 'msg', 'origin', 'roomid', 'date'
  message;
@@ -8728,6 +8811,7 @@ MessageFactory.registerMessage(MessageCutscene, "csc", []);
 /// <reference path='Types/SlashLog.ts' />
 /// <reference path='Types/SlashLingo.ts' />
 /// <reference path='Types/SlashPica.ts' />
+/// <reference path='Types/SlashCommands.ts' />
 /// <reference path='Types/Message.ts' />
 /// <reference path='Types/MessageBuff.ts' />
 /// <reference path='Types/MessagePica.ts' />
@@ -10430,6 +10514,27 @@ var Server;
             Server.AJAX.requestPage(ajax, success, error);
         }
         Chat.getAllMessages = getAllMessages;
+        function clearForever(roomid, cbs, cbe) {
+            var success = {
+                roomid: roomid,
+                cbs: cbs,
+                handleEvent: function (response, xhr) {
+                    var roomDB = DB.RoomDB.getRoom(this.roomid);
+                    if (roomDB != undefined) {
+                        roomDB.clearMessages();
+                    }
+                    if (this.cbs !== undefined)
+                        this.cbs.handleEvent(response, xhr);
+                }
+            };
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(ROOM_URL);
+            ajax.setResponseTypeJSON();
+            ajax.data = { action: "clear", roomid: roomid };
+            ajax.setTargetLeftWindow();
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Chat.clearForever = clearForever;
         function end() {
             currentRoom = null;
             Chat.currentController.end();
@@ -11407,6 +11512,7 @@ ptbr.setLingo("_CHATHELP05_", "Alternativamente, segure Alt, Control ou Shift qu
 ptbr.setLingo("_CHATHELP06_", "É recomendável executar \"/clear 1\" para limpar as mensagens no servidor de vez em quando, ou a sala ficará cada vez mais lenta.");
 ptbr.setLingo("_CHATHELP07_", "Caso deseje usar as músicas em modo offline, mas o RedPG em modo online, clique no formulário abaixo e escolha suas músicas: você estará dando permissão temporária para o RedPG acessá-las.");
 ptbr.setLingo("_CHATEMPTYNOTALLOWED_", "Mensagens vazias não são permitidas. Para limpar a tela de mensagens, digite \"/clear\".");
+ptbr.setLingo("_REALLYDELETEMESSAGESFOREVER_", "Deletar mensagens apagará elas para sempre. É impossível recuperá-las. Proceder?");
 ptbr.setLingo("_CHATMESSAGENOTSENT_", "Houve um erro no envio da mensagem acima.");
 ptbr.setLingo("_CHATMESSAGENOTSENTRESEND_", "Clique aqui para tentar novamente.");
 ptbr.setLingo("_CHATHASCONNECTED_", "entrou na sala.");
@@ -11545,6 +11651,10 @@ ptbr.setLingo("_CONFIGCHATHELPOP02_", "Não imprimir mensagens de ajuda");
 ptbr.setLingo("_CONFIGANIMATIONTIME_", "Duração de animações:");
 ptbr.setLingo("_ANIMATIONTIMEEXP01_", "Todas as animações do RedPG serão proporcionais a essa configuração.");
 ptbr.setLingo("_ANIMATIONTIMEEXP02_", "Abaixar essa configuração pode ajudar em dispositivos mais lentos que estejam tendo dificuldades em processar as animações do RedPG.");
+ptbr.setLingo("_CONFIGCHATZEBRAEXP_", "Define se imagens devem ser destacadas linha a linha.");
+ptbr.setLingo("_CONFIGCHATZEBRA_", "Zebra:");
+ptbr.setLingo("_CONFIGCHATZEBRANO_", "Imprimir mensagens normalmente");
+ptbr.setLingo("_CONFIGCHATZEBRAYES_", "Imprimir mensagens destacando pares");
 ptbr.setLingo("_CONFIGCHATAUTOEXP_", "Quando recebendo compartilhamentos no Chat, essa opção define quando o compartilhamento é aceito automaticamente. Você sempre pode aceitar manualmente.");
 ptbr.setLingo("_CONFIGCHATAUTONEVER_", "Nunca");
 ptbr.setLingo("_CONFIGCHATAUTOSOMETIMES_", "Apenas quando enviado pelo narrador");
@@ -11581,6 +11691,27 @@ ptbr.setLingo("_CONFIGGAMESHIDEGAMES_", "Mesas Reduzidas");
 ptbr.setLingo("_CONFIGGAMESHIDEGAMESON_", "Recolher por padrão");
 ptbr.setLingo("_CONFIGGAMESHIDEGAMESOFF_", "Revelar por padrão");
 ptbr.setLingo("_CONFIGGAMESHIDEGAMESEXP_", "Define se a tela de mesas deve, por padrão, recolher o conteúdo das mesas para que ocupe menos espaço.");
+//Slash Commands
+ptbr.setLingo("_CHATHELPCOMMANDSINTRO_", "Comandos disponíveis:");
+ptbr.setLingo("_CHATHELPMESSAGEACTION_", "Envia o comando como uma ação com a Persona atual, e.g. /me pula da ponte");
+ptbr.setLingo("_CHATHELPMESSAGEBGM_", "Envia o comando como uma música, e.g. /splay link/para/musica.mp3");
+ptbr.setLingo("_CHATHELPMESSAGESE_", "Envia o comando como um efeito sonoro, e.g. /seplay link/para/efeito.wav");
+ptbr.setLingo("_CHATHELPMESSAGECOUNTDOWN_", "Inicia uma contagem regressiva, em segundos, e.g. /count 10");
+ptbr.setLingo("_CHATHELPMESSAGEIMAGE_", "Envia o comando como uma imagem, e.g. /imagem link/para/imagem.jpg");
+ptbr.setLingo("_CHATHELPMESSAGEOFF_", "Envia o comando como uma mensagem fora de personagem, e.g. /off vou no banheiro");
+ptbr.setLingo("_CHATHELPMESSAGEQUOTE_", "Envia o comando como uma mensagem de citação, e.g. /citar Heráclito, Nada é permanente, exceto a mudança.");
+ptbr.setLingo("_CHATHELPMESSAGEVIDEO_", "Compartilha um vídeo do YouTube, e.g. /video https://www.youtube.com/watch?v=xuCn8ux2gbs");
+ptbr.setLingo("_CHATHELPMESSAGEWEBM_", "Compartilha um vídeo com link direto, e.g. /webm link/para/video.webm");
+ptbr.setLingo("_CHATHELPMESSAGEVOTE_", "Cria um botão de votação, e.g. /vote Li tudo");
+ptbr.setLingo("_CHATHELPMESSAGEWHISPER_", "Envia uma mensagem privada. É possível deixar o sistema completar o nome sozinho por apertar Tab enquanto digita o nome do destinatário., e.g. /w Reddo, Oi :]");
+ptbr.setLingo("_CHATHELPSLASHCLEAR_", "Limpa a tela de mensagens. É possível adicionar a opção 1 para apagar as mensagens no servidor também (Mensagens não podem ser restauradas), e.g. /clear 1");
+ptbr.setLingo("_CHATHELPSLASHCOMMANDS_", "Imprime essa lista de comandos, e.g. /help");
+ptbr.setLingo("_CHATHELPSLASHIMAGES_", "Imprime uma lista das imagens compartilhadas no chat, em ordem da mais recente para mais antiga, e.g. /imagens");
+ptbr.setLingo("_CHATHELPSLASHLINGO_", "Envia uma mensagem codificada como língua, e.g. /lingo Davek, Apenas entendedores entenderão");
+ptbr.setLingo("_CHATHELPSLASHLOG_", "Abre a tela que cria logs, e.g. /log");
+ptbr.setLingo("_CHATHELPSLASHPICA_", "Cria um quadro em branco para desenhar, pode adicionar uma opção para criar um quadro com artes persistente, e.g. /quadro Como chegar na caverna");
+ptbr.setLingo("_CHATHELPSLASHREPLY_", "Atalho para enviar mensagem privada para a última pessoa que te enviou mensagens privadas, e.g. /r Certo, vamos atacar ele juntos");
+ptbr.setLingo("_CHATHELPMESSAGESTORY_", "Envia o comando como uma mensagem de história (apenas para narradores), e.g. /story ...And so it came to pass that the Countess, who once bathed in the rejuvenating blood of a hundred virgins, was buried alive...");
 // Window Events
 ptbr.setLingo("_RAPSCHATOPEN_", "Você está em uma sala. Tem certeza que deseja fechar?");
 ptbr.setLingo("_RAPSSHEETOPEN_", "Você possui fichas abertas. Tem certeza que deseja fechar?");
@@ -11622,6 +11753,7 @@ var UI;
      */
     Application.Config.registerConfiguration("chatMaxMessages", new NumberConfiguration(120, 60, 0)); // Chat Font Size
     Application.Config.registerConfiguration("chatshowhelp", new BooleanConfiguration(true)); // Show help messages on top of chat
+    Application.Config.registerConfiguration("chatzebra", new BooleanConfiguration(false)); // Show striped messages
     Application.Config.registerConfiguration("chatfontsize", new NumberConfiguration(16, 12, 32)); // Chat Font Size
     Application.Config.registerConfiguration("chatfontfamily", new Configuration("caudex")); // Chat Font Family
     Application.Config.registerConfiguration("animTime", new NumberConfiguration(150, 0, 300)); // Animation Time
@@ -12065,6 +12197,7 @@ var UI;
         bindInput("chatfontsize", document.getElementById("configChatFontSize"));
         bindInput("chatshowhelp", document.getElementById("configChatShowHelp"));
         bindInput("chatAutoRolls", document.getElementById("configAutoRollApplication"));
+        bindInput("chatzebra", document.getElementById("configChatZebra"));
         bindInput("animTime", document.getElementById("configAnimTime"));
         bindInput("autoBGM", document.getElementById("configChatAutoBGM"));
         bindInput("autoSE", document.getElementById("configChatAutoSE"));
@@ -12273,7 +12406,10 @@ change = new Changelog(0, 30, 0);
 change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
 change.addMessage("Reformular RedPG2 para poder ser trabalhado na versão mais recente do TypeScript.", "pt");
 change.addMessage("Tentativa de corrigir problemas encontrados no Sistema de Prevenção de Acidentes do RedPG (RAPS).", "pt");
-change.addMessage("Botões de controle de imagem refeitos..", "pt");
+change.addMessage("Botões de controle de imagem refeitos.", "pt");
+change.addMessage("Possibilidade de Zebra adicionado às configurações.", "pt");
+change.addMessage("/comandos implementado.", "pt");
+change.addMessage("/clear implementado.", "pt");
 //delete (change);
 Changelog.finished();
 /// <reference path='../../Changelog.ts' />
@@ -13501,9 +13637,9 @@ var UI;
                 while (selectStyle.firstChild !== null)
                     selectStyle.removeChild(selectStyle.firstChild);
                 for (var i_1 = 0; i_1 < data.length; i_1++) {
-                    var name_1 = data[i_1]['name'];
-                    if (name_1.charAt(0) == "_" && name_1.charAt(name_1.length - 1) == "_") {
-                        data[i_1]['name'] = UI.Language.getLanguage().getLingo(name_1);
+                    var name_2 = data[i_1]['name'];
+                    if (name_2.charAt(0) == "_" && name_2.charAt(name_2.length - 1) == "_") {
+                        data[i_1]['name'] = UI.Language.getLanguage().getLingo(name_2);
                     }
                 }
                 data.sort(function (a, b) {
@@ -14497,6 +14633,12 @@ var UI;
                 }
             }
         });
+        Application.Config.getConfig("chatzebra").addChangeListener({
+            chatHelpers: chatHelpers,
+            handleEvent: function (e) {
+                UI.Chat.setZebra(e.getValue());
+            }
+        });
         // Title and description
         var chatTitleNode = document.createTextNode("Title");
         var chatDescriptionNode = document.createTextNode("Description");
@@ -14564,6 +14706,7 @@ var UI;
         }
         Chat.clearRoom = clearRoom;
         function printElement(element, doScroll) {
+            element.classList.add("printedMessage");
             chatTarget.appendChild(element);
             Chat.messageCounter++;
             if (doScroll === undefined || doScroll) {
@@ -14682,6 +14825,15 @@ var UI;
             chatBox.scrollTop = 0;
         }
         Chat.scrollToTop = scrollToTop;
+        function setZebra(zebra) {
+            if (zebra) {
+                chatBox.classList.add("zebra");
+            }
+            else {
+                chatBox.classList.remove("zebra");
+            }
+        }
+        Chat.setZebra = setZebra;
         function setScrolledDown(state) {
             if (scrolledDown === state)
                 return;

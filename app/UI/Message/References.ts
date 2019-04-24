@@ -6,6 +6,7 @@
 /// <reference path='Types/SlashLog.ts' />
 /// <reference path='Types/SlashLingo.ts' />
 /// <reference path='Types/SlashPica.ts' />
+/// <reference path='Types/SlashCommands.ts' />
 /// <reference path='Types/Message.ts' />
 /// <reference path='Types/MessageBuff.ts' />
 /// <reference path='Types/MessagePica.ts' />

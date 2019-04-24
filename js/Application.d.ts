@@ -182,6 +182,7 @@ declare class Room {
     creatorid: number;
     private users;
     private messages;
+    clearMessages(): void;
     exportAsLog(messages: Array<Message>): {
         gameid: number;
         id: number;
@@ -732,6 +733,7 @@ declare class ChatSystemMessage {
     addLangVar(id: string, value: string): void;
     static createTextLink(text: string, hasLanguage: boolean, click: Listener | Function): HTMLElement;
     addTextLink(text: string, hasLanguage: boolean, click: Listener | Function): void;
+    addLineBreak(): void;
     addText(text: string): void;
     addLingoVariable(id: string, value: string): void;
     addElement(ele: HTMLElement): void;
@@ -1242,6 +1244,7 @@ declare class SheetButtoncommonsroll extends SheetButton {
  * Created by Reddo on 14/09/2015.
  */
 declare module MessageFactory {
+    function getCommandsAndSlashes(): any[];
     /**
      * Registers a message class for later use.
      * Messages are created when users type commands or when the system requires a message by name.
@@ -1298,6 +1301,7 @@ declare class SlashCommand {
     getInvalidHTML(slashCommand: string, msg: string): HTMLElement;
 }
 declare class SlashClear extends SlashCommand {
+    receiveCommand(slashCommand: string, message: string): boolean;
 }
 declare class SlashReply extends SlashCommand {
 }
@@ -1333,6 +1337,14 @@ declare class SlashLingo extends SlashCommand {
     getInvalidHTML(slashCommand: string, message: string): HTMLElement;
 }
 declare class SlashPica extends SlashCommand {
+    /**
+     * Returns false for invalid commands. Returns true for valid commands.
+     * @param slashCommand
+     * @param message
+     */
+    receiveCommand(slashCommand: string, message: string): boolean;
+}
+declare class SlashCommands extends SlashCommand {
     /**
      * Returns false for invalid commands. Returns true for valid commands.
      * @param slashCommand
@@ -1951,6 +1963,7 @@ declare module Server.Chat {
     function hasRoom(): boolean;
     function getRoom(): Room;
     function getAllMessages(roomid: number, cbs?: Listener, cbe?: Listener): void;
+    function clearForever(roomid: number, cbs?: Listener, cbe?: Listener): void;
     function end(): void;
     function addStatusListener(f: Function | Listener): void;
     function triggerStatus(info: Object): void;
@@ -2276,6 +2289,7 @@ declare module UI.Chat {
     function printMessages(messages: Array<Message>, ignoreLowIds: boolean): void;
     function updateScrollPosition(instant?: boolean): void;
     function scrollToTop(): void;
+    function setZebra(zebra: boolean): void;
     function setScrolledDown(state: boolean): void;
     function sendMessage(message: Message): void;
     function getGetAllButton(): HTMLElement;

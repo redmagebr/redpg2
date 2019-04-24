@@ -7688,6 +7688,15 @@ body {
 }
 
 /* line 195, ../sass/mainChat.scss */
+.zebra .printedMessage:nth-child(odd) {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+/* line 197, ../sass/mainChat.scss */
+.zebra .printedMessage:nth-child(odd):hover {
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+/* line 202, ../sass/mainChat.scss */
 #chatScrollDown {
   bottom: 170px;
   height: 40px;
@@ -7696,7 +7705,7 @@ body {
   position: absolute;
 }
 
-/* line 205, ../sass/mainChat.scss */
+/* line 212, ../sass/mainChat.scss */
 #chatButtonsBox {
   position: absolute;
   top: 90px;
@@ -7706,7 +7715,7 @@ body {
   overflow: hidden;
 }
 
-/* line 214, ../sass/mainChat.scss */
+/* line 221, ../sass/mainChat.scss */
 .chatRightButton {
   width: 40px;
   height: 25px;
@@ -7714,7 +7723,7 @@ body {
   float: right;
 }
 
-/* line 223, ../sass/mainChat.scss */
+/* line 230, ../sass/mainChat.scss */
 #chatMessageStateIcon {
   position: absolute;
   left: 7px;
@@ -7724,7 +7733,7 @@ body {
   z-index: 2;
 }
 
-/* line 232, ../sass/mainChat.scss */
+/* line 239, ../sass/mainChat.scss */
 #chatMessageBox {
   position: absolute;
   bottom: 125px;
@@ -7733,7 +7742,7 @@ body {
   height: 30px;
 }
 
-/* line 240, ../sass/mainChat.scss */
+/* line 247, ../sass/mainChat.scss */
 #chatMessageInput {
   width: 100%;
   margin: 0px;
@@ -7747,7 +7756,7 @@ body {
   text-align: left;
 }
 
-/* line 253, ../sass/mainChat.scss */
+/* line 260, ../sass/mainChat.scss */
 #chatMessageSendButton {
   position: absolute;
   right: 5px;
@@ -7756,7 +7765,7 @@ body {
   height: 30px;
 }
 
-/* line 262, ../sass/mainChat.scss */
+/* line 269, ../sass/mainChat.scss */
 #personaBox {
   position: absolute;
   bottom: 96px;
@@ -7765,7 +7774,7 @@ body {
   height: 25px;
 }
 
-/* line 271, ../sass/mainChat.scss */
+/* line 278, ../sass/mainChat.scss */
 #personaAddButton {
   position: absolute;
   left: 0px;
@@ -7774,7 +7783,7 @@ body {
   width: 40px;
 }
 
-/* line 282, ../sass/mainChat.scss */
+/* line 289, ../sass/mainChat.scss */
 #personaContainer {
   position: absolute;
   left: 40px;
@@ -7785,7 +7794,7 @@ body {
   overflow-y: hidden;
 }
 
-/* line 292, ../sass/mainChat.scss */
+/* line 299, ../sass/mainChat.scss */
 .personaButton {
   display: inline-block;
   background-color: #bbbbbb;
@@ -7798,23 +7807,23 @@ body {
   border-left: #6a6a6a solid 4px;
   margin-left: 5px;
 }
-/* line 305, ../sass/mainChat.scss */
+/* line 312, ../sass/mainChat.scss */
 .personaButton:hover {
   background-color: #e5e5e5;
   border-left-color: #858585;
 }
-/* line 310, ../sass/mainChat.scss */
+/* line 317, ../sass/mainChat.scss */
 .personaButton.active {
   background-color: #b4deb3;
   border-left-color: #47dd44;
 }
-/* line 314, ../sass/mainChat.scss */
+/* line 321, ../sass/mainChat.scss */
 .personaButton.active:hover {
   background-color: #caffc9;
   border-left-color: #54fa50;
 }
 
-/* line 321, ../sass/mainChat.scss */
+/* line 328, ../sass/mainChat.scss */
 #diceFormBox {
   position: absolute;
   bottom: 60px;
@@ -7823,7 +7832,7 @@ body {
   height: 30px;
 }
 
-/* line 329, ../sass/mainChat.scss */
+/* line 336, ../sass/mainChat.scss */
 #bottomBox {
   position: absolute;
   bottom: 5px;
@@ -7834,7 +7843,7 @@ body {
   font-size: 0px;
 }
 
-/* line 339, ../sass/mainChat.scss */
+/* line 346, ../sass/mainChat.scss */
 .diceButton {
   width: 50px;
   height: 50px;
@@ -7842,17 +7851,17 @@ body {
   vertical-align: top;
 }
 
-/* line 347, ../sass/mainChat.scss */
+/* line 354, ../sass/mainChat.scss */
 #chatSideWindow.noAvatar #avatarBox, #chatSideWindow.noAvatar #avatarUpButton, #chatSideWindow.noAvatar #avatarDownButton {
   display: none;
 }
 
-/* line 351, ../sass/mainChat.scss */
+/* line 358, ../sass/mainChat.scss */
 #chatSideWindow.noAvatar #chatBox, #chatSideWindow.noAvatar #chatButtonsBox, #chatSideWindow.noAvatar #chatNotificationBar {
   top: 5px;
 }
 
-/* line 355, ../sass/mainChat.scss */
+/* line 362, ../sass/mainChat.scss */
 .chatInput {
   padding: 0px;
   font-family: alegreya;
@@ -7867,17 +7876,17 @@ body {
   margin-right: 5px;
   float: left;
 }
-/* line 369, ../sass/mainChat.scss */
+/* line 376, ../sass/mainChat.scss */
 .chatInput:hover {
   border-color: #968aff;
 }
 
-/* line 374, ../sass/mainChat.scss */
+/* line 381, ../sass/mainChat.scss */
 #chatDiceAmount, #chatDiceFaces, #chatDiceMod {
   width: 45px;
 }
 
-/* line 378, ../sass/mainChat.scss */
+/* line 385, ../sass/mainChat.scss */
 #diceReasonHolder {
   position: absolute;
   left: 156px;
@@ -7886,7 +7895,7 @@ body {
   bottom: 0px;
 }
 
-/* line 386, ../sass/mainChat.scss */
+/* line 393, ../sass/mainChat.scss */
 #chatDiceReason {
   width: 100%;
   padding-left: 5px;
@@ -7895,7 +7904,7 @@ body {
   text-align: left;
 }
 
-/* line 394, ../sass/mainChat.scss */
+/* line 401, ../sass/mainChat.scss */
 #chatDiceTower {
   position: absolute;
   width: 40px;
@@ -7903,7 +7912,7 @@ body {
   right: 45px;
 }
 
-/* line 403, ../sass/mainChat.scss */
+/* line 410, ../sass/mainChat.scss */
 #chatDiceSubmit {
   position: absolute;
   width: 40px;
@@ -7913,7 +7922,7 @@ body {
   outline: none;
 }
 
-/* line 415, ../sass/mainChat.scss */
+/* line 422, ../sass/mainChat.scss */
 #personaDesignerBox {
   position: absolute;
   top: 0px;
@@ -7924,7 +7933,7 @@ body {
   z-index: 10;
 }
 
-/* line 425, ../sass/mainChat.scss */
+/* line 432, ../sass/mainChat.scss */
 #personaDesigner {
   position: absolute;
   top: 15px;
@@ -7934,7 +7943,7 @@ body {
   right: 12px;
 }
 
-/* line 434, ../sass/mainChat.scss */
+/* line 441, ../sass/mainChat.scss */
 #personaDesignerHolder {
   position: absolute;
   left: 5px;
@@ -7943,7 +7952,7 @@ body {
   top: 110px;
 }
 
-/* line 443, ../sass/mainChat.scss */
+/* line 450, ../sass/mainChat.scss */
 .chatAvatarChoiceBox {
   display: inline-block;
   margin-top: 5px;
@@ -7952,24 +7961,24 @@ body {
   height: 105px;
   opacity: 0.6;
 }
-/* line 451, ../sass/mainChat.scss */
+/* line 458, ../sass/mainChat.scss */
 .chatAvatarChoiceBox:hover {
   opacity: 1;
 }
 
-/* line 456, ../sass/mainChat.scss */
+/* line 463, ../sass/mainChat.scss */
 .chatAvatarChoiceBoxUse, .chatAvatarChoiceBoxDelete {
   width: 40px;
   height: 25px;
   display: inline-block;
 }
 
-/* line 472, ../sass/mainChat.scss */
+/* line 479, ../sass/mainChat.scss */
 #personaDesignerForm {
   text-align: center;
 }
 
-/* line 476, ../sass/mainChat.scss */
+/* line 483, ../sass/mainChat.scss */
 #personaDesignerNameInput, #personaDesignerAvatarInput {
   font-family: alegreya;
   display: block;
@@ -7980,19 +7989,19 @@ body {
   text-align: center;
 }
 
-/* line 486, ../sass/mainChat.scss */
+/* line 493, ../sass/mainChat.scss */
 #personaDesignerSubmit {
   margin-top: 4px;
 }
 
-/* line 491, ../sass/mainChat.scss */
+/* line 498, ../sass/mainChat.scss */
 .chatFloater {
   position: absolute;
   width: 400px;
   z-index: 10;
 }
 
-/* line 498, ../sass/mainChat.scss */
+/* line 505, ../sass/mainChat.scss */
 .chatFloaterHandle {
   background-color: #333745;
   line-height: 30px;
@@ -8001,12 +8010,12 @@ body {
   color: #fff;
   text-align: center;
 }
-/* line 506, ../sass/mainChat.scss */
+/* line 513, ../sass/mainChat.scss */
 .chatFloaterHandle:hover {
   cursor: move;
 }
 
-/* line 511, ../sass/mainChat.scss */
+/* line 518, ../sass/mainChat.scss */
 .chatFloaterMinus {
   float: right;
   display: block;
@@ -8014,17 +8023,17 @@ body {
   height: 30px;
   width: 30px;
 }
-/* line 518, ../sass/mainChat.scss */
+/* line 525, ../sass/mainChat.scss */
 .chatFloaterMinus:hover {
   cursor: pointer;
   background-color: rgba(255, 255, 255, 0.4);
 }
-/* line 522, ../sass/mainChat.scss */
+/* line 529, ../sass/mainChat.scss */
 .chatFloaterMinus:active {
   background-color: rgba(255, 255, 255, 0.15);
 }
 
-/* line 527, ../sass/mainChat.scss */
+/* line 534, ../sass/mainChat.scss */
 .chatFloaterContent {
   background-color: #fff;
   max-height: 350px;

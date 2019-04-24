@@ -211,6 +211,13 @@
             .configExplanation.language
               _CONFIGCHATUNNECESSARYMESSAGESEXP_
           %label.configLabel
+            %b.configName.language="_CONFIGCHATZEBRA_"
+            %select.configInput#configChatZebra
+              %option.language{:value => "false"}="_CONFIGCHATZEBRANO_"
+              %option.language{:value => "true"}="_CONFIGCHATZEBRAYES_"
+            .configExplanation.language
+              _CONFIGCHATZEBRAEXP_
+          %label.configLabel
             %b.configName.language="_CONFIGGAMESHIDEGAMES_"
             %select.configInput#configGamesHideGames
               %option.language{:value => "false"}="_CONFIGGAMESHIDEGAMESOFF_"

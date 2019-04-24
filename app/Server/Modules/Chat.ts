@@ -191,6 +191,31 @@ module Server.Chat {
         Server.AJAX.requestPage(ajax, success, error);
     }
 
+    export function clearForever (roomid : number, cbs? : Listener, cbe? : Listener) {
+        var success : Listener = <Listener> {
+            roomid : roomid,
+            cbs : cbs,
+            handleEvent : function (response, xhr) {
+                let roomDB = DB.RoomDB.getRoom(this.roomid)
+
+                if (roomDB != undefined) {
+                    roomDB.clearMessages();
+                }
+
+                if (this.cbs !== undefined) this.cbs.handleEvent(response, xhr);
+            }
+        };
+
+        var error = cbe === undefined ? emptyCallback : cbe;
+
+        var ajax = new AJAXConfig(ROOM_URL);
+        ajax.setResponseTypeJSON();
+        ajax.data = {action : "clear", roomid : roomid};
+        ajax.setTargetLeftWindow();
+
+        Server.AJAX.requestPage(ajax, success, error);
+    }
+
     export function end () {
         currentRoom = null;
         currentController.end();

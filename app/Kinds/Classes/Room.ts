@@ -14,6 +14,10 @@ class Room {
     private users : { [id : number] : User} = {};
     private messages : { [id: number] : Message} = {};
 
+    public clearMessages () {
+        this.messages = [];
+    }
+
     public exportAsLog (messages : Array<Message>) {
         var obj = {
             gameid : this.gameid,

@@ -44,6 +44,14 @@ module UI.Chat {
         }
     });
 
+
+    Application.Config.getConfig("chatzebra").addChangeListener(<Listener> {
+        chatHelpers : chatHelpers,
+        handleEvent : function (e : BooleanConfiguration) {
+            UI.Chat.setZebra(e.getValue());
+        }
+    });
+
     // Title and description
     var chatTitleNode : Text = document.createTextNode("Title");
     var chatDescriptionNode : Text = document.createTextNode("Description");
@@ -119,6 +127,7 @@ module UI.Chat {
     }
 
     export function printElement (element : HTMLElement, doScroll? : boolean) {
+        element.classList.add("printedMessage");
         chatTarget.appendChild(element);
         messageCounter++;
 
@@ -247,6 +256,14 @@ module UI.Chat {
     export function scrollToTop () {
         $chatBox.stop();
         chatBox.scrollTop = 0;
+    }
+
+    export function setZebra (zebra : boolean) {
+        if (zebra) {
+            chatBox.classList.add("zebra");
+        } else {
+            chatBox.classList.remove("zebra");
+        }
     }
 
     export function setScrolledDown (state : boolean) {

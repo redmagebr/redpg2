@@ -192,6 +192,13 @@
   }
 }
 
+.zebra .printedMessage:nth-child(odd) {
+  background-color: rgba(0,0,0,.05);
+  &:hover{
+    background-color: rgba(0,0,0,.15);
+  }
+}
+
 #chatScrollDown {
   bottom: 170px;
   height: 40px;
