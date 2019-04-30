@@ -218,6 +218,10 @@ change = new Changelog(0, 33, 0);
 change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
 change.addMessage("Personas agora são salvas no servidor, ao invés de no LocalStorage do browser.", "pt");
 
+change = new Changelog(0, 33, 1);
+change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
+change.addMessage("Gerenciador de Personas salva a lista de personas antes de abrir, caso ainda não tenha salvo.", "pt");
+
 
 //delete (change);
 

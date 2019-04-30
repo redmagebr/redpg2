@@ -12468,6 +12468,9 @@ change.addMessage("/webm implementado.", "pt");
 change = new Changelog(0, 33, 0);
 change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
 change.addMessage("Personas agora são salvas no servidor, ao invés de no LocalStorage do browser.", "pt");
+change = new Changelog(0, 33, 1);
+change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
+change.addMessage("Gerenciador de Personas salva a lista de personas antes de abrir, caso ainda não tenha salvo.", "pt");
 //delete (change);
 Changelog.finished();
 /// <reference path='../../Changelog.ts' />
@@ -16151,6 +16154,12 @@ var UI;
             PersonaDesigner.setRoom = setRoom;
             function fillOut(done) {
                 if (done === void 0) { done = false; }
+                if (savingTimeout != undefined) {
+                    saveMemory(function () {
+                        fillOut(done);
+                    });
+                    savingTimeout = undefined;
+                }
                 if (done == false) {
                     emptyOut();
                     loadMemory(function () {
@@ -16314,6 +16323,7 @@ var UI;
                 }
                 savingTimeout = setTimeout(function () {
                     saveMemory(function () { });
+                    savingTimeout = undefined;
                 }, 10 * 1000 // 10 seconds
                 );
             }

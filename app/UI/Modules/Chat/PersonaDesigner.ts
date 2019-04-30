@@ -49,6 +49,12 @@ module UI.Chat.PersonaDesigner {
     }
 
     export function fillOut(done = false) {
+        if (savingTimeout != undefined) {
+            saveMemory(() => {
+                fillOut(done);
+            });
+            savingTimeout = undefined;
+        }
         if (done == false) {
             emptyOut();
             loadMemory(() => {
@@ -225,6 +231,7 @@ module UI.Chat.PersonaDesigner {
         savingTimeout = setTimeout(
                 () => {
                 saveMemory(() => {});
+                savingTimeout = undefined;
             },
             10 * 1000 // 10 seconds
         );
