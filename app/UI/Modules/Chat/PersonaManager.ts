@@ -68,7 +68,7 @@ module UI.Chat.PersonaManager {
             handleEvent : function (e : MouseEvent) {
                 UI.Chat.PersonaManager.setPersona(this.name, this.avatar, this.element);
             }
-        }
+        };
 
         ele.addEventListener("click", handler);
 

@@ -1989,8 +1989,10 @@ declare module Server.Chat.Memory {
     function considerSaving(): void;
 }
 declare module Server.Storage {
+    function requestPersonas(blocking: boolean, cbs?: Listener, cbe?: Listener): void;
     function requestImages(cbs?: Listener, cbe?: Listener): void;
     function requestSounds(cbs?: Listener, cbe?: Listener): void;
+    function sendPersonas(payload: any, cbs?: Listener, cbe?: Listener): void;
     function sendImages(cbs?: Listener, cbe?: Listener): void;
     function sendSounds(cbs?: Listener, cbe?: Listener): void;
 }
@@ -2373,11 +2375,12 @@ declare module UI.Chat.PersonaDesigner {
     function callSelf(): void;
     function close(): void;
     function setRoom(room: Room): void;
-    function fillOut(): void;
+    function fillOut(done?: boolean): void;
     function emptyOut(): void;
     function createPersona(name?: string, avatar?: String, savePersona?: boolean): void;
     function removeChoice(choice: ChatAvatarChoice): void;
     function usePersona(name: string, avatar: String): void;
+    function printError(load?: boolean): void;
 }
 declare module UI.Chat.Filters {
     function toggle(): void;

@@ -15,6 +15,7 @@ module UI.Chat.PersonaDesigner {
     var personaChoices : { [id : string] : ChatAvatarChoice } = {};
 
     var lastMemory = [];
+    var savingTimeout;
 
     UI.Chat.addRoomChangedListener(<Listener> {
         handleEvent : function (e : Room) {
@@ -47,12 +48,18 @@ module UI.Chat.PersonaDesigner {
         }
     }
 
-    export function fillOut() {
-        emptyOut();
-        loadMemory();
+    export function fillOut(done = false) {
+        if (done == false) {
+            emptyOut();
+            loadMemory(() => {
+                fillOut(true);
+            });
+        }
 
-        for (var i = 0; i < lastMemory.length; i++) {
-            createPersona(lastMemory[i].name, lastMemory[i].avatar, false);
+        if (done) {
+            for (var i = 0; i < lastMemory.length; i++) {
+                createPersona(lastMemory[i].name, lastMemory[i].avatar, false);
+            }
         }
     }
 
@@ -87,7 +94,8 @@ module UI.Chat.PersonaDesigner {
                 avatar : choice.avatarStr
             });
             if (savePersona) {
-                saveMemory();
+                //saveMemory();
+                considerSaving();
             }
         }
     }
@@ -104,7 +112,8 @@ module UI.Chat.PersonaDesigner {
                     avatar : personaChoices[id].avatarStr
                 });
             }
-            saveMemory();
+            //saveMemory();
+            considerSaving();
 
             UI.Chat.PersonaManager.clearPersona(choice.nameStr, choice.avatarStr);
         }
@@ -124,11 +133,41 @@ module UI.Chat.PersonaDesigner {
         }
     }
 
-    function loadMemory () {
-        lastMemory = Application.LocalMemory.getMemory(getMemoryString(), []);
+    function loadMemory (done : () => void) {
+        //lastMemory = Application.LocalMemory.getMemory(getMemoryString(), []);
+        let roomid = currentRoom.id;
+        Server.Storage.requestPersonas(
+            true,
+            {
+                handleEvent : (data) => {
+                    if (data != undefined && data[roomid] != undefined) {
+                        lastMemory = data[roomid]; // array of {name : string, avatar : string}
+                    } else {
+                        lastMemory = [];
+                    }
+                    done();
+                }
+            },
+            {
+                handleEvent : () => {
+                    printError(true);
+                }
+            }
+        );
     }
 
-    function saveMemory () {
+    export function printError (load = true) {
+        close();
+        let msg = new ChatSystemMessage(true);
+        if (load !== false) {
+            msg.addText("_CHATPERSONAFAILEDLOAD_");
+        } else {
+            msg.addText("_CHATPERSONAFAILEDSAVE_");
+        }
+        UI.Chat.printElement(msg.getElement());
+    }
+
+    function saveMemory (done : () => void) {
         lastMemory.sort(function (a, b) {
             var na : string = a.name.toLowerCase().latinise();
             var nb : string = b.name.toLowerCase().latinise();
@@ -140,6 +179,54 @@ module UI.Chat.PersonaDesigner {
             if (nb < na) return 1;
             return 0;
         });
-        Application.LocalMemory.setMemory(getMemoryString(), lastMemory);
+        //Application.LocalMemory.setMemory(getMemoryString(), lastMemory);
+        let roomid = currentRoom.id;
+        Server.Storage.requestPersonas(
+            false,
+            {
+                handleEvent : (data) => {
+                    let oldStr = JSON.stringify(data);
+                    if (data == undefined) {
+                        data = {};
+                    }
+                    data[roomid] = lastMemory;
+                    let newStr = JSON.stringify(data);
+                    if (oldStr != newStr) {
+                        Server.Storage.sendPersonas(
+                            data,
+                            {
+                                handleEvent: () => {
+                                    done();
+                                }
+                            },
+                            {
+                                handleEvent: () => {
+                                    printError(false);
+                                }
+                            }
+                        );
+                    } else {
+                        done();
+                    }
+                }
+            },
+            {
+                handleEvent : () => {
+                    printError(true);
+                }
+            }
+        );
+    }
+
+    function considerSaving () {
+        if (savingTimeout != undefined) {
+            clearTimeout(savingTimeout);
+        }
+        savingTimeout = setTimeout(
+                () => {
+                saveMemory(() => {});
+            },
+            10 * 1000 // 10 seconds
+        );
     }
 }

@@ -10808,9 +10808,25 @@ var Server;
         var validStorage = ["sounds", "images", "custom1", "custom2"];
         var IMAGES_ID = "images";
         var SOUNDS_ID = "sounds";
+        var CUSTOM1_ID = "custom1";
         var ACTION_RESTORE = "restore";
         var ACTION_STORE = "store";
         var emptyCallback = { handleEvent: function () { } };
+        function requestPersonas(blocking, cbs, cbe) {
+            var success = cbs === undefined ? emptyCallback : cbs;
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(STORAGE_URL);
+            if (blocking) {
+                ajax.setTargetLeftWindow();
+            }
+            else {
+                ajax.setTargetNone();
+            }
+            ajax.setResponseTypeJSON();
+            ajax.data = { action: ACTION_RESTORE, id: CUSTOM1_ID };
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Storage.requestPersonas = requestPersonas;
         function requestImages(cbs, cbe) {
             var success = cbs === undefined ? emptyCallback : cbs;
             var error = cbe === undefined ? emptyCallback : cbe;
@@ -10845,6 +10861,16 @@ var Server;
             Server.AJAX.requestPage(ajax, success, error);
         }
         Storage.requestSounds = requestSounds;
+        function sendPersonas(payload, cbs, cbe) {
+            var success = cbs === undefined ? emptyCallback : cbs;
+            var error = cbe === undefined ? emptyCallback : cbe;
+            var ajax = new AJAXConfig(STORAGE_URL);
+            ajax.setTargetNone();
+            ajax.setResponseTypeJSON();
+            ajax.data = { action: ACTION_STORE, id: CUSTOM1_ID, storage: JSON.stringify(payload) }; // "store"
+            Server.AJAX.requestPage(ajax, success, error);
+        }
+        Storage.sendPersonas = sendPersonas;
         function sendImages(cbs, cbe) {
             var success = cbs === undefined ? emptyCallback : cbs;
             var error = cbe === undefined ? emptyCallback : cbe;
@@ -12439,6 +12465,9 @@ change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
 change.addMessage("Suporte a iFrames e Vídeos.", "pt");
 change.addMessage("/youtube implementado.", "pt");
 change.addMessage("/webm implementado.", "pt");
+change = new Changelog(0, 33, 0);
+change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
+change.addMessage("Personas agora são salvas no servidor, ao invés de no LocalStorage do browser.", "pt");
 //delete (change);
 Changelog.finished();
 /// <reference path='../../Changelog.ts' />
@@ -16090,6 +16119,7 @@ var UI;
             var personaAvatar = document.getElementById("personaDesignerAvatarInput");
             var personaChoices = {};
             var lastMemory = [];
+            var savingTimeout;
             UI.Chat.addRoomChangedListener({
                 handleEvent: function (e) {
                     UI.Chat.PersonaDesigner.setRoom(e);
@@ -16119,11 +16149,18 @@ var UI;
                 }
             }
             PersonaDesigner.setRoom = setRoom;
-            function fillOut() {
-                emptyOut();
-                loadMemory();
-                for (var i = 0; i < lastMemory.length; i++) {
-                    createPersona(lastMemory[i].name, lastMemory[i].avatar, false);
+            function fillOut(done) {
+                if (done === void 0) { done = false; }
+                if (done == false) {
+                    emptyOut();
+                    loadMemory(function () {
+                        fillOut(true);
+                    });
+                }
+                if (done) {
+                    for (var i = 0; i < lastMemory.length; i++) {
+                        createPersona(lastMemory[i].name, lastMemory[i].avatar, false);
+                    }
                 }
             }
             PersonaDesigner.fillOut = fillOut;
@@ -16155,7 +16192,8 @@ var UI;
                         avatar: choice.avatarStr
                     });
                     if (savePersona) {
-                        saveMemory();
+                        //saveMemory();
+                        considerSaving();
                     }
                 }
             }
@@ -16171,7 +16209,8 @@ var UI;
                             avatar: personaChoices[id].avatarStr
                         });
                     }
-                    saveMemory();
+                    //saveMemory();
+                    considerSaving();
                     UI.Chat.PersonaManager.clearPersona(choice.nameStr, choice.avatarStr);
                 }
             }
@@ -16190,10 +16229,39 @@ var UI;
                     return "personaDesigner_" + currentRoom.id;
                 }
             }
-            function loadMemory() {
-                lastMemory = Application.LocalMemory.getMemory(getMemoryString(), []);
+            function loadMemory(done) {
+                //lastMemory = Application.LocalMemory.getMemory(getMemoryString(), []);
+                var roomid = currentRoom.id;
+                Server.Storage.requestPersonas(true, {
+                    handleEvent: function (data) {
+                        if (data != undefined && data[roomid] != undefined) {
+                            lastMemory = data[roomid]; // array of {name : string, avatar : string}
+                        }
+                        else {
+                            lastMemory = [];
+                        }
+                        done();
+                    }
+                }, {
+                    handleEvent: function () {
+                        printError(true);
+                    }
+                });
             }
-            function saveMemory() {
+            function printError(load) {
+                if (load === void 0) { load = true; }
+                close();
+                var msg = new ChatSystemMessage(true);
+                if (load !== false) {
+                    msg.addText("_CHATPERSONAFAILEDLOAD_");
+                }
+                else {
+                    msg.addText("_CHATPERSONAFAILEDSAVE_");
+                }
+                UI.Chat.printElement(msg.getElement());
+            }
+            PersonaDesigner.printError = printError;
+            function saveMemory(done) {
                 lastMemory.sort(function (a, b) {
                     var na = a.name.toLowerCase().latinise();
                     var nb = b.name.toLowerCase().latinise();
@@ -16209,7 +16277,45 @@ var UI;
                         return 1;
                     return 0;
                 });
-                Application.LocalMemory.setMemory(getMemoryString(), lastMemory);
+                //Application.LocalMemory.setMemory(getMemoryString(), lastMemory);
+                var roomid = currentRoom.id;
+                Server.Storage.requestPersonas(false, {
+                    handleEvent: function (data) {
+                        var oldStr = JSON.stringify(data);
+                        if (data == undefined) {
+                            data = {};
+                        }
+                        data[roomid] = lastMemory;
+                        var newStr = JSON.stringify(data);
+                        if (oldStr != newStr) {
+                            Server.Storage.sendPersonas(data, {
+                                handleEvent: function () {
+                                    done();
+                                }
+                            }, {
+                                handleEvent: function () {
+                                    printError(false);
+                                }
+                            });
+                        }
+                        else {
+                            done();
+                        }
+                    }
+                }, {
+                    handleEvent: function () {
+                        printError(true);
+                    }
+                });
+            }
+            function considerSaving() {
+                if (savingTimeout != undefined) {
+                    clearTimeout(savingTimeout);
+                }
+                savingTimeout = setTimeout(function () {
+                    saveMemory(function () { });
+                }, 10 * 1000 // 10 seconds
+                );
             }
         })(PersonaDesigner = Chat.PersonaDesigner || (Chat.PersonaDesigner = {}));
     })(Chat = UI.Chat || (UI.Chat = {}));

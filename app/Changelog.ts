@@ -214,6 +214,10 @@ change.addMessage("Suporte a iFrames e Vídeos.", "pt");
 change.addMessage("/youtube implementado.", "pt");
 change.addMessage("/webm implementado.", "pt");
 
+change = new Changelog(0, 33, 0);
+change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
+change.addMessage("Personas agora são salvas no servidor, ao invés de no LocalStorage do browser.", "pt");
+
 
 //delete (change);
 
