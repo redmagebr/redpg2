@@ -20,6 +20,7 @@ module UI.Chat.PersonaDesigner {
     UI.Chat.addRoomChangedListener(<Listener> {
         handleEvent : function (e : Room) {
             UI.Chat.PersonaDesigner.setRoom(e);
+            UI.Chat.PersonaDesigner.loadMemory(() => {});
         }
     });
 
@@ -139,7 +140,7 @@ module UI.Chat.PersonaDesigner {
         }
     }
 
-    function loadMemory (done : () => void) {
+    export function loadMemory (done : () => void) {
         //lastMemory = Application.LocalMemory.getMemory(getMemoryString(), []);
         let roomid = currentRoom.id;
         Server.Storage.requestPersonas(

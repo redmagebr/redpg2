@@ -222,6 +222,10 @@ change = new Changelog(0, 33, 1);
 change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
 change.addMessage("Gerenciador de Personas salva a lista de personas antes de abrir, caso ainda não tenha salvo.", "pt");
 
+change = new Changelog(0, 33, 2);
+change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
+change.addMessage("Corrige personas não salvarem quando criadas sem o Administrador de Personas aberto.", "pt");
+
 
 //delete (change);
 

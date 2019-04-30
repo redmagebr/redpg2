@@ -2380,6 +2380,7 @@ declare module UI.Chat.PersonaDesigner {
     function createPersona(name?: string, avatar?: String, savePersona?: boolean): void;
     function removeChoice(choice: ChatAvatarChoice): void;
     function usePersona(name: string, avatar: String): void;
+    function loadMemory(done: () => void): void;
     function printError(load?: boolean): void;
 }
 declare module UI.Chat.Filters {

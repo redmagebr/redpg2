@@ -12471,6 +12471,9 @@ change.addMessage("Personas agora são salvas no servidor, ao invés de no Local
 change = new Changelog(0, 33, 1);
 change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
 change.addMessage("Gerenciador de Personas salva a lista de personas antes de abrir, caso ainda não tenha salvo.", "pt");
+change = new Changelog(0, 33, 2);
+change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
+change.addMessage("Corrige personas não salvarem quando criadas sem o Administrador de Personas aberto.", "pt");
 //delete (change);
 Changelog.finished();
 /// <reference path='../../Changelog.ts' />
@@ -16126,6 +16129,7 @@ var UI;
             UI.Chat.addRoomChangedListener({
                 handleEvent: function (e) {
                     UI.Chat.PersonaDesigner.setRoom(e);
+                    UI.Chat.PersonaDesigner.loadMemory(function () { });
                 }
             });
             document.getElementById("personaDesignerForm").addEventListener("submit", function (e) {
@@ -16257,6 +16261,7 @@ var UI;
                     }
                 });
             }
+            PersonaDesigner.loadMemory = loadMemory;
             function printError(load) {
                 if (load === void 0) { load = true; }
                 close();
