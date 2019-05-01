@@ -12474,6 +12474,9 @@ change.addMessage("Gerenciador de Personas salva a lista de personas antes de ab
 change = new Changelog(0, 33, 2);
 change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
 change.addMessage("Corrige personas não salvarem quando criadas sem o Administrador de Personas aberto.", "pt");
+change = new Changelog(0, 33, 3);
+change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
+change.addMessage("Previne erro ao fechar salas.", "pt");
 //delete (change);
 Changelog.finished();
 /// <reference path='../../Changelog.ts' />
@@ -16243,6 +16246,11 @@ var UI;
                 }
             }
             function loadMemory(done) {
+                if (currentRoom == undefined) {
+                    // empty room
+                    lastMemory = [];
+                    return;
+                }
                 //lastMemory = Application.LocalMemory.getMemory(getMemoryString(), []);
                 var roomid = currentRoom.id;
                 Server.Storage.requestPersonas(true, {

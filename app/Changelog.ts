@@ -226,6 +226,10 @@ change = new Changelog(0, 33, 2);
 change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
 change.addMessage("Corrige personas não salvarem quando criadas sem o Administrador de Personas aberto.", "pt");
 
+change = new Changelog(0, 33, 3);
+change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
+change.addMessage("Previne erro ao fechar salas.", "pt");
+
 
 //delete (change);
 

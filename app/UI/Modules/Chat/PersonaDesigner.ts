@@ -141,6 +141,11 @@ module UI.Chat.PersonaDesigner {
     }
 
     export function loadMemory (done : () => void) {
+        if (currentRoom == undefined) {
+            // empty room
+            lastMemory = [];
+            return;
+        }
         //lastMemory = Application.LocalMemory.getMemory(getMemoryString(), []);
         let roomid = currentRoom.id;
         Server.Storage.requestPersonas(
