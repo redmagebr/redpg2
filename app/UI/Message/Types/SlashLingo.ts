@@ -5,9 +5,23 @@ class SlashLingo extends SlashCommand {
      * @param message
      */
     public receiveCommand (slashCommand : string , message : string) : boolean {
-        var storyMode = slashCommand.toLowerCase().indexOf("sto") !== -1;
+        var translatedMsg : Message;
+        var pseudoMsg : Message;
+        var storyMode = slashCommand.toLowerCase().indexOf("sto") !== -1 || slashCommand.toLowerCase().indexOf("hist") !== -1;
+        var quoteMode = slashCommand.toLowerCase().indexOf("quo") !== -1 || slashCommand.toLowerCase().indexOf("cit") !== -1;
+        var sentence = message.substring(message.indexOf(',') + 1, message.length).trim();
         if (storyMode && !Server.Chat.getRoom().getMe().isStoryteller()) {
             return false;
+        }
+
+        if (quoteMode && !Server.Chat.getRoom().getMe().isStoryteller()) {
+            return false;
+        } else {
+            translatedMsg = new MessageQuote();
+            translatedMsg.receiveCommand("", sentence);
+            pseudoMsg = new MessageQuote();
+            pseudoMsg.receiveCommand("", sentence);
+            sentence = translatedMsg.getMsg();
         }
 
         var wantedLingo = message.substring(0, message.indexOf(','));
@@ -22,7 +36,6 @@ class SlashLingo extends SlashCommand {
             return false;
         }
 
-        var sentence = message.substring(message.indexOf(',') + 1, message.length).trim();
 
         var beginners = ['*', '[', '{', '('];
         var enders = ['*', ']', '}', ')'];
@@ -60,12 +73,10 @@ class SlashLingo extends SlashCommand {
 
         //alert(endResult);
 
-        var translatedMsg : Message;
-        var pseudoMsg : Message;
         if (storyMode) {
             translatedMsg = new MessageStory();
             pseudoMsg = new MessageStory();
-        } else {
+        } else if (!quoteMode) {
             translatedMsg = new MessageRoleplay();
             pseudoMsg = new MessageRoleplay();
         }
@@ -120,4 +131,16 @@ class SlashLingo extends SlashCommand {
     }
 }
 
-MessageFactory.registerSlashCommand (SlashLingo, ["/lang", "/ling", "/lingo", "/language", "/lingua"]);
+MessageFactory.registerSlashCommand (SlashLingo, (() => {
+    let arr = ["/lang", "/ling", "/lingo", "/language", "/lingua"];
+    let defaultArr = arr.slice();
+
+    defaultArr.forEach(slashC => {
+        arr.push(slashC + "hist");
+        arr.push(slashC + "sto");
+        arr.push(slashC + "quo");
+        arr.push(slashC + "cit");
+    });
+
+    return arr;
+})());

@@ -21,7 +21,14 @@ class MessageStory extends Message {
         return list;
     }
 
+    public isIgnored () : boolean {
+        if (!Application.Login.isLogged()) return false;
+        var ignored = this.getSpecial("ignoreFor", []);
+        return ignored.indexOf(Application.Login.getUser().id) !== -1;
+    }
+
     public createHTML () : HTMLElement {
+        if (this.isIgnored()) return null;
         var p = document.createElement("p");
         p.classList.add("chatMessageStory");
 
@@ -61,14 +68,10 @@ class MessageStory extends Message {
             }
             if (special !== -1) {
                 currentSpecial = special;
-                if (lang !== "none") {
-                    var ele = document.createElement("span");
-                    ele.classList.add("chatRoleplayLang" + lang);
-                    ele.appendChild(document.createTextNode(thisMsg));
-                    messageNodes.push(ele);
-                } else {
-                    messageNodes.push(document.createTextNode(thisMsg));
-                }
+                var ele = document.createElement("span");
+                ele.classList.add("chatRoleplayLang" + lang);
+                ele.appendChild(document.createTextNode(thisMsg));
+                messageNodes.push(ele);
 
                 thisMsg = "";
                 if (specialInclusive[special]) thisMsg += this.msg.charAt(i);
@@ -78,13 +81,46 @@ class MessageStory extends Message {
         }
 
         if (thisMsg !== "") {
-            messageNodes.push(document.createTextNode(thisMsg));
+            var ele = document.createElement("span");
+            ele.classList.add("chatRoleplayLang" + lang);
+            ele.appendChild(document.createTextNode(thisMsg));
+            messageNodes.push(ele);
         }
 
         for (var i = 0; i < messageNodes.length; i++) {
             container.appendChild(messageNodes[i]);
         }
+
+
+        var translation = this.getTranslation();
+        if (translation !== null) {
+            var span = document.createElement("span");
+            span.classList.add("chatRoleplayTranslation");
+
+            var b = document.createElement("b");
+            b.appendChild(document.createTextNode("_CHATMESSAGEROLEPLAYTRANSLATION_"));
+            b.appendChild(document.createTextNode(": "));
+            UI.Language.markLanguage(b);
+            span.appendChild(b);
+
+            span.appendChild(document.createTextNode(<string> translation));
+
+            p.appendChild(span);
+        }
+
         return p;
+    }
+
+    public setLanguage (lang : string) {
+        this.setSpecial("language", lang);
+    }
+
+    public setTranslation (message : string) {
+        this.setSpecial("translation", message);
+    }
+
+    public getTranslation () : String {
+        return this.getSpecial('translation', null);
     }
 }
 

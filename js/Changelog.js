@@ -233,6 +233,7 @@ change.addMessage("Previne erro ao fechar salas.", "pt");
 change = new Changelog(0, 34, 0);
 change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
 change.addMessage("É possível deletar pastas inteiras de Imagens e Sons.", "pt");
+change.addMessage("Lingo recebeu suporte a história e quotes. Usage: /linghist Davek, História!   ,   /lingquo Davek, João, Mensagem", "pt");
 
 
 //delete (change);

@@ -2,9 +2,16 @@ class MessageQuote extends Message {
     public module : string = "quote";
 
     public createHTML () : HTMLElement {
+        if (this.isIgnored()) return null;
+        var lang = this.getSpecial("language", "none");
+
         var p = document.createElement("p");
         p.classList.add("chatMessageQuoteParagraph");
-        p.appendChild(document.createTextNode('"' + this.getMsg() + '"'));
+
+        let span = document.createElement("span");
+        span.appendChild(document.createTextNode('"' + this.getMsg() + '"'));
+        span.classList.add("chatRoleplayLang" + lang);
+        p.appendChild(span);
 
         var name = this.getQuoted();
 
@@ -14,6 +21,22 @@ class MessageQuote extends Message {
             b.appendChild(document.createTextNode("- " + name));
 
             p.appendChild(b);
+        }
+
+        var translation = this.getTranslation();
+        if (translation !== null) {
+            let span = document.createElement("span");
+            span.classList.add("chatRoleplayTranslation");
+
+            var b = document.createElement("b");
+            b.appendChild(document.createTextNode("_CHATMESSAGEROLEPLAYTRANSLATION_"));
+            b.appendChild(document.createTextNode(": "));
+            UI.Language.markLanguage(b);
+            span.appendChild(b);
+
+            span.appendChild(document.createTextNode(<string> translation));
+
+            p.appendChild(span);
         }
 
         return p;
@@ -41,6 +64,24 @@ class MessageQuote extends Message {
         this.setQuoted(name);
         this.setMsg(message);
         return true;
+    }
+
+    public isIgnored () : boolean {
+        if (!Application.Login.isLogged()) return false;
+        var ignored = this.getSpecial("ignoreFor", []);
+        return ignored.indexOf(Application.Login.getUser().id) !== -1;
+    }
+
+    public setLanguage (lang : string) {
+        this.setSpecial("language", lang);
+    }
+
+    public setTranslation (message : string) {
+        this.setSpecial("translation", message);
+    }
+
+    public getTranslation () : String {
+        return this.getSpecial('translation', null);
     }
 }
 

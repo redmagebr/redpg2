@@ -1560,6 +1560,10 @@ declare class MessageQuote extends Message {
     setQuoted(name: String): void;
     getQuoted(): any;
     receiveCommand(slashCommand: string, message: string): boolean;
+    isIgnored(): boolean;
+    setLanguage(lang: string): void;
+    setTranslation(message: string): void;
+    getTranslation(): String;
 }
 declare class MessageSE extends Message {
     module: string;
@@ -1698,7 +1702,11 @@ declare class MessageDice extends Message {
 declare class MessageStory extends Message {
     module: string;
     makeMockUp(): Array<Message>;
+    isIgnored(): boolean;
     createHTML(): HTMLElement;
+    setLanguage(lang: string): void;
+    setTranslation(message: string): void;
+    getTranslation(): String;
 }
 declare class MessageAction extends Message {
     module: string;

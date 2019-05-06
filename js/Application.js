@@ -6347,9 +6347,23 @@ var SlashLingo = /** @class */ (function (_super) {
      * @param message
      */
     SlashLingo.prototype.receiveCommand = function (slashCommand, message) {
-        var storyMode = slashCommand.toLowerCase().indexOf("sto") !== -1;
+        var translatedMsg;
+        var pseudoMsg;
+        var storyMode = slashCommand.toLowerCase().indexOf("sto") !== -1 || slashCommand.toLowerCase().indexOf("hist") !== -1;
+        var quoteMode = slashCommand.toLowerCase().indexOf("quo") !== -1 || slashCommand.toLowerCase().indexOf("cit") !== -1;
+        var sentence = message.substring(message.indexOf(',') + 1, message.length).trim();
         if (storyMode && !Server.Chat.getRoom().getMe().isStoryteller()) {
             return false;
+        }
+        if (quoteMode && !Server.Chat.getRoom().getMe().isStoryteller()) {
+            return false;
+        }
+        else {
+            translatedMsg = new MessageQuote();
+            translatedMsg.receiveCommand("", sentence);
+            pseudoMsg = new MessageQuote();
+            pseudoMsg.receiveCommand("", sentence);
+            sentence = translatedMsg.getMsg();
         }
         var wantedLingo = message.substring(0, message.indexOf(','));
         var lingo = PseudoLanguage.getLanguage(wantedLingo);
@@ -6360,7 +6374,6 @@ var SlashLingo = /** @class */ (function (_super) {
         if (!Server.Chat.getRoom().getMe().isStoryteller() && !mem.isSpeaker(Server.Chat.getRoom().getMe().getUser().id, wantedLingo)) {
             return false;
         }
-        var sentence = message.substring(message.indexOf(',') + 1, message.length).trim();
         var beginners = ['*', '[', '{', '('];
         var enders = ['*', ']', '}', ')'];
         var endResult = "";
@@ -6394,13 +6407,11 @@ var SlashLingo = /** @class */ (function (_super) {
             endResult += lingo.translate(currentSentence);
         }
         //alert(endResult);
-        var translatedMsg;
-        var pseudoMsg;
         if (storyMode) {
             translatedMsg = new MessageStory();
             pseudoMsg = new MessageStory();
         }
-        else {
+        else if (!quoteMode) {
             translatedMsg = new MessageRoleplay();
             pseudoMsg = new MessageRoleplay();
         }
@@ -6450,7 +6461,17 @@ var SlashLingo = /** @class */ (function (_super) {
     };
     return SlashLingo;
 }(SlashCommand));
-MessageFactory.registerSlashCommand(SlashLingo, ["/lang", "/ling", "/lingo", "/language", "/lingua"]);
+MessageFactory.registerSlashCommand(SlashLingo, (function () {
+    var arr = ["/lang", "/ling", "/lingo", "/language", "/lingua"];
+    var defaultArr = arr.slice();
+    defaultArr.forEach(function (slashC) {
+        arr.push(slashC + "hist");
+        arr.push(slashC + "sto");
+        arr.push(slashC + "quo");
+        arr.push(slashC + "cit");
+    });
+    return arr;
+})());
 var SlashPica = /** @class */ (function (_super) {
     __extends(SlashPica, _super);
     function SlashPica() {
@@ -7438,15 +7459,33 @@ var MessageQuote = /** @class */ (function (_super) {
         return _this;
     }
     MessageQuote.prototype.createHTML = function () {
+        if (this.isIgnored())
+            return null;
+        var lang = this.getSpecial("language", "none");
         var p = document.createElement("p");
         p.classList.add("chatMessageQuoteParagraph");
-        p.appendChild(document.createTextNode('"' + this.getMsg() + '"'));
+        var span = document.createElement("span");
+        span.appendChild(document.createTextNode('"' + this.getMsg() + '"'));
+        span.classList.add("chatRoleplayLang" + lang);
+        p.appendChild(span);
         var name = this.getQuoted();
         if (name !== null) {
             var b = document.createElement("b");
             b.classList.add("chatMessageQuoteQuoted");
             b.appendChild(document.createTextNode("- " + name));
             p.appendChild(b);
+        }
+        var translation = this.getTranslation();
+        if (translation !== null) {
+            var span_1 = document.createElement("span");
+            span_1.classList.add("chatRoleplayTranslation");
+            var b = document.createElement("b");
+            b.appendChild(document.createTextNode("_CHATMESSAGEROLEPLAYTRANSLATION_"));
+            b.appendChild(document.createTextNode(": "));
+            UI.Language.markLanguage(b);
+            span_1.appendChild(b);
+            span_1.appendChild(document.createTextNode(translation));
+            p.appendChild(span_1);
         }
         return p;
     };
@@ -7470,6 +7509,21 @@ var MessageQuote = /** @class */ (function (_super) {
         this.setQuoted(name);
         this.setMsg(message);
         return true;
+    };
+    MessageQuote.prototype.isIgnored = function () {
+        if (!Application.Login.isLogged())
+            return false;
+        var ignored = this.getSpecial("ignoreFor", []);
+        return ignored.indexOf(Application.Login.getUser().id) !== -1;
+    };
+    MessageQuote.prototype.setLanguage = function (lang) {
+        this.setSpecial("language", lang);
+    };
+    MessageQuote.prototype.setTranslation = function (message) {
+        this.setSpecial("translation", message);
+    };
+    MessageQuote.prototype.getTranslation = function () {
+        return this.getSpecial('translation', null);
     };
     return MessageQuote;
 }(Message));
@@ -8489,7 +8543,15 @@ var MessageStory = /** @class */ (function (_super) {
         }
         return list;
     };
+    MessageStory.prototype.isIgnored = function () {
+        if (!Application.Login.isLogged())
+            return false;
+        var ignored = this.getSpecial("ignoreFor", []);
+        return ignored.indexOf(Application.Login.getUser().id) !== -1;
+    };
     MessageStory.prototype.createHTML = function () {
+        if (this.isIgnored())
+            return null;
         var p = document.createElement("p");
         p.classList.add("chatMessageStory");
         var container = p;
@@ -8524,15 +8586,10 @@ var MessageStory = /** @class */ (function (_super) {
             }
             if (special !== -1) {
                 currentSpecial = special;
-                if (lang !== "none") {
-                    var ele = document.createElement("span");
-                    ele.classList.add("chatRoleplayLang" + lang);
-                    ele.appendChild(document.createTextNode(thisMsg));
-                    messageNodes.push(ele);
-                }
-                else {
-                    messageNodes.push(document.createTextNode(thisMsg));
-                }
+                var ele = document.createElement("span");
+                ele.classList.add("chatRoleplayLang" + lang);
+                ele.appendChild(document.createTextNode(thisMsg));
+                messageNodes.push(ele);
                 thisMsg = "";
                 if (specialInclusive[special])
                     thisMsg += this.msg.charAt(i);
@@ -8541,12 +8598,36 @@ var MessageStory = /** @class */ (function (_super) {
             thisMsg += this.msg.charAt(i);
         }
         if (thisMsg !== "") {
-            messageNodes.push(document.createTextNode(thisMsg));
+            var ele = document.createElement("span");
+            ele.classList.add("chatRoleplayLang" + lang);
+            ele.appendChild(document.createTextNode(thisMsg));
+            messageNodes.push(ele);
         }
         for (var i = 0; i < messageNodes.length; i++) {
             container.appendChild(messageNodes[i]);
         }
+        var translation = this.getTranslation();
+        if (translation !== null) {
+            var span = document.createElement("span");
+            span.classList.add("chatRoleplayTranslation");
+            var b = document.createElement("b");
+            b.appendChild(document.createTextNode("_CHATMESSAGEROLEPLAYTRANSLATION_"));
+            b.appendChild(document.createTextNode(": "));
+            UI.Language.markLanguage(b);
+            span.appendChild(b);
+            span.appendChild(document.createTextNode(translation));
+            p.appendChild(span);
+        }
         return p;
+    };
+    MessageStory.prototype.setLanguage = function (lang) {
+        this.setSpecial("language", lang);
+    };
+    MessageStory.prototype.setTranslation = function (message) {
+        this.setSpecial("translation", message);
+    };
+    MessageStory.prototype.getTranslation = function () {
+        return this.getSpecial('translation', null);
     };
     return MessageStory;
 }(Message));
@@ -12530,6 +12611,10 @@ change.addMessage("Corrige personas não salvarem quando criadas sem o Administr
 change = new Changelog(0, 33, 3);
 change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
 change.addMessage("Previne erro ao fechar salas.", "pt");
+change = new Changelog(0, 34, 0);
+change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
+change.addMessage("É possível deletar pastas inteiras de Imagens e Sons.", "pt");
+change.addMessage("Lingo recebeu suporte a história e quotes. Usage: /linghist Davek, História!   ,   /lingquo Davek, João, Mensagem", "pt");
 //delete (change);
 Changelog.finished();
 /// <reference path='../../Changelog.ts' />
