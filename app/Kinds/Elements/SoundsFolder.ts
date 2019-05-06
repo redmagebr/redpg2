@@ -20,6 +20,13 @@ class SoundsFolder {
         var folderIcon = document.createElement("a");
         folderIcon.classList.add("imagesFolderIcon");
 
+        var deleteIcon = document.createElement("a");
+        deleteIcon.classList.add("icons-imagesDelete");
+        deleteIcon.classList.add("folderRightButton");
+        deleteIcon.addEventListener("click", () => { this.delete(); });
+        UI.Language.addLanguageTitle(deleteIcon, "_IMAGESDELETE_");
+        UI.Language.markLanguage(deleteIcon);
+
         var folderTitle = document.createElement("span");
         folderTitle.classList.add("imagesFolderTitle");
         folderTitle.addEventListener("click", <EventListenerObject> {
@@ -31,6 +38,7 @@ class SoundsFolder {
         folderTitle.appendChild(document.createTextNode(folderName));
 
         folderContainer.appendChild(folderIcon);
+        folderContainer.appendChild(deleteIcon);
         folderContainer.appendChild(folderTitle);
 
         for (var k = 0; k < sounds.length; k++) {
@@ -54,6 +62,14 @@ class SoundsFolder {
 
         if (this.folderContainer.classList.contains("folderOpen")) {
             UI.Images.stayInFolder(this.name);
+        }
+    }
+
+    public delete () {
+        let text = UI.Language.getLanguage().getLingo("_DELETEFOLDER_", {languagea : this.getName()});
+        if (confirm(text)) {
+            DB.SoundDB.removeFolder(this.getName());
+            this.html.parentElement.removeChild(this.html);
         }
     }
 

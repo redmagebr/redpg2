@@ -6171,7 +6171,7 @@ body {
 }
 
 /* line 71, ../sass/generalView.scss */
-.buttonBehavior:hover, .simpleButton:hover, .textLink:hover, .sheetNameLink:hover, .mainWindowParagraphSubmit:hover, .picaTool:hover, .picaToolButton:hover, .leftPicaToolButton:hover, .rightPicaToolButton:hover, .leftPicaTool:hover, .rightPicaTool:hover, .handleButton:hover, .leftHandleButton:hover, .rightHandleButton:hover, .lingoButton.clickable:hover, .imagesLeftButton:hover, .imagesRightButton:hover, .imagesFolderTitle:hover, #dropboxImagesButton:hover, .musicPlayerButton:hover, #dropboxBGMInput:hover, #dropboxSoundsButton:hover, .gamesName:hover, .gameCreatorDiv:hover, .sheetListGameName:hover, .sheetListFolderName:hover, .sheetPermLabel:hover, .styleLabel:hover, #avatarUpButton:hover, #avatarDownButton:hover, #chatScrollDown:hover, .chatRightButton:hover, #chatMessageSendButton:hover, #personaAddButton:hover, .personaButton:hover, .diceButton:hover, #chatDiceTower:hover, #chatDiceSubmit:hover, .chatAvatarChoiceBoxUse:hover, .chatAvatarChoiceBoxDelete:hover, .chatWhisperLink:hover, .chatMessageVoteAmount:hover, .combatButton:hover, .combatRemove:hover, .combatSetTurn:hover, .combatTarget:hover, .combatSheet:hover, .combatAdd:hover, .combatNewRound:hover, .combatNextTurn:hover, .combatEndCombat:hover, .colopica:hover, .xButton:hover, .sheetTool:hover, .sheetTab:hover, .moodButton:hover {
+.buttonBehavior:hover, .simpleButton:hover, .textLink:hover, .sheetNameLink:hover, .mainWindowParagraphSubmit:hover, .picaTool:hover, .picaToolButton:hover, .leftPicaToolButton:hover, .rightPicaToolButton:hover, .leftPicaTool:hover, .rightPicaTool:hover, .handleButton:hover, .leftHandleButton:hover, .rightHandleButton:hover, .lingoButton.clickable:hover, .imagesLeftButton:hover, .imagesRightButton:hover, .folderRightButton:hover, .imagesFolderTitle:hover, #dropboxImagesButton:hover, .musicPlayerButton:hover, #dropboxBGMInput:hover, #dropboxSoundsButton:hover, .gamesName:hover, .gameCreatorDiv:hover, .sheetListGameName:hover, .sheetListFolderName:hover, .sheetPermLabel:hover, .styleLabel:hover, #avatarUpButton:hover, #avatarDownButton:hover, #chatScrollDown:hover, .chatRightButton:hover, #chatMessageSendButton:hover, #personaAddButton:hover, .personaButton:hover, .diceButton:hover, #chatDiceTower:hover, #chatDiceSubmit:hover, .chatAvatarChoiceBoxUse:hover, .chatAvatarChoiceBoxDelete:hover, .chatWhisperLink:hover, .chatMessageVoteAmount:hover, .combatButton:hover, .combatRemove:hover, .combatSetTurn:hover, .combatTarget:hover, .combatSheet:hover, .combatAdd:hover, .combatNewRound:hover, .combatNextTurn:hover, .combatEndCombat:hover, .colopica:hover, .xButton:hover, .sheetTool:hover, .sheetTab:hover, .moodButton:hover {
   cursor: pointer;
 }
 
@@ -6210,7 +6210,7 @@ body {
 }
 
 /* line 109, ../sass/generalView.scss */
-.buttonBehavior:hover, .simpleButton:hover, .textLink:hover, .sheetNameLink:hover, .mainWindowParagraphSubmit:hover, .picaTool:hover, .picaToolButton:hover, .leftPicaToolButton:hover, .rightPicaToolButton:hover, .leftPicaTool:hover, .rightPicaTool:hover, .handleButton:hover, .leftHandleButton:hover, .rightHandleButton:hover, .lingoButton.clickable:hover, .imagesLeftButton:hover, .imagesRightButton:hover, .imagesFolderTitle:hover, #dropboxImagesButton:hover, .musicPlayerButton:hover, #dropboxBGMInput:hover, #dropboxSoundsButton:hover, .gamesName:hover, .gameCreatorDiv:hover, .sheetListGameName:hover, .sheetListFolderName:hover, .sheetPermLabel:hover, .styleLabel:hover, #avatarUpButton:hover, #avatarDownButton:hover, #chatScrollDown:hover, .chatRightButton:hover, #chatMessageSendButton:hover, #personaAddButton:hover, .personaButton:hover, .diceButton:hover, #chatDiceTower:hover, #chatDiceSubmit:hover, .chatAvatarChoiceBoxUse:hover, .chatAvatarChoiceBoxDelete:hover, .chatWhisperLink:hover, .chatMessageVoteAmount:hover, .combatButton:hover, .combatRemove:hover, .combatSetTurn:hover, .combatTarget:hover, .combatSheet:hover, .combatAdd:hover, .combatNewRound:hover, .combatNextTurn:hover, .combatEndCombat:hover, .colopica:hover, .xButton:hover, .sheetTool:hover, .sheetTab:hover, .moodButton:hover {
+.buttonBehavior:hover, .simpleButton:hover, .textLink:hover, .sheetNameLink:hover, .mainWindowParagraphSubmit:hover, .picaTool:hover, .picaToolButton:hover, .leftPicaToolButton:hover, .rightPicaToolButton:hover, .leftPicaTool:hover, .rightPicaTool:hover, .handleButton:hover, .leftHandleButton:hover, .rightHandleButton:hover, .lingoButton.clickable:hover, .imagesLeftButton:hover, .imagesRightButton:hover, .folderRightButton:hover, .imagesFolderTitle:hover, #dropboxImagesButton:hover, .musicPlayerButton:hover, #dropboxBGMInput:hover, #dropboxSoundsButton:hover, .gamesName:hover, .gameCreatorDiv:hover, .sheetListGameName:hover, .sheetListFolderName:hover, .sheetPermLabel:hover, .styleLabel:hover, #avatarUpButton:hover, #avatarDownButton:hover, #chatScrollDown:hover, .chatRightButton:hover, #chatMessageSendButton:hover, #personaAddButton:hover, .personaButton:hover, .diceButton:hover, #chatDiceTower:hover, #chatDiceSubmit:hover, .chatAvatarChoiceBoxUse:hover, .chatAvatarChoiceBoxDelete:hover, .chatWhisperLink:hover, .chatMessageVoteAmount:hover, .combatButton:hover, .combatRemove:hover, .combatSetTurn:hover, .combatTarget:hover, .combatSheet:hover, .combatAdd:hover, .combatNewRound:hover, .combatNextTurn:hover, .combatEndCombat:hover, .colopica:hover, .xButton:hover, .sheetTool:hover, .sheetTab:hover, .moodButton:hover {
   cursor: pointer;
 }
 
@@ -6275,7 +6275,7 @@ body {
 
 /* UNselectable */
 /* line 167, ../sass/generalView.scss */
-.unselectable, .buttonBehavior, .simpleButton, .textLink, .sheetNameLink, .mainWindowParagraphSubmit, .picaTool, .picaToolButton, .leftPicaToolButton, .rightPicaToolButton, .leftPicaTool, .rightPicaTool, .handleButton, .leftHandleButton, .rightHandleButton, .lingoButton.clickable, .imagesLeftButton, .imagesRightButton, .imagesFolderTitle, #dropboxImagesButton, .musicPlayerButton, #dropboxBGMInput, #dropboxSoundsButton, .gamesName, .gameCreatorDiv, .sheetListGameName, .sheetListFolderName, .sheetPermLabel, .styleLabel, #avatarUpButton, #avatarDownButton, #chatScrollDown, .chatRightButton, #chatMessageSendButton, #personaAddButton, .personaButton, .diceButton, #chatDiceTower, #chatDiceSubmit, .chatAvatarChoiceBoxUse, .chatAvatarChoiceBoxDelete, .chatWhisperLink, .chatMessageVoteAmount, .combatButton, .combatRemove, .combatSetTurn, .combatTarget, .combatSheet, .combatAdd, .combatNewRound, .combatNextTurn, .combatEndCombat, .colopica, .xButton, .sheetTool, .sheetTab, .moodButton, #loginNewAccount, #loginForgotPassword, .chatFloater {
+.unselectable, .buttonBehavior, .simpleButton, .textLink, .sheetNameLink, .mainWindowParagraphSubmit, .picaTool, .picaToolButton, .leftPicaToolButton, .rightPicaToolButton, .leftPicaTool, .rightPicaTool, .handleButton, .leftHandleButton, .rightHandleButton, .lingoButton.clickable, .imagesLeftButton, .imagesRightButton, .folderRightButton, .imagesFolderTitle, #dropboxImagesButton, .musicPlayerButton, #dropboxBGMInput, #dropboxSoundsButton, .gamesName, .gameCreatorDiv, .sheetListGameName, .sheetListFolderName, .sheetPermLabel, .styleLabel, #avatarUpButton, #avatarDownButton, #chatScrollDown, .chatRightButton, #chatMessageSendButton, #personaAddButton, .personaButton, .diceButton, #chatDiceTower, #chatDiceSubmit, .chatAvatarChoiceBoxUse, .chatAvatarChoiceBoxDelete, .chatWhisperLink, .chatMessageVoteAmount, .combatButton, .combatRemove, .combatSetTurn, .combatTarget, .combatSheet, .combatAdd, .combatNewRound, .combatNextTurn, .combatEndCombat, .colopica, .xButton, .sheetTool, .sheetTab, .moodButton, #loginNewAccount, #loginForgotPassword, .chatFloater {
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select: none;
@@ -6597,16 +6597,27 @@ body {
 }
 
 /* line 8, ../sass/mainWindowImages.scss */
+.folderRightButton {
+  width: 26px;
+  height: 22px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  float: right;
+  margin: 2px;
+  margin-right: 0px;
+}
+
+/* line 19, ../sass/mainWindowImages.scss */
 .imagesLeftButton {
   float: left;
 }
 
-/* line 12, ../sass/mainWindowImages.scss */
+/* line 23, ../sass/mainWindowImages.scss */
 .imagesRightButton {
   float: right;
 }
 
-/* line 16, ../sass/mainWindowImages.scss */
+/* line 27, ../sass/mainWindowImages.scss */
 .imagesRowTitle {
   display: block;
   line-height: 22px;
@@ -6615,28 +6626,29 @@ body {
   text-indent: 6px;
 }
 
-/* line 24, ../sass/mainWindowImages.scss */
+/* line 35, ../sass/mainWindowImages.scss */
 .imagesRow {
   display: none;
   clear: both;
 }
-/* line 28, ../sass/mainWindowImages.scss */
+/* line 39, ../sass/mainWindowImages.scss */
 .imagesRow:hover {
   background-color: #e8e8e8;
 }
 
-/* line 33, ../sass/mainWindowImages.scss */
+/* line 44, ../sass/mainWindowImages.scss */
 .imagesFolder {
   clear: both;
   margin-bottom: 10px;
+  position: relative;
 }
 
-/* line 38, ../sass/mainWindowImages.scss */
+/* line 50, ../sass/mainWindowImages.scss */
 .imagesFolder.folderOpen > .imagesRow {
   display: block;
 }
 
-/* line 42, ../sass/mainWindowImages.scss */
+/* line 54, ../sass/mainWindowImages.scss */
 .imagesFolder > .imagesFolderIcon {
   display: block;
   width: 30px;
@@ -6645,7 +6657,7 @@ body {
   pointer-events: none;
 }
 
-/* line 55, ../sass/mainWindowImages.scss */
+/* line 67, ../sass/mainWindowImages.scss */
 .imagesFolderTitle {
   display: block;
   line-height: 28px;
@@ -6653,30 +6665,30 @@ body {
   font-size: 22px;
   font-weight: bold;
 }
-/* line 63, ../sass/mainWindowImages.scss */
+/* line 75, ../sass/mainWindowImages.scss */
 .imagesFolderTitle:hover {
   background-color: #e4e4e4;
   color: #272727;
 }
-/* line 68, ../sass/mainWindowImages.scss */
+/* line 80, ../sass/mainWindowImages.scss */
 .imagesFolderTitle:active {
   background-color: #d1d1d1;
   color: #151515;
 }
 
-/* line 74, ../sass/mainWindowImages.scss */
+/* line 86, ../sass/mainWindowImages.scss */
 #imagesUpload {
   display: flex;
   margin-top: 25px;
   margin-bottom: 25px;
 }
 
-/* line 80, ../sass/mainWindowImages.scss */
+/* line 92, ../sass/mainWindowImages.scss */
 #imagesUploadLeft, #imagesUploadRight {
   flex: 1 0 auto;
 }
 
-/* line 84, ../sass/mainWindowImages.scss */
+/* line 96, ../sass/mainWindowImages.scss */
 #dropboxImagesLogo {
   display: block;
   margin: auto;
@@ -6685,14 +6697,14 @@ body {
   margin-bottom: 8px;
 }
 
-/* line 92, ../sass/mainWindowImages.scss */
+/* line 104, ../sass/mainWindowImages.scss */
 #linkImagesTitle {
   display: block;
   height: 35px;
   text-align: center;
 }
 
-/* line 98, ../sass/mainWindowImages.scss */
+/* line 110, ../sass/mainWindowImages.scss */
 #linkImagesTitleText {
   display: inline-block;
   font-size: 25px;
@@ -6700,7 +6712,7 @@ body {
   line-height: 38px;
 }
 
-/* line 105, ../sass/mainWindowImages.scss */
+/* line 117, ../sass/mainWindowImages.scss */
 #linkImagesIcon {
   display: inline-block;
   height: 35px;
@@ -6708,7 +6720,7 @@ body {
   vertical-align: top;
 }
 
-/* line 112, ../sass/mainWindowImages.scss */
+/* line 124, ../sass/mainWindowImages.scss */
 #dropboxImagesFolderName {
   display: block;
   margin: auto;
@@ -6720,7 +6732,7 @@ body {
   padding-right: 6px;
 }
 
-/* line 123, ../sass/mainWindowImages.scss */
+/* line 135, ../sass/mainWindowImages.scss */
 #dropboxImagesButton {
   display: block;
   width: 170px;
@@ -6734,13 +6746,13 @@ body {
   color: #007ee5;
   font-weight: bold;
 }
-/* line 137, ../sass/mainWindowImages.scss */
+/* line 149, ../sass/mainWindowImages.scss */
 #dropboxImagesButton:hover {
   border: solid 1px #0065b7;
   background-color: #eaeff8;
   color: #008dfa;
 }
-/* line 143, ../sass/mainWindowImages.scss */
+/* line 155, ../sass/mainWindowImages.scss */
 #dropboxImagesButton:active {
   border: solid 1px #003468;
   background-color: #d4d9e1;

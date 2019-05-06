@@ -30,7 +30,15 @@ class ImagesFolder {
         });
         folderTitle.appendChild(document.createTextNode(folderName));
 
+        var deleteIcon = document.createElement("a");
+        deleteIcon.classList.add("icons-imagesDelete");
+        deleteIcon.classList.add("folderRightButton");
+        deleteIcon.addEventListener("click", () => { this.delete(); });
+        UI.Language.addLanguageTitle(deleteIcon, "_IMAGESDELETE_");
+        UI.Language.markLanguage(deleteIcon);
+
         folderContainer.appendChild(folderIcon);
+        folderContainer.appendChild(deleteIcon);
         folderContainer.appendChild(folderTitle);
 
         for (var k = 0; k < images.length; k++) {
@@ -59,6 +67,14 @@ class ImagesFolder {
 
     public getHTML () {
         return this.html;
+    }
+
+    public delete () {
+        let text = UI.Language.getLanguage().getLingo("_DELETEFOLDER_", {languagea : this.getName()});
+        if (confirm(text)) {
+            DB.ImageDB.removeFolder(this.getName());
+            this.html.parentElement.removeChild(this.html);
+        }
     }
 
     public considerSuicide () {

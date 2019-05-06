@@ -15,6 +15,18 @@ module DB.SoundDB {
         considerSaving();
     }
 
+    export function removeFolder(folderName: string) {
+        let correctedName = folderName.trim().toLowerCase();
+        for (let i = sounds.length - 1; i >= 0; i--) {
+            let sound = sounds[i];
+            if (sound.getFolder().trim().toLowerCase() == correctedName) {
+                sounds.splice(i, 1);
+            }
+        }
+
+        considerSaving();
+    }
+
     export function considerSaving () {
         if (delayedStore !== null) {
             clearTimeout(<number> delayedStore);

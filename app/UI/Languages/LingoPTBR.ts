@@ -109,6 +109,7 @@ ptbr.setLingo("_SOUNDSFOLDER_", "Renomear Pasta");
 ptbr.setLingo("_SOUNDSPLAY_", "Tocar");
 ptbr.setLingo("_SOUNDSRENAMEPROMPT_", "Digite o novo nome para \"%a\":");
 ptbr.setLingo("_SOUNDSRENAMEFOLDERPROMPT_", "Digite a nova pasta para \"%a\", atualmente em \"%b\":");
+ptbr.setLingo("_DELETEFOLDER_", "Deletar a pasta \"%a\"? Isso não tem volta.");
 
 // Imagens
 ptbr.setLingo("_IMAGESTITLE_", "Fotos");

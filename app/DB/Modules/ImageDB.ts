@@ -15,6 +15,18 @@ module DB.ImageDB {
         considerSaving();
     }
 
+    export function removeFolder(folderName: string) {
+        let correctedName = folderName.trim().toLowerCase();
+        for (let i = images.length - 1; i >= 0; i--) {
+            let image = images[i];
+            if (image.getFolder().trim().toLowerCase() == correctedName) {
+                images.splice(i, 1);
+            }
+        }
+
+        considerSaving();
+    }
+
     export function considerSaving () {
         if (delayedStore !== null) {
             clearTimeout(<number> delayedStore);

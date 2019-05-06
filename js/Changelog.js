@@ -230,6 +230,10 @@ change = new Changelog(0, 33, 3);
 change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
 change.addMessage("Previne erro ao fechar salas.", "pt");
 
+change = new Changelog(0, 34, 0);
+change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
+change.addMessage("É possível deletar pastas inteiras de Imagens e Sons.", "pt");
+
 
 //delete (change);
 

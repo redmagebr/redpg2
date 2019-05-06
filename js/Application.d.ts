@@ -762,6 +762,7 @@ declare class ImagesFolder {
     open(): void;
     toggle(): void;
     getHTML(): HTMLElement;
+    delete(): void;
     considerSuicide(): void;
 }
 declare class SheetsRow {
@@ -825,6 +826,7 @@ declare class SoundsFolder {
     getName(): string;
     open(): void;
     toggle(): void;
+    delete(): void;
     getHTML(): HTMLElement;
     considerSuicide(): void;
 }
@@ -1789,6 +1791,7 @@ declare module DB.SheetDB {
 }
 declare module DB.ImageDB {
     function removeImage(img: ImageLink): void;
+    function removeFolder(folderName: string): void;
     function considerSaving(): void;
     function getImages(): ImageLink[];
     function getImageByName(name: string): ImageLink;
@@ -1806,6 +1809,7 @@ declare module DB.ImageDB {
 }
 declare module DB.SoundDB {
     function removeSound(snd: SoundLink): void;
+    function removeFolder(folderName: string): void;
     function considerSaving(): void;
     function getSounds(): SoundLink[];
     function getSoundByName(name: string): SoundLink;

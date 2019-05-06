@@ -3101,6 +3101,7 @@ var ImagesFolder = /** @class */ (function () {
     //     %a.imagesFolderIcon
     //     %span.imagesFolderTitle{:onclick => "this.parentNode.classList.toggle('folderOpen');"}="Nome da Pasta"
     function ImagesFolder(images) {
+        var _this = this;
         var folderName = images[0].getFolder();
         this.name = folderName;
         if (folderName === "") {
@@ -3120,7 +3121,14 @@ var ImagesFolder = /** @class */ (function () {
             }
         });
         folderTitle.appendChild(document.createTextNode(folderName));
+        var deleteIcon = document.createElement("a");
+        deleteIcon.classList.add("icons-imagesDelete");
+        deleteIcon.classList.add("folderRightButton");
+        deleteIcon.addEventListener("click", function () { _this.delete(); });
+        UI.Language.addLanguageTitle(deleteIcon, "_IMAGESDELETE_");
+        UI.Language.markLanguage(deleteIcon);
         folderContainer.appendChild(folderIcon);
+        folderContainer.appendChild(deleteIcon);
         folderContainer.appendChild(folderTitle);
         for (var k = 0; k < images.length; k++) {
             var imageRow = new ImagesRow(images[k], this);
@@ -3142,6 +3150,13 @@ var ImagesFolder = /** @class */ (function () {
     };
     ImagesFolder.prototype.getHTML = function () {
         return this.html;
+    };
+    ImagesFolder.prototype.delete = function () {
+        var text = UI.Language.getLanguage().getLingo("_DELETEFOLDER_", { languagea: this.getName() });
+        if (confirm(text)) {
+            DB.ImageDB.removeFolder(this.getName());
+            this.html.parentElement.removeChild(this.html);
+        }
     };
     ImagesFolder.prototype.considerSuicide = function () {
         if (this.html.children.length <= 2) {
@@ -3517,6 +3532,7 @@ var SoundsFolder = /** @class */ (function () {
     //     %a.imagesFolderIcon
     //     %span.imagesFolderTitle{:onclick => "this.parentNode.classList.toggle('folderOpen');"}="Nome da Pasta"
     function SoundsFolder(sounds) {
+        var _this = this;
         var folderName = sounds[0].getFolder();
         this.name = folderName;
         if (folderName === "") {
@@ -3527,6 +3543,12 @@ var SoundsFolder = /** @class */ (function () {
         this.folderContainer = folderContainer;
         var folderIcon = document.createElement("a");
         folderIcon.classList.add("imagesFolderIcon");
+        var deleteIcon = document.createElement("a");
+        deleteIcon.classList.add("icons-imagesDelete");
+        deleteIcon.classList.add("folderRightButton");
+        deleteIcon.addEventListener("click", function () { _this.delete(); });
+        UI.Language.addLanguageTitle(deleteIcon, "_IMAGESDELETE_");
+        UI.Language.markLanguage(deleteIcon);
         var folderTitle = document.createElement("span");
         folderTitle.classList.add("imagesFolderTitle");
         folderTitle.addEventListener("click", {
@@ -3537,6 +3559,7 @@ var SoundsFolder = /** @class */ (function () {
         });
         folderTitle.appendChild(document.createTextNode(folderName));
         folderContainer.appendChild(folderIcon);
+        folderContainer.appendChild(deleteIcon);
         folderContainer.appendChild(folderTitle);
         for (var k = 0; k < sounds.length; k++) {
             var soundRow = new SoundsRow(sounds[k], this);
@@ -3554,6 +3577,13 @@ var SoundsFolder = /** @class */ (function () {
         this.folderContainer.classList.toggle("folderOpen");
         if (this.folderContainer.classList.contains("folderOpen")) {
             UI.Images.stayInFolder(this.name);
+        }
+    };
+    SoundsFolder.prototype.delete = function () {
+        var text = UI.Language.getLanguage().getLingo("_DELETEFOLDER_", { languagea: this.getName() });
+        if (confirm(text)) {
+            DB.SoundDB.removeFolder(this.getName());
+            this.html.parentElement.removeChild(this.html);
         }
     };
     SoundsFolder.prototype.getHTML = function () {
@@ -9172,6 +9202,17 @@ var DB;
             considerSaving();
         }
         ImageDB.removeImage = removeImage;
+        function removeFolder(folderName) {
+            var correctedName = folderName.trim().toLowerCase();
+            for (var i = images.length - 1; i >= 0; i--) {
+                var image = images[i];
+                if (image.getFolder().trim().toLowerCase() == correctedName) {
+                    images.splice(i, 1);
+                }
+            }
+            considerSaving();
+        }
+        ImageDB.removeFolder = removeFolder;
         function considerSaving() {
             if (delayedStore !== null) {
                 clearTimeout(delayedStore);
@@ -9328,6 +9369,17 @@ var DB;
             considerSaving();
         }
         SoundDB.removeSound = removeSound;
+        function removeFolder(folderName) {
+            var correctedName = folderName.trim().toLowerCase();
+            for (var i = sounds.length - 1; i >= 0; i--) {
+                var sound = sounds[i];
+                if (sound.getFolder().trim().toLowerCase() == correctedName) {
+                    sounds.splice(i, 1);
+                }
+            }
+            considerSaving();
+        }
+        SoundDB.removeFolder = removeFolder;
         function considerSaving() {
             if (delayedStore !== null) {
                 clearTimeout(delayedStore);
@@ -11396,6 +11448,7 @@ ptbr.setLingo("_SOUNDSFOLDER_", "Renomear Pasta");
 ptbr.setLingo("_SOUNDSPLAY_", "Tocar");
 ptbr.setLingo("_SOUNDSRENAMEPROMPT_", "Digite o novo nome para \"%a\":");
 ptbr.setLingo("_SOUNDSRENAMEFOLDERPROMPT_", "Digite a nova pasta para \"%a\", atualmente em \"%b\":");
+ptbr.setLingo("_DELETEFOLDER_", "Deletar a pasta \"%a\"? Isso não tem volta.");
 // Imagens
 ptbr.setLingo("_IMAGESTITLE_", "Fotos");
 ptbr.setLingo("_IMAGESEXP01_", "Imagens ficam anexadas à sua conta e podem ser utilizadas em qualquer seção do RedPG.");
