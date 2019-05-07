@@ -538,3 +538,11 @@
   overflow-x: hidden;
   overflow-y: auto;
 }
+
+#chatPersonaButton {
+  @extend .icons-chatHidePersonasOff;
+
+  &.on {
+    @extend .icons-chatHidePersonasOn;
+  }
+}

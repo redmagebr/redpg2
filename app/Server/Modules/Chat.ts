@@ -131,6 +131,10 @@ module Server.Chat {
 
     export function sendPersona (info : PersonaInfo) {
         if (currentController.isReady()) {
+            if (!UI.Chat.isSendPersonas()) {
+                info.avatar = undefined;
+                info.persona = undefined;
+            }
             currentController.sendPersona(info);
         } else {
             console.debug("[CHAT] Attempt to send Persona while disconnected. Ignoring.", info);

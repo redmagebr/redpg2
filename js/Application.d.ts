@@ -2302,6 +2302,7 @@ declare module UI.SoundController.MusicPlayer {
 declare module UI.Chat {
     var unseenMessages: number;
     var messageCounter: number;
+    function isSendPersonas(): boolean;
     function doAutomation(): boolean;
     function callSelf(roomid: number, log?: boolean): void;
     function addRoomChangedListener(listener: Listener | Function): void;
@@ -2335,6 +2336,7 @@ declare module UI.Chat.PersonaManager {
     function getRoom(): Room;
     function createAndUsePersona(name: string, avatar: String): void;
     function addListener(listener: Listener): void;
+    function sendPersonas(): void;
     function setPersona(name: String, avatar: String, element: HTMLElement): void;
     function getPersonaName(): String;
     function getPersonaAvatar(): String;

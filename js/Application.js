@@ -10601,6 +10601,10 @@ var Server;
         Chat.sendStatus = sendStatus;
         function sendPersona(info) {
             if (Chat.currentController.isReady()) {
+                if (!UI.Chat.isSendPersonas()) {
+                    info.avatar = undefined;
+                    info.persona = undefined;
+                }
                 Chat.currentController.sendPersona(info);
             }
             else {
@@ -11752,6 +11756,7 @@ ptbr.setLingo("_CHATBUTTONHOLLYWOOD_", "Ativar/Desativar modo Cutscene");
 ptbr.setLingo("_CHATBUTTONMOOD_", "Escolher efeito de tela");
 ptbr.setLingo("_CHATBUTTONLINGO_", "Abrir gerenciador de línguas");
 ptbr.setLingo("_CHATBUTTONCOMBAT_", "Abrir gerenciador de combate");
+ptbr.setLingo("_CHATBUTTONSENDPERSONAS_", "Ativa/Desativa o envio de Personas");
 ptbr.setLingo("_CHATBUTTONSEND_", "Enviar");
 ptbr.setLingo("_CHATPERSONAMANAGERBUTTON_", "Abrir administrador de personas");
 ptbr.setLingo("_CHATDICETOWER_", "Ativar/Desativar rolagem secreta");
@@ -14844,6 +14849,12 @@ var UI;
         for (var i = 0; i < chatHelperss.length; i++) {
             chatHelpers.push(chatHelperss[i]);
         }
+        // Buttons
+        var personaButton = document.getElementById("chatPersonaButton");
+        personaButton.addEventListener("click", function () {
+            personaButton.classList.toggle("on");
+            UI.Chat.PersonaManager.sendPersonas();
+        });
         // Config Listeners
         Application.Config.getConfig("chatfontsize").addChangeListener({
             chatBox: chatBox,
@@ -14891,6 +14902,10 @@ var UI;
         //var roomListeners : Array<Listener> = [];
         var roomTrigger = new Trigger();
         Chat.messageCounter = 0;
+        function isSendPersonas() {
+            return !personaButton.classList.contains("on");
+        }
+        Chat.isSendPersonas = isSendPersonas;
         function doAutomation() {
             return !printingMany;
         }
@@ -15405,12 +15420,16 @@ var UI;
             function triggerListeners() {
                 changeTrigger.trigger(currentPersonaName, currentPersonaAvatar);
                 if (Server.Chat.isConnected()) {
-                    Server.Chat.sendPersona({
-                        persona: currentPersonaName,
-                        avatar: currentPersonaAvatar
-                    });
+                    sendPersonas();
                 }
             }
+            function sendPersonas() {
+                Server.Chat.sendPersona({
+                    persona: currentPersonaName,
+                    avatar: currentPersonaAvatar
+                });
+            }
+            PersonaManager.sendPersonas = sendPersonas;
             function setPersona(name, avatar, element) {
                 if (currentElement !== null)
                     currentElement.classList.remove("active");

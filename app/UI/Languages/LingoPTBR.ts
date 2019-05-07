@@ -347,6 +347,7 @@ ptbr.setLingo("_CHATBUTTONHOLLYWOOD_", "Ativar/Desativar modo Cutscene");
 ptbr.setLingo("_CHATBUTTONMOOD_", "Escolher efeito de tela");
 ptbr.setLingo("_CHATBUTTONLINGO_", "Abrir gerenciador de línguas");
 ptbr.setLingo("_CHATBUTTONCOMBAT_", "Abrir gerenciador de combate");
+ptbr.setLingo("_CHATBUTTONSENDPERSONAS_", "Ativa/Desativa o envio de Personas");
 ptbr.setLingo("_CHATBUTTONSEND_", "Enviar");
 ptbr.setLingo("_CHATPERSONAMANAGERBUTTON_", "Abrir administrador de personas");
 ptbr.setLingo("_CHATDICETOWER_", "Ativar/Desativar rolagem secreta");

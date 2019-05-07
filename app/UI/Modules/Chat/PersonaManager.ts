@@ -109,11 +109,15 @@ module UI.Chat.PersonaManager {
         changeTrigger.trigger(currentPersonaName, currentPersonaAvatar);
 
         if (Server.Chat.isConnected()) {
-            Server.Chat.sendPersona(<PersonaInfo> {
-                persona : currentPersonaName,
-                avatar : currentPersonaAvatar
-            });
+            sendPersonas();
         }
+    }
+
+    export function sendPersonas () {
+        Server.Chat.sendPersona(<PersonaInfo> {
+            persona : currentPersonaName,
+            avatar : currentPersonaAvatar
+        });
     }
 
     export function setPersona (name : String, avatar : String, element : HTMLElement) {

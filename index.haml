@@ -444,6 +444,7 @@
           #chatMessages
         #chatScrollDown
         #chatButtonsBox
+          %a.chatRightButton.language#chatPersonaButton{:data => {:titlelingo => "_CHATBUTTONSENDPERSONAS_"}}
           %a.chatRightButton.icons-chatMood.language#chatMoodButton{:data => {:titlelingo => "_CHATBUTTONMOOD_"}}
           %a.chatRightButton.icons-chatLeave.language{:data => {:titlelingo => "_CHATBUTTONLEAVE_"}, :onclick => "UI.Chat.leave();"}
           %a.chatRightButton.icons-chatFontPlus.language{:data => {:titlelingo => "_CHATBUTTONFONTPLUS_"}, :onclick => "Application.Config.getConfig('chatfontsize').storeValue(Application.Config.getConfig('chatfontsize').getValue() + 1);"}

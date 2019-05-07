@@ -17,6 +17,13 @@ module UI.Chat {
         chatHelpers.push(<HTMLElement> chatHelperss[i]);
     }
 
+    // Buttons
+    let personaButton = document.getElementById("chatPersonaButton");
+    personaButton.addEventListener("click", () => {
+        personaButton.classList.toggle("on");
+        UI.Chat.PersonaManager.sendPersonas();
+    });
+
     // Config Listeners
     Application.Config.getConfig("chatfontsize").addChangeListener(<Listener> {
         chatBox : chatBox,
@@ -73,6 +80,10 @@ module UI.Chat {
     //var roomListeners : Array<Listener> = [];
     var roomTrigger = new Trigger();
     export var messageCounter : number = 0;
+
+    export function isSendPersonas () {
+        return !personaButton.classList.contains("on");
+    }
 
     export function doAutomation () {
         return !printingMany;
