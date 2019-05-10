@@ -236,6 +236,10 @@ change.addMessage("Botão adicionado para esconder personas.", "pt");
 change.addMessage("É possível deletar pastas inteiras de Imagens e Sons.", "pt");
 change.addMessage("Lingo recebeu suporte a história e quotes. Usage: /linghist Davek, História!   ,   /lingquo Davek, João, Mensagem", "pt");
 
+change = new Changelog(0, 35, 0);
+change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
+change.addMessage("/count pode incluir mensagens para imprimir em modo história. Isso é uma maneira mais limpa e discreta de fazer timers. Exemplo: /count 10, Algum evento com tempo..", "pt");
+
 
 //delete (change);
 

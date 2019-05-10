@@ -7185,21 +7185,35 @@ var MessageCountdown = /** @class */ (function (_super) {
         if (this.getMsg() === "") {
             return null;
         }
-        var p = document.createElement("p");
         var counter = parseInt(this.getMsg());
         this.updateCounter(counter);
-        var span = document.createElement("span");
-        if (counter > 0) {
-            span.classList.add("chatMessageCounterSpan");
-            span.appendChild(this.counter);
-            p.classList.add("chatMessageCounter");
+        if (this.getStory() != undefined) {
+            var story = new MessageStory();
+            story.origin = this.origin;
+            story.setMsg(this.getStory());
+            var html = story.getHTML();
+            this.counterContainer = document.createElement("span");
+            this.counterContainer.appendChild(document.createTextNode(" ("));
+            this.counterContainer.appendChild(this.counter);
+            this.counterContainer.appendChild(document.createTextNode(")"));
+            html.appendChild(this.counterContainer);
+            return html;
         }
         else {
-            span.classList.add("chatMessageCounterEndSpan");
-            p.classList.add("chatMessageCounterEnd");
+            var p = document.createElement("p");
+            var span = document.createElement("span");
+            if (counter > 0) {
+                span.classList.add("chatMessageCounterSpan");
+                span.appendChild(this.counter);
+                p.classList.add("chatMessageCounter");
+            }
+            else {
+                span.classList.add("chatMessageCounterEndSpan");
+                p.classList.add("chatMessageCounterEnd");
+            }
+            p.appendChild(span);
+            return p;
         }
-        p.appendChild(span);
-        return p;
     };
     MessageCountdown.prototype.receiveCommand = function (slash, msg) {
         if (MessageCountdown.timeout !== null) {
@@ -7211,6 +7225,12 @@ var MessageCountdown = /** @class */ (function (_super) {
             message.setCounter(0);
             UI.Chat.sendMessage(message);
             MessageCountdown.lastTimeout = null;
+        }
+        var div = msg.indexOf(",");
+        if (div != -1) {
+            var story = msg.substr(div + 1, msg.length - div - 1).trim();
+            this.setStory(story);
+            msg = msg.substr(0, div).trim();
         }
         var counter = parseInt(msg);
         if (isNaN(counter)) {
@@ -7266,6 +7286,16 @@ var MessageCountdown = /** @class */ (function (_super) {
         if (e < curr) {
             this.counter.nodeValue = e.toString();
         }
+        if (this.counterContainer != undefined && e <= 0) {
+            this.counterContainer.parentElement.removeChild(this.counterContainer);
+            this.counterContainer = undefined;
+        }
+    };
+    MessageCountdown.prototype.setStory = function (storyMessage) {
+        this.setSpecial("story", storyMessage);
+    };
+    MessageCountdown.prototype.getStory = function () {
+        return this.getSpecial("story", undefined);
     };
     MessageCountdown.timeout = null;
     return MessageCountdown;

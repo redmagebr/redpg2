@@ -1,5 +1,6 @@
 class MessageCountdown extends Message {
     private counter : Text = document.createTextNode("99999");
+    private counterContainer : HTMLElement;
     public module : string = "countdown";
     public static timeout : Number = null;
     public static lastTimeout : MessageCountdown;
@@ -25,24 +26,38 @@ class MessageCountdown extends Message {
             return null;
         }
 
-        var p = document.createElement("p");
 
         var counter = parseInt(this.getMsg());
         this.updateCounter(counter);
 
-        var span = document.createElement("span");
-        if (counter > 0) {
-            span.classList.add("chatMessageCounterSpan");
-            span.appendChild(this.counter);
-            p.classList.add("chatMessageCounter");
+        if (this.getStory() != undefined) {
+            let story = new MessageStory();
+            story.origin = this.origin;
+            story.setMsg(this.getStory());
+
+            let html = story.getHTML();
+
+            this.counterContainer = document.createElement("span");
+            this.counterContainer.appendChild(document.createTextNode(" ("));
+            this.counterContainer.appendChild(this.counter);
+            this.counterContainer.appendChild(document.createTextNode(")"));
+            html.appendChild(this.counterContainer);
+
+            return html;
         } else {
-            span.classList.add("chatMessageCounterEndSpan");
-            p.classList.add("chatMessageCounterEnd");
+            var p = document.createElement("p");
+            var span = document.createElement("span");
+            if (counter > 0) {
+                span.classList.add("chatMessageCounterSpan");
+                span.appendChild(this.counter);
+                p.classList.add("chatMessageCounter");
+            } else {
+                span.classList.add("chatMessageCounterEndSpan");
+                p.classList.add("chatMessageCounterEnd");
+            }
+            p.appendChild(span);
+            return p;
         }
-
-        p.appendChild(span);
-
-        return p;
     }
 
     public receiveCommand (slash : string, msg : string) : boolean {
@@ -55,6 +70,13 @@ class MessageCountdown extends Message {
             message.setCounter(0);
             UI.Chat.sendMessage(message);
             MessageCountdown.lastTimeout = null;
+        }
+
+        let div = msg.indexOf(",");
+        if (div != -1) {
+            let story = msg.substr(div + 1, msg.length - div - 1).trim();
+            this.setStory(story);
+            msg = msg.substr(0, div).trim();
         }
 
         var counter = parseInt(msg);
@@ -122,6 +144,18 @@ class MessageCountdown extends Message {
         if (e < curr) {
             this.counter.nodeValue = e.toString();
         }
+        if (this.counterContainer != undefined && e <= 0) {
+            this.counterContainer.parentElement.removeChild(this.counterContainer);
+            this.counterContainer = undefined;
+        }
+    }
+
+    public setStory (storyMessage : string) {
+        this.setSpecial("story", storyMessage);
+    }
+
+    public getStory () {
+        return this.getSpecial("story", undefined);
     }
 }
 

@@ -1517,17 +1517,20 @@ declare class MessageSystem extends Message {
 }
 declare class MessageCountdown extends Message {
     private counter;
+    private counterContainer;
     module: string;
     static timeout: Number;
     static lastTimeout: MessageCountdown;
     constructor();
-    createHTML(): HTMLParagraphElement;
+    createHTML(): HTMLElement;
     receiveCommand(slash: string, msg: string): boolean;
     getTarget(): any;
     setTarget(id: number): void;
     setCounter(e: number): void;
     getCounter(): number;
     updateCounter(e: number): void;
+    setStory(storyMessage: string): void;
+    getStory(): any;
 }
 declare class MessageVote extends Message {
     module: string;

@@ -477,7 +477,7 @@ ptbr.setLingo("_CHATHELPCOMMANDSINTRO_", "Comandos disponíveis:");
 ptbr.setLingo("_CHATHELPMESSAGEACTION_", "Envia o comando como uma ação com a Persona atual, e.g. /me pula da ponte");
 ptbr.setLingo("_CHATHELPMESSAGEBGM_", "Envia o comando como uma música, e.g. /splay link/para/musica.mp3");
 ptbr.setLingo("_CHATHELPMESSAGESE_", "Envia o comando como um efeito sonoro, e.g. /seplay link/para/efeito.wav");
-ptbr.setLingo("_CHATHELPMESSAGECOUNTDOWN_", "Inicia uma contagem regressiva, em segundos, e.g. /count 10");
+ptbr.setLingo("_CHATHELPMESSAGECOUNTDOWN_", "Inicia uma contagem regressiva, em segundos. Também é possível adicionar uma mensagem para imprimir em história. e.g. /count 10    ou    /count 5, Faça algo!");
 ptbr.setLingo("_CHATHELPMESSAGEIMAGE_", "Envia o comando como uma imagem, e.g. /imagem link/para/imagem.jpg");
 ptbr.setLingo("_CHATHELPMESSAGEOFF_", "Envia o comando como uma mensagem fora de personagem, e.g. /off vou no banheiro");
 ptbr.setLingo("_CHATHELPMESSAGEQUOTE_", "Envia o comando como uma mensagem de citação, e.g. /citar Heráclito, Nada é permanente, exceto a mudança.");
