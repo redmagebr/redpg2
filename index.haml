@@ -153,6 +153,13 @@
             %b#configError.language="_CONFIGERROR_"
             %b#configSuccess.language="_CONFIGSUCCESS_"
           %label.configLabel
+            %b.configName.language="_CONFIGDARK_"
+            %select.configInput#configChatDark
+              %option.language{:value => "false"}="_CONFIGDARKNO_"
+              %option.language{:value => "true"}="_CONFIGDARKYES_"
+            .configExplanation.language
+              _CONFIGDARKEXP_
+          %label.configLabel
             %b.configName.language="_CONFIGCHATMAXMESSAGES_"
             %input.configInput#configChatMaxMessages{:type => "number", :value => "120", :min => "60", :max => "10000"}
             .configExplanation.language

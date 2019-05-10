@@ -11864,6 +11864,10 @@ ptbr.setLingo("_CONFIGCHATHELPOP02_", "Não imprimir mensagens de ajuda");
 ptbr.setLingo("_CONFIGANIMATIONTIME_", "Duração de animações:");
 ptbr.setLingo("_ANIMATIONTIMEEXP01_", "Todas as animações do RedPG serão proporcionais a essa configuração.");
 ptbr.setLingo("_ANIMATIONTIMEEXP02_", "Abaixar essa configuração pode ajudar em dispositivos mais lentos que estejam tendo dificuldades em processar as animações do RedPG.");
+ptbr.setLingo("_CONFIGDARK_", "Dark Mode:");
+ptbr.setLingo("_CONFIGDARKNO_", "Não");
+ptbr.setLingo("_CONFIGDARKYES_", "~I am the night~");
+ptbr.setLingo("_CONFIGDARKEXP_", "Define se o site deve utilizar o modo Dark em questão de cores.");
 ptbr.setLingo("_CONFIGCHATZEBRAEXP_", "Define se imagens devem ser destacadas linha a linha.");
 ptbr.setLingo("_CONFIGCHATZEBRA_", "Zebra:");
 ptbr.setLingo("_CONFIGCHATZEBRANO_", "Imprimir mensagens normalmente");
@@ -11973,6 +11977,7 @@ var UI;
     Application.Config.registerConfiguration("chatzebra", new BooleanConfiguration(false)); // Show striped messages
     Application.Config.registerConfiguration("chatfontsize", new NumberConfiguration(16, 12, 32)); // Chat Font Size
     Application.Config.registerConfiguration("chatfontfamily", new Configuration("caudex")); // Chat Font Family
+    Application.Config.registerConfiguration("uiDark", new BooleanConfiguration(false)); // Dark mode
     Application.Config.registerConfiguration("animTime", new NumberConfiguration(150, 0, 300)); // Animation Time
     Application.Config.registerConfiguration("language", new LanguageConfiguration()); // Current Language
     Application.Config.registerConfiguration("fsmode", new BooleanConfiguration(false)); // Full Screen Mode (forced)
@@ -11997,6 +12002,21 @@ var UI;
         document.title = str + " RedPG";
     }
     UI.addTitle = addTitle;
+    Application.Config.getConfig("uiDark").addChangeListener({
+        handleEvent: function (e) {
+            UI.setZebra(e.getValue());
+        }
+    });
+    function setZebra(on) {
+        var mainWindow = document.getElementById("mainWindow");
+        if (on) {
+            mainWindow.classList.add("dark");
+        }
+        else {
+            mainWindow.classList.remove("dark");
+        }
+    }
+    UI.setZebra = setZebra;
 })(UI || (UI = {}));
 function RedPGAccidentPreventionSystem(e) {
     if (UI.Chat.inRoom()) {
@@ -12415,6 +12435,7 @@ var UI;
         bindInput("chatshowhelp", document.getElementById("configChatShowHelp"));
         bindInput("chatAutoRolls", document.getElementById("configAutoRollApplication"));
         bindInput("chatzebra", document.getElementById("configChatZebra"));
+        bindInput("uiDark", document.getElementById("configChatDark"));
         bindInput("animTime", document.getElementById("configAnimTime"));
         bindInput("autoBGM", document.getElementById("configChatAutoBGM"));
         bindInput("autoSE", document.getElementById("configChatAutoSE"));
@@ -12654,6 +12675,7 @@ change.addMessage("Lingo recebeu suporte a história e quotes. Usage: /linghist 
 change = new Changelog(0, 35, 0);
 change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
 change.addMessage("/count pode incluir mensagens para imprimir em modo história. Isso é uma maneira mais limpa e discreta de fazer timers. Exemplo: /count 10, Algum evento com tempo..", "pt");
+change.addMessage("Opção Dark Mode adicionada às opções. 100% BETA", "pt");
 //delete (change);
 Changelog.finished();
 /// <reference path='../../Changelog.ts' />

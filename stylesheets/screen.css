@@ -7276,6 +7276,7 @@ body {
   max-width: 95.5%;
   height: auto;
   background-color: white;
+  color: #000;
   position: absolute;
   z-index: 4;
   left: 1%;
@@ -7286,7 +7287,7 @@ body {
   display: none;
 }
 
-/* line 52, ../sass/mainConfig.scss */
+/* line 53, ../sass/mainConfig.scss */
 .configExplanation:before {
   border: solid;
   border-color: #333 transparent;
@@ -7297,12 +7298,12 @@ body {
   position: absolute;
 }
 
-/* line 62, ../sass/mainConfig.scss */
+/* line 63, ../sass/mainConfig.scss */
 .configLabel:hover .configExplanation {
   display: block;
 }
 
-/* line 66, ../sass/mainConfig.scss */
+/* line 67, ../sass/mainConfig.scss */
 #configContents {
   padding-bottom: 40px;
 }
@@ -9138,4 +9139,169 @@ body {
 /* line 6, ../sass/mainWindowIFrames.scss */
 .iframeContainer {
   overflow-y: hidden !important;
+}
+
+/* line 1, ../sass/_dark.scss */
+#mainWindow.dark {
+  background-image: url('data:image/gif;base64,R0lGODlhEAAQAMQAABwcHBwbGy0tLTc3Ny0sLDExMRscHDEwMBsbGyYnJyUkJCQkJTAxMC0tLCcnJyQkJENDQwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH/C1hNUCBEYXRhWE1QPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS4zLWMwMTEgNjYuMTQ1NjYxLCAyMDEyLzAyLzA2LTE0OjU2OjI3ICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdFJlZj0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlUmVmIyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M2IChXaW5kb3dzKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpCQzE3MTNGQjcyREExMUU5QkJENUU0OEEyODA0NkQzMCIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpCQzE3MTNGQzcyREExMUU5QkJENUU0OEEyODA0NkQzMCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkJDMTcxM0Y5NzJEQTExRTlCQkQ1RTQ4QTI4MDQ2RDMwIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkJDMTcxM0ZBNzJEQTExRTlCQkQ1RTQ4QTI4MDQ2RDMwIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+Af/+/fz7+vn49/b19PPy8fDv7u3s6+rp6Ofm5eTj4uHg397d3Nva2djX1tXU09LR0M/OzczLysnIx8bFxMPCwcC/vr28u7q5uLe2tbSzsrGwr66trKuqqainpqWko6KhoJ+enZybmpmYl5aVlJOSkZCPjo2Mi4qJiIeGhYSDgoGAf359fHt6eXh3dnV0c3JxcG9ubWxramloZ2ZlZGNiYWBfXl1cW1pZWFdWVVRTUlFQT05NTEtKSUhHRkVEQ0JBQD8+PTw7Ojk4NzY1NDMyMTAvLi0sKyopKCcmJSQjIiEgHx4dHBsaGRgXFhUUExIREA8ODQwLCgkIBwYFBAMCAQAAIfkEAAAAAAAsAAAAABAAEAAABV8ghDjMwDiBSJooAC3N0TyQC8u0Qz/JAj26X+9XECgghh+heEw+CKzUqHSSknC1V2yWhQ2Bu2/w4VwakUomREVFsaO2LS2OHYvDvoe6vFdG31VsWHRccXdCeWN8Z4tHIQA7');
+}
+/* line 4, ../sass/_dark.scss */
+#mainWindow.dark #leftLoading, #mainWindow.dark #rightLoading {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+/* line 8, ../sass/_dark.scss */
+#mainWindow.dark .mainWindowContent {
+  background-color: #222222;
+  color: #fff;
+}
+/* line 13, ../sass/_dark.scss */
+#mainWindow.dark .imagesLeftButton, #mainWindow.dark .imagesRightButton, #mainWindow.dark .imagesFolderIcon, #mainWindow.dark .folderRightButton, #mainWindow.dark .folderLeftButton {
+  filter: invert(1);
+}
+/* line 17, ../sass/_dark.scss */
+#mainWindow.dark .imagesFolderTitle:hover, #mainWindow.dark .imagesRow:hover {
+  background-color: #3c3c3c;
+  color: #eaeaea;
+}
+/* line 22, ../sass/_dark.scss */
+#mainWindow.dark .imagesFolderTitle:active, #mainWindow.dark .imagesRow:active {
+  background-color: #3c3c3c;
+  color: #eaeaea;
+}
+/* line 27, ../sass/_dark.scss */
+#mainWindow.dark .gamesMainDiv:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+/* line 31, ../sass/_dark.scss */
+#mainWindow.dark .gamesRoomP:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+/* line 35, ../sass/_dark.scss */
+#mainWindow.dark .textLink, #mainWindow.dark .sheetNameLink, #mainWindow.dark .mainWindowParagraphSubmit, #mainWindow.dark .picaTool, #mainWindow.dark .picaToolButton, #mainWindow.dark .leftPicaToolButton, #mainWindow.dark .rightPicaToolButton, #mainWindow.dark .leftPicaTool, #mainWindow.dark .rightPicaTool {
+  color: #6a6bff;
+}
+/* line 37, ../sass/_dark.scss */
+#mainWindow.dark .textLink:hover, #mainWindow.dark .sheetNameLink:hover, #mainWindow.dark .mainWindowParagraphSubmit:hover, #mainWindow.dark .picaTool:hover, #mainWindow.dark .picaToolButton:hover, #mainWindow.dark .leftPicaToolButton:hover, #mainWindow.dark .rightPicaToolButton:hover, #mainWindow.dark .leftPicaTool:hover, #mainWindow.dark .rightPicaTool:hover {
+  color: #a19dff;
+}
+/* line 40, ../sass/_dark.scss */
+#mainWindow.dark .textLink:active, #mainWindow.dark .sheetNameLink:active, #mainWindow.dark .mainWindowParagraphSubmit:active, #mainWindow.dark .picaTool:active, #mainWindow.dark .picaToolButton:active, #mainWindow.dark .leftPicaToolButton:active, #mainWindow.dark .rightPicaToolButton:active, #mainWindow.dark .leftPicaTool:active, #mainWindow.dark .rightPicaTool:active {
+  color: #4d4db4;
+}
+/* line 45, ../sass/_dark.scss */
+#mainWindow.dark .hoverable:hover, #mainWindow.dark .gameInvitesEmptyP:hover, #mainWindow.dark .gameInvitesContainer:hover, #mainWindow.dark .configLabel:hover, #mainWindow.dark .mainWindowParagraphSubmit:hover, #mainWindow.dark #styleEditorSubmit:hover, #mainWindow.dark .styleLabel:hover, #mainWindow.dark .combatRow:hover, #mainWindow.dark .gameInvitesEmptyP:hover, #mainWindow.dark .gameInvitesContainer:hover, #mainWindow.dark .configLabel:hover, #mainWindow.dark .mainWindowParagraphSubmit:hover, #mainWindow.dark #styleEditorSubmit:hover, #mainWindow.dark .styleLabel:hover, #mainWindow.dark .combatRow:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+/* line 49, ../sass/_dark.scss */
+#mainWindow.dark .lightHoverable:hover, #mainWindow.dark .sheetListSheet:hover, #mainWindow.dark .sheetListNoSheet:hover, #mainWindow.dark .sheetListNewSheetButton:hover, #mainWindow.dark .sheetPermRow:hover, #mainWindow.dark .changelogCurrent:hover, #mainWindow.dark .sheetListSheet:hover, #mainWindow.dark .sheetListNoSheet:hover, #mainWindow.dark .sheetListNewSheetButton:hover, #mainWindow.dark .sheetPermRow:hover, #mainWindow.dark .changelogCurrent:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+/* line 53, ../sass/_dark.scss */
+#mainWindow.dark .sheetListGameName {
+  color: #fff;
+}
+/* line 57, ../sass/_dark.scss */
+#mainWindow.dark .sheetListNewSheetButton, #mainWindow.dark .sheetListNoSheet {
+  border-left-color: #fff;
+}
+/* line 61, ../sass/_dark.scss */
+#mainWindow.dark .blackDotBackground, #mainWindow.dark .sheetListFolderContainer, #mainWindow.dark .sheetListFolderContainer {
+  background-image: url('data:image/gif;base64,R0lGODlhAQABAPcAAP////7+/v39/fz8/Pv7+/r6+vn5+fj4+Pf39/b29vX19fT09PPz8/Ly8vHx8fDw8O/v7+7u7u3t7ezs7Ovr6+rq6unp6ejo6Ofn5+bm5uXl5eTk5OPj4+Li4uHh4eDg4N/f397e3t3d3dzc3Nvb29ra2tnZ2djY2NfX19bW1tXV1dTU1NPT09LS0tHR0dDQ0M/Pz87Ozs3NzczMzMvLy8rKysnJycjIyMfHx8bGxsXFxcTExMPDw8LCwsHBwcDAwL+/v76+vr29vby8vLu7u7q6urm5ubi4uLe3t7a2trW1tbS0tLOzs7KysrGxsbCwsK+vr66urq2traysrKurq6qqqqmpqaioqKenp6ampqWlpaSkpKOjo6KioqGhoaCgoJ+fn56enp2dnZycnJubm5qampmZmZiYmJeXl5aWlpWVlZSUlJOTk5KSkpGRkZCQkI+Pj46Ojo2NjYyMjIuLi4qKiomJiYiIiIeHh4aGhoWFhYSEhIODg4KCgoGBgYCAgH9/f35+fn19fXx8fHt7e3p6enl5eXh4eHd3d3Z2dnV1dXR0dHNzc3JycnFxcXBwcG9vb25ubm1tbWxsbGtra2pqamlpaWhoaGdnZ2ZmZmVlZWRkZGNjY2JiYmFhYWBgYF9fX15eXl1dXVxcXFtbW1paWllZWVhYWFdXV1ZWVlVVVVRUVFNTU1JSUlFRUVBQUE9PT05OTk1NTUxMTEtLS0pKSklJSUhISEdHR0ZGRkVFRURERENDQ0JCQkFBQUBAQD8/Pz4+Pj09PTw8PDs7Ozo6Ojk5OTg4ODc3NzY2NjU1NTQ0NDMzMzIyMjExMTAwMC8vLy4uLi0tLSwsLCsrKyoqKikpKSgoKCcnJyYmJiUlJSQkJCMjIyIiIiEhISAgIB8fHx4eHh0dHRwcHBsbGxoaGhkZGRgYGBcXFxYWFhUVFRQUFBMTExISEhERERAQEA8PDw4ODg0NDQwMDAsLCwoKCgkJCQgICAcHBwYGBgUFBQQEBAMDAwICAgEBAQAAACH/C1hNUCBEYXRhWE1QPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS4zLWMwMTEgNjYuMTQ1NjYxLCAyMDEyLzAyLzA2LTE0OjU2OjI3ICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdFJlZj0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlUmVmIyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M2IChXaW5kb3dzKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo4OTVGNjJGODcyREUxMUU5ODJFNUVCMjFBMzhDRkZDMyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo4OTVGNjJGOTcyREUxMUU5ODJFNUVCMjFBMzhDRkZDMyI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjg5NUY2MkY2NzJERTExRTk4MkU1RUIyMUEzOENGRkMzIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjg5NUY2MkY3NzJERTExRTk4MkU1RUIyMUEzOENGRkMzIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+Af/+/fz7+vn49/b19PPy8fDv7u3s6+rp6Ofm5eTj4uHg397d3Nva2djX1tXU09LR0M/OzczLysnIx8bFxMPCwcC/vr28u7q5uLe2tbSzsrGwr66trKuqqainpqWko6KhoJ+enZybmpmYl5aVlJOSkZCPjo2Mi4qJiIeGhYSDgoGAf359fHt6eXh3dnV0c3JxcG9ubWxramloZ2ZlZGNiYWBfXl1cW1pZWFdWVVRTUlFQT05NTEtKSUhHRkVEQ0JBQD8+PTw7Ojk4NzY1NDMyMTAvLi0sKyopKCcmJSQjIiEgHx4dHBsaGRgXFhUUExIREA8ODQwLCgkIBwYFBAMCAQAAIfkEAAAAAAAsAAAAAAEAAQAACAQAAQQEADs=');
+}
+/* line 65, ../sass/_dark.scss */
+#mainWindow.dark .sheetListFolderName {
+  color: #fff;
+  background-image: url('data:image/gif;base64,R0lGODlhBAABAPcAAP////7+/v39/fz8/Pv7+/r6+vn5+fj4+Pf39/b29vX19fT09PPz8/Ly8vHx8fDw8O/v7+7u7u3t7ezs7Ovr6+rq6unp6ejo6Ofn5+bm5uXl5eTk5OPj4+Li4uHh4eDg4N/f397e3t3d3dzc3Nvb29ra2tnZ2djY2NfX19bW1tXV1dTU1NPT09LS0tHR0dDQ0M/Pz87Ozs3NzczMzMvLy8rKysnJycjIyMfHx8bGxsXFxcTExMPDw8LCwsHBwcDAwL+/v76+vr29vby8vLu7u7q6urm5ubi4uLe3t7a2trW1tbS0tLOzs7KysrGxsbCwsK+vr66urq2traysrKurq6qqqqmpqaioqKenp6ampqWlpaSkpKOjo6KioqGhoaCgoJ+fn56enp2dnZycnJubm5qampmZmZiYmJeXl5aWlpWVlZSUlJOTk5KSkpGRkZCQkI+Pj46Ojo2NjYyMjIuLi4qKiomJiYiIiIeHh4aGhoWFhYSEhIODg4KCgoGBgYCAgH9/f35+fn19fXx8fHt7e3p6enl5eXh4eHd3d3Z2dnV1dXR0dHNzc3JycnFxcXBwcG9vb25ubm1tbWxsbGtra2pqamlpaWhoaGdnZ2ZmZmVlZWRkZGNjY2JiYmFhYWBgYF9fX15eXl1dXVxcXFtbW1paWllZWVhYWFdXV1ZWVlVVVVRUVFNTU1JSUlFRUVBQUE9PT05OTk1NTUxMTEtLS0pKSklJSUhISEdHR0ZGRkVFRURERENDQ0JCQkFBQUBAQD8/Pz4+Pj09PTw8PDs7Ozo6Ojk5OTg4ODc3NzY2NjU1NTQ0NDMzMzIyMjExMTAwMC8vLy4uLi0tLSwsLCsrKyoqKikpKSgoKCcnJyYmJiUlJSQkJCMjIyIiIiEhISAgIB8fHx4eHh0dHRwcHBsbGxoaGhkZGRgYGBcXFxYWFhUVFRQUFBMTExISEhERERAQEA8PDw4ODg0NDQwMDAsLCwoKCgkJCQgICAcHBwYGBgUFBQQEBAMDAwICAgEBAQAAACH/C1hNUCBEYXRhWE1QPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS4zLWMwMTEgNjYuMTQ1NjYxLCAyMDEyLzAyLzA2LTE0OjU2OjI3ICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdFJlZj0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlUmVmIyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M2IChXaW5kb3dzKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo4NDdGQkQzNDcyREUxMUU5QjE1RUQ1NTU0QkIwNUE2QSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo4NDdGQkQzNTcyREUxMUU5QjE1RUQ1NTU0QkIwNUE2QSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjg0N0ZCRDMyNzJERTExRTlCMTVFRDU1NTRCQjA1QTZBIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjg0N0ZCRDMzNzJERTExRTlCMTVFRDU1NTRCQjA1QTZBIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+Af/+/fz7+vn49/b19PPy8fDv7u3s6+rp6Ofm5eTj4uHg397d3Nva2djX1tXU09LR0M/OzczLysnIx8bFxMPCwcC/vr28u7q5uLe2tbSzsrGwr66trKuqqainpqWko6KhoJ+enZybmpmYl5aVlJOSkZCPjo2Mi4qJiIeGhYSDgoGAf359fHt6eXh3dnV0c3JxcG9ubWxramloZ2ZlZGNiYWBfXl1cW1pZWFdWVVRTUlFQT05NTEtKSUhHRkVEQ0JBQD8+PTw7Ojk4NzY1NDMyMTAvLi0sKyopKCcmJSQjIiEgHx4dHBsaGRgXFhUUExIREA8ODQwLCgkIBwYFBAMCAQAAIfkEAAAAAAAsAAAAAAQAAQAACAYAAQgEEBAAOw==');
+}
+/* line 70, ../sass/_dark.scss */
+#mainWindow.dark #dropboxBGMInput {
+  color: #6a6bff;
+}
+/* line 73, ../sass/_dark.scss */
+#mainWindow.dark #dropboxBGMInput:hover {
+  color: #a19dff;
+}
+/* line 76, ../sass/_dark.scss */
+#mainWindow.dark #dropboxBGMInput:active {
+  color: #4d4db4;
+}
+/* line 81, ../sass/_dark.scss */
+#mainWindow.dark #chatBox {
+  background-color: #222222;
+  border-color: #252525;
+  color: #fff;
+}
+/* line 87, ../sass/_dark.scss */
+#mainWindow.dark #chatTitle {
+  color: #fff;
+}
+/* line 92, ../sass/_dark.scss */
+#mainWindow.dark .chatMessage:hover, #mainWindow.dark .chatMessageParagraph:hover, #mainWindow.dark .chatMessageStory:hover, #mainWindow.dark .chatOff:hover, #mainWindow.dark .chatAction:hover, #mainWindow.dark .chatMessageDice:hover, #mainWindow.dark .chatMessageTurn:hover, #mainWindow.dark .chatMessageSheetdamage:hover, #mainWindow.dark .chatWhisper:hover, #mainWindow.dark .chatMessageShare:hover, #mainWindow.dark .chatMessageVote:hover, #mainWindow.dark .chatMessageCounter:hover, #mainWindow.dark .chatMessageSystem:hover, #mainWindow.dark .chatMessageQuoteParagraph:hover, #mainWindow.dark .chatMessageNotification:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+/* line 97, ../sass/_dark.scss */
+#mainWindow.dark .chatMessageStory, #mainWindow.dark .chatMessageShare {
+  color: #638ab0;
+}
+/* line 101, ../sass/_dark.scss */
+#mainWindow.dark .chatRoleplayImportant {
+  color: #3b5788;
+}
+/* line 105, ../sass/_dark.scss */
+#mainWindow.dark .chatRoleplayAction {
+  color: #ff7474;
+}
+/* line 109, ../sass/_dark.scss */
+#mainWindow.dark .chatMessageDice {
+  color: #b773b9;
+}
+/* line 112, ../sass/_dark.scss */
+#mainWindow.dark .chatMessageDice.shame {
+  color: #ff7474;
+}
+/* line 118, ../sass/_dark.scss */
+#mainWindow.dark .chatMessageSheetdamage.HP {
+  color: #c74240;
+}
+/* line 122, ../sass/_dark.scss */
+#mainWindow.dark .chatMessageSheetdamage.Exp {
+  color: #a8a8a8;
+}
+/* line 126, ../sass/_dark.scss */
+#mainWindow.dark .chatMessageSheetdamage.MP {
+  color: #4d43ba;
+}
+/* line 131, ../sass/_dark.scss */
+#mainWindow.dark .chatMessageCounter {
+  border-bottom-color: #c74240;
+}
+/* line 135, ../sass/_dark.scss */
+#mainWindow.dark .chatMessageCounterEnd {
+  border-top-color: #c74240;
+}
+/* line 139, ../sass/_dark.scss */
+#mainWindow.dark .chatMessageCounterSpan {
+  background-color: #413440;
+  border-color: #351934;
+  color: #fff;
+}
+/* line 145, ../sass/_dark.scss */
+#mainWindow.dark .chatRoleplayTranslation {
+  color: #b636b7;
+}
+/* line 149, ../sass/_dark.scss */
+#mainWindow.dark #chatDiceSubmit {
+  background-color: transparent;
+}
+/* line 153, ../sass/_dark.scss */
+#mainWindow.dark .icons-chatFormStateNormal, #mainWindow.dark .chatInput, #mainWindow.dark .icons-chatSend, #mainWindow.dark #chatDiceSubmit, #mainWindow.dark #personaAddButton, #mainWindow.dark .chatRightButton, #mainWindow.dark .chatAvatarChoiceBoxUse, #mainWindow.dark .chatAvatarChoiceBoxDelete {
+  filter: invert(1);
+}
+/* line 157, ../sass/_dark.scss */
+#mainWindow.dark .zebra .printedMessage:nth-child(odd) {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+/* line 159, ../sass/_dark.scss */
+#mainWindow.dark .zebra .printedMessage:nth-child(odd):hover {
+  background-color: rgba(255, 255, 255, 0.15);
 }

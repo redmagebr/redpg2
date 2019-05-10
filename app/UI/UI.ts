@@ -39,7 +39,7 @@ module UI {
     Application.Config.registerConfiguration("chatzebra", new BooleanConfiguration(false)); // Show striped messages
     Application.Config.registerConfiguration("chatfontsize", new NumberConfiguration(16, 12, 32)); // Chat Font Size
     Application.Config.registerConfiguration("chatfontfamily", new Configuration("caudex")); // Chat Font Family
-
+    Application.Config.registerConfiguration("uiDark", new BooleanConfiguration(false)); // Dark mode
     Application.Config.registerConfiguration("animTime", new NumberConfiguration(150, 0, 300)); // Animation Time
     Application.Config.registerConfiguration("language", new LanguageConfiguration()); // Current Language
     Application.Config.registerConfiguration("fsmode", new BooleanConfiguration(false)); // Full Screen Mode (forced)
@@ -63,5 +63,20 @@ module UI {
 
     export function addTitle (str : string) {
         document.title = str + " RedPG";
+    }
+
+    Application.Config.getConfig("uiDark").addChangeListener(<Listener> {
+        handleEvent : function (e : BooleanConfiguration) {
+            UI.setZebra(e.getValue());
+        }
+    });
+
+    export function setZebra (on : boolean) {
+        let mainWindow = document.getElementById("mainWindow");
+        if (on) {
+            mainWindow.classList.add("dark");
+        } else {
+            mainWindow.classList.remove("dark");
+        }
     }
 }

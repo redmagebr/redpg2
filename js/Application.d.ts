@@ -2093,6 +2093,7 @@ declare module UI {
     var idRightVideo: string;
     function resetTitle(): void;
     function addTitle(str: string): void;
+    function setZebra(on: boolean): void;
 }
 declare function RedPGAccidentPreventionSystem(e: Event): string;
 declare module UI.WindowManager {

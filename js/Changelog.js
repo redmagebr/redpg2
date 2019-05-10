@@ -239,6 +239,7 @@ change.addMessage("Lingo recebeu suporte a história e quotes. Usage: /linghist 
 change = new Changelog(0, 35, 0);
 change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
 change.addMessage("/count pode incluir mensagens para imprimir em modo história. Isso é uma maneira mais limpa e discreta de fazer timers. Exemplo: /count 10, Algum evento com tempo..", "pt");
+change.addMessage("Opção Dark Mode adicionada às opções. 100% BETA", "pt");
 
 
 //delete (change);

@@ -1,0 +1,163 @@
+#mainWindow.dark {
+  background-image: inline-image("dataurl/backgroundMinimal.gif");
+
+  #leftLoading, #rightLoading {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  .mainWindowContent {
+    background-color: #222222;
+    color: #fff;
+  }
+
+  .imagesLeftButton, .imagesRightButton, .imagesFolderIcon, .folderRightButton, .folderLeftButton {
+    filter: invert(1);
+  }
+
+  .imagesFolderTitle:hover, .imagesRow:hover {
+    background-color: #3c3c3c;
+    color: #eaeaea;
+  }
+
+  .imagesFolderTitle:active, .imagesRow:active {
+    background-color: #3c3c3c;
+    color: #eaeaea;
+  }
+
+  .gamesMainDiv:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .gamesRoomP:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .textLink {
+    color: #6a6bff;
+    &:hover {
+      color: #a19dff;
+    }
+    &:active {
+      color: #4d4db4;
+    }
+  }
+
+  .hoverable:hover, .gameInvitesEmptyP:hover, .gameInvitesContainer:hover, .configLabel:hover, .mainWindowParagraphSubmit:hover, #styleEditorSubmit:hover, .styleLabel:hover, .combatRow:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .lightHoverable:hover, .sheetListSheet:hover, .sheetListNoSheet:hover, .sheetListNewSheetButton:hover, .sheetPermRow:hover, .changelogCurrent:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .sheetListGameName {
+    color: #fff;
+  }
+
+  .sheetListNewSheetButton, .sheetListNoSheet {
+    border-left-color: #fff;
+  }
+
+  .blackDotBackground, .sheetListFolderContainer {
+    background-image: inline-image("dataurl/pixelWhiteDot.gif");
+  }
+
+  .sheetListFolderName {
+    color: #fff;
+    background-image: inline-image("dataurl/pixelWhiteRow.gif");
+  }
+
+  #dropboxBGMInput {
+
+    color: #6a6bff;
+    &:hover {
+      color: #a19dff;
+    }
+    &:active {
+      color: #4d4db4;
+    }
+  }
+
+  #chatBox {
+    background-color: #222222;
+    border-color: #252525;
+    color: #fff;
+  }
+
+  #chatTitle {
+    color: #fff;
+  }
+
+  .chatMessage {
+    &:hover {
+      background-color: rgba(255,255,255,.2);
+    }
+  }
+
+  .chatMessageStory, .chatMessageShare {
+    color: #638ab0;
+  }
+
+  .chatRoleplayImportant {
+    color: #3b5788;
+  }
+
+  .chatRoleplayAction {
+    color: #ff7474
+  }
+
+  .chatMessageDice {
+    color: #b773b9;
+
+    &.shame {
+      color: #ff7474;
+    }
+  }
+
+  .chatMessageSheetdamage {
+    &.HP {
+      color: #c74240;
+    }
+
+    &.Exp {
+      color: #a8a8a8;
+    }
+
+    &.MP {
+      color: #4d43ba;
+    }
+  }
+
+  .chatMessageCounter {
+    border-bottom-color: #c74240;
+  }
+
+  .chatMessageCounterEnd {
+    border-top-color: #c74240;
+  }
+
+  .chatMessageCounterSpan {
+    background-color: #413440;
+    border-color: #351934;
+    color: #fff;
+  }
+
+  .chatRoleplayTranslation {
+    color: #b636b7;
+  }
+
+  #chatDiceSubmit {
+    background-color: rgba(0, 0, 0, 0);
+  }
+
+  .icons-chatFormStateNormal, .chatInput, .icons-chatSend, #chatDiceSubmit, #personaAddButton, .chatRightButton, .chatAvatarChoiceBoxUse, .chatAvatarChoiceBoxDelete {
+    filter:invert(1);
+  }
+
+  .zebra .printedMessage:nth-child(odd) {
+    background-color: rgba(255,255,255,.05);
+    &:hover{
+      background-color: rgba(255,255,255,.15);
+    }
+  }
+}
