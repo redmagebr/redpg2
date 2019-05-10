@@ -609,7 +609,7 @@
           %p.mainWindowParagraph.language="_REDPGDONATIONEXP1_"
           %p.mainWindowParagraph.language="_REDPGDONATIONEXP2_"
           %p.mainWindowParagraph="Atualmente os custos do RedPG são $5 ao mês para o servidor (antes de contar os impostos, vulnerável à cotação do dólar) e R$40 ao ano para o domínio. Se a conta vier antes de doações, o servidor irá ficar offline e todos os dados desde o último backup serão perdidos, então por favor doem sempre que puderem."
-          %p.mainWindowParagraph.language="Além das opções abaixo, também é possível transferências diretas para contas Caixa ou Nubank."
+          %p.mainWindowParagraph="Além das opções abaixo, também é possível transferências diretas para contas Caixa ou Nubank."
           %form#formPagseguroDon{:action=>"https://pagseguro.uol.com.br/checkout/v2/donation.html", :method=>"post", :target=>"_BLANK", :style=>"margin: auto; display: block; width: 205px"}
             %input{:type=>"hidden", :name=>"currency", :value=>"BRL" }
             %input{:type=>"hidden", :name=>"receiverEmail", :value=>"sistemaredpg@gmail.com" }
@@ -619,6 +619,7 @@
             %input{:type=>"hidden", :name=>"hosted_button_id", :value=>"AYURJY8GD52NE" }
             %input#formPaypalButton{:style=>"border: none", :type=>"image", :name=>"submit", :alt=>"PayPal – The safer, easier way to pay online.", :src=>"https://www.paypalobjects.com/en_US/GB/i/btn/btn_donateCC_LG.gif" }
             %img{:alt=>"", :border=>"0", :src=>"https://www.paypalobjects.com/pt_BR/i/scr/pixel.gif", :width=>"1", :height=>"1"}
+          %p.mainWindowParagraph.textLink.hoverable{:onclick=>"UI.IFrame.openLeftIFrame('https://docs.google.com/spreadsheets/d/e/2PACX-1vShlrsE_anzD6iUmYpCI-G0onKsMd7H2iGOUVwly5qnvQTlmVXI-HQYT-N97D3dA3cwsSKs8F3K5Igk/pubhtml');"}="Clique aqui para ver a situação financeira atual do RedPG."
         -#.mainWindowHeader.language="_REDPGLINKSTITLE_"
         -#.mainWindowContent
         -#  %p.mainWindowParagraph
