@@ -11909,7 +11909,7 @@ ptbr.setLingo("_CHATHELPCOMMANDSINTRO_", "Comandos disponíveis:");
 ptbr.setLingo("_CHATHELPMESSAGEACTION_", "Envia o comando como uma ação com a Persona atual, e.g. /me pula da ponte");
 ptbr.setLingo("_CHATHELPMESSAGEBGM_", "Envia o comando como uma música, e.g. /splay link/para/musica.mp3");
 ptbr.setLingo("_CHATHELPMESSAGESE_", "Envia o comando como um efeito sonoro, e.g. /seplay link/para/efeito.wav");
-ptbr.setLingo("_CHATHELPMESSAGECOUNTDOWN_", "Inicia uma contagem regressiva, em segundos, e.g. /count 10");
+ptbr.setLingo("_CHATHELPMESSAGECOUNTDOWN_", "Inicia uma contagem regressiva, em segundos. Também é possível adicionar uma mensagem para imprimir em história. e.g. /count 10    ou    /count 5, Faça algo!");
 ptbr.setLingo("_CHATHELPMESSAGEIMAGE_", "Envia o comando como uma imagem, e.g. /imagem link/para/imagem.jpg");
 ptbr.setLingo("_CHATHELPMESSAGEOFF_", "Envia o comando como uma mensagem fora de personagem, e.g. /off vou no banheiro");
 ptbr.setLingo("_CHATHELPMESSAGEQUOTE_", "Envia o comando como uma mensagem de citação, e.g. /citar Heráclito, Nada é permanente, exceto a mudança.");
@@ -12651,6 +12651,9 @@ change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
 change.addMessage("Botão adicionado para esconder personas.", "pt");
 change.addMessage("É possível deletar pastas inteiras de Imagens e Sons.", "pt");
 change.addMessage("Lingo recebeu suporte a história e quotes. Usage: /linghist Davek, História!   ,   /lingquo Davek, João, Mensagem", "pt");
+change = new Changelog(0, 35, 0);
+change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
+change.addMessage("/count pode incluir mensagens para imprimir em modo história. Isso é uma maneira mais limpa e discreta de fazer timers. Exemplo: /count 10, Algum evento com tempo..", "pt");
 //delete (change);
 Changelog.finished();
 /// <reference path='../../Changelog.ts' />
