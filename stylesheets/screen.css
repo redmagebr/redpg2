@@ -9248,7 +9248,7 @@ body {
   color: #3b5788;
 }
 /* line 105, ../sass/_dark.scss */
-#mainWindow.dark .chatRoleplayAction {
+#mainWindow.dark .chatRoleplayAction, #mainWindow.dark .chatAction {
   color: #ff7474;
 }
 /* line 109, ../sass/_dark.scss */
