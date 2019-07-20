@@ -1,8 +1,12 @@
 module UI.Images {
     document.getElementById("imagesButton").addEventListener("click", function () { UI.Images.callSelf(); });
     document.getElementById("dropboxImagesButton").addEventListener("click", function () { UI.Images.callDropbox(); });
+    document.getElementById("linkImagesButton").addEventListener("click", function () { UI.Images.addLink(); });
 
     var folderInput : HTMLInputElement = <HTMLInputElement> document.getElementById("dropboxImagesFolderName");
+    var linkFolderInput : HTMLInputElement = <HTMLInputElement> document.getElementById("linkImagesFolderName");
+    var linkURLInput : HTMLInputElement = <HTMLInputElement> document.getElementById("linkImagesLink");
+    var linkNameInput : HTMLInputElement = <HTMLInputElement> document.getElementById("linkImagesName");
 
     var target = document.getElementById("imagesTarget");
     var loadError = document.getElementById("imagesLoadError");
@@ -73,6 +77,18 @@ module UI.Images {
             extensions: ['images'],
         };
         Dropbox.choose(options);
+    }
+
+    export function addLink () {
+        let folder = linkFolderInput.value.trim();
+        let name = linkNameInput.value.trim();
+        let url = linkURLInput.value.trim();
+        linkFolderInput.value = "";
+        linkNameInput.value = "";
+        linkURLInput.value = "";
+        let link = new ImageLink(name, url, folder);
+        DB.ImageDB.addImage(link);
+        printImages();
     }
 
     export function addDropbox (files) {

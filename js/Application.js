@@ -4153,6 +4153,7 @@ var Sheet = /** @class */ (function () {
         this.indexedLists = [];
         this.buttons = {};
         this.idCounter = 0;
+        this.editOnly = [];
         this.changeListener = {
             sheet: this,
             counter: -1,
@@ -4174,6 +4175,10 @@ var Sheet = /** @class */ (function () {
             this.elements.push(elements[i]);
             if (elements[i].nodeType === Node.ELEMENT_NODE) {
                 this.processElement(elements[i]);
+                var editOnly = elements[i].getElementsByClassName("editOnly");
+                for (var i_1 = 0; i_1 < editOnly.length; i_1++) {
+                    this.editOnly.push(editOnly[i_1]);
+                }
             }
         }
     }
@@ -4192,6 +4197,18 @@ var Sheet = /** @class */ (function () {
     };
     Sheet.prototype.getLists = function () {
         return this.indexedLists;
+    };
+    Sheet.prototype.updateEditable = function () {
+        if (this.style.isEditable()) {
+            this.editOnly.forEach(function (element) {
+                element.style.display = "";
+            });
+        }
+        else {
+            this.editOnly.forEach(function (element) {
+                element.style.display = "none";
+            });
+        }
     };
     Sheet.prototype.getValueFor = function (id) {
         var simplified = Sheet.simplifyString(id);
@@ -11552,6 +11569,9 @@ ptbr.setLingo("_STYLEEDITORSAVE_", "Salvar");
 // Sons
 ptbr.setLingo("_SOUNDSTITLE_", "Sons");
 ptbr.setLingo("_SOUNDSLINKTITLE_", "Link Direto");
+ptbr.setLingo("_IMAGELINK_", "URL (link)");
+ptbr.setLingo("_IMAGENAME_", "Nome da Imagem");
+ptbr.setLingo("_IMAGESLINKGO_", "Adicionar Link");
 ptbr.setLingo("_SOUNDSDROPBOXCHOOSER_", "Escolher do Dropbox");
 ptbr.setLingo("_SOUNDSDROPBOXFOLDER_", "Forçar Pasta (Opcional)");
 ptbr.setLingo("_SOUNDSEXP01_", "Aqui você pode adicionar músicas e efeitos sonoros para compartilhar em Salas ou utilizar em Fichas.");
@@ -12676,6 +12696,10 @@ change = new Changelog(0, 35, 0);
 change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
 change.addMessage("/count pode incluir mensagens para imprimir em modo história. Isso é uma maneira mais limpa e discreta de fazer timers. Exemplo: /count 10, Algum evento com tempo..", "pt");
 change.addMessage("Opção Dark Mode adicionada às opções. 100% BETA", "pt");
+change = new Changelog(0, 35, 1);
+change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
+change.addMessage("Correção da cor do texto de ações no modo dark.", "pt");
+change.addMessage("Adicionada opção para adicionar links diretos à lista de imagens.", "pt");
 //delete (change);
 Changelog.finished();
 /// <reference path='../../Changelog.ts' />
@@ -12848,7 +12872,11 @@ var UI;
     (function (Images) {
         document.getElementById("imagesButton").addEventListener("click", function () { UI.Images.callSelf(); });
         document.getElementById("dropboxImagesButton").addEventListener("click", function () { UI.Images.callDropbox(); });
+        document.getElementById("linkImagesButton").addEventListener("click", function () { UI.Images.addLink(); });
         var folderInput = document.getElementById("dropboxImagesFolderName");
+        var linkFolderInput = document.getElementById("linkImagesFolderName");
+        var linkURLInput = document.getElementById("linkImagesLink");
+        var linkNameInput = document.getElementById("linkImagesName");
         var target = document.getElementById("imagesTarget");
         var loadError = document.getElementById("imagesLoadError");
         var saveError = document.getElementById("imagesSaveError");
@@ -12910,6 +12938,18 @@ var UI;
             Dropbox.choose(options);
         }
         Images.callDropbox = callDropbox;
+        function addLink() {
+            var folder = linkFolderInput.value.trim();
+            var name = linkNameInput.value.trim();
+            var url = linkURLInput.value.trim();
+            linkFolderInput.value = "";
+            linkNameInput.value = "";
+            linkURLInput.value = "";
+            var link = new ImageLink(name, url, folder);
+            DB.ImageDB.addImage(link);
+            printImages();
+        }
+        Images.addLink = addLink;
         function addDropbox(files) {
             var intendedFolder = folderInput.value.trim();
             folderInput.value = "";
@@ -13932,10 +13972,10 @@ var UI;
             function fillStyles(data) {
                 while (selectStyle.firstChild !== null)
                     selectStyle.removeChild(selectStyle.firstChild);
-                for (var i_1 = 0; i_1 < data.length; i_1++) {
-                    var name_2 = data[i_1]['name'];
+                for (var i_2 = 0; i_2 < data.length; i_2++) {
+                    var name_2 = data[i_2]['name'];
                     if (name_2.charAt(0) == "_" && name_2.charAt(name_2.length - 1) == "_") {
-                        data[i_1]['name'] = UI.Language.getLanguage().getLingo(name_2);
+                        data[i_2]['name'] = UI.Language.getLanguage().getLingo(name_2);
                     }
                 }
                 data.sort(function (a, b) {

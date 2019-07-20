@@ -10,6 +10,8 @@ class Sheet {
 
     protected idCounter : number = 0;
 
+    protected editOnly : Array<HTMLElement> = [];
+
     protected changeListener = <Listener> {
         sheet : this,
         counter : -1,
@@ -38,6 +40,18 @@ class Sheet {
 
     public getLists () {
         return this.indexedLists;
+    }
+
+    public updateEditable () {
+        if (this.style.isEditable()) {
+            this.editOnly.forEach(element => {
+                element.style.display = "";
+            });
+        } else {
+            this.editOnly.forEach(element => {
+                element.style.display = "none";
+            });
+        }
     }
 
     public getValueFor (id : string) {
@@ -84,6 +98,10 @@ class Sheet {
             this.elements.push(elements[i]);
             if (elements[i].nodeType === Node.ELEMENT_NODE) {
                 this.processElement(<HTMLElement> elements[i]);
+                let editOnly = (<HTMLElement> elements[i]).getElementsByClassName("editOnly");
+                for (let i = 0; i < editOnly.length; i++) {
+                    this.editOnly.push(<HTMLElement> editOnly[i]);
+                }
             }
         }
     }

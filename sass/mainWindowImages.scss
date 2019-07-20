@@ -121,7 +121,7 @@
   vertical-align: top;
 }
 
-#dropboxImagesFolderName {
+#dropboxImagesFolderName, #linkImagesName, #linkImagesFolderName, #linkImagesLink {
   display: block;
   margin: auto;
   margin-top: 8px;
@@ -132,7 +132,7 @@
   padding-right: 6px;
 }
 
-#dropboxImagesButton {
+#dropboxImagesButton, #linkImagesButton {
   @extend .buttonBehavior;
   display: block;
   width: 170px;
@@ -156,5 +156,23 @@
     border: solid 1px #003468;
     background-color: #d4d9e1;
     color: #00589e;
+  }
+}
+
+#linkImagesButton {
+  border: solid 1px #000;
+  background-color: #ddd;
+  color: #222;
+
+  &:hover {
+    border: solid 1px #666;
+    background-color: #fff;
+    color: #444;
+  }
+
+  &:active {
+    border: solid 1px #222;
+    background-color: #eee;
+    color: #555;
   }
 }

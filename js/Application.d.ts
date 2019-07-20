@@ -926,10 +926,12 @@ declare class Sheet {
         [id: string]: SheetButton;
     };
     protected idCounter: number;
+    protected editOnly: Array<HTMLElement>;
     protected changeListener: Listener;
     getField(id: string): SheetVariable | SheetList;
     findField(id: string): SheetVariable | SheetList;
     getLists(): SheetList[];
+    updateEditable(): void;
     getValueFor(id: string): any;
     static simplifyString(str: String): string;
     getElements(): Node[];
@@ -2155,6 +2157,7 @@ declare module UI.Images {
     function stayInFolder(name: string): void;
     function printError(data: any, onLoad: boolean): void;
     function callDropbox(): void;
+    function addLink(): void;
     function addDropbox(files: any): void;
 }
 declare module UI.Loading {

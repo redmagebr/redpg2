@@ -98,6 +98,9 @@ ptbr.setLingo("_STYLEEDITORSAVE_", "Salvar");
 // Sons
 ptbr.setLingo("_SOUNDSTITLE_", "Sons");
 ptbr.setLingo("_SOUNDSLINKTITLE_", "Link Direto");
+ptbr.setLingo("_IMAGELINK_", "URL (link)");
+ptbr.setLingo("_IMAGENAME_", "Nome da Imagem");
+ptbr.setLingo("_IMAGESLINKGO_", "Adicionar Link");
 ptbr.setLingo("_SOUNDSDROPBOXCHOOSER_", "Escolher do Dropbox");
 ptbr.setLingo("_SOUNDSDROPBOXFOLDER_", "Forçar Pasta (Opcional)");
 ptbr.setLingo("_SOUNDSEXP01_", "Aqui você pode adicionar músicas e efeitos sonoros para compartilhar em Salas ou utilizar em Fichas.");

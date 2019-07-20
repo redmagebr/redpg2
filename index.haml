@@ -563,10 +563,14 @@
                   %a.imagesRightButton.icons-imagesFolder
                   %a.imagesRowTitle="Nome da Imagem"
           #imagesUpload
-            #imagesUploadLeft{:style=>"display: none"}
+            #imagesUploadLeft
               #linkImagesTitle
                 #linkImagesIcon.icons-link
                 #linkImagesTitleText.language="_IMAGESLINKTITLE_"
+                %input#linkImagesFolderName.language{:type=>"text", :data=>{:placeholderlingo=>"_SOUNDSDROPBOXFOLDER_"}}
+                %input#linkImagesName.language{:type=>"text", :data=>{:placeholderlingo=>"_IMAGENAME_"}}
+                %input#linkImagesLink.language{:type=>"text", :data=>{:placeholderlingo=>"_IMAGELINK_"}}
+                #linkImagesButton.language="_IMAGESLINKGO_"
             #imagesUploadRight
               #dropboxImagesLogo.icons-dropboxLogo
               %input#dropboxImagesFolderName.language{:type=>"text", :data=>{:placeholderlingo=>"_SOUNDSDROPBOXFOLDER_"}}

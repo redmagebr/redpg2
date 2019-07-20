@@ -241,7 +241,10 @@ change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
 change.addMessage("/count pode incluir mensagens para imprimir em modo história. Isso é uma maneira mais limpa e discreta de fazer timers. Exemplo: /count 10, Algum evento com tempo..", "pt");
 change.addMessage("Opção Dark Mode adicionada às opções. 100% BETA", "pt");
 
-
+change = new Changelog(0, 35, 1);
+change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
+change.addMessage("Correção da cor do texto de ações no modo dark.", "pt");
+change.addMessage("Adicionada opção para adicionar links diretos à lista de imagens.", "pt");
 //delete (change);
 
 Changelog.finished();
