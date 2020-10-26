@@ -1,17 +1,17 @@
 module Server {
-    export var IMAGE_URL : string = "http://img.redpg.com.br/";
-    export var APPLICATION_URL:string = "http://app.redpg.com.br/service/";
-    export var CLIENT_URL:string = "http://app.redpg.com.br/";
-    export var WEBSOCKET_SERVERURL:string = "ws://app.redpg.com.br";
+    export var IMAGE_URL : string = "https://img.redpg.com.br/";
+    export var APPLICATION_URL:string = "https://app.redpg.com.br/service/";
+    export var CLIENT_URL:string = "https://app.redpg.com.br/";
+    export var WEBSOCKET_SERVERURL:string = "wss://app.redpg.com.br";
 
     if (window.location.hostname.indexOf("beta") === 0) {
-        APPLICATION_URL = "http://beta.redpg.com.br/service/";
-        CLIENT_URL = "http://beta.redpg.com.br/";
-        WEBSOCKET_SERVERURL = "ws://beta.redpg.com.br";
+        APPLICATION_URL = "https://beta.redpg.com.br/service/";
+        CLIENT_URL = "https://beta.redpg.com.br/";
+        WEBSOCKET_SERVERURL = "wss://beta.redpg.com.br";
     }
 
     export var WEBSOCKET_CONTEXT : string = "/service/";
-    export var WEBSOCKET_PORTS : Array<number> = [80, 8080, 8081];
+    export var WEBSOCKET_PORTS : Array<number> = [443];
 
     // export var APPLICATION_URL : string = "http://localhost:8080/RedPG/";
     // export var WEBSOCKET_SERVERURL : string = "ws://localhost";
