@@ -245,6 +245,13 @@ change = new Changelog(0, 35, 1);
 change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
 change.addMessage("Correção da cor do texto de ações no modo dark.", "pt");
 change.addMessage("Adicionada opção para adicionar links diretos à lista de imagens.", "pt");
+
+change = new Changelog(0, 36, 0);
+change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
+change.addMessage("TypeScript atualizado para TypeScript 4. Favor reportar qualquer comportamento estranho.", "pt");
+change.addMessage("RedPG Accident Prevention System (RAPS) permite sair do RedPG sem ter chat/fichas abertas.", "pt");
+
+
 //delete (change);
 
 Changelog.finished();
