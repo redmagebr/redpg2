@@ -10,6 +10,8 @@ window.addEventListener("beforeunload", function (e) {
     e.preventDefault();
     var confirmationMessage = RedPGAccidentPreventionSystem(e);
 
-    (e || window.event).returnValue = confirmationMessage;     //Gecko + IE
-    return confirmationMessage;                                //Webkit, Safari, Chrome etc.
+    if (confirmationMessage != undefined) {
+        (e || window.event).returnValue = confirmationMessage;     //Gecko + IE
+        return confirmationMessage;                                //Webkit, Safari, Chrome etc.
+    }
 });
