@@ -2,7 +2,7 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
@@ -1388,7 +1388,7 @@ var AJAXConfig = /** @class */ (function () {
         set: function (value) {
             this._target = value;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(AJAXConfig.prototype, "url", {
@@ -1398,7 +1398,7 @@ var AJAXConfig = /** @class */ (function () {
         set: function (value) {
             this._url = value;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(AJAXConfig.prototype, "timeout", {
@@ -1408,7 +1408,7 @@ var AJAXConfig = /** @class */ (function () {
         set: function (value) {
             this._timeout = value;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(AJAXConfig.prototype, "responseType", {
@@ -1418,7 +1418,7 @@ var AJAXConfig = /** @class */ (function () {
         set: function (value) {
             this._responseType = value;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(AJAXConfig.prototype, "data", {
@@ -1428,7 +1428,7 @@ var AJAXConfig = /** @class */ (function () {
         set: function (value) {
             this._data = value;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     AJAXConfig.prototype.setData = function (id, value) {
@@ -10007,17 +10007,17 @@ var Application;
 /// <reference path='Modules/Login.ts' />
 var Server;
 (function (Server) {
-    Server.IMAGE_URL = "http://img.redpg.com.br/";
-    Server.APPLICATION_URL = "http://app.redpg.com.br/service/";
-    Server.CLIENT_URL = "http://app.redpg.com.br/";
-    Server.WEBSOCKET_SERVERURL = "ws://app.redpg.com.br";
+    Server.IMAGE_URL = "https://img.redpg.com.br/";
+    Server.APPLICATION_URL = "https://app.redpg.com.br/service/";
+    Server.CLIENT_URL = "https://app.redpg.com.br/";
+    Server.WEBSOCKET_SERVERURL = "wss://app.redpg.com.br";
     if (window.location.hostname.indexOf("beta") === 0) {
-        Server.APPLICATION_URL = "http://beta.redpg.com.br/service/";
-        Server.CLIENT_URL = "http://beta.redpg.com.br/";
-        Server.WEBSOCKET_SERVERURL = "ws://beta.redpg.com.br";
+        Server.APPLICATION_URL = "https://beta.redpg.com.br/service/";
+        Server.CLIENT_URL = "https://beta.redpg.com.br/";
+        Server.WEBSOCKET_SERVERURL = "wss://beta.redpg.com.br";
     }
     Server.WEBSOCKET_CONTEXT = "/service/";
-    Server.WEBSOCKET_PORTS = [80, 8080, 8081];
+    Server.WEBSOCKET_PORTS = [443];
     // export var APPLICATION_URL : string = "http://localhost:8080/RedPG/";
     // export var WEBSOCKET_SERVERURL : string = "ws://localhost";
     // export var WEBSOCKET_CONTEXT : string = "/RedPG/";
@@ -18662,40 +18662,45 @@ var UI;
 // Changelog
 /// <reference path="Changelog.ts" />
 /// <reference path='References.ts' />
-// Set up language
-UI.Language.searchLanguage();
-// Read and detach pages
-UI.PageManager.readWindows();
-// Update window sizes
-UI.WindowManager.updateWindowSizes();
-// Set up initial pages of main window
-UI.PageManager.callPage(UI.idChangelog);
-UI.PageManager.callPage(UI.idHome);
-// Return to loginWindow on logout, return to mainWindow on login
-Application.Login.addListener({
-    handleEvent: function () {
-        if (Application.Login.isLogged()) {
-            UI.WindowManager.callWindow(('mainWindow'));
-        }
-        else {
-            UI.Login.callSelf();
-            UI.Login.resetState();
-            UI.Login.resetFocus();
-        }
-    }
-});
-// Search for old logins and fill out remembered inputs
-Application.Login.searchLogin();
-UI.Login.resetState();
-// Do we have a session we can use or do we go straight to login screen?
-UI.WindowManager.callWindow("loginWindow");
-if (Application.Login.hasSession()) {
-    Server.Login.requestSession(false);
+if (location.href.indexOf("http://") == 0) {
+    location.href = location.href.replace("http://", "https://");
 }
 else {
-    UI.Login.resetFocus();
+    // Set up language
+    UI.Language.searchLanguage();
+    // Read and detach pages
+    UI.PageManager.readWindows();
+    // Update window sizes
+    UI.WindowManager.updateWindowSizes();
+    // Set up initial pages of main window
+    UI.PageManager.callPage(UI.idChangelog);
+    UI.PageManager.callPage(UI.idHome);
+    // Return to loginWindow on logout, return to mainWindow on login
+    Application.Login.addListener({
+        handleEvent: function () {
+            if (Application.Login.isLogged()) {
+                UI.WindowManager.callWindow(('mainWindow'));
+            }
+            else {
+                UI.Login.callSelf();
+                UI.Login.resetState();
+                UI.Login.resetFocus();
+            }
+        }
+    });
+    // Search for old logins and fill out remembered inputs
+    Application.Login.searchLogin();
+    UI.Login.resetState();
+    // Do we have a session we can use or do we go straight to login screen?
+    UI.WindowManager.callWindow("loginWindow");
+    if (Application.Login.hasSession()) {
+        Server.Login.requestSession(false);
+    }
+    else {
+        UI.Login.resetFocus();
+    }
+    document.write("<script src='" + Server.CLIENT_URL + "js/Changelog.js' type='text/javascript'>" + "<" + "/" + "script>");
+    // Call any onReady listeners
+    allReady();
 }
-document.write("<script src='" + Server.CLIENT_URL + "js/Changelog.js' type='text/javascript'>" + "<" + "/" + "script>");
-// Call any onReady listeners
-allReady();
 //# sourceMappingURL=Application.js.map

@@ -401,11 +401,16 @@ declare class AJAXConfig {
     forceLoading(): void;
     startConditionalLoading(): void;
     finishConditionalLoading(): void;
-    target: number;
-    url: string;
-    timeout: number;
-    responseType: string;
-    data: Object;
+    get target(): number;
+    set target(value: number);
+    get url(): string;
+    set url(value: string);
+    get timeout(): number;
+    set timeout(value: number);
+    get responseType(): string;
+    set responseType(value: string);
+    get data(): Object;
+    set data(value: Object);
     setData(id: string, value: any): void;
     setResponseTypeJSON(): void;
     setResponseTypeText(): void;
@@ -2459,7 +2464,7 @@ declare class PicaCanvasArt {
     getUserId(): number;
     setSpecial(index: string, value: any): void;
     getSpecial(index: string, defValue: any): any;
-    exportAsObject(): Object[];
+    exportAsObject(): (number | Object)[];
     /**
      * Can throw errors
      * @param str
