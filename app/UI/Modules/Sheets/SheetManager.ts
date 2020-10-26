@@ -278,7 +278,7 @@ module UI.Sheets.SheetManager {
             var file = importInput.files[0];
             var reader = new FileReader();
             reader.addEventListener("load", function (e) {
-                UI.Sheets.SheetManager.importFromJSON(true, e.target['result']);
+                UI.Sheets.SheetManager.importFromJSON(true, <any> e.target['result']);
             });
 
             reader.readAsText(file);

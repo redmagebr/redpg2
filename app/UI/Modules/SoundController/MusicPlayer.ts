@@ -88,7 +88,7 @@ module UI.SoundController.MusicPlayer {
 
     button.addEventListener("mouseover", function () { UI.SoundController.MusicPlayer.showContainer(); });
     button.addEventListener("mouseout", function (event) {
-        var e = <Node> (event.toElement || event.relatedTarget);
+        var e = <Node> ((<any> event).toElement || event.relatedTarget);
         var parent = <Node> e;
         while (parent !== null) {
             if (parent === this) {
