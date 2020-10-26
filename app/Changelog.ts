@@ -250,7 +250,8 @@ change = new Changelog(0, 36, 0);
 change.addMessage("TODO: ADD ENGLISH MESSAGES", "en");
 change.addMessage("TypeScript atualizado para TypeScript 4. Favor reportar qualquer comportamento estranho.", "pt");
 change.addMessage("RedPG Accident Prevention System (RAPS) permite sair do RedPG sem ter chat/fichas abertas.", "pt");
-
+change.addMessage("Criação de novas contas não salva mais nomes de indivíduos. Nomes guardados anteriormente serão removidos do servidor. Isso não afeta o funcionamento das contas nem do sistema - o Nome já não era utilizado, apenas não será mais requisitado nem guardado.", "pt");
+change.addMessage("Atualização das libraries utilizadas pelo RedPG.", "pt");
 
 //delete (change);
 
