@@ -7,8 +7,8 @@ $blueBG : #b2b9cf;
 ** Individual font licenses can be found in /stylesheets/fontface
 ** and /stylesheets/fontface/Lingo.
 */
-@import "allFonts";
-@import "jqueryui";
+@import "_allFonts";
+@import "_jqueryui";
 
 /*
 ** Most Icons are based on Adam Whitcroft's Batch icon set
@@ -21,31 +21,31 @@ $icons-layout:smart;
 @import "compass/reset";
 
 b { font-weight: bold; }
-@import "generalView";
-@import "login";
-@import "windows";
-@import "mainWindow";
-@import "mainChatLanguages";
-@import "mainWindowImages";
-@import "mainWindowInviteDesigner";
-@import "mainWindowGameDesigner";
-@import "mainWindowRoomDesigner";
-@import "mainWindowSounds";
-@import "mainWindowSoundList";
-@import "mainWindowGames";
-@import "mainWindowSheets";
-@import "mainConfig";
-@import "mainWindowSimple";
-@import "mainWindowStyles";
-@import "mainChat";
-@import "mainChatMessages";
-@import "mainChatLogger";
-@import "mainChatCombat";
-@import "mainPicture";
-@import "buttons";
-@import "mainWindowChangelog";
-@import "mainSheetViewer";
-@import "mainWindowFilters";
-@import "mainWindowIFrames";
+@import "_generalView";
+@import "_login";
+@import "_windows";
+@import "_mainWindow";
+@import "_mainChatLanguages";
+@import "_mainWindowImages";
+@import "_mainWindowInviteDesigner";
+@import "_mainWindowGameDesigner";
+@import "_mainWindowRoomDesigner";
+@import "_mainWindowSounds";
+@import "_mainWindowSoundList";
+@import "_mainWindowGames";
+@import "_mainWindowSheets";
+@import "_mainConfig";
+@import "_mainWindowSimple";
+@import "_mainWindowStyles";
+@import "_mainChat";
+@import "_mainChatMessages";
+@import "_mainChatLogger";
+@import "_mainChatCombat";
+@import "_mainPicture";
+@import "_buttons";
+@import "_mainWindowChangelog";
+@import "_mainSheetViewer";
+@import "_mainWindowFilters";
+@import "_mainWindowIFrames";
 @import "_dark";
 
