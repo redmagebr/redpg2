@@ -91,22 +91,18 @@
 #mainWindow {
   transition: filter 3s ease-in-out;
 
-  & > .leftSideWindow, & > .rightSideWindow {
-    transition: filter 3s ease-in-out;
-  }
+  //& > .leftSideWindow, & > .rightSideWindow {
+  //  transition: filter 3s ease-in-out;
+  //}
 
   &.trauma {
-    & > .leftSideWindow, & > .rightSideWindow {
-      animation-name: trauma;
-      animation-duration: 10s;
-      animation-iteration-count: infinite;
-    }
+    animation-name: trauma;
+    animation-duration: 10s;
+    animation-iteration-count: infinite;
   }
 
   &.noir {
-    & > .leftSideWindow, & > .rightSideWindow {
-      filter: grayscale(100%) brightness(-5%) contrast(180%);
-    }
+    filter: grayscale(100%) brightness(-5%) contrast(180%);
   }
 
   &.evening {
@@ -130,9 +126,7 @@
   }
 
   &.night {
-    & > .leftSideWindow, & > .rightSideWindow {
-      filter: grayscale(10%) brightness(80%) contrast(125%)
-    }
+    filter: grayscale(10%) brightness(80%) contrast(125%);
 
     & > #colorFilter {
       opacity: 0.3;
@@ -141,9 +135,7 @@
   }
 
   &.gray {
-    & > .leftSideWindow, & > .rightSideWindow {
-      filter: grayscale(1);
-    }
+    filter: grayscale(1);
   }
   
 

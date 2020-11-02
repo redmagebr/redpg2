@@ -9091,64 +9091,60 @@ body {
 #mainWindow {
   transition: filter 3s ease-in-out;
 }
-/* line 94, ../sass/_mainWindowFilters.scss */
-#mainWindow > .leftSideWindow, #mainWindow > .rightSideWindow {
-  transition: filter 3s ease-in-out;
-}
-/* line 99, ../sass/_mainWindowFilters.scss */
-#mainWindow.trauma > .leftSideWindow, #mainWindow.trauma > .rightSideWindow {
+/* line 98, ../sass/_mainWindowFilters.scss */
+#mainWindow.trauma {
   animation-name: trauma;
   animation-duration: 10s;
   animation-iteration-count: infinite;
 }
-/* line 107, ../sass/_mainWindowFilters.scss */
-#mainWindow.noir > .leftSideWindow, #mainWindow.noir > .rightSideWindow {
+/* line 104, ../sass/_mainWindowFilters.scss */
+#mainWindow.noir {
   filter: grayscale(100%) brightness(-5%) contrast(180%);
 }
-/* line 112, ../sass/_mainWindowFilters.scss */
+/* line 108, ../sass/_mainWindowFilters.scss */
 #mainWindow.evening {
   filter: grayscale(10%) brightness(80%);
 }
-/* line 115, ../sass/_mainWindowFilters.scss */
+/* line 111, ../sass/_mainWindowFilters.scss */
 #mainWindow.evening > #colorFilter {
   opacity: 0.1;
   background-color: #740d00;
 }
-/* line 121, ../sass/_mainWindowFilters.scss */
+/* line 117, ../sass/_mainWindowFilters.scss */
 #mainWindow.fire {
   filter: grayscale(10%) brightness(90%);
 }
-/* line 124, ../sass/_mainWindowFilters.scss */
+/* line 120, ../sass/_mainWindowFilters.scss */
 #mainWindow.fire > #colorFilter {
   background-color: #bd2e00;
   animation-name: fireBackground;
   animation-duration: 8s;
   animation-iteration-count: infinite;
 }
-/* line 133, ../sass/_mainWindowFilters.scss */
-#mainWindow.night > .leftSideWindow, #mainWindow.night > .rightSideWindow {
+/* line 128, ../sass/_mainWindowFilters.scss */
+#mainWindow.night {
   filter: grayscale(10%) brightness(80%) contrast(125%);
 }
-/* line 137, ../sass/_mainWindowFilters.scss */
+/* line 131, ../sass/_mainWindowFilters.scss */
 #mainWindow.night > #colorFilter {
   opacity: 0.3;
   background-color: #000e62;
 }
-/* line 144, ../sass/_mainWindowFilters.scss */
-#mainWindow.gray > .leftSideWindow, #mainWindow.gray > .rightSideWindow {
+/* line 137, ../sass/_mainWindowFilters.scss */
+#mainWindow.gray {
   filter: grayscale(1);
 }
-/* line 150, ../sass/_mainWindowFilters.scss */
+/* line 142, ../sass/_mainWindowFilters.scss */
 #mainWindow.sepia {
   filter: sepia(0.3) brightness(80%);
 }
 
-/* line 155, ../sass/_mainWindowFilters.scss */
+/* line 147, ../sass/_mainWindowFilters.scss */
 #pictureWindow {
   filter: none !important;
 }
 
-/* line 159, ../sass/_mainWindowFilters.scss */
+/* line 151, ../sass/_mainWindowFilters.scss */
 #colorFilter {
   display: block;
   opacity: 0;
