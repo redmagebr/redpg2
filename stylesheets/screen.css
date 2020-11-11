@@ -9314,22 +9314,26 @@ body {
   color: #fff;
 }
 /* line 145, ../sass/_dark.scss */
+#mainWindow.dark .sheetListNoSheet {
+  color: #fff;
+}
+/* line 149, ../sass/_dark.scss */
 #mainWindow.dark .chatRoleplayTranslation {
   color: #b636b7;
 }
-/* line 149, ../sass/_dark.scss */
+/* line 153, ../sass/_dark.scss */
 #mainWindow.dark #chatDiceSubmit {
   background-color: transparent;
 }
-/* line 153, ../sass/_dark.scss */
+/* line 157, ../sass/_dark.scss */
 #mainWindow.dark .icons-chatFormStateNormal, #mainWindow.dark .chatInput, #mainWindow.dark .icons-chatSend, #mainWindow.dark #chatDiceSubmit, #mainWindow.dark #personaAddButton, #mainWindow.dark .chatRightButton, #mainWindow.dark .chatAvatarChoiceBoxUse, #mainWindow.dark .chatAvatarChoiceBoxDelete {
   filter: invert(1);
 }
-/* line 157, ../sass/_dark.scss */
+/* line 161, ../sass/_dark.scss */
 #mainWindow.dark .zebra .printedMessage:nth-child(odd) {
   background-color: rgba(255, 255, 255, 0.05);
 }
-/* line 159, ../sass/_dark.scss */
+/* line 163, ../sass/_dark.scss */
 #mainWindow.dark .zebra .printedMessage:nth-child(odd):hover {
   background-color: rgba(255, 255, 255, 0.15);
 }
